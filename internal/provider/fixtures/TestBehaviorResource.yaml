@@ -1,0 +1,175 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{"behavior":"remote_server_sync","disable_parent_folder_behavior":false,"path":"Bar","recursive":true,"value":"{\"direction\":\"pull_from_server\",\"keep_after_copy\":\"keep\",\"remote_server_id\":21226,\"remote_sync_interval\":111,\"schedule\":{\"days_of_week\":[0,1],\"times_of_day\":[\"12:00\",\"13:00\"]},\"trigger\":\"custom_schedule\"}"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors
+    method: POST
+  response:
+    body: '{"id":272843,"path":"Bar","behavior":"remote_server_sync","name":null,"description":null,"value":{"direction":"pull_from_server","keep_after_copy":"keep","remote_server_id":21226,"remote_sync_interval":111,"schedule":{"days_of_week":[0,1],"times_of_day":["12:00","13:00"]},"trigger":"custom_schedule","disabled":false,"manual":false,"delete_empty_folders":false},"disable_parent_folder_behavior":false,"recursive":true}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "419"
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 27 Jun 2024 00:06:28 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - 6547c40d27231fbb0345fa6557fe0316
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/272843
+    method: GET
+  response:
+    body: '{"id":272843,"path":"Bar","behavior":"remote_server_sync","name":null,"description":null,"value":{"direction":"pull_from_server","keep_after_copy":"keep","remote_server_id":21226,"remote_sync_interval":111,"schedule":{"days_of_week":[0,1],"times_of_day":["12:00","13:00"]},"trigger":"custom_schedule","disabled":false,"manual":false,"delete_empty_folders":false},"disable_parent_folder_behavior":false,"recursive":true}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 27 Jun 2024 00:06:29 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - a1e3caaceb50010c8f200d3d7bd050f6
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/272843
+    method: GET
+  response:
+    body: '{"id":272843,"path":"Bar","behavior":"remote_server_sync","name":null,"description":null,"value":{"direction":"pull_from_server","keep_after_copy":"keep","remote_server_id":21226,"remote_sync_interval":111,"schedule":{"days_of_week":[0,1],"times_of_day":["12:00","13:00"]},"trigger":"custom_schedule","disabled":false,"manual":false,"delete_empty_folders":false},"disable_parent_folder_behavior":false,"recursive":true}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 27 Jun 2024 00:06:29 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - ff500b17cb7d8f63752d08b804b7b8c4
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"disable_parent_folder_behavior":false,"recursive":true,"value":"{\"direction\":\"pull_from_server\",\"keep_after_copy\":\"keep\",\"remote_server_id\":21226,\"remote_sync_interval\":111,\"schedule\":{\"days_of_week\":[4,5],\"times_of_day\":[\"02:00\",\"03:00\"]},\"trigger\":\"custom_schedule\"}"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/272843
+    method: PATCH
+  response:
+    body: '{"id":272843,"path":"Bar","behavior":"remote_server_sync","name":null,"description":null,"value":{"direction":"pull_from_server","keep_after_copy":"keep","remote_server_id":21226,"remote_sync_interval":111,"schedule":{"days_of_week":[4,5],"times_of_day":["02:00","03:00"]},"trigger":"custom_schedule","disabled":false,"manual":false,"delete_empty_folders":false},"disable_parent_folder_behavior":false,"recursive":true}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 27 Jun 2024 00:06:29 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - 8029b28369c3e352070bfb43675f3573
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/272843
+    method: GET
+  response:
+    body: '{"id":272843,"path":"Bar","behavior":"remote_server_sync","name":null,"description":null,"value":{"direction":"pull_from_server","keep_after_copy":"keep","remote_server_id":21226,"remote_sync_interval":111,"schedule":{"days_of_week":[4,5],"times_of_day":["02:00","03:00"]},"trigger":"custom_schedule","disabled":false,"manual":false,"delete_empty_folders":false},"disable_parent_folder_behavior":false,"recursive":true}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 27 Jun 2024 00:06:30 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - 5470d9d0eacf7c2ee2e974a7ac401e10
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/272843
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Date:
+      - Thu, 27 Jun 2024 00:06:30 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - d4f8e4a9c7c759a0312684d8c3dded6f
+    status: 204 No Content
+    code: 204
+    duration: ""

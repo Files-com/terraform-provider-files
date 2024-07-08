@@ -1,0 +1,7 @@
+go.work
+go.work.sum
+test.sh
+setup.sh
+build.sh
+release.sh
+pre_commit.sh

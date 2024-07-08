@@ -1,0 +1,407 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{"mkdir_parents":true,"size":2}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/file_actions/begin_upload/Test%20Folder/Subfolder/Bar.txt
+    method: POST
+  response:
+    body: '[{"send":{"partsize":"required-header Content-Length","partdata":"body"},"action":"put/write","ask_about_overwrites":false,"available_parts":10000,"expires":"2024-07-01T21:20:07Z","headers":{},"http_method":"PUT","next_partsize":6291456,"parallel_parts":true,"retry_parts":true,"parameters":{},"part_number":1,"partsize":5242880,"ref":"put-9386542186","upload_uri":"https://s3.amazonaws.com/objects.brickftp.com/metadata/115123/808a9ce5-83f6-4042-9bf9-d97149f645e7?X-Amz-Algorithm=AWS4-HMAC-SHA256\u0026X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240701%2Fus-east-1%2Fs3%2Faws4_request\u0026X-Amz-Date=20240701T210507Z\u0026X-Amz-Expires=900\u0026X-Amz-SignedHeaders=host\u0026partNumber=1\u0026response-content-type=application%2Foctet-stream\u0026uploadId=KnSqllS8wHvOZU0tg2YRoLCPPul3_l5yhOAcVOA8y9zl5dzmTNBtFAi0ol7sL_rFjg4EjlMype2Ck2tbEKyyUQ8yBMfqNYJq5kA8PK5cbswSFtjVMEbvFM5HTU377v1r\u0026X-Amz-Signature=7a65d7859a4c77f0809f7c6565c8bb4a8ef74acee6d305ac1271116fa77f526c"}]'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 01 Jul 2024 21:05:07 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - 140647fb5f6b2b3b80a7382fc3cc854e
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: yo
+    form: {}
+    headers:
+      Content-Length:
+      - "2"
+    url: https://s3.amazonaws.com/objects.brickftp.com/metadata/115123/808a9ce5-83f6-4042-9bf9-d97149f645e7?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIEWLY3MN4YGZQOWA%2F20240701%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240701T210507Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&partNumber=1&response-content-type=application%2Foctet-stream&uploadId=KnSqllS8wHvOZU0tg2YRoLCPPul3_l5yhOAcVOA8y9zl5dzmTNBtFAi0ol7sL_rFjg4EjlMype2Ck2tbEKyyUQ8yBMfqNYJq5kA8PK5cbswSFtjVMEbvFM5HTU377v1r&X-Amz-Signature=7a65d7859a4c77f0809f7c6565c8bb4a8ef74acee6d305ac1271116fa77f526c
+    method: PUT
+  response:
+    body: ""
+    headers:
+      Content-Length:
+      - "0"
+      Date:
+      - Mon, 01 Jul 2024 21:05:08 GMT
+      Etag:
+      - '"6d0007e52f7afb7d5a0650b0ffb8a4d1"'
+      Server:
+      - AmazonS3
+      X-Amz-Id-2:
+      - ac7vl6J/pVZ0hJk97GWPZRDB4iNMIqWq4A8RsObmAQFi7sCWXl9DMuUKinIVNa8EvBPlMJd8hw3nUZZtogPcp3KFboRg0WRnu/EKz3LituI=
+      X-Amz-Request-Id:
+      - ECA2SC7PM3AK80DK
+      X-Amz-Server-Side-Encryption:
+      - AES256
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"action":"end","etags":[{"etag":"6d0007e52f7afb7d5a0650b0ffb8a4d1","part":"1"}],"mkdir_parents":true,"ref":"put-9386542186","size":2}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/files/Test%20Folder/Subfolder/Bar.txt
+    method: POST
+  response:
+    body: '{"path":"Test Folder/Subfolder/Bar.txt","created_by_id":1028730,"created_by_api_key_id":2598814,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{},"display_name":"Bar.txt","type":"file","size":2,"created_at":"2024-07-01T21:05:08Z","last_modified_by_id":null,"last_modified_by_api_key_id":null,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2024-07-01T21:05:08Z","provided_mtime":null,"crc32":null,"md5":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "796"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 01 Jul 2024 21:05:08 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Request-Id:
+      - 5c10c3e32e25a5dd90e8f1c192866f14
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: '{"custom_metadata":{"key":"value"},"priority_color":"orange","provided_mtime":"2024-06-01T01:02:03Z"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/files/Test%20Folder/Subfolder/Bar.txt
+    method: PATCH
+  response:
+    body: '{"path":"Test Folder/Subfolder/Bar.txt","created_by_id":1028730,"created_by_api_key_id":2598814,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{"key":"value"},"display_name":"Bar.txt","type":"file","size":2,"created_at":"2024-07-01T21:05:08Z","last_modified_by_id":1028730,"last_modified_by_api_key_id":2598814,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2024-07-01T21:05:08Z","provided_mtime":"2024-06-01T01:02:03Z","crc32":null,"md5":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd","priority_color":"orange"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 01 Jul 2024 21:05:08 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - 56855d47fbe962bc937e7bb5ea290dc4
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/file_actions/metadata/Test%20Folder/Subfolder/Bar.txt?with_priority_color=true
+    method: GET
+  response:
+    body: '{"path":"Test Folder/Subfolder/Bar.txt","created_by_id":1028730,"created_by_api_key_id":2598814,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{"key":"value"},"display_name":"Bar.txt","type":"file","size":2,"created_at":"2024-07-01T21:05:08Z","last_modified_by_id":1028730,"last_modified_by_api_key_id":2598814,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2024-07-01T21:05:08Z","provided_mtime":"2024-06-01T01:02:03Z","crc32":null,"md5":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd","priority_color":"orange"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 01 Jul 2024 21:05:08 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Request-Id:
+      - fa9a8a5c7feb2a2017cd7b2afb826e31
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/file_actions/metadata/Test%20Folder/Subfolder/Bar.txt?with_priority_color=true
+    method: GET
+  response:
+    body: '{"path":"Test Folder/Subfolder/Bar.txt","created_by_id":1028730,"created_by_api_key_id":2598814,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{"key":"value"},"display_name":"Bar.txt","type":"file","size":2,"created_at":"2024-07-01T21:05:08Z","last_modified_by_id":1028730,"last_modified_by_api_key_id":2598814,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2024-07-01T21:05:08Z","provided_mtime":"2024-06-01T01:02:03Z","crc32":null,"md5":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd","priority_color":"orange"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 01 Jul 2024 21:05:08 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Request-Id:
+      - 7cd29947730bda4d90c1d3cafcb73b0b
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"custom_metadata":{"custom":"metadata"},"priority_color":"red","provided_mtime":"2020-06-01T01:02:03Z"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/files/Test%20Folder/Subfolder/Bar.txt
+    method: PATCH
+  response:
+    body: '{"path":"Test Folder/Subfolder/Bar.txt","created_by_id":1028730,"created_by_api_key_id":2598814,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{"custom":"metadata"},"display_name":"Bar.txt","type":"file","size":2,"created_at":"2024-07-01T21:05:08Z","last_modified_by_id":1028730,"last_modified_by_api_key_id":2598814,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2024-07-01T21:05:08Z","provided_mtime":"2020-06-01T01:02:03Z","crc32":null,"md5":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd","priority_color":"red"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 01 Jul 2024 21:05:08 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - a915b7bb17fab6a1ba3555b41f848563
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/file_actions/metadata/Test%20Folder/Subfolder/Bar.txt?with_priority_color=true
+    method: GET
+  response:
+    body: '{"path":"Test Folder/Subfolder/Bar.txt","created_by_id":1028730,"created_by_api_key_id":2598814,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{"custom":"metadata"},"display_name":"Bar.txt","type":"file","size":2,"created_at":"2024-07-01T21:05:08Z","last_modified_by_id":1028730,"last_modified_by_api_key_id":2598814,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2024-07-01T21:05:08Z","provided_mtime":"2020-06-01T01:02:03Z","crc32":null,"md5":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd","priority_color":"red"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 01 Jul 2024 21:05:09 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Request-Id:
+      - 7d4a2b856628b09e5aaca6a95b1f2da7
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/file_actions/metadata/Test%20Folder/Subfolder/Bar.txt?with_priority_color=true
+    method: GET
+  response:
+    body: '{"path":"Test Folder/Subfolder/Bar.txt","created_by_id":1028730,"created_by_api_key_id":2598814,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{"custom":"metadata"},"display_name":"Bar.txt","type":"file","size":2,"created_at":"2024-07-01T21:05:08Z","last_modified_by_id":1028730,"last_modified_by_api_key_id":2598814,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2024-07-01T21:05:08Z","provided_mtime":"2020-06-01T01:02:03Z","crc32":null,"md5":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd","priority_color":"red"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 01 Jul 2024 21:05:09 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Request-Id:
+      - 6795a20803a2ebb66e275103f9ca5fcd
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"destination":"Bar Moved.txt"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/file_actions/move/Test%20Folder/Subfolder/Bar.txt
+    method: POST
+  response:
+    body: '{"status":"completed"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "22"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 01 Jul 2024 21:05:09 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - ef71918e4171ba893cf8b98e0ad44544
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: '{"custom_metadata":{"custom":"metadata"},"priority_color":"red","provided_mtime":"2020-06-01T01:02:03Z"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/files/Bar%20Moved.txt
+    method: PATCH
+  response:
+    body: '{"path":"Bar Moved.txt","created_by_id":1028730,"created_by_api_key_id":2598814,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{"custom":"metadata"},"display_name":"Bar
+      Moved.txt","type":"file","size":2,"created_at":"2024-07-01T21:05:08Z","last_modified_by_id":1028730,"last_modified_by_api_key_id":2598814,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2024-07-01T21:05:08Z","provided_mtime":"2020-06-01T01:02:03Z","crc32":null,"md5":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd","priority_color":"red"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 01 Jul 2024 21:05:09 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - e52aa66c2d8695cf160fbad73e284328
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/file_actions/metadata/Bar%20Moved.txt?with_priority_color=true
+    method: GET
+  response:
+    body: '{"path":"Bar Moved.txt","created_by_id":1028730,"created_by_api_key_id":2598814,"created_by_as2_incoming_message_id":null,"created_by_automation_id":null,"created_by_bundle_registration_id":null,"created_by_inbox_id":null,"created_by_remote_server_id":null,"created_by_remote_server_sync_id":null,"custom_metadata":{"custom":"metadata"},"display_name":"Bar
+      Moved.txt","type":"file","size":2,"created_at":"2024-07-01T21:05:08Z","last_modified_by_id":1028730,"last_modified_by_api_key_id":2598814,"last_modified_by_automation_id":null,"last_modified_by_bundle_registration_id":null,"last_modified_by_remote_server_id":null,"last_modified_by_remote_server_sync_id":null,"mtime":"2024-07-01T21:05:08Z","provided_mtime":"2020-06-01T01:02:03Z","crc32":null,"md5":null,"mime_type":"text/plain","region":"us-east-1","permissions":"lrwd","priority_color":"red"}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 01 Jul 2024 21:05:10 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Files-Cache-For-Seconds:
+      - "900"
+      X-Files-Safe-To-Cache:
+      - "true"
+      X-Request-Id:
+      - 1896296022a3e124b8003657b17d1581
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/files/Bar%20Moved.txt
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Date:
+      - Mon, 01 Jul 2024 21:05:10 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - 3bbedfab9828b2cede6c14bdfa9bff85
+    status: 204 No Content
+    code: 204
+    duration: ""
