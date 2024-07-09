@@ -227,6 +227,7 @@ func (p *filesProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewClickwrapResource,
 		NewFileResource,
 		NewFileCommentResource,
+		NewFolderResource,
 		NewFormFieldSetResource,
 		NewGpgKeyResource,
 		NewGroupResource,
@@ -247,6 +248,5 @@ func (p *filesProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewSnapshotResource,
 		NewUserResource,
 		NewUserRequestResource,
-		NewFolderResource,
 	}
 }
