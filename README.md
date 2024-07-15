@@ -15,7 +15,7 @@ terraform {
   required_providers {
     files = {
       source = "files/files"
-      version = "0.1.3"
+      version = "0.1.4"
     }
   }
 }

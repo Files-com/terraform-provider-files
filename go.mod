@@ -101,7 +101,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06 // indirect
-	github.com/samber/lo v1.45.0 // indirect
+	github.com/samber/lo v1.46.0 // indirect
 	github.com/stretchr/testify v1.9.0
 	github.com/tunabay/go-infounit v1.1.3 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
