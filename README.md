@@ -14,8 +14,8 @@ Require the provider in your Terraform configuration:
 terraform {
   required_providers {
     files = {
-      source = "files/files"
-      version = "0.1.4"
+      source = "Files-com/files"
+      version = "0.1.5"
     }
   }
 }

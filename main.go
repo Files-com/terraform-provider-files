@@ -23,7 +23,7 @@ func main() {
 	flag.Parse()
 
 	opts := providerserver.ServeOpts{
-		Address: "registry.terraform.io/files/files",
+		Address: "registry.terraform.io/Files-com/files",
 		Debug:   debug,
 	}
 
