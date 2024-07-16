@@ -18,6 +18,10 @@ description: |-
   ** matches subfolders recursively. For example, path/to/** matches path/to/folder1, path/to/folder1/subfolder, path/to/folder2, path/to/folder2/subfolder, etc.
   ? matches any one character.
   Use square brackets [] to match any character from a set. This works like a regular expression, including negation using ^.
+  Curly brackets {} can be used to denote parts of a pattern which will accept a number of alternatives, separated by commas ,.
+  These alternatives can either be literal text or include special characters including nested curly brackets.
+  For example {Mon,Tue,Wed,Thu,Fri} would match abbreviated weekdays, and 202{3-{0[7-9],1?},4-0[1-6]}-* would match dates from 2023-07-01 through 2024-06-30.
+  To match any of the special characters literally, precede it with a backslash and enclose that pair with square brackets. For example to match a literal ?, use [\?].
   Globs are not supported on remote paths of any kind.
   By default, Copy and Move automations that use globs will implicitly replicate matched folder structures at the destination. If you want to flatten the folder structure, set flatten_destination_structure to true.
   Automation Triggers
@@ -145,6 +149,18 @@ Although Automations may have a `path` specified, it can be a glob (which includ
 
 
 Use square brackets `[]` to match any character from a set. This works like a regular expression, including negation using `^`.
+
+
+
+Curly brackets `{}` can be used to denote parts of a pattern which will accept a number of alternatives, separated by commas `,`.
+
+These alternatives can either be literal text or include special characters including nested curly brackets.
+
+For example `{Mon,Tue,Wed,Thu,Fri}` would match abbreviated weekdays, and `202{3-{0[7-9],1?},4-0[1-6]}-*` would match dates from `2023-07-01` through `2024-06-30`.
+
+
+
+To match any of the special characters literally, precede it with a backslash and enclose that pair with square brackets. For example to match a literal `?`, use `[\?]`.
 
 
 
