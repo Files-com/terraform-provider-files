@@ -16,3 +16,4 @@ resource "files_notification" "example_notification" {
   group_id                    = 1
   username                    = "User"
 }
+

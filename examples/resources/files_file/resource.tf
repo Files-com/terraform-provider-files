@@ -8,3 +8,4 @@ resource "files_file" "example_file" {
   provided_mtime  = "2000-01-01T01:00:00Z"
   priority_color  = "red"
 }
+

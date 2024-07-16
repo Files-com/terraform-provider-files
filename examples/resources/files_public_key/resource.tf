@@ -3,3 +3,4 @@ resource "files_public_key" "example_public_key" {
   title      = "My Main Key"
   public_key = "public_key"
 }
+

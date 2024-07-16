@@ -4,3 +4,4 @@ resource "files_message" "example_message" {
   subject    = "Files.com Account Upgrade"
   body       = "We should upgrade our Files.com account!"
 }
+

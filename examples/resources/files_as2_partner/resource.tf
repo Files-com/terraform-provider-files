@@ -8,3 +8,4 @@ resource "files_as2_partner" "example_as2_partner" {
   uri                  = "example"
   public_certificate   = "public_certificate"
 }
+

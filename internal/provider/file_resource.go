@@ -100,14 +100,14 @@ func (r *fileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 		Description: "",
 		Attributes: map[string]schema.Attribute{
 			"source": schema.StringAttribute{
-				Description: "Path to a file that will be read and uploaded",
+				Description: "Path to a file that will be read and uploaded.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"md5": schema.StringAttribute{
-				Description: "File MD5 checksum",
+				Description: "File MD5 checksum.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{

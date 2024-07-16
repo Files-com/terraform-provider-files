@@ -9,3 +9,4 @@ resource "files_group" "example_group" {
   allowed_ips        = "10.0.0.0/8\n127.0.0.1"
   name               = "name"
 }
+

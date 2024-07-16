@@ -5,3 +5,4 @@ resource "files_gpg_key" "example_gpg_key" {
   private_key_password = "[your GPG private key password]"
   name                 = "key name"
 }
+

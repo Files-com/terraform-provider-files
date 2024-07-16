@@ -3,3 +3,4 @@ resource "files_group_user" "example_group_user" {
   user_id  = 1
   admin    = true
 }
+

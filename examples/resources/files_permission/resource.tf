@@ -6,3 +6,4 @@ resource "files_permission" "example_permission" {
   user_id    = 1
   username   = "Sser"
 }
+

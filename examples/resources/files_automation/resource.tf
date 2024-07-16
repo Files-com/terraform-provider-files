@@ -38,3 +38,4 @@ resource "files_automation" "example_automation" {
   recurring_day                        = 25
   automation                           = "create_folder"
 }
+

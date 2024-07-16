@@ -4,3 +4,4 @@ resource "files_user_request" "example_user_request" {
   details = "details"
   company = "Acme Inc."
 }
+

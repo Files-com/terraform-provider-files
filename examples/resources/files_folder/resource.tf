@@ -7,3 +7,4 @@ resource "files_folder" "example_folder" {
   }
   priority_color  = "red"
 }
+

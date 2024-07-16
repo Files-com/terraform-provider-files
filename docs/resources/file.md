@@ -31,12 +31,12 @@ resource "files_file" "example_file" {
 ### Required
 
 - `path` (String) File/Folder path This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
-- `source` (String) Path to a file that will be read and uploaded
+- `source` (String) Path to a file that will be read and uploaded.
 
 ### Optional
 
 - `custom_metadata` (Dynamic) Custom metadata map of keys and values. Limited to 32 keys, 256 characters per key and 1024 characters per value.
-- `md5` (String) File MD5 checksum
+- `md5` (String) File MD5 checksum.
 - `priority_color` (String) Bookmark/priority color of file/folder
 - `provided_mtime` (String) File last modified date/time, according to the client who set it.  Files.com allows desktop, FTP, SFTP, and WebDAV clients to set modified at times.  This allows Desktop<->Cloud syncing to preserve modified at times.
 - `size` (Number) File/Folder size

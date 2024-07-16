@@ -5,3 +5,4 @@ resource "files_clickwrap" "example_clickwrap" {
   use_with_inboxes = "example"
   use_with_users   = "example"
 }
+

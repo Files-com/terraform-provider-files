@@ -47,3 +47,4 @@ resource "files_remote_server" "example_remote_server" {
   linode_bucket                             = "my-bucket"
   linode_region                             = "us-east-1"
 }
+

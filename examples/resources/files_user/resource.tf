@@ -38,3 +38,4 @@ resource "files_user" "example_user" {
   user_root                    = "example"
   username                     = "user"
 }
+

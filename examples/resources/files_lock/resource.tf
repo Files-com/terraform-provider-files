@@ -5,3 +5,4 @@ resource "files_lock" "example_lock" {
   recursive                = true
   timeout                  = 1
 }
+

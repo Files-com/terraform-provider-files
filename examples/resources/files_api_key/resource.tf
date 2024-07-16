@@ -6,3 +6,4 @@ resource "files_api_key" "example_api_key" {
   name           = "My Main API Key"
   path           = "shared/docs"
 }
+
