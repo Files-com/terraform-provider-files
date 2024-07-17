@@ -112,7 +112,7 @@ resource "files_user" "example_user" {
 
 - `active_2fa` (Boolean) Is 2fa active for the user?
 - `admin_group_ids` (List of Number) List of group IDs of which this user is an administrator
-- `api_keys_count` (Number) Number of api keys associated with this user
+- `api_keys_count` (Number) Number of API keys associated with this user
 - `avatar_url` (String) URL holding the user's avatar
 - `created_at` (String) When this user was created
 - `days_remaining_until_password_expire` (Number) Number of days remaining until password expires

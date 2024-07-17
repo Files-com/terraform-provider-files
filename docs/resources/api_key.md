@@ -40,7 +40,7 @@ resource "files_api_key" "example_api_key" {
 
 - `description` (String) User-supplied description of API key.
 - `expires_at` (String) API Key expiration date
-- `path` (String) Folder path restriction for this api key.
+- `path` (String) Folder path restriction for this API key.
 - `permission_set` (String) Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.
 - `user_id` (Number) User ID for the owner of this API Key.  May be blank for Site-wide API Keys.
 

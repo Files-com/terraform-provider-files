@@ -75,7 +75,7 @@ func (r *as2StationResource) Metadata(_ context.Context, req resource.MetadataRe
 
 func (r *as2StationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "As2 Station defines a remote AS2 server that can send data into Files.com and received data from Files.com",
+		Description: "AS2 Station defines a remote AS2 server that can send data into Files.com and received data from Files.com",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Id of the AS2 Station.",

@@ -30,7 +30,7 @@ data "files_user" "example_user" {
 - `active_2fa` (Boolean) Is 2fa active for the user?
 - `admin_group_ids` (List of Number) List of group IDs of which this user is an administrator
 - `allowed_ips` (String) A list of allowed IPs if applicable.  Newline delimited
-- `api_keys_count` (Number) Number of api keys associated with this user
+- `api_keys_count` (Number) Number of API keys associated with this user
 - `attachments_permission` (Boolean) If `true`, the user can user create Bundles (aka Share Links). Use the bundle permission instead.
 - `authenticate_until` (String) Scheduled Date/Time at which user will be deactivated
 - `authentication_method` (String) How is this user authenticated?

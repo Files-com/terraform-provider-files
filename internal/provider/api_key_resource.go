@@ -151,7 +151,7 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				},
 			},
 			"path": schema.StringAttribute{
-				Description: "Folder path restriction for this api key.",
+				Description: "Folder path restriction for this API key.",
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),

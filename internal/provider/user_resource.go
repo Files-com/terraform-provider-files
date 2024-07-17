@@ -171,7 +171,7 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"api_keys_count": schema.Int64Attribute{
-				Description: "Number of api keys associated with this user",
+				Description: "Number of API keys associated with this user",
 				Computed:    true,
 			},
 			"authenticate_until": schema.StringAttribute{
