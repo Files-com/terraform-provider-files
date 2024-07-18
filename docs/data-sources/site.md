@@ -59,6 +59,7 @@ data "files_site" "example_site" {
 - `bundle_recipient_blacklist_domains` (List of String) List of email domains to disallow when entering a Bundle/Inbox recipients
 - `bundle_recipient_blacklist_free_email_domains` (Boolean) Disallow free email domains for Bundle/Inbox recipients?
 - `bundle_registration_notifications` (String) Do Bundle owners receive registration notification?
+- `bundle_require_note` (Boolean) Do Bundles require internal notes?
 - `bundle_require_registration` (Boolean) Do Bundles require registration?
 - `bundle_require_share_recipient` (Boolean) Do Bundles require recipients for sharing?
 - `bundle_upload_receipt_notifications` (String) Do Bundle uploaders receive upload confirmation notifications?
