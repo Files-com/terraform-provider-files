@@ -29,6 +29,7 @@ type bundleDataSource struct {
 }
 
 type bundleDataSourceModel struct {
+	Id                              types.Int64   `tfsdk:"id"`
 	Code                            types.String  `tfsdk:"code"`
 	ColorLeft                       types.String  `tfsdk:"color_left"`
 	ColorLink                       types.String  `tfsdk:"color_link"`
@@ -50,7 +51,6 @@ type bundleDataSourceModel struct {
 	SkipEmail                       types.Bool    `tfsdk:"skip_email"`
 	StartAccessOnDate               types.String  `tfsdk:"start_access_on_date"`
 	SkipCompany                     types.Bool    `tfsdk:"skip_company"`
-	Id                              types.Int64   `tfsdk:"id"`
 	CreatedAt                       types.String  `tfsdk:"created_at"`
 	DontSeparateSubmissionsByFolder types.Bool    `tfsdk:"dont_separate_submissions_by_folder"`
 	MaxUses                         types.Int64   `tfsdk:"max_uses"`
@@ -97,6 +97,10 @@ func (r *bundleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 	resp.Schema = schema.Schema{
 		Description: "Bundles are the API/SDK term for the feature called Share Links in the web interface.\n\nThe API provides the full set of actions related to Share Links, including sending them via E-Mail.\n\n\n\nPlease note that we very closely monitor the E-Mailing feature and any abuse will result in disabling of your site.",
 		Attributes: map[string]schema.Attribute{
+			"id": schema.Int64Attribute{
+				Description: "Bundle ID",
+				Required:    true,
+			},
 			"code": schema.StringAttribute{
 				Description: "Bundle code.  This code forms the end part of the Public URL.",
 				Computed:    true,
@@ -179,10 +183,6 @@ func (r *bundleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			"skip_company": schema.BoolAttribute{
 				Description: "BundleRegistrations can be saved without providing company?",
 				Computed:    true,
-			},
-			"id": schema.Int64Attribute{
-				Description: "Bundle ID",
-				Required:    true,
 			},
 			"created_at": schema.StringAttribute{
 				Description: "Bundle created at date/time",

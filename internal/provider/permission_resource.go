@@ -36,14 +36,14 @@ type permissionResource struct {
 }
 
 type permissionResourceModel struct {
-	Id         types.Int64  `tfsdk:"id"`
 	Path       types.String `tfsdk:"path"`
 	UserId     types.Int64  `tfsdk:"user_id"`
 	Username   types.String `tfsdk:"username"`
 	GroupId    types.Int64  `tfsdk:"group_id"`
-	GroupName  types.String `tfsdk:"group_name"`
 	Permission types.String `tfsdk:"permission"`
 	Recursive  types.Bool   `tfsdk:"recursive"`
+	Id         types.Int64  `tfsdk:"id"`
+	GroupName  types.String `tfsdk:"group_name"`
 }
 
 func (r *permissionResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -73,13 +73,6 @@ func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 	resp.Schema = schema.Schema{
 		Description: "Permission objects represent the grant of permissions to a user or group.\n\n\n\nThey are specific to a path and can be either recursive or nonrecursive into the subfolders of that path.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Permission ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"path": schema.StringAttribute{
 				Description: "Folder path This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
 				Computed:    true,
@@ -116,10 +109,6 @@ func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					int64planmodifier.RequiresReplace(),
 				},
 			},
-			"group_name": schema.StringAttribute{
-				Description: "Group name if applicable",
-				Computed:    true,
-			},
 			"permission": schema.StringAttribute{
 				Description: "Permission type",
 				Computed:    true,
@@ -140,6 +129,17 @@ func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					boolplanmodifier.UseStateForUnknown(),
 					boolplanmodifier.RequiresReplace(),
 				},
+			},
+			"id": schema.Int64Attribute{
+				Description: "Permission ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"group_name": schema.StringAttribute{
+				Description: "Group name if applicable",
+				Computed:    true,
 			},
 		},
 	}

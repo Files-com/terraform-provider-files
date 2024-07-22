@@ -38,28 +38,57 @@ type userResource struct {
 }
 
 type userResourceModel struct {
-	Id                               types.Int64  `tfsdk:"id"`
 	Username                         types.String `tfsdk:"username"`
-	AdminGroupIds                    types.List   `tfsdk:"admin_group_ids"`
 	AllowedIps                       types.String `tfsdk:"allowed_ips"`
 	AttachmentsPermission            types.Bool   `tfsdk:"attachments_permission"`
-	ApiKeysCount                     types.Int64  `tfsdk:"api_keys_count"`
 	AuthenticateUntil                types.String `tfsdk:"authenticate_until"`
 	AuthenticationMethod             types.String `tfsdk:"authentication_method"`
-	AvatarUrl                        types.String `tfsdk:"avatar_url"`
 	BillingPermission                types.Bool   `tfsdk:"billing_permission"`
 	BypassSiteAllowedIps             types.Bool   `tfsdk:"bypass_site_allowed_ips"`
 	BypassInactiveDisable            types.Bool   `tfsdk:"bypass_inactive_disable"`
-	CreatedAt                        types.String `tfsdk:"created_at"`
 	DavPermission                    types.Bool   `tfsdk:"dav_permission"`
 	Disabled                         types.Bool   `tfsdk:"disabled"`
-	DisabledExpiredOrInactive        types.Bool   `tfsdk:"disabled_expired_or_inactive"`
 	Email                            types.String `tfsdk:"email"`
-	FirstLoginAt                     types.String `tfsdk:"first_login_at"`
 	FtpPermission                    types.Bool   `tfsdk:"ftp_permission"`
 	GroupIds                         types.String `tfsdk:"group_ids"`
 	HeaderText                       types.String `tfsdk:"header_text"`
 	Language                         types.String `tfsdk:"language"`
+	Name                             types.String `tfsdk:"name"`
+	Company                          types.String `tfsdk:"company"`
+	Notes                            types.String `tfsdk:"notes"`
+	NotificationDailySendTime        types.Int64  `tfsdk:"notification_daily_send_time"`
+	OfficeIntegrationEnabled         types.Bool   `tfsdk:"office_integration_enabled"`
+	PasswordValidityDays             types.Int64  `tfsdk:"password_validity_days"`
+	ReceiveAdminAlerts               types.Bool   `tfsdk:"receive_admin_alerts"`
+	Require2fa                       types.String `tfsdk:"require_2fa"`
+	RequireLoginBy                   types.String `tfsdk:"require_login_by"`
+	RequirePasswordChange            types.Bool   `tfsdk:"require_password_change"`
+	RestapiPermission                types.Bool   `tfsdk:"restapi_permission"`
+	SelfManaged                      types.Bool   `tfsdk:"self_managed"`
+	SftpPermission                   types.Bool   `tfsdk:"sftp_permission"`
+	SiteAdmin                        types.Bool   `tfsdk:"site_admin"`
+	SkipWelcomeScreen                types.Bool   `tfsdk:"skip_welcome_screen"`
+	SslRequired                      types.String `tfsdk:"ssl_required"`
+	SsoStrategyId                    types.Int64  `tfsdk:"sso_strategy_id"`
+	SubscribeToNewsletter            types.Bool   `tfsdk:"subscribe_to_newsletter"`
+	TimeZone                         types.String `tfsdk:"time_zone"`
+	UserRoot                         types.String `tfsdk:"user_root"`
+	AvatarDelete                     types.Bool   `tfsdk:"avatar_delete"`
+	ChangePassword                   types.String `tfsdk:"change_password"`
+	ChangePasswordConfirmation       types.String `tfsdk:"change_password_confirmation"`
+	GrantPermission                  types.String `tfsdk:"grant_permission"`
+	GroupId                          types.Int64  `tfsdk:"group_id"`
+	ImportedPasswordHash             types.String `tfsdk:"imported_password_hash"`
+	Password                         types.String `tfsdk:"password"`
+	PasswordConfirmation             types.String `tfsdk:"password_confirmation"`
+	AnnouncementsRead                types.Bool   `tfsdk:"announcements_read"`
+	Id                               types.Int64  `tfsdk:"id"`
+	AdminGroupIds                    types.List   `tfsdk:"admin_group_ids"`
+	ApiKeysCount                     types.Int64  `tfsdk:"api_keys_count"`
+	AvatarUrl                        types.String `tfsdk:"avatar_url"`
+	CreatedAt                        types.String `tfsdk:"created_at"`
+	DisabledExpiredOrInactive        types.Bool   `tfsdk:"disabled_expired_or_inactive"`
+	FirstLoginAt                     types.String `tfsdk:"first_login_at"`
 	LastLoginAt                      types.String `tfsdk:"last_login_at"`
 	LastWebLoginAt                   types.String `tfsdk:"last_web_login_at"`
 	LastFtpLoginAt                   types.String `tfsdk:"last_ftp_login_at"`
@@ -71,44 +100,15 @@ type userResourceModel struct {
 	LastActiveAt                     types.String `tfsdk:"last_active_at"`
 	LastProtocolCipher               types.String `tfsdk:"last_protocol_cipher"`
 	LockoutExpires                   types.String `tfsdk:"lockout_expires"`
-	Name                             types.String `tfsdk:"name"`
-	Company                          types.String `tfsdk:"company"`
-	Notes                            types.String `tfsdk:"notes"`
-	NotificationDailySendTime        types.Int64  `tfsdk:"notification_daily_send_time"`
-	OfficeIntegrationEnabled         types.Bool   `tfsdk:"office_integration_enabled"`
 	PasswordSetAt                    types.String `tfsdk:"password_set_at"`
-	PasswordValidityDays             types.Int64  `tfsdk:"password_validity_days"`
 	PublicKeysCount                  types.Int64  `tfsdk:"public_keys_count"`
-	ReceiveAdminAlerts               types.Bool   `tfsdk:"receive_admin_alerts"`
-	Require2fa                       types.String `tfsdk:"require_2fa"`
-	RequireLoginBy                   types.String `tfsdk:"require_login_by"`
 	Active2fa                        types.Bool   `tfsdk:"active_2fa"`
-	RequirePasswordChange            types.Bool   `tfsdk:"require_password_change"`
 	PasswordExpired                  types.Bool   `tfsdk:"password_expired"`
-	RestapiPermission                types.Bool   `tfsdk:"restapi_permission"`
-	SelfManaged                      types.Bool   `tfsdk:"self_managed"`
-	SftpPermission                   types.Bool   `tfsdk:"sftp_permission"`
-	SiteAdmin                        types.Bool   `tfsdk:"site_admin"`
-	SkipWelcomeScreen                types.Bool   `tfsdk:"skip_welcome_screen"`
-	SslRequired                      types.String `tfsdk:"ssl_required"`
-	SsoStrategyId                    types.Int64  `tfsdk:"sso_strategy_id"`
-	SubscribeToNewsletter            types.Bool   `tfsdk:"subscribe_to_newsletter"`
 	ExternallyManaged                types.Bool   `tfsdk:"externally_managed"`
-	TimeZone                         types.String `tfsdk:"time_zone"`
 	TypeOf2fa                        types.String `tfsdk:"type_of_2fa"`
 	TypeOf2faForDisplay              types.String `tfsdk:"type_of_2fa_for_display"`
-	UserRoot                         types.String `tfsdk:"user_root"`
 	DaysRemainingUntilPasswordExpire types.Int64  `tfsdk:"days_remaining_until_password_expire"`
 	PasswordExpireAt                 types.String `tfsdk:"password_expire_at"`
-	AvatarDelete                     types.Bool   `tfsdk:"avatar_delete"`
-	ChangePassword                   types.String `tfsdk:"change_password"`
-	ChangePasswordConfirmation       types.String `tfsdk:"change_password_confirmation"`
-	GrantPermission                  types.String `tfsdk:"grant_permission"`
-	GroupId                          types.Int64  `tfsdk:"group_id"`
-	ImportedPasswordHash             types.String `tfsdk:"imported_password_hash"`
-	Password                         types.String `tfsdk:"password"`
-	PasswordConfirmation             types.String `tfsdk:"password_confirmation"`
-	AnnouncementsRead                types.Bool   `tfsdk:"announcements_read"`
 }
 
 func (r *userResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -138,21 +138,9 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 	resp.Schema = schema.Schema{
 		Description: "",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "User ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"username": schema.StringAttribute{
 				Description: "User's username",
 				Required:    true,
-			},
-			"admin_group_ids": schema.ListAttribute{
-				Description: "List of group IDs of which this user is an administrator",
-				Computed:    true,
-				ElementType: types.Int64Type,
 			},
 			"allowed_ips": schema.StringAttribute{
 				Description: "A list of allowed IPs if applicable.  Newline delimited",
@@ -169,10 +157,6 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"api_keys_count": schema.Int64Attribute{
-				Description: "Number of API keys associated with this user",
-				Computed:    true,
 			},
 			"authenticate_until": schema.StringAttribute{
 				Description: "Scheduled Date/Time at which user will be deactivated",
@@ -192,10 +176,6 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"avatar_url": schema.StringAttribute{
-				Description: "URL holding the user's avatar",
-				Computed:    true,
 			},
 			"billing_permission": schema.BoolAttribute{
 				Description: "Allow this user to perform operations on the account, payments, and invoices?",
@@ -221,10 +201,6 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"created_at": schema.StringAttribute{
-				Description: "When this user was created",
-				Computed:    true,
-			},
 			"dav_permission": schema.BoolAttribute{
 				Description: "Can the user connect with WebDAV?",
 				Computed:    true,
@@ -241,10 +217,6 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"disabled_expired_or_inactive": schema.BoolAttribute{
-				Description: "Computed property that returns true if user disabled or expired or inactive.",
-				Computed:    true,
-			},
 			"email": schema.StringAttribute{
 				Description: "User email address",
 				Computed:    true,
@@ -252,10 +224,6 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"first_login_at": schema.StringAttribute{
-				Description: "User's first login time",
-				Computed:    true,
 			},
 			"ftp_permission": schema.BoolAttribute{
 				Description: "Can the user access with FTP/FTPS?",
@@ -288,50 +256,6 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"last_login_at": schema.StringAttribute{
-				Description: "User's most recent login time via any protocol",
-				Computed:    true,
-			},
-			"last_web_login_at": schema.StringAttribute{
-				Description: "User's most recent login time via web",
-				Computed:    true,
-			},
-			"last_ftp_login_at": schema.StringAttribute{
-				Description: "User's most recent login time via FTP",
-				Computed:    true,
-			},
-			"last_sftp_login_at": schema.StringAttribute{
-				Description: "User's most recent login time via SFTP",
-				Computed:    true,
-			},
-			"last_dav_login_at": schema.StringAttribute{
-				Description: "User's most recent login time via WebDAV",
-				Computed:    true,
-			},
-			"last_desktop_login_at": schema.StringAttribute{
-				Description: "User's most recent login time via Desktop app",
-				Computed:    true,
-			},
-			"last_restapi_login_at": schema.StringAttribute{
-				Description: "User's most recent login time via Rest API",
-				Computed:    true,
-			},
-			"last_api_use_at": schema.StringAttribute{
-				Description: "User's most recent API use time",
-				Computed:    true,
-			},
-			"last_active_at": schema.StringAttribute{
-				Description: "User's most recent activity time, which is the latest of most recent login, most recent API use, enablement, or creation",
-				Computed:    true,
-			},
-			"last_protocol_cipher": schema.StringAttribute{
-				Description: "The most recent protocol and cipher used",
-				Computed:    true,
-			},
-			"lockout_expires": schema.StringAttribute{
-				Description: "Time in the future that the user will no longer be locked out if applicable",
-				Computed:    true,
 			},
 			"name": schema.StringAttribute{
 				Description: "User's full name",
@@ -373,10 +297,6 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"password_set_at": schema.StringAttribute{
-				Description: "Last time the user's password was set",
-				Computed:    true,
-			},
 			"password_validity_days": schema.Int64Attribute{
 				Description: "Number of days to allow user to use the same password",
 				Computed:    true,
@@ -384,10 +304,6 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
-			},
-			"public_keys_count": schema.Int64Attribute{
-				Description: "Number of public keys associated with this user",
-				Computed:    true,
 			},
 			"receive_admin_alerts": schema.BoolAttribute{
 				Description: "Should the user receive admin alerts such a certificate expiration notifications and overages?",
@@ -416,10 +332,6 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"active_2fa": schema.BoolAttribute{
-				Description: "Is 2fa active for the user?",
-				Computed:    true,
-			},
 			"require_password_change": schema.BoolAttribute{
 				Description: "Is a password change required upon next user login?",
 				Computed:    true,
@@ -427,10 +339,6 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"password_expired": schema.BoolAttribute{
-				Description: "Is user's password expired?",
-				Computed:    true,
 			},
 			"restapi_permission": schema.BoolAttribute{
 				Description: "Can this user access the Web app, Desktop app, SDKs, or REST API?  (All of these tools use the API internally, so this is one unified permission set.)",
@@ -499,10 +407,6 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"externally_managed": schema.BoolAttribute{
-				Description: "Is this user managed by a SsoStrategy?",
-				Computed:    true,
-			},
 			"time_zone": schema.StringAttribute{
 				Description: "User time zone",
 				Computed:    true,
@@ -511,14 +415,6 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"type_of_2fa": schema.StringAttribute{
-				Description: "Type(s) of 2FA methods in use, for programmatic use.  Will be either `sms`, `totp`, `u2f`, `yubi`, or multiple values sorted alphabetically and joined by an underscore.  Does not specify whether user has more than one of a given method.",
-				Computed:    true,
-			},
-			"type_of_2fa_for_display": schema.StringAttribute{
-				Description: "Type(s) of 2FA methods in use, formatted for displaying in the UI.  Unlike `type_of_2fa`, this value will make clear when a user has more than 1 of the same type of method.",
-				Computed:    true,
-			},
 			"user_root": schema.StringAttribute{
 				Description: "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set.)  Note that this is not used for API, Desktop, or Web interface.",
 				Computed:    true,
@@ -526,14 +422,6 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"days_remaining_until_password_expire": schema.Int64Attribute{
-				Description: "Number of days remaining until password expires",
-				Computed:    true,
-			},
-			"password_expire_at": schema.StringAttribute{
-				Description: "Password expiration datetime",
-				Computed:    true,
 			},
 			"avatar_delete": schema.BoolAttribute{
 				Description: "If true, the avatar will be deleted.",
@@ -570,6 +458,118 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"announcements_read": schema.BoolAttribute{
 				Description: "Signifies that the user has read all the announcements in the UI.",
 				Optional:    true,
+			},
+			"id": schema.Int64Attribute{
+				Description: "User ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"admin_group_ids": schema.ListAttribute{
+				Description: "List of group IDs of which this user is an administrator",
+				Computed:    true,
+				ElementType: types.Int64Type,
+			},
+			"api_keys_count": schema.Int64Attribute{
+				Description: "Number of API keys associated with this user",
+				Computed:    true,
+			},
+			"avatar_url": schema.StringAttribute{
+				Description: "URL holding the user's avatar",
+				Computed:    true,
+			},
+			"created_at": schema.StringAttribute{
+				Description: "When this user was created",
+				Computed:    true,
+			},
+			"disabled_expired_or_inactive": schema.BoolAttribute{
+				Description: "Computed property that returns true if user disabled or expired or inactive.",
+				Computed:    true,
+			},
+			"first_login_at": schema.StringAttribute{
+				Description: "User's first login time",
+				Computed:    true,
+			},
+			"last_login_at": schema.StringAttribute{
+				Description: "User's most recent login time via any protocol",
+				Computed:    true,
+			},
+			"last_web_login_at": schema.StringAttribute{
+				Description: "User's most recent login time via web",
+				Computed:    true,
+			},
+			"last_ftp_login_at": schema.StringAttribute{
+				Description: "User's most recent login time via FTP",
+				Computed:    true,
+			},
+			"last_sftp_login_at": schema.StringAttribute{
+				Description: "User's most recent login time via SFTP",
+				Computed:    true,
+			},
+			"last_dav_login_at": schema.StringAttribute{
+				Description: "User's most recent login time via WebDAV",
+				Computed:    true,
+			},
+			"last_desktop_login_at": schema.StringAttribute{
+				Description: "User's most recent login time via Desktop app",
+				Computed:    true,
+			},
+			"last_restapi_login_at": schema.StringAttribute{
+				Description: "User's most recent login time via Rest API",
+				Computed:    true,
+			},
+			"last_api_use_at": schema.StringAttribute{
+				Description: "User's most recent API use time",
+				Computed:    true,
+			},
+			"last_active_at": schema.StringAttribute{
+				Description: "User's most recent activity time, which is the latest of most recent login, most recent API use, enablement, or creation",
+				Computed:    true,
+			},
+			"last_protocol_cipher": schema.StringAttribute{
+				Description: "The most recent protocol and cipher used",
+				Computed:    true,
+			},
+			"lockout_expires": schema.StringAttribute{
+				Description: "Time in the future that the user will no longer be locked out if applicable",
+				Computed:    true,
+			},
+			"password_set_at": schema.StringAttribute{
+				Description: "Last time the user's password was set",
+				Computed:    true,
+			},
+			"public_keys_count": schema.Int64Attribute{
+				Description: "Number of public keys associated with this user",
+				Computed:    true,
+			},
+			"active_2fa": schema.BoolAttribute{
+				Description: "Is 2fa active for the user?",
+				Computed:    true,
+			},
+			"password_expired": schema.BoolAttribute{
+				Description: "Is user's password expired?",
+				Computed:    true,
+			},
+			"externally_managed": schema.BoolAttribute{
+				Description: "Is this user managed by a SsoStrategy?",
+				Computed:    true,
+			},
+			"type_of_2fa": schema.StringAttribute{
+				Description: "Type(s) of 2FA methods in use, for programmatic use.  Will be either `sms`, `totp`, `u2f`, `yubi`, or multiple values sorted alphabetically and joined by an underscore.  Does not specify whether user has more than one of a given method.",
+				Computed:    true,
+			},
+			"type_of_2fa_for_display": schema.StringAttribute{
+				Description: "Type(s) of 2FA methods in use, formatted for displaying in the UI.  Unlike `type_of_2fa`, this value will make clear when a user has more than 1 of the same type of method.",
+				Computed:    true,
+			},
+			"days_remaining_until_password_expire": schema.Int64Attribute{
+				Description: "Number of days remaining until password expires",
+				Computed:    true,
+			},
+			"password_expire_at": schema.StringAttribute{
+				Description: "Password expiration datetime",
+				Computed:    true,
 			},
 		},
 	}

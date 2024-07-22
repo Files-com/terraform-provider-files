@@ -36,14 +36,14 @@ type formFieldSetResource struct {
 }
 
 type formFieldSetResourceModel struct {
-	Id          types.Int64   `tfsdk:"id"`
 	Title       types.String  `tfsdk:"title"`
-	FormLayout  types.List    `tfsdk:"form_layout"`
 	FormFields  types.Dynamic `tfsdk:"form_fields"`
 	SkipName    types.Bool    `tfsdk:"skip_name"`
 	SkipEmail   types.Bool    `tfsdk:"skip_email"`
 	SkipCompany types.Bool    `tfsdk:"skip_company"`
 	UserId      types.Int64   `tfsdk:"user_id"`
+	Id          types.Int64   `tfsdk:"id"`
+	FormLayout  types.List    `tfsdk:"form_layout"`
 }
 
 func (r *formFieldSetResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -73,13 +73,6 @@ func (r *formFieldSetResource) Schema(_ context.Context, _ resource.SchemaReques
 	resp.Schema = schema.Schema{
 		Description: "Form Field Sets define a custom forms to be used for bundle and inbox registrations.\n\n \n\n Each Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.\n\n \n\n Once created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Form field set id",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"title": schema.StringAttribute{
 				Description: "Title to be displayed",
 				Computed:    true,
@@ -87,11 +80,6 @@ func (r *formFieldSetResource) Schema(_ context.Context, _ resource.SchemaReques
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"form_layout": schema.ListAttribute{
-				Description: "Layout of the form",
-				Computed:    true,
-				ElementType: types.Int64Type,
 			},
 			"form_fields": schema.DynamicAttribute{
 				Description: "Associated form fields",
@@ -131,6 +119,18 @@ func (r *formFieldSetResource) Schema(_ context.Context, _ resource.SchemaReques
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.RequiresReplace(),
 				},
+			},
+			"id": schema.Int64Attribute{
+				Description: "Form field set id",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"form_layout": schema.ListAttribute{
+				Description: "Layout of the form",
+				Computed:    true,
+				ElementType: types.Int64Type,
 			},
 		},
 	}

@@ -37,10 +37,8 @@ type notificationResource struct {
 }
 
 type notificationResourceModel struct {
-	Id                       types.Int64  `tfsdk:"id"`
 	Path                     types.String `tfsdk:"path"`
 	GroupId                  types.Int64  `tfsdk:"group_id"`
-	GroupName                types.String `tfsdk:"group_name"`
 	TriggeringGroupIds       types.List   `tfsdk:"triggering_group_ids"`
 	TriggeringUserIds        types.List   `tfsdk:"triggering_user_ids"`
 	TriggerByShareRecipients types.Bool   `tfsdk:"trigger_by_share_recipients"`
@@ -54,10 +52,12 @@ type notificationResourceModel struct {
 	SendInterval             types.String `tfsdk:"send_interval"`
 	Message                  types.String `tfsdk:"message"`
 	TriggeringFilenames      types.List   `tfsdk:"triggering_filenames"`
-	Unsubscribed             types.Bool   `tfsdk:"unsubscribed"`
-	UnsubscribedReason       types.String `tfsdk:"unsubscribed_reason"`
 	UserId                   types.Int64  `tfsdk:"user_id"`
 	Username                 types.String `tfsdk:"username"`
+	Id                       types.Int64  `tfsdk:"id"`
+	GroupName                types.String `tfsdk:"group_name"`
+	Unsubscribed             types.Bool   `tfsdk:"unsubscribed"`
+	UnsubscribedReason       types.String `tfsdk:"unsubscribed_reason"`
 	SuppressedEmail          types.Bool   `tfsdk:"suppressed_email"`
 }
 
@@ -88,13 +88,6 @@ func (r *notificationResource) Schema(_ context.Context, _ resource.SchemaReques
 	resp.Schema = schema.Schema{
 		Description: "Notifications are our feature that send E-Mails when new files are uploaded into a folder.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Notification ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"path": schema.StringAttribute{
 				Description: "Folder path to notify on This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
 				Computed:    true,
@@ -112,10 +105,6 @@ func (r *notificationResource) Schema(_ context.Context, _ resource.SchemaReques
 					int64planmodifier.UseStateForUnknown(),
 					int64planmodifier.RequiresReplace(),
 				},
-			},
-			"group_name": schema.StringAttribute{
-				Description: "Group name, if a Group ID is set",
-				Computed:    true,
 			},
 			"triggering_group_ids": schema.ListAttribute{
 				Description: "If set, will only notify on actions made by a member of one of the specified groups",
@@ -227,17 +216,6 @@ func (r *notificationResource) Schema(_ context.Context, _ resource.SchemaReques
 					listplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"unsubscribed": schema.BoolAttribute{
-				Description: "Is the user unsubscribed from this notification?",
-				Computed:    true,
-			},
-			"unsubscribed_reason": schema.StringAttribute{
-				Description: "The reason that the user unsubscribed",
-				Computed:    true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("none", "unsubscribe_link_clicked", "mail_bounced", "mail_marked_as_spam"),
-				},
-			},
 			"user_id": schema.Int64Attribute{
 				Description: "Notification user ID",
 				Computed:    true,
@@ -254,6 +232,28 @@ func (r *notificationResource) Schema(_ context.Context, _ resource.SchemaReques
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 					stringplanmodifier.RequiresReplace(),
+				},
+			},
+			"id": schema.Int64Attribute{
+				Description: "Notification ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"group_name": schema.StringAttribute{
+				Description: "Group name, if a Group ID is set",
+				Computed:    true,
+			},
+			"unsubscribed": schema.BoolAttribute{
+				Description: "Is the user unsubscribed from this notification?",
+				Computed:    true,
+			},
+			"unsubscribed_reason": schema.StringAttribute{
+				Description: "The reason that the user unsubscribed",
+				Computed:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("none", "unsubscribe_link_clicked", "mail_bounced", "mail_marked_as_spam"),
 				},
 			},
 			"suppressed_email": schema.BoolAttribute{

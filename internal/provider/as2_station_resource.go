@@ -32,8 +32,11 @@ type as2StationResource struct {
 }
 
 type as2StationResourceModel struct {
-	Id                         types.Int64  `tfsdk:"id"`
 	Name                       types.String `tfsdk:"name"`
+	PublicCertificate          types.String `tfsdk:"public_certificate"`
+	PrivateKey                 types.String `tfsdk:"private_key"`
+	PrivateKeyPassword         types.String `tfsdk:"private_key_password"`
+	Id                         types.Int64  `tfsdk:"id"`
 	Uri                        types.String `tfsdk:"uri"`
 	Domain                     types.String `tfsdk:"domain"`
 	HexPublicCertificateSerial types.String `tfsdk:"hex_public_certificate_serial"`
@@ -45,9 +48,6 @@ type as2StationResourceModel struct {
 	PublicCertificateNotBefore types.String `tfsdk:"public_certificate_not_before"`
 	PublicCertificateNotAfter  types.String `tfsdk:"public_certificate_not_after"`
 	PrivateKeyPasswordMd5      types.String `tfsdk:"private_key_password_md5"`
-	PublicCertificate          types.String `tfsdk:"public_certificate"`
-	PrivateKey                 types.String `tfsdk:"private_key"`
-	PrivateKeyPassword         types.String `tfsdk:"private_key_password"`
 }
 
 func (r *as2StationResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -77,16 +77,25 @@ func (r *as2StationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 	resp.Schema = schema.Schema{
 		Description: "AS2 Station defines a remote AS2 server that can send data into Files.com and received data from Files.com",
 		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Description: "The station's formal AS2 name.",
+				Required:    true,
+			},
+			"public_certificate": schema.StringAttribute{
+				Required: true,
+			},
+			"private_key": schema.StringAttribute{
+				Required: true,
+			},
+			"private_key_password": schema.StringAttribute{
+				Optional: true,
+			},
 			"id": schema.Int64Attribute{
 				Description: "Id of the AS2 Station.",
 				Computed:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
-			},
-			"name": schema.StringAttribute{
-				Description: "The station's formal AS2 name.",
-				Required:    true,
 			},
 			"uri": schema.StringAttribute{
 				Description: "Public URI for sending AS2 message to.",
@@ -131,15 +140,6 @@ func (r *as2StationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			"private_key_password_md5": schema.StringAttribute{
 				Description: "MD5 hash of private key password used for message security.",
 				Computed:    true,
-			},
-			"public_certificate": schema.StringAttribute{
-				Required: true,
-			},
-			"private_key": schema.StringAttribute{
-				Required: true,
-			},
-			"private_key_password": schema.StringAttribute{
-				Optional: true,
 			},
 		},
 	}

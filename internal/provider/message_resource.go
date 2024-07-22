@@ -33,12 +33,12 @@ type messageResource struct {
 }
 
 type messageResourceModel struct {
-	Id        types.Int64   `tfsdk:"id"`
 	Subject   types.String  `tfsdk:"subject"`
 	Body      types.String  `tfsdk:"body"`
-	Comments  types.Dynamic `tfsdk:"comments"`
-	UserId    types.Int64   `tfsdk:"user_id"`
 	ProjectId types.Int64   `tfsdk:"project_id"`
+	UserId    types.Int64   `tfsdk:"user_id"`
+	Id        types.Int64   `tfsdk:"id"`
+	Comments  types.Dynamic `tfsdk:"comments"`
 }
 
 func (r *messageResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -68,13 +68,6 @@ func (r *messageResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 	resp.Schema = schema.Schema{
 		Description: "Messages are part of Files.com's project management features and represent a message posted by a user to a project.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Message ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"subject": schema.StringAttribute{
 				Description: "Message subject.",
 				Required:    true,
@@ -83,9 +76,9 @@ func (r *messageResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Description: "Message body.",
 				Required:    true,
 			},
-			"comments": schema.DynamicAttribute{
-				Description: "Comments.",
-				Computed:    true,
+			"project_id": schema.Int64Attribute{
+				Description: "Project to which the message should be attached.",
+				Required:    true,
 			},
 			"user_id": schema.Int64Attribute{
 				Description: "User ID.  Provide a value of `0` to operate the current session's user.",
@@ -94,9 +87,16 @@ func (r *messageResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 					int64planmodifier.RequiresReplace(),
 				},
 			},
-			"project_id": schema.Int64Attribute{
-				Description: "Project to which the message should be attached.",
-				Required:    true,
+			"id": schema.Int64Attribute{
+				Description: "Message ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"comments": schema.DynamicAttribute{
+				Description: "Comments.",
+				Computed:    true,
 			},
 		},
 	}

@@ -33,9 +33,9 @@ type messageReactionResource struct {
 }
 
 type messageReactionResourceModel struct {
-	Id     types.Int64  `tfsdk:"id"`
 	Emoji  types.String `tfsdk:"emoji"`
 	UserId types.Int64  `tfsdk:"user_id"`
+	Id     types.Int64  `tfsdk:"id"`
 }
 
 func (r *messageReactionResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -65,13 +65,6 @@ func (r *messageReactionResource) Schema(_ context.Context, _ resource.SchemaReq
 	resp.Schema = schema.Schema{
 		Description: "A message reaction represents a reaction emoji made by a user on a message.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Reaction ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"emoji": schema.StringAttribute{
 				Description: "Emoji used in the reaction.",
 				Required:    true,
@@ -84,6 +77,13 @@ func (r *messageReactionResource) Schema(_ context.Context, _ resource.SchemaReq
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.RequiresReplace(),
+				},
+			},
+			"id": schema.Int64Attribute{
+				Description: "Reaction ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 		},

@@ -34,10 +34,10 @@ type bundleNotificationResource struct {
 
 type bundleNotificationResourceModel struct {
 	BundleId             types.Int64 `tfsdk:"bundle_id"`
-	Id                   types.Int64 `tfsdk:"id"`
 	NotifyOnRegistration types.Bool  `tfsdk:"notify_on_registration"`
 	NotifyOnUpload       types.Bool  `tfsdk:"notify_on_upload"`
 	UserId               types.Int64 `tfsdk:"user_id"`
+	Id                   types.Int64 `tfsdk:"id"`
 }
 
 func (r *bundleNotificationResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -74,13 +74,6 @@ func (r *bundleNotificationResource) Schema(_ context.Context, _ resource.Schema
 					int64planmodifier.RequiresReplace(),
 				},
 			},
-			"id": schema.Int64Attribute{
-				Description: "Bundle Notification ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"notify_on_registration": schema.BoolAttribute{
 				Description: "Triggers bundle notification when a registration action occurs for it.",
 				Computed:    true,
@@ -104,6 +97,13 @@ func (r *bundleNotificationResource) Schema(_ context.Context, _ resource.Schema
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 					int64planmodifier.RequiresReplace(),
+				},
+			},
+			"id": schema.Int64Attribute{
+				Description: "Bundle Notification ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 		},

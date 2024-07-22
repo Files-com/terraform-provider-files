@@ -35,12 +35,12 @@ type clickwrapResource struct {
 }
 
 type clickwrapResourceModel struct {
-	Id             types.Int64  `tfsdk:"id"`
 	Name           types.String `tfsdk:"name"`
 	Body           types.String `tfsdk:"body"`
 	UseWithUsers   types.String `tfsdk:"use_with_users"`
 	UseWithBundles types.String `tfsdk:"use_with_bundles"`
 	UseWithInboxes types.String `tfsdk:"use_with_inboxes"`
+	Id             types.Int64  `tfsdk:"id"`
 }
 
 func (r *clickwrapResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -70,13 +70,6 @@ func (r *clickwrapResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 	resp.Schema = schema.Schema{
 		Description: "A Clickwrap is a legal agreement (such as an NDA or Terms of Use) that your Users and/or Bundle/Inbox participants will need to agree to via a \"Clickwrap\" UI before accessing the site, bundle, or inbox.\n\n\n\nThe values for `use_with_users`, `use_with_bundles`, `use_with_inboxes` are explained as follows:\n\n\n\n* `none` - This Clickwrap may not be used in this context.\n\n* `available_to_all_users` - This Clickwrap may be assigned in this context by any user.\n\n* `available` - This Clickwrap may be assigned in this context, but only by Site Admins. We recognize that the name of this setting is somewhat ambiguous, but we maintain it for legacy reasons.\n\n* `required` - This Clickwrap will always be used in this context, and may not be overridden.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Clickwrap ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"name": schema.StringAttribute{
 				Description: "Name of the Clickwrap agreement (used when selecting from multiple Clickwrap agreements.)",
 				Computed:    true,
@@ -124,6 +117,13 @@ func (r *clickwrapResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"id": schema.Int64Attribute{
+				Description: "Clickwrap ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 		},

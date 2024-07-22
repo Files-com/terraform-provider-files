@@ -36,16 +36,11 @@ type remoteServerResource struct {
 }
 
 type remoteServerResourceModel struct {
-	Id                                    types.Int64  `tfsdk:"id"`
-	Disabled                              types.Bool   `tfsdk:"disabled"`
-	AuthenticationMethod                  types.String `tfsdk:"authentication_method"`
 	Hostname                              types.String `tfsdk:"hostname"`
-	RemoteHomePath                        types.String `tfsdk:"remote_home_path"`
 	Name                                  types.String `tfsdk:"name"`
 	Port                                  types.Int64  `tfsdk:"port"`
 	MaxConnections                        types.Int64  `tfsdk:"max_connections"`
 	PinToSiteRegion                       types.Bool   `tfsdk:"pin_to_site_region"`
-	PinnedRegion                          types.String `tfsdk:"pinned_region"`
 	S3Bucket                              types.String `tfsdk:"s3_bucket"`
 	S3Region                              types.String `tfsdk:"s3_region"`
 	AwsAccessKey                          types.String `tfsdk:"aws_access_key"`
@@ -64,9 +59,6 @@ type remoteServerResourceModel struct {
 	RackspaceUsername                     types.String `tfsdk:"rackspace_username"`
 	RackspaceRegion                       types.String `tfsdk:"rackspace_region"`
 	RackspaceContainer                    types.String `tfsdk:"rackspace_container"`
-	AuthSetupLink                         types.String `tfsdk:"auth_setup_link"`
-	AuthStatus                            types.String `tfsdk:"auth_status"`
-	AuthAccountName                       types.String `tfsdk:"auth_account_name"`
 	OneDriveAccountType                   types.String `tfsdk:"one_drive_account_type"`
 	AzureBlobStorageAccount               types.String `tfsdk:"azure_blob_storage_account"`
 	AzureBlobStorageContainer             types.String `tfsdk:"azure_blob_storage_container"`
@@ -80,7 +72,6 @@ type remoteServerResourceModel struct {
 	EnableDedicatedIps                    types.Bool   `tfsdk:"enable_dedicated_ips"`
 	FilesAgentPermissionSet               types.String `tfsdk:"files_agent_permission_set"`
 	FilesAgentRoot                        types.String `tfsdk:"files_agent_root"`
-	FilesAgentApiToken                    types.String `tfsdk:"files_agent_api_token"`
 	FilesAgentVersion                     types.String `tfsdk:"files_agent_version"`
 	FilebaseBucket                        types.String `tfsdk:"filebase_bucket"`
 	FilebaseAccessKey                     types.String `tfsdk:"filebase_access_key"`
@@ -91,7 +82,6 @@ type remoteServerResourceModel struct {
 	LinodeBucket                          types.String `tfsdk:"linode_bucket"`
 	LinodeAccessKey                       types.String `tfsdk:"linode_access_key"`
 	LinodeRegion                          types.String `tfsdk:"linode_region"`
-	SupportsVersioning                    types.Bool   `tfsdk:"supports_versioning"`
 	AwsSecretKey                          types.String `tfsdk:"aws_secret_key"`
 	Password                              types.String `tfsdk:"password"`
 	PrivateKey                            types.String `tfsdk:"private_key"`
@@ -111,6 +101,16 @@ type remoteServerResourceModel struct {
 	FilebaseSecretKey                     types.String `tfsdk:"filebase_secret_key"`
 	CloudflareSecretKey                   types.String `tfsdk:"cloudflare_secret_key"`
 	LinodeSecretKey                       types.String `tfsdk:"linode_secret_key"`
+	Id                                    types.Int64  `tfsdk:"id"`
+	Disabled                              types.Bool   `tfsdk:"disabled"`
+	AuthenticationMethod                  types.String `tfsdk:"authentication_method"`
+	RemoteHomePath                        types.String `tfsdk:"remote_home_path"`
+	PinnedRegion                          types.String `tfsdk:"pinned_region"`
+	AuthSetupLink                         types.String `tfsdk:"auth_setup_link"`
+	AuthStatus                            types.String `tfsdk:"auth_status"`
+	AuthAccountName                       types.String `tfsdk:"auth_account_name"`
+	FilesAgentApiToken                    types.String `tfsdk:"files_agent_api_token"`
+	SupportsVersioning                    types.Bool   `tfsdk:"supports_versioning"`
 }
 
 func (r *remoteServerResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -140,21 +140,6 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 	resp.Schema = schema.Schema{
 		Description: "Remote servers are used with the `remote_server_sync` Behavior.\n\n\n\nRemote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.\n\n\n\nNot every attribute will apply to every remote server.\n\n\n\nFTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`. Optionally, provide `server_certificate`.\n\n\n\nSFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`. Optionally, provide `server_certificate`, `private_key_passphrase`.\n\n\n\nS3 Buckets require that you specify their `s3_bucket` name, and `s3_region`. Optionally provide a `aws_access_key`, and `aws_secret_key`. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.\n\n\n\nS3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`.\n\n\n\nGoogle Cloud Storage requires that you specify `google_cloud_storage_bucket`, `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`.\n\n\n\nWasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.\n\n\n\nBackblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453\n\n\n\nRackspace Cloud Files requires `rackspace_username`, `rackspace_api_key`, `rackspace_region`, and `rackspace_container`.\n\n\n\nWebDAV Servers require that you specify their `hostname`, `username`, and `password`.\n\n\n\nOneDrive follow the `auth_setup_link` and login with Microsoft.\n\n\n\nSharepoint follow the `auth_setup_link` and login with Microsoft.\n\n\n\nBox follow the `auth_setup_link` and login with Box.\n\n\n\nDropbox specify if `dropbox_teams` then follow the `auth_setup_link` and login with Dropbox.\n\n\n\nGoogle Drive follow the `auth_setup_link` and login with Google.\n\n\n\nAzure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`\n\n\n\nAzure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`\n\n\n\nFilebase requires `filebase_bucket`, `filebase_access_key`, and `filebase_secret_key`.\n\n\n\nCloudflare requires `cloudflare_bucket`, `cloudflare_access_key`, `cloudflare_secret_key` and `cloudflare_endpoint`.\n\n\n\nLinode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `linode_region`.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Remote server ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
-			"disabled": schema.BoolAttribute{
-				Description: "If true, this server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.",
-				Computed:    true,
-			},
-			"authentication_method": schema.StringAttribute{
-				Description: "Type of authentication method",
-				Computed:    true,
-			},
 			"hostname": schema.StringAttribute{
 				Description: "Hostname or IP address",
 				Computed:    true,
@@ -162,10 +147,6 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"remote_home_path": schema.StringAttribute{
-				Description: "Initial home folder on remote server",
-				Computed:    true,
 			},
 			"name": schema.StringAttribute{
 				Description: "Internal name for your reference",
@@ -198,10 +179,6 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"pinned_region": schema.StringAttribute{
-				Description: "If set, all communciations with this remote server are made through the provided region.",
-				Computed:    true,
 			},
 			"s3_bucket": schema.StringAttribute{
 				Description: "S3 bucket name",
@@ -356,21 +333,6 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"auth_setup_link": schema.StringAttribute{
-				Description: "Returns link to login with an Oauth provider",
-				Computed:    true,
-			},
-			"auth_status": schema.StringAttribute{
-				Description: "Either `in_setup` or `complete`",
-				Computed:    true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("not_applicable", "in_setup", "complete", "reauthenticate"),
-				},
-			},
-			"auth_account_name": schema.StringAttribute{
-				Description: "Describes the authorized account",
-				Computed:    true,
-			},
 			"one_drive_account_type": schema.StringAttribute{
 				Description: "Either personal or business_other account types",
 				Computed:    true,
@@ -481,10 +443,6 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"files_agent_api_token": schema.StringAttribute{
-				Description: "Files Agent API Token",
-				Computed:    true,
-			},
 			"files_agent_version": schema.StringAttribute{
 				Description: "Files Agent version",
 				Computed:    true,
@@ -565,10 +523,6 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"supports_versioning": schema.BoolAttribute{
-				Description: "If true, this remote server supports file versioning. This value is determined automatically by Files.com.",
-				Computed:    true,
-			},
 			"aws_secret_key": schema.StringAttribute{
 				Description: "AWS secret key.",
 				Optional:    true,
@@ -644,6 +598,52 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 			"linode_secret_key": schema.StringAttribute{
 				Description: "Linode secret key",
 				Optional:    true,
+			},
+			"id": schema.Int64Attribute{
+				Description: "Remote server ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"disabled": schema.BoolAttribute{
+				Description: "If true, this server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.",
+				Computed:    true,
+			},
+			"authentication_method": schema.StringAttribute{
+				Description: "Type of authentication method",
+				Computed:    true,
+			},
+			"remote_home_path": schema.StringAttribute{
+				Description: "Initial home folder on remote server",
+				Computed:    true,
+			},
+			"pinned_region": schema.StringAttribute{
+				Description: "If set, all communciations with this remote server are made through the provided region.",
+				Computed:    true,
+			},
+			"auth_setup_link": schema.StringAttribute{
+				Description: "Returns link to login with an Oauth provider",
+				Computed:    true,
+			},
+			"auth_status": schema.StringAttribute{
+				Description: "Either `in_setup` or `complete`",
+				Computed:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("not_applicable", "in_setup", "complete", "reauthenticate"),
+				},
+			},
+			"auth_account_name": schema.StringAttribute{
+				Description: "Describes the authorized account",
+				Computed:    true,
+			},
+			"files_agent_api_token": schema.StringAttribute{
+				Description: "Files Agent API Token",
+				Computed:    true,
+			},
+			"supports_versioning": schema.BoolAttribute{
+				Description: "If true, this remote server supports file versioning. This value is determined automatically by Files.com.",
+				Computed:    true,
 			},
 		},
 	}

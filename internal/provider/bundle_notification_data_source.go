@@ -26,8 +26,8 @@ type bundleNotificationDataSource struct {
 }
 
 type bundleNotificationDataSourceModel struct {
-	BundleId             types.Int64 `tfsdk:"bundle_id"`
 	Id                   types.Int64 `tfsdk:"id"`
+	BundleId             types.Int64 `tfsdk:"bundle_id"`
 	NotifyOnRegistration types.Bool  `tfsdk:"notify_on_registration"`
 	NotifyOnUpload       types.Bool  `tfsdk:"notify_on_upload"`
 	UserId               types.Int64 `tfsdk:"user_id"`
@@ -60,13 +60,13 @@ func (r *bundleNotificationDataSource) Schema(_ context.Context, _ datasource.Sc
 	resp.Schema = schema.Schema{
 		Description: "Bundle notifications are emails sent out to users when certain actions are performed on or within a shared set of files and folders.",
 		Attributes: map[string]schema.Attribute{
-			"bundle_id": schema.Int64Attribute{
-				Description: "Bundle ID to notify on",
-				Computed:    true,
-			},
 			"id": schema.Int64Attribute{
 				Description: "Bundle Notification ID",
 				Required:    true,
+			},
+			"bundle_id": schema.Int64Attribute{
+				Description: "Bundle ID to notify on",
+				Computed:    true,
 			},
 			"notify_on_registration": schema.BoolAttribute{
 				Description: "Triggers bundle notification when a registration action occurs for it.",

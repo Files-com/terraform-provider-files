@@ -34,14 +34,14 @@ type publicKeyResource struct {
 }
 
 type publicKeyResourceModel struct {
-	Id                types.Int64  `tfsdk:"id"`
 	Title             types.String `tfsdk:"title"`
+	PublicKey         types.String `tfsdk:"public_key"`
+	UserId            types.Int64  `tfsdk:"user_id"`
+	Id                types.Int64  `tfsdk:"id"`
 	CreatedAt         types.String `tfsdk:"created_at"`
 	Fingerprint       types.String `tfsdk:"fingerprint"`
 	FingerprintSha256 types.String `tfsdk:"fingerprint_sha256"`
 	Username          types.String `tfsdk:"username"`
-	UserId            types.Int64  `tfsdk:"user_id"`
-	PublicKey         types.String `tfsdk:"public_key"`
 }
 
 func (r *publicKeyResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -71,16 +71,32 @@ func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 	resp.Schema = schema.Schema{
 		Description: "Public keys are used by Users who want to connect via SFTP/SSH.\n\n(Note that our SSH support is limited to file operations only, no shell is provided.)",
 		Attributes: map[string]schema.Attribute{
+			"title": schema.StringAttribute{
+				Description: "Public key title",
+				Required:    true,
+			},
+			"public_key": schema.StringAttribute{
+				Description: "Actual contents of SSH key.",
+				Required:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
+			"user_id": schema.Int64Attribute{
+				Description: "User ID this public key is associated with",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
+				},
+			},
 			"id": schema.Int64Attribute{
 				Description: "Public key ID",
 				Computed:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
-			},
-			"title": schema.StringAttribute{
-				Description: "Public key title",
-				Required:    true,
 			},
 			"created_at": schema.StringAttribute{
 				Description: "Public key created at date/time",
@@ -97,22 +113,6 @@ func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"username": schema.StringAttribute{
 				Description: "Username of the user this public key is associated with",
 				Computed:    true,
-			},
-			"user_id": schema.Int64Attribute{
-				Description: "User ID this public key is associated with",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-					int64planmodifier.RequiresReplace(),
-				},
-			},
-			"public_key": schema.StringAttribute{
-				Description: "Actual contents of SSH key.",
-				Required:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
-				},
 			},
 		},
 	}

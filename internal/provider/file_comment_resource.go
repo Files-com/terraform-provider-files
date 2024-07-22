@@ -34,10 +34,10 @@ type fileCommentResource struct {
 }
 
 type fileCommentResourceModel struct {
-	Id        types.Int64   `tfsdk:"id"`
 	Body      types.String  `tfsdk:"body"`
-	Reactions types.Dynamic `tfsdk:"reactions"`
 	Path      types.String  `tfsdk:"path"`
+	Id        types.Int64   `tfsdk:"id"`
+	Reactions types.Dynamic `tfsdk:"reactions"`
 }
 
 func (r *fileCommentResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -67,20 +67,9 @@ func (r *fileCommentResource) Schema(_ context.Context, _ resource.SchemaRequest
 	resp.Schema = schema.Schema{
 		Description: "File Comments are comments attached to a file by a user.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "File Comment ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"body": schema.StringAttribute{
 				Description: "Comment body.",
 				Required:    true,
-			},
-			"reactions": schema.DynamicAttribute{
-				Description: "Reactions to this comment.",
-				Computed:    true,
 			},
 			"path": schema.StringAttribute{
 				Description: "File path.",
@@ -88,6 +77,17 @@ func (r *fileCommentResource) Schema(_ context.Context, _ resource.SchemaRequest
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+			},
+			"id": schema.Int64Attribute{
+				Description: "File Comment ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"reactions": schema.DynamicAttribute{
+				Description: "Reactions to this comment.",
+				Computed:    true,
 			},
 		},
 	}

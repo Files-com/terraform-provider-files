@@ -39,29 +39,17 @@ type bundleResource struct {
 }
 
 type bundleResourceModel struct {
+	Paths                           types.List    `tfsdk:"paths"`
 	Code                            types.String  `tfsdk:"code"`
-	ColorLeft                       types.String  `tfsdk:"color_left"`
-	ColorLink                       types.String  `tfsdk:"color_link"`
-	ColorText                       types.String  `tfsdk:"color_text"`
-	ColorTop                        types.String  `tfsdk:"color_top"`
-	ColorTopText                    types.String  `tfsdk:"color_top_text"`
-	Url                             types.String  `tfsdk:"url"`
 	Description                     types.String  `tfsdk:"description"`
 	ExpiresAt                       types.String  `tfsdk:"expires_at"`
-	PasswordProtected               types.Bool    `tfsdk:"password_protected"`
 	Permissions                     types.String  `tfsdk:"permissions"`
-	PreviewOnly                     types.Bool    `tfsdk:"preview_only"`
 	RequireRegistration             types.Bool    `tfsdk:"require_registration"`
 	RequireShareRecipient           types.Bool    `tfsdk:"require_share_recipient"`
-	RequireLogout                   types.Bool    `tfsdk:"require_logout"`
-	ClickwrapBody                   types.String  `tfsdk:"clickwrap_body"`
-	FormFieldSet                    types.String  `tfsdk:"form_field_set"`
 	SkipName                        types.Bool    `tfsdk:"skip_name"`
 	SkipEmail                       types.Bool    `tfsdk:"skip_email"`
 	StartAccessOnDate               types.String  `tfsdk:"start_access_on_date"`
 	SkipCompany                     types.Bool    `tfsdk:"skip_company"`
-	Id                              types.Int64   `tfsdk:"id"`
-	CreatedAt                       types.String  `tfsdk:"created_at"`
 	DontSeparateSubmissionsByFolder types.Bool    `tfsdk:"dont_separate_submissions_by_folder"`
 	MaxUses                         types.Int64   `tfsdk:"max_uses"`
 	Note                            types.String  `tfsdk:"note"`
@@ -70,18 +58,30 @@ type bundleResourceModel struct {
 	SendEmailReceiptToUploader      types.Bool    `tfsdk:"send_email_receipt_to_uploader"`
 	SnapshotId                      types.Int64   `tfsdk:"snapshot_id"`
 	UserId                          types.Int64   `tfsdk:"user_id"`
-	Username                        types.String  `tfsdk:"username"`
 	ClickwrapId                     types.Int64   `tfsdk:"clickwrap_id"`
 	InboxId                         types.Int64   `tfsdk:"inbox_id"`
-	WatermarkAttachment             types.String  `tfsdk:"watermark_attachment"`
-	WatermarkValue                  types.Dynamic `tfsdk:"watermark_value"`
-	HasInbox                        types.Bool    `tfsdk:"has_inbox"`
-	Paths                           types.List    `tfsdk:"paths"`
-	Bundlepaths                     types.Dynamic `tfsdk:"bundlepaths"`
 	Password                        types.String  `tfsdk:"password"`
 	FormFieldSetId                  types.Int64   `tfsdk:"form_field_set_id"`
 	CreateSnapshot                  types.Bool    `tfsdk:"create_snapshot"`
 	FinalizeSnapshot                types.Bool    `tfsdk:"finalize_snapshot"`
+	ColorLeft                       types.String  `tfsdk:"color_left"`
+	ColorLink                       types.String  `tfsdk:"color_link"`
+	ColorText                       types.String  `tfsdk:"color_text"`
+	ColorTop                        types.String  `tfsdk:"color_top"`
+	ColorTopText                    types.String  `tfsdk:"color_top_text"`
+	Url                             types.String  `tfsdk:"url"`
+	PasswordProtected               types.Bool    `tfsdk:"password_protected"`
+	PreviewOnly                     types.Bool    `tfsdk:"preview_only"`
+	RequireLogout                   types.Bool    `tfsdk:"require_logout"`
+	ClickwrapBody                   types.String  `tfsdk:"clickwrap_body"`
+	FormFieldSet                    types.String  `tfsdk:"form_field_set"`
+	Id                              types.Int64   `tfsdk:"id"`
+	CreatedAt                       types.String  `tfsdk:"created_at"`
+	Username                        types.String  `tfsdk:"username"`
+	WatermarkAttachment             types.String  `tfsdk:"watermark_attachment"`
+	WatermarkValue                  types.Dynamic `tfsdk:"watermark_value"`
+	HasInbox                        types.Bool    `tfsdk:"has_inbox"`
+	Bundlepaths                     types.Dynamic `tfsdk:"bundlepaths"`
 }
 
 func (r *bundleResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -111,6 +111,11 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 	resp.Schema = schema.Schema{
 		Description: "Bundles are the API/SDK term for the feature called Share Links in the web interface.\n\nThe API provides the full set of actions related to Share Links, including sending them via E-Mail.\n\n\n\nPlease note that we very closely monitor the E-Mailing feature and any abuse will result in disabling of your site.",
 		Attributes: map[string]schema.Attribute{
+			"paths": schema.ListAttribute{
+				Description: "A list of paths in this bundle.  For performance reasons, this is not provided when listing bundles.",
+				Required:    true,
+				ElementType: types.StringType,
+			},
 			"code": schema.StringAttribute{
 				Description: "Bundle code.  This code forms the end part of the Public URL.",
 				Computed:    true,
@@ -118,30 +123,6 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"color_left": schema.StringAttribute{
-				Description: "Page link and button color",
-				Computed:    true,
-			},
-			"color_link": schema.StringAttribute{
-				Description: "Top bar link color",
-				Computed:    true,
-			},
-			"color_text": schema.StringAttribute{
-				Description: "Page link and button color",
-				Computed:    true,
-			},
-			"color_top": schema.StringAttribute{
-				Description: "Top bar background color",
-				Computed:    true,
-			},
-			"color_top_text": schema.StringAttribute{
-				Description: "Top bar text color",
-				Computed:    true,
-			},
-			"url": schema.StringAttribute{
-				Description: "Public URL of Share Link",
-				Computed:    true,
 			},
 			"description": schema.StringAttribute{
 				Description: "Public description",
@@ -159,10 +140,6 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"password_protected": schema.BoolAttribute{
-				Description: "Is this bundle password protected?",
-				Computed:    true,
-			},
 			"permissions": schema.StringAttribute{
 				Description: "Permissions that apply to Folders in this Share Link.",
 				Computed:    true,
@@ -173,9 +150,6 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"preview_only": schema.BoolAttribute{
-				Computed: true,
 			},
 			"require_registration": schema.BoolAttribute{
 				Description: "Show a registration page that captures the downloader's name and email address?",
@@ -192,18 +166,6 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"require_logout": schema.BoolAttribute{
-				Description: "If true, we will hide the 'Remember Me' box on the Bundle registration page, requiring that the user logout and log back in every time they visit the page.",
-				Computed:    true,
-			},
-			"clickwrap_body": schema.StringAttribute{
-				Description: "Legal text that must be agreed to prior to accessing Bundle.",
-				Computed:    true,
-			},
-			"form_field_set": schema.StringAttribute{
-				Description: "Custom Form to use",
-				Computed:    true,
 			},
 			"skip_name": schema.BoolAttribute{
 				Description: "BundleRegistrations can be saved without providing name?",
@@ -236,17 +198,6 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"id": schema.Int64Attribute{
-				Description: "Bundle ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
-			"created_at": schema.StringAttribute{
-				Description: "Bundle created at date/time",
-				Computed:    true,
 			},
 			"dont_separate_submissions_by_folder": schema.BoolAttribute{
 				Description: "Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.",
@@ -314,10 +265,6 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 					int64planmodifier.RequiresReplace(),
 				},
 			},
-			"username": schema.StringAttribute{
-				Description: "Bundle creator username",
-				Computed:    true,
-			},
 			"clickwrap_id": schema.Int64Attribute{
 				Description: "ID of the clickwrap to use with this bundle.",
 				Computed:    true,
@@ -334,27 +281,6 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
-			"watermark_attachment": schema.StringAttribute{
-				Description: "Preview watermark image applied to all bundle items.",
-				Computed:    true,
-			},
-			"watermark_value": schema.DynamicAttribute{
-				Description: "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value",
-				Computed:    true,
-			},
-			"has_inbox": schema.BoolAttribute{
-				Description: "Does this bundle have an associated inbox?",
-				Computed:    true,
-			},
-			"paths": schema.ListAttribute{
-				Description: "A list of paths in this bundle.  For performance reasons, this is not provided when listing bundles.",
-				Required:    true,
-				ElementType: types.StringType,
-			},
-			"bundlepaths": schema.DynamicAttribute{
-				Description: "A list of bundlepaths in this bundle.  For performance reasons, this is not provided when listing bundles.",
-				Computed:    true,
-			},
 			"password": schema.StringAttribute{
 				Description: "Password for this bundle.",
 				Optional:    true,
@@ -370,6 +296,80 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			"finalize_snapshot": schema.BoolAttribute{
 				Description: "If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.",
 				Optional:    true,
+			},
+			"color_left": schema.StringAttribute{
+				Description: "Page link and button color",
+				Computed:    true,
+			},
+			"color_link": schema.StringAttribute{
+				Description: "Top bar link color",
+				Computed:    true,
+			},
+			"color_text": schema.StringAttribute{
+				Description: "Page link and button color",
+				Computed:    true,
+			},
+			"color_top": schema.StringAttribute{
+				Description: "Top bar background color",
+				Computed:    true,
+			},
+			"color_top_text": schema.StringAttribute{
+				Description: "Top bar text color",
+				Computed:    true,
+			},
+			"url": schema.StringAttribute{
+				Description: "Public URL of Share Link",
+				Computed:    true,
+			},
+			"password_protected": schema.BoolAttribute{
+				Description: "Is this bundle password protected?",
+				Computed:    true,
+			},
+			"preview_only": schema.BoolAttribute{
+				Computed: true,
+			},
+			"require_logout": schema.BoolAttribute{
+				Description: "If true, we will hide the 'Remember Me' box on the Bundle registration page, requiring that the user logout and log back in every time they visit the page.",
+				Computed:    true,
+			},
+			"clickwrap_body": schema.StringAttribute{
+				Description: "Legal text that must be agreed to prior to accessing Bundle.",
+				Computed:    true,
+			},
+			"form_field_set": schema.StringAttribute{
+				Description: "Custom Form to use",
+				Computed:    true,
+			},
+			"id": schema.Int64Attribute{
+				Description: "Bundle ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"created_at": schema.StringAttribute{
+				Description: "Bundle created at date/time",
+				Computed:    true,
+			},
+			"username": schema.StringAttribute{
+				Description: "Bundle creator username",
+				Computed:    true,
+			},
+			"watermark_attachment": schema.StringAttribute{
+				Description: "Preview watermark image applied to all bundle items.",
+				Computed:    true,
+			},
+			"watermark_value": schema.DynamicAttribute{
+				Description: "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value",
+				Computed:    true,
+			},
+			"has_inbox": schema.BoolAttribute{
+				Description: "Does this bundle have an associated inbox?",
+				Computed:    true,
+			},
+			"bundlepaths": schema.DynamicAttribute{
+				Description: "A list of bundlepaths in this bundle.  For performance reasons, this is not provided when listing bundles.",
+				Computed:    true,
 			},
 		},
 	}

@@ -36,14 +36,16 @@ type as2PartnerResource struct {
 }
 
 type as2PartnerResourceModel struct {
-	Id                         types.Int64  `tfsdk:"id"`
 	As2StationId               types.Int64  `tfsdk:"as2_station_id"`
 	Name                       types.String `tfsdk:"name"`
 	Uri                        types.String `tfsdk:"uri"`
+	PublicCertificate          types.String `tfsdk:"public_certificate"`
 	ServerCertificate          types.String `tfsdk:"server_certificate"`
 	HttpAuthUsername           types.String `tfsdk:"http_auth_username"`
 	MdnValidationLevel         types.String `tfsdk:"mdn_validation_level"`
 	EnableDedicatedIps         types.Bool   `tfsdk:"enable_dedicated_ips"`
+	HttpAuthPassword           types.String `tfsdk:"http_auth_password"`
+	Id                         types.Int64  `tfsdk:"id"`
 	HexPublicCertificateSerial types.String `tfsdk:"hex_public_certificate_serial"`
 	PublicCertificateMd5       types.String `tfsdk:"public_certificate_md5"`
 	PublicCertificateSubject   types.String `tfsdk:"public_certificate_subject"`
@@ -51,8 +53,6 @@ type as2PartnerResourceModel struct {
 	PublicCertificateSerial    types.String `tfsdk:"public_certificate_serial"`
 	PublicCertificateNotBefore types.String `tfsdk:"public_certificate_not_before"`
 	PublicCertificateNotAfter  types.String `tfsdk:"public_certificate_not_after"`
-	HttpAuthPassword           types.String `tfsdk:"http_auth_password"`
-	PublicCertificate          types.String `tfsdk:"public_certificate"`
 }
 
 func (r *as2PartnerResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -82,13 +82,6 @@ func (r *as2PartnerResource) Schema(_ context.Context, _ resource.SchemaRequest,
 	resp.Schema = schema.Schema{
 		Description: "An AS2 Partner describes a counterparty of the Files.com site's AS2 connectivity. Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "ID of the AS2 Partner.",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"as2_station_id": schema.Int64Attribute{
 				Description: "ID of the AS2 Station associated with this partner.",
 				Required:    true,
@@ -102,6 +95,10 @@ func (r *as2PartnerResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			},
 			"uri": schema.StringAttribute{
 				Description: "Public URI where we will send the AS2 messages (via HTTP/HTTPS).",
+				Required:    true,
+			},
+			"public_certificate": schema.StringAttribute{
+				Description: "Public certificate for AS2 Partner.  Note: This is the certificate for AS2 message security, not a certificate used for HTTPS authentication.",
 				Required:    true,
 			},
 			"server_certificate": schema.StringAttribute{
@@ -142,6 +139,17 @@ func (r *as2PartnerResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"http_auth_password": schema.StringAttribute{
+				Description: "Password to send to server for HTTP Authentication.",
+				Optional:    true,
+			},
+			"id": schema.Int64Attribute{
+				Description: "ID of the AS2 Partner.",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"hex_public_certificate_serial": schema.StringAttribute{
 				Description: "Serial of public certificate used for message security in hex format.",
 				Computed:    true,
@@ -169,14 +177,6 @@ func (r *as2PartnerResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			"public_certificate_not_after": schema.StringAttribute{
 				Description: "Not after value of public certificate used for message security.",
 				Computed:    true,
-			},
-			"http_auth_password": schema.StringAttribute{
-				Description: "Password to send to server for HTTP Authentication.",
-				Optional:    true,
-			},
-			"public_certificate": schema.StringAttribute{
-				Description: "Public certificate for AS2 Partner.  Note: This is the certificate for AS2 message security, not a certificate used for HTTPS authentication.",
-				Required:    true,
 			},
 		},
 	}

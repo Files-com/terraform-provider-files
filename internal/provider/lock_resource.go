@@ -35,14 +35,14 @@ type lockResource struct {
 type lockResourceModel struct {
 	Path                 types.String `tfsdk:"path"`
 	Timeout              types.Int64  `tfsdk:"timeout"`
-	Depth                types.String `tfsdk:"depth"`
 	Recursive            types.Bool   `tfsdk:"recursive"`
+	Exclusive            types.Bool   `tfsdk:"exclusive"`
+	AllowAccessByAnyUser types.Bool   `tfsdk:"allow_access_by_any_user"`
+	Depth                types.String `tfsdk:"depth"`
 	Owner                types.String `tfsdk:"owner"`
 	Scope                types.String `tfsdk:"scope"`
-	Exclusive            types.Bool   `tfsdk:"exclusive"`
 	Token                types.String `tfsdk:"token"`
 	Type                 types.String `tfsdk:"type"`
-	AllowAccessByAnyUser types.Bool   `tfsdk:"allow_access_by_any_user"`
 	UserId               types.Int64  `tfsdk:"user_id"`
 	Username             types.String `tfsdk:"username"`
 }
@@ -91,9 +91,6 @@ func (r *lockResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					int64planmodifier.RequiresReplace(),
 				},
 			},
-			"depth": schema.StringAttribute{
-				Computed: true,
-			},
 			"recursive": schema.BoolAttribute{
 				Description: "Does lock apply to subfolders?",
 				Computed:    true,
@@ -102,13 +99,6 @@ func (r *lockResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 					boolplanmodifier.RequiresReplace(),
 				},
-			},
-			"owner": schema.StringAttribute{
-				Description: "Owner of the lock.  This can be any arbitrary string.",
-				Computed:    true,
-			},
-			"scope": schema.StringAttribute{
-				Computed: true,
 			},
 			"exclusive": schema.BoolAttribute{
 				Description: "Is lock exclusive?",
@@ -119,13 +109,6 @@ func (r *lockResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.RequiresReplace(),
 				},
 			},
-			"token": schema.StringAttribute{
-				Description: "Lock token.  Use to release lock.",
-				Computed:    true,
-			},
-			"type": schema.StringAttribute{
-				Computed: true,
-			},
 			"allow_access_by_any_user": schema.BoolAttribute{
 				Description: "Can lock be modified by users other than its creator?",
 				Computed:    true,
@@ -134,6 +117,23 @@ func (r *lockResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 					boolplanmodifier.RequiresReplace(),
 				},
+			},
+			"depth": schema.StringAttribute{
+				Computed: true,
+			},
+			"owner": schema.StringAttribute{
+				Description: "Owner of the lock.  This can be any arbitrary string.",
+				Computed:    true,
+			},
+			"scope": schema.StringAttribute{
+				Computed: true,
+			},
+			"token": schema.StringAttribute{
+				Description: "Lock token.  Use to release lock.",
+				Computed:    true,
+			},
+			"type": schema.StringAttribute{
+				Computed: true,
 			},
 			"user_id": schema.Int64Attribute{
 				Description: "Lock creator user ID",

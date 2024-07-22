@@ -26,11 +26,11 @@ type ssoStrategyDataSource struct {
 }
 
 type ssoStrategyDataSourceModel struct {
+	Id                             types.Int64  `tfsdk:"id"`
 	Protocol                       types.String `tfsdk:"protocol"`
 	Provider_                      types.String `tfsdk:"provider"`
 	Label                          types.String `tfsdk:"label"`
 	LogoUrl                        types.String `tfsdk:"logo_url"`
-	Id                             types.Int64  `tfsdk:"id"`
 	UserCount                      types.Int64  `tfsdk:"user_count"`
 	SamlProviderCertFingerprint    types.String `tfsdk:"saml_provider_cert_fingerprint"`
 	SamlProviderIssuerUrl          types.String `tfsdk:"saml_provider_issuer_url"`
@@ -101,6 +101,10 @@ func (r *ssoStrategyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 	resp.Schema = schema.Schema{
 		Description: "An SSO Strategy is a method for allowing users to sign in via another identity provider, such as Okta or Auth0.\n\n\n\nIt is rare that you will need to use API endpoints for managing these, and we recommend instead managing these via the web interface.\n\nNevertheless, we share the API documentation here.",
 		Attributes: map[string]schema.Attribute{
+			"id": schema.Int64Attribute{
+				Description: "ID",
+				Required:    true,
+			},
 			"protocol": schema.StringAttribute{
 				Description: "SSO Protocol",
 				Computed:    true,
@@ -116,10 +120,6 @@ func (r *ssoStrategyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 			"logo_url": schema.StringAttribute{
 				Description: "URL holding a custom logo for the SSO provider on the login page.",
 				Computed:    true,
-			},
-			"id": schema.Int64Attribute{
-				Description: "ID",
-				Required:    true,
 			},
 			"user_count": schema.Int64Attribute{
 				Description: "Count of users with this SSO Strategy",

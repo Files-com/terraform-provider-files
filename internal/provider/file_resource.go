@@ -39,6 +39,10 @@ type fileResourceModel struct {
 	Source                             types.String  `tfsdk:"source"`
 	Md5                                types.String  `tfsdk:"md5"`
 	Path                               types.String  `tfsdk:"path"`
+	CustomMetadata                     types.Dynamic `tfsdk:"custom_metadata"`
+	Size                               types.Int64   `tfsdk:"size"`
+	ProvidedMtime                      types.String  `tfsdk:"provided_mtime"`
+	PriorityColor                      types.String  `tfsdk:"priority_color"`
 	CreatedById                        types.Int64   `tfsdk:"created_by_id"`
 	CreatedByApiKeyId                  types.Int64   `tfsdk:"created_by_api_key_id"`
 	CreatedByAs2IncomingMessageId      types.Int64   `tfsdk:"created_by_as2_incoming_message_id"`
@@ -47,10 +51,8 @@ type fileResourceModel struct {
 	CreatedByInboxId                   types.Int64   `tfsdk:"created_by_inbox_id"`
 	CreatedByRemoteServerId            types.Int64   `tfsdk:"created_by_remote_server_id"`
 	CreatedByRemoteServerSyncId        types.Int64   `tfsdk:"created_by_remote_server_sync_id"`
-	CustomMetadata                     types.Dynamic `tfsdk:"custom_metadata"`
 	DisplayName                        types.String  `tfsdk:"display_name"`
 	Type                               types.String  `tfsdk:"type"`
-	Size                               types.Int64   `tfsdk:"size"`
 	CreatedAt                          types.String  `tfsdk:"created_at"`
 	LastModifiedById                   types.Int64   `tfsdk:"last_modified_by_id"`
 	LastModifiedByApiKeyId             types.Int64   `tfsdk:"last_modified_by_api_key_id"`
@@ -59,7 +61,6 @@ type fileResourceModel struct {
 	LastModifiedByRemoteServerId       types.Int64   `tfsdk:"last_modified_by_remote_server_id"`
 	LastModifiedByRemoteServerSyncId   types.Int64   `tfsdk:"last_modified_by_remote_server_sync_id"`
 	Mtime                              types.String  `tfsdk:"mtime"`
-	ProvidedMtime                      types.String  `tfsdk:"provided_mtime"`
 	Crc32                              types.String  `tfsdk:"crc32"`
 	MimeType                           types.String  `tfsdk:"mime_type"`
 	Region                             types.String  `tfsdk:"region"`
@@ -67,7 +68,6 @@ type fileResourceModel struct {
 	SubfoldersLocked                   types.Bool    `tfsdk:"subfolders_locked"`
 	IsLocked                           types.Bool    `tfsdk:"is_locked"`
 	DownloadUri                        types.String  `tfsdk:"download_uri"`
-	PriorityColor                      types.String  `tfsdk:"priority_color"`
 	PreviewId                          types.Int64   `tfsdk:"preview_id"`
 	Preview                            types.String  `tfsdk:"preview"`
 }
@@ -122,6 +122,39 @@ func (r *fileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"custom_metadata": schema.DynamicAttribute{
+				Description: "Custom metadata map of keys and values. Limited to 32 keys, 256 characters per key and 1024 characters per value.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Dynamic{
+					dynamicplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"size": schema.Int64Attribute{
+				Description: "File/Folder size",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
+				},
+			},
+			"provided_mtime": schema.StringAttribute{
+				Description: "File last modified date/time, according to the client who set it.  Files.com allows desktop, FTP, SFTP, and WebDAV clients to set modified at times.  This allows Desktop<->Cloud syncing to preserve modified at times.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"priority_color": schema.StringAttribute{
+				Description: "Bookmark/priority color of file/folder",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"created_by_id": schema.Int64Attribute{
 				Description: "User ID of the User who created the file/folder",
 				Computed:    true,
@@ -154,14 +187,6 @@ func (r *fileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "ID of the Remote Server Sync that created the file/folder",
 				Computed:    true,
 			},
-			"custom_metadata": schema.DynamicAttribute{
-				Description: "Custom metadata map of keys and values. Limited to 32 keys, 256 characters per key and 1024 characters per value.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Dynamic{
-					dynamicplanmodifier.UseStateForUnknown(),
-				},
-			},
 			"display_name": schema.StringAttribute{
 				Description: "File/Folder display name",
 				Computed:    true,
@@ -169,15 +194,6 @@ func (r *fileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"type": schema.StringAttribute{
 				Description: "Type: `directory` or `file`.",
 				Computed:    true,
-			},
-			"size": schema.Int64Attribute{
-				Description: "File/Folder size",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-					int64planmodifier.RequiresReplace(),
-				},
 			},
 			"created_at": schema.StringAttribute{
 				Description: "File created date/time",
@@ -211,14 +227,6 @@ func (r *fileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "File last modified date/time, according to the server.  This is the timestamp of the last Files.com operation of the file, regardless of what modified timestamp was sent.",
 				Computed:    true,
 			},
-			"provided_mtime": schema.StringAttribute{
-				Description: "File last modified date/time, according to the client who set it.  Files.com allows desktop, FTP, SFTP, and WebDAV clients to set modified at times.  This allows Desktop<->Cloud syncing to preserve modified at times.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
 			"crc32": schema.StringAttribute{
 				Description: "File CRC32 checksum. This is sometimes delayed, so if you get a blank response, wait and try again.",
 				Computed:    true,
@@ -246,14 +254,6 @@ func (r *fileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"download_uri": schema.StringAttribute{
 				Description: "Link to download file. Provided only in response to a download request.",
 				Computed:    true,
-			},
-			"priority_color": schema.StringAttribute{
-				Description: "Bookmark/priority color of file/folder",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"preview_id": schema.Int64Attribute{
 				Description: "File preview ID",

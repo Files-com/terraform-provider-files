@@ -33,10 +33,10 @@ type groupUserResource struct {
 }
 
 type groupUserResourceModel struct {
-	GroupName types.String `tfsdk:"group_name"`
 	GroupId   types.Int64  `tfsdk:"group_id"`
 	UserId    types.Int64  `tfsdk:"user_id"`
 	Admin     types.Bool   `tfsdk:"admin"`
+	GroupName types.String `tfsdk:"group_name"`
 	Usernames types.List   `tfsdk:"usernames"`
 	Id        types.Int64  `tfsdk:"id"`
 }
@@ -68,10 +68,6 @@ func (r *groupUserResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 	resp.Schema = schema.Schema{
 		Description: "A GroupUser describes the membership of a User within a Group.\n\n\n\n## Creating GroupUsers\n\nGroupUsers can be created via the normal `create` action. When using the `update` action, if the\n\nGroupUser record does not exist for the given user/group IDs it will be created.",
 		Attributes: map[string]schema.Attribute{
-			"group_name": schema.StringAttribute{
-				Description: "Group name",
-				Computed:    true,
-			},
 			"group_id": schema.Int64Attribute{
 				Description: "Group ID",
 				Required:    true,
@@ -87,6 +83,10 @@ func (r *groupUserResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
+			},
+			"group_name": schema.StringAttribute{
+				Description: "Group name",
+				Computed:    true,
 			},
 			"usernames": schema.ListAttribute{
 				Description: "A list of usernames for users in this group",

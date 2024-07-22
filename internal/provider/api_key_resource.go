@@ -37,19 +37,19 @@ type apiKeyResource struct {
 }
 
 type apiKeyResourceModel struct {
-	Id               types.Int64  `tfsdk:"id"`
-	DescriptiveLabel types.String `tfsdk:"descriptive_label"`
-	Description      types.String `tfsdk:"description"`
-	CreatedAt        types.String `tfsdk:"created_at"`
-	ExpiresAt        types.String `tfsdk:"expires_at"`
-	Key              types.String `tfsdk:"key"`
-	LastUseAt        types.String `tfsdk:"last_use_at"`
 	Name             types.String `tfsdk:"name"`
+	Description      types.String `tfsdk:"description"`
+	ExpiresAt        types.String `tfsdk:"expires_at"`
 	PermissionSet    types.String `tfsdk:"permission_set"`
-	Platform         types.String `tfsdk:"platform"`
-	Url              types.String `tfsdk:"url"`
 	UserId           types.Int64  `tfsdk:"user_id"`
 	Path             types.String `tfsdk:"path"`
+	Id               types.Int64  `tfsdk:"id"`
+	DescriptiveLabel types.String `tfsdk:"descriptive_label"`
+	CreatedAt        types.String `tfsdk:"created_at"`
+	Key              types.String `tfsdk:"key"`
+	LastUseAt        types.String `tfsdk:"last_use_at"`
+	Platform         types.String `tfsdk:"platform"`
+	Url              types.String `tfsdk:"url"`
 }
 
 func (r *apiKeyResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -79,16 +79,9 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 	resp.Schema = schema.Schema{
 		Description: "API Keys allow programmatic access to your Site.\n\nAPI keys confer all the permissions of the user who owns them.\n\nIf an API key is created without a user owner, it is considered a site-wide API key, which has full permissions to do anything on the Site.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "API Key ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
-			"descriptive_label": schema.StringAttribute{
-				Description: "Unique label that describes this API key.  Useful for external systems where you may have API keys from multiple accounts and want a human-readable label for each key.",
-				Computed:    true,
+			"name": schema.StringAttribute{
+				Description: "Internal name for the API Key.  For your use.",
+				Required:    true,
 			},
 			"description": schema.StringAttribute{
 				Description: "User-supplied description of API key.",
@@ -98,10 +91,6 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"created_at": schema.StringAttribute{
-				Description: "Time which API Key was created",
-				Computed:    true,
-			},
 			"expires_at": schema.StringAttribute{
 				Description: "API Key expiration date",
 				Computed:    true,
@@ -109,18 +98,6 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"key": schema.StringAttribute{
-				Description: "API Key actual key string",
-				Computed:    true,
-			},
-			"last_use_at": schema.StringAttribute{
-				Description: "API Key last used - note this value is only updated once per 3 hour period, so the 'actual' time of last use may be up to 3 hours later than this timestamp.",
-				Computed:    true,
-			},
-			"name": schema.StringAttribute{
-				Description: "Internal name for the API Key.  For your use.",
-				Required:    true,
 			},
 			"permission_set": schema.StringAttribute{
 				Description: "Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.",
@@ -132,14 +109,6 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"platform": schema.StringAttribute{
-				Description: "If this API key represents a Desktop app, what platform was it created on?",
-				Computed:    true,
-			},
-			"url": schema.StringAttribute{
-				Description: "URL for API host.",
-				Computed:    true,
 			},
 			"user_id": schema.Int64Attribute{
 				Description: "User ID for the owner of this API Key.  May be blank for Site-wide API Keys.",
@@ -156,6 +125,37 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+			},
+			"id": schema.Int64Attribute{
+				Description: "API Key ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"descriptive_label": schema.StringAttribute{
+				Description: "Unique label that describes this API key.  Useful for external systems where you may have API keys from multiple accounts and want a human-readable label for each key.",
+				Computed:    true,
+			},
+			"created_at": schema.StringAttribute{
+				Description: "Time which API Key was created",
+				Computed:    true,
+			},
+			"key": schema.StringAttribute{
+				Description: "API Key actual key string",
+				Computed:    true,
+			},
+			"last_use_at": schema.StringAttribute{
+				Description: "API Key last used - note this value is only updated once per 3 hour period, so the 'actual' time of last use may be up to 3 hours later than this timestamp.",
+				Computed:    true,
+			},
+			"platform": schema.StringAttribute{
+				Description: "If this API key represents a Desktop app, what platform was it created on?",
+				Computed:    true,
+			},
+			"url": schema.StringAttribute{
+				Description: "URL for API host.",
+				Computed:    true,
 			},
 		},
 	}

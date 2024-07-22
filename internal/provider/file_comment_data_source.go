@@ -29,9 +29,9 @@ type fileCommentDataSource struct {
 
 type fileCommentDataSourceModel struct {
 	Id        types.Int64   `tfsdk:"id"`
+	Path      types.String  `tfsdk:"path"`
 	Body      types.String  `tfsdk:"body"`
 	Reactions types.Dynamic `tfsdk:"reactions"`
-	Path      types.String  `tfsdk:"path"`
 }
 
 func (r *fileCommentDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -65,6 +65,10 @@ func (r *fileCommentDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Description: "File Comment ID",
 				Required:    true,
 			},
+			"path": schema.StringAttribute{
+				Description: "File path.",
+				Required:    true,
+			},
 			"body": schema.StringAttribute{
 				Description: "Comment body.",
 				Computed:    true,
@@ -72,10 +76,6 @@ func (r *fileCommentDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 			"reactions": schema.DynamicAttribute{
 				Description: "Reactions to this comment.",
 				Computed:    true,
-			},
-			"path": schema.StringAttribute{
-				Description: "File path.",
-				Required:    true,
 			},
 		},
 	}

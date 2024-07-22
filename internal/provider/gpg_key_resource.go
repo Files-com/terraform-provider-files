@@ -34,8 +34,6 @@ type gpgKeyResource struct {
 }
 
 type gpgKeyResourceModel struct {
-	Id                     types.Int64  `tfsdk:"id"`
-	ExpiresAt              types.String `tfsdk:"expires_at"`
 	Name                   types.String `tfsdk:"name"`
 	UserId                 types.Int64  `tfsdk:"user_id"`
 	PublicKey              types.String `tfsdk:"public_key"`
@@ -44,6 +42,8 @@ type gpgKeyResourceModel struct {
 	PrivateKeyHash         types.String `tfsdk:"private_key_hash"`
 	PrivateKeyPassword     types.String `tfsdk:"private_key_password"`
 	PrivateKeyPasswordHash types.String `tfsdk:"private_key_password_hash"`
+	Id                     types.Int64  `tfsdk:"id"`
+	ExpiresAt              types.String `tfsdk:"expires_at"`
 }
 
 func (r *gpgKeyResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -73,17 +73,6 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 	resp.Schema = schema.Schema{
 		Description: "GPG keys for decrypt or encrypt behaviors.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Your GPG key ID.",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
-			"expires_at": schema.StringAttribute{
-				Description: "Your GPG key expiration date.",
-				Computed:    true,
-			},
 			"name": schema.StringAttribute{
 				Description: "Your GPG key name.",
 				Required:    true,
@@ -129,6 +118,17 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			},
 			"private_key_password_hash": schema.StringAttribute{
 				Computed: true,
+			},
+			"id": schema.Int64Attribute{
+				Description: "Your GPG key ID.",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"expires_at": schema.StringAttribute{
+				Description: "Your GPG key expiration date.",
+				Computed:    true,
 			},
 		},
 	}

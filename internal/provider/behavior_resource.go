@@ -37,15 +37,15 @@ type behaviorResource struct {
 }
 
 type behaviorResourceModel struct {
-	Id                          types.Int64   `tfsdk:"id"`
 	Path                        types.String  `tfsdk:"path"`
-	AttachmentUrl               types.String  `tfsdk:"attachment_url"`
 	Behavior                    types.String  `tfsdk:"behavior"`
 	Name                        types.String  `tfsdk:"name"`
 	Description                 types.String  `tfsdk:"description"`
 	Value                       types.Dynamic `tfsdk:"value"`
 	DisableParentFolderBehavior types.Bool    `tfsdk:"disable_parent_folder_behavior"`
 	Recursive                   types.Bool    `tfsdk:"recursive"`
+	Id                          types.Int64   `tfsdk:"id"`
+	AttachmentUrl               types.String  `tfsdk:"attachment_url"`
 }
 
 func (r *behaviorResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -75,23 +75,12 @@ func (r *behaviorResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 	resp.Schema = schema.Schema{
 		Description: "Behaviors are the API resource for what are also known as Folder Settings. Every behavior is associated with a folder.\n\n\n\nDepending on the behavior, it may also operate on child folders. It may be overridable at the child folder level or maybe can be added to at the child folder level. The exact options for each behavior type are explained in the table below.\n\n\n\nAdditionally, some behaviors are visible to non-admins, and others are even settable by non-admins. All the details are below.\n\n\n\nEach behavior uses a different format for storing its settings value. Next to each behavior type is an example value. Our API and SDKs currently require that the value for behaviors be sent as raw JSON within the `value` field. Our SDK generator and API documentation generator doesn't fully keep up with this requirement, so if you need any help finding the exact syntax to use for your language or use case, just reach out.\n\n\n\nNote: Append Timestamp behavior removed. Check [Override Upload Filename](#override-upload-filename-behaviors) behavior which have even more functionality to modify name on upload.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Folder behavior ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"path": schema.StringAttribute{
 				Description: "Folder path.  Note that Behavior paths cannot be updated once initially set.  You will need to remove and re-create the behavior on the new path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
-			},
-			"attachment_url": schema.StringAttribute{
-				Description: "URL for attached file",
-				Computed:    true,
 			},
 			"behavior": schema.StringAttribute{
 				Description: "Behavior type.",
@@ -139,6 +128,17 @@ func (r *behaviorResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
+			},
+			"id": schema.Int64Attribute{
+				Description: "Folder behavior ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"attachment_url": schema.StringAttribute{
+				Description: "URL for attached file",
+				Computed:    true,
 			},
 		},
 	}

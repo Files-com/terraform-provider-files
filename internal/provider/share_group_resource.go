@@ -34,11 +34,11 @@ type shareGroupResource struct {
 }
 
 type shareGroupResourceModel struct {
-	Id      types.Int64   `tfsdk:"id"`
 	Name    types.String  `tfsdk:"name"`
+	Members types.Dynamic `tfsdk:"members"`
 	Notes   types.String  `tfsdk:"notes"`
 	UserId  types.Int64   `tfsdk:"user_id"`
-	Members types.Dynamic `tfsdk:"members"`
+	Id      types.Int64   `tfsdk:"id"`
 }
 
 func (r *shareGroupResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -68,15 +68,12 @@ func (r *shareGroupResource) Schema(_ context.Context, _ resource.SchemaRequest,
 	resp.Schema = schema.Schema{
 		Description: "Share groups allow you to store and name groups of email contacts to be used for sending share and inbox invitations.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Share Group ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"name": schema.StringAttribute{
 				Description: "Name of the share group",
+				Required:    true,
+			},
+			"members": schema.DynamicAttribute{
+				Description: "A list of share group members",
 				Required:    true,
 			},
 			"notes": schema.StringAttribute{
@@ -96,9 +93,12 @@ func (r *shareGroupResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					int64planmodifier.RequiresReplace(),
 				},
 			},
-			"members": schema.DynamicAttribute{
-				Description: "A list of share group members",
-				Required:    true,
+			"id": schema.Int64Attribute{
+				Description: "Share Group ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
 			},
 		},
 	}

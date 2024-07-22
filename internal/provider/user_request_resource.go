@@ -33,11 +33,11 @@ type userRequestResource struct {
 }
 
 type userRequestResourceModel struct {
-	Id      types.Int64  `tfsdk:"id"`
 	Name    types.String `tfsdk:"name"`
 	Email   types.String `tfsdk:"email"`
 	Details types.String `tfsdk:"details"`
 	Company types.String `tfsdk:"company"`
+	Id      types.Int64  `tfsdk:"id"`
 }
 
 func (r *userRequestResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -67,13 +67,6 @@ func (r *userRequestResource) Schema(_ context.Context, _ resource.SchemaRequest
 	resp.Schema = schema.Schema{
 		Description: "User Requests allow anonymous users to place a request for access on the login screen to the site administrator.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"name": schema.StringAttribute{
 				Description: "User's full name",
 				Required:    true,
@@ -102,6 +95,13 @@ func (r *userRequestResource) Schema(_ context.Context, _ resource.SchemaRequest
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 					stringplanmodifier.RequiresReplace(),
+				},
+			},
+			"id": schema.Int64Attribute{
+				Description: "ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 		},

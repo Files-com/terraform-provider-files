@@ -27,8 +27,8 @@ type styleDataSource struct {
 }
 
 type styleDataSourceModel struct {
-	Id        types.Int64  `tfsdk:"id"`
 	Path      types.String `tfsdk:"path"`
+	Id        types.Int64  `tfsdk:"id"`
 	Logo      types.String `tfsdk:"logo"`
 	Thumbnail types.String `tfsdk:"thumbnail"`
 }
@@ -60,13 +60,13 @@ func (r *styleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 	resp.Schema = schema.Schema{
 		Description: "Styles are custom sets of branding that can be applied on a per-folder basis.\n\nCurrently these only support Logos per folder, but in the future we may extend these to also support colors.\n\nIf you want to see that, please let us know so we can add your vote to the list.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Style ID",
-				Computed:    true,
-			},
 			"path": schema.StringAttribute{
 				Description: "Folder path This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
 				Required:    true,
+			},
+			"id": schema.Int64Attribute{
+				Description: "Style ID",
+				Computed:    true,
 			},
 			"logo": schema.StringAttribute{
 				Description: "Logo",

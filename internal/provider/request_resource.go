@@ -33,14 +33,14 @@ type requestResource struct {
 }
 
 type requestResourceModel struct {
-	Id              types.Int64  `tfsdk:"id"`
 	Path            types.String `tfsdk:"path"`
-	Source          types.String `tfsdk:"source"`
 	Destination     types.String `tfsdk:"destination"`
-	AutomationId    types.String `tfsdk:"automation_id"`
-	UserDisplayName types.String `tfsdk:"user_display_name"`
 	UserIds         types.String `tfsdk:"user_ids"`
 	GroupIds        types.String `tfsdk:"group_ids"`
+	Id              types.Int64  `tfsdk:"id"`
+	Source          types.String `tfsdk:"source"`
+	AutomationId    types.String `tfsdk:"automation_id"`
+	UserDisplayName types.String `tfsdk:"user_display_name"`
 }
 
 func (r *requestResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -70,13 +70,6 @@ func (r *requestResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 	resp.Schema = schema.Schema{
 		Description: "A Request represents a file that *should* be uploaded by a specific user or group.\n\n\n\nRequests can either be manually created and managed, or managed automatically by an Automation.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Request ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"path": schema.StringAttribute{
 				Description: "Folder path This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
 				Required:    true,
@@ -84,24 +77,12 @@ func (r *requestResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
-			"source": schema.StringAttribute{
-				Description: "Source filename, if applicable",
-				Computed:    true,
-			},
 			"destination": schema.StringAttribute{
 				Description: "Destination filename",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
-			},
-			"automation_id": schema.StringAttribute{
-				Description: "ID of automation that created request",
-				Computed:    true,
-			},
-			"user_display_name": schema.StringAttribute{
-				Description: "User making the request (if applicable)",
-				Computed:    true,
 			},
 			"user_ids": schema.StringAttribute{
 				Description: "A list of user IDs to request the file from. If sent as a string, it should be comma-delimited.",
@@ -116,6 +97,25 @@ func (r *requestResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+			},
+			"id": schema.Int64Attribute{
+				Description: "Request ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"source": schema.StringAttribute{
+				Description: "Source filename, if applicable",
+				Computed:    true,
+			},
+			"automation_id": schema.StringAttribute{
+				Description: "ID of automation that created request",
+				Computed:    true,
+			},
+			"user_display_name": schema.StringAttribute{
+				Description: "User making the request (if applicable)",
+				Computed:    true,
 			},
 		},
 	}

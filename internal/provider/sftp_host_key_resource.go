@@ -33,11 +33,11 @@ type sftpHostKeyResource struct {
 }
 
 type sftpHostKeyResourceModel struct {
-	Id                types.Int64  `tfsdk:"id"`
 	Name              types.String `tfsdk:"name"`
+	PrivateKey        types.String `tfsdk:"private_key"`
+	Id                types.Int64  `tfsdk:"id"`
 	FingerprintMd5    types.String `tfsdk:"fingerprint_md5"`
 	FingerprintSha256 types.String `tfsdk:"fingerprint_sha256"`
-	PrivateKey        types.String `tfsdk:"private_key"`
 }
 
 func (r *sftpHostKeyResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -67,19 +67,23 @@ func (r *sftpHostKeyResource) Schema(_ context.Context, _ resource.SchemaRequest
 	resp.Schema = schema.Schema{
 		Description: "",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Sftp Host Key ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"name": schema.StringAttribute{
 				Description: "The friendly name of this SFTP Host Key.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"private_key": schema.StringAttribute{
+				Description: "The private key data.",
+				Optional:    true,
+			},
+			"id": schema.Int64Attribute{
+				Description: "Sftp Host Key ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"fingerprint_md5": schema.StringAttribute{
@@ -89,10 +93,6 @@ func (r *sftpHostKeyResource) Schema(_ context.Context, _ resource.SchemaRequest
 			"fingerprint_sha256": schema.StringAttribute{
 				Description: "SHA256 Fingerpint of the public key",
 				Computed:    true,
-			},
-			"private_key": schema.StringAttribute{
-				Description: "The private key data.",
-				Optional:    true,
 			},
 		},
 	}

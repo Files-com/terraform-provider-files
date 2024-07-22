@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
-	"github.com/Files-com/files-sdk-go/v3/file"
+	file "github.com/Files-com/files-sdk-go/v3/file"
 	"github.com/Files-com/terraform-provider-files/lib"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
@@ -235,11 +235,10 @@ func (r *fileDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		return
 	}
 
+	paramsFileFind := files_sdk.FileFindParams{}
+	paramsFileFind.Path = data.Path.ValueString()
 	withPriorityColor := true
-	paramsFileFind := files_sdk.FileFindParams{
-		Path:              data.Path.ValueString(),
-		WithPriorityColor: &withPriorityColor,
-	}
+	paramsFileFind.WithPriorityColor = &withPriorityColor
 
 	file, err := r.client.Find(paramsFileFind, files_sdk.WithContext(ctx))
 	if err != nil {

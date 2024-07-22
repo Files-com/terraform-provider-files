@@ -35,13 +35,13 @@ type snapshotResource struct {
 }
 
 type snapshotResourceModel struct {
-	Id          types.Int64  `tfsdk:"id"`
 	ExpiresAt   types.String `tfsdk:"expires_at"`
-	FinalizedAt types.String `tfsdk:"finalized_at"`
 	Name        types.String `tfsdk:"name"`
+	Paths       types.List   `tfsdk:"paths"`
+	Id          types.Int64  `tfsdk:"id"`
+	FinalizedAt types.String `tfsdk:"finalized_at"`
 	UserId      types.Int64  `tfsdk:"user_id"`
 	BundleId    types.Int64  `tfsdk:"bundle_id"`
-	Paths       types.List   `tfsdk:"paths"`
 }
 
 func (r *snapshotResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -71,13 +71,6 @@ func (r *snapshotResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 	resp.Schema = schema.Schema{
 		Description: "Snapshots are frozen groups of files in your site's hidden folder.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "The snapshot's unique ID.",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"expires_at": schema.StringAttribute{
 				Description: "When the snapshot expires.",
 				Computed:    true,
@@ -85,10 +78,6 @@ func (r *snapshotResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
-			},
-			"finalized_at": schema.StringAttribute{
-				Description: "When the snapshot was finalized.",
-				Computed:    true,
 			},
 			"name": schema.StringAttribute{
 				Description: "A name for the snapshot.",
@@ -98,6 +87,22 @@ func (r *snapshotResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"paths": schema.ListAttribute{
+				Description: "An array of paths to add to the snapshot.",
+				Optional:    true,
+				ElementType: types.StringType,
+			},
+			"id": schema.Int64Attribute{
+				Description: "The snapshot's unique ID.",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"finalized_at": schema.StringAttribute{
+				Description: "When the snapshot was finalized.",
+				Computed:    true,
+			},
 			"user_id": schema.Int64Attribute{
 				Description: "The user that created this snapshot, if applicable.",
 				Computed:    true,
@@ -105,11 +110,6 @@ func (r *snapshotResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 			"bundle_id": schema.Int64Attribute{
 				Description: "The bundle using this snapshot, if applicable.",
 				Computed:    true,
-			},
-			"paths": schema.ListAttribute{
-				Description: "An array of paths to add to the snapshot.",
-				Optional:    true,
-				ElementType: types.StringType,
 			},
 		},
 	}

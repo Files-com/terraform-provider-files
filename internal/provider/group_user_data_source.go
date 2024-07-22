@@ -26,12 +26,12 @@ type groupUserDataSource struct {
 }
 
 type groupUserDataSourceModel struct {
+	Id        types.Int64  `tfsdk:"id"`
 	GroupName types.String `tfsdk:"group_name"`
 	GroupId   types.Int64  `tfsdk:"group_id"`
 	UserId    types.Int64  `tfsdk:"user_id"`
 	Admin     types.Bool   `tfsdk:"admin"`
 	Usernames types.List   `tfsdk:"usernames"`
-	Id        types.Int64  `tfsdk:"id"`
 }
 
 func (r *groupUserDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -61,6 +61,10 @@ func (r *groupUserDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 	resp.Schema = schema.Schema{
 		Description: "A GroupUser describes the membership of a User within a Group.\n\n\n\n## Creating GroupUsers\n\nGroupUsers can be created via the normal `create` action. When using the `update` action, if the\n\nGroupUser record does not exist for the given user/group IDs it will be created.",
 		Attributes: map[string]schema.Attribute{
+			"id": schema.Int64Attribute{
+				Description: "Group User ID.",
+				Required:    true,
+			},
 			"group_name": schema.StringAttribute{
 				Description: "Group name",
 				Computed:    true,
@@ -81,10 +85,6 @@ func (r *groupUserDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 				Description: "A list of usernames for users in this group",
 				Computed:    true,
 				ElementType: types.StringType,
-			},
-			"id": schema.Int64Attribute{
-				Description: "Group User ID.",
-				Required:    true,
 			},
 		},
 	}

@@ -34,17 +34,17 @@ type groupResource struct {
 }
 
 type groupResourceModel struct {
-	Id                types.Int64  `tfsdk:"id"`
 	Name              types.String `tfsdk:"name"`
 	AllowedIps        types.String `tfsdk:"allowed_ips"`
 	AdminIds          types.String `tfsdk:"admin_ids"`
 	Notes             types.String `tfsdk:"notes"`
 	UserIds           types.String `tfsdk:"user_ids"`
-	Usernames         types.String `tfsdk:"usernames"`
 	FtpPermission     types.Bool   `tfsdk:"ftp_permission"`
 	SftpPermission    types.Bool   `tfsdk:"sftp_permission"`
 	DavPermission     types.Bool   `tfsdk:"dav_permission"`
 	RestapiPermission types.Bool   `tfsdk:"restapi_permission"`
+	Id                types.Int64  `tfsdk:"id"`
+	Usernames         types.String `tfsdk:"usernames"`
 }
 
 func (r *groupResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -74,13 +74,6 @@ func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 	resp.Schema = schema.Schema{
 		Description: "Groups are a powerful tool for permissions and user management on Files.com. Users can belong to multiple groups.\n\n\n\nAll permissions can be managed via Groups, and Groups can also be synced to your identity platform via LDAP or SCIM.\n\n\n\nFiles.com's Group Admin feature allows you to define Group Admins, who then have access to add and remove users within their groups.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Group ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"name": schema.StringAttribute{
 				Description: "Group name",
 				Required:    true,
@@ -117,10 +110,6 @@ func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"usernames": schema.StringAttribute{
-				Description: "Comma-delimited list of usernames who belong to this group (separated by commas)",
-				Computed:    true,
-			},
 			"ftp_permission": schema.BoolAttribute{
 				Description: "If true, users in this group can use FTP to login.  This will override a false value of `ftp_permission` on the user level.",
 				Computed:    true,
@@ -152,6 +141,17 @@ func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
+			},
+			"id": schema.Int64Attribute{
+				Description: "Group ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"usernames": schema.StringAttribute{
+				Description: "Comma-delimited list of usernames who belong to this group (separated by commas)",
+				Computed:    true,
 			},
 		},
 	}

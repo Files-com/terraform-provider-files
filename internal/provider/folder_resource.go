@@ -39,6 +39,10 @@ type folderResource struct {
 
 type folderResourceModel struct {
 	Path                               types.String  `tfsdk:"path"`
+	CustomMetadata                     types.Dynamic `tfsdk:"custom_metadata"`
+	ProvidedMtime                      types.String  `tfsdk:"provided_mtime"`
+	PriorityColor                      types.String  `tfsdk:"priority_color"`
+	MkdirParents                       types.Bool    `tfsdk:"mkdir_parents"`
 	CreatedById                        types.Int64   `tfsdk:"created_by_id"`
 	CreatedByApiKeyId                  types.Int64   `tfsdk:"created_by_api_key_id"`
 	CreatedByAs2IncomingMessageId      types.Int64   `tfsdk:"created_by_as2_incoming_message_id"`
@@ -47,7 +51,6 @@ type folderResourceModel struct {
 	CreatedByInboxId                   types.Int64   `tfsdk:"created_by_inbox_id"`
 	CreatedByRemoteServerId            types.Int64   `tfsdk:"created_by_remote_server_id"`
 	CreatedByRemoteServerSyncId        types.Int64   `tfsdk:"created_by_remote_server_sync_id"`
-	CustomMetadata                     types.Dynamic `tfsdk:"custom_metadata"`
 	DisplayName                        types.String  `tfsdk:"display_name"`
 	Type                               types.String  `tfsdk:"type"`
 	Size                               types.Int64   `tfsdk:"size"`
@@ -59,7 +62,6 @@ type folderResourceModel struct {
 	LastModifiedByRemoteServerId       types.Int64   `tfsdk:"last_modified_by_remote_server_id"`
 	LastModifiedByRemoteServerSyncId   types.Int64   `tfsdk:"last_modified_by_remote_server_sync_id"`
 	Mtime                              types.String  `tfsdk:"mtime"`
-	ProvidedMtime                      types.String  `tfsdk:"provided_mtime"`
 	Crc32                              types.String  `tfsdk:"crc32"`
 	Md5                                types.String  `tfsdk:"md5"`
 	MimeType                           types.String  `tfsdk:"mime_type"`
@@ -68,10 +70,8 @@ type folderResourceModel struct {
 	SubfoldersLocked                   types.Bool    `tfsdk:"subfolders_locked"`
 	IsLocked                           types.Bool    `tfsdk:"is_locked"`
 	DownloadUri                        types.String  `tfsdk:"download_uri"`
-	PriorityColor                      types.String  `tfsdk:"priority_color"`
 	PreviewId                          types.Int64   `tfsdk:"preview_id"`
 	Preview                            types.String  `tfsdk:"preview"`
-	MkdirParents                       types.Bool    `tfsdk:"mkdir_parents"`
 }
 
 func (r *folderResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -109,6 +109,37 @@ func (r *folderResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"custom_metadata": schema.DynamicAttribute{
+				Description: "Custom metadata map of keys and values. Limited to 32 keys, 256 characters per key and 1024 characters per value.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Dynamic{
+					dynamicplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"provided_mtime": schema.StringAttribute{
+				Description: "File last modified date/time, according to the client who set it.  Files.com allows desktop, FTP, SFTP, and WebDAV clients to set modified at times.  This allows Desktop<->Cloud syncing to preserve modified at times.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"priority_color": schema.StringAttribute{
+				Description: "Bookmark/priority color of file/folder",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"mkdir_parents": schema.BoolAttribute{
+				Description: "Create parent directories if they do not exist?",
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
+			},
 			"created_by_id": schema.Int64Attribute{
 				Description: "User ID of the User who created the file/folder",
 				Computed:    true,
@@ -140,14 +171,6 @@ func (r *folderResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			"created_by_remote_server_sync_id": schema.Int64Attribute{
 				Description: "ID of the Remote Server Sync that created the file/folder",
 				Computed:    true,
-			},
-			"custom_metadata": schema.DynamicAttribute{
-				Description: "Custom metadata map of keys and values. Limited to 32 keys, 256 characters per key and 1024 characters per value.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Dynamic{
-					dynamicplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"display_name": schema.StringAttribute{
 				Description: "File/Folder display name",
@@ -193,14 +216,6 @@ func (r *folderResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Description: "File last modified date/time, according to the server.  This is the timestamp of the last Files.com operation of the file, regardless of what modified timestamp was sent.",
 				Computed:    true,
 			},
-			"provided_mtime": schema.StringAttribute{
-				Description: "File last modified date/time, according to the client who set it.  Files.com allows desktop, FTP, SFTP, and WebDAV clients to set modified at times.  This allows Desktop<->Cloud syncing to preserve modified at times.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
 			"crc32": schema.StringAttribute{
 				Description: "File CRC32 checksum. This is sometimes delayed, so if you get a blank response, wait and try again.",
 				Computed:    true,
@@ -233,14 +248,6 @@ func (r *folderResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Description: "Link to download file. Provided only in response to a download request.",
 				Computed:    true,
 			},
-			"priority_color": schema.StringAttribute{
-				Description: "Bookmark/priority color of file/folder",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
 			"preview_id": schema.Int64Attribute{
 				Description: "File preview ID",
 				Computed:    true,
@@ -248,13 +255,6 @@ func (r *folderResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			"preview": schema.StringAttribute{
 				Description: "File preview",
 				Computed:    true,
-			},
-			"mkdir_parents": schema.BoolAttribute{
-				Description: "Create parent directories if they do not exist?",
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.RequiresReplace(),
-				},
 			},
 		},
 	}

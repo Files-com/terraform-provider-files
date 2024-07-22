@@ -34,8 +34,8 @@ type projectResource struct {
 }
 
 type projectResourceModel struct {
-	Id           types.Int64  `tfsdk:"id"`
 	GlobalAccess types.String `tfsdk:"global_access"`
+	Id           types.Int64  `tfsdk:"id"`
 }
 
 func (r *projectResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -65,18 +65,18 @@ func (r *projectResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 	resp.Schema = schema.Schema{
 		Description: "Projects are associated with a folder and add project management features to that folder.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Project ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"global_access": schema.StringAttribute{
 				Description: "Global access settings",
 				Required:    true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("none", "anyone_with_read", "anyone_with_full"),
+				},
+			},
+			"id": schema.Int64Attribute{
+				Description: "Project ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 		},

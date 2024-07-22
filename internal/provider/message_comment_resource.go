@@ -33,10 +33,10 @@ type messageCommentResource struct {
 }
 
 type messageCommentResourceModel struct {
-	Id        types.Int64   `tfsdk:"id"`
 	Body      types.String  `tfsdk:"body"`
-	Reactions types.Dynamic `tfsdk:"reactions"`
 	UserId    types.Int64   `tfsdk:"user_id"`
+	Id        types.Int64   `tfsdk:"id"`
+	Reactions types.Dynamic `tfsdk:"reactions"`
 }
 
 func (r *messageCommentResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -66,20 +66,9 @@ func (r *messageCommentResource) Schema(_ context.Context, _ resource.SchemaRequ
 	resp.Schema = schema.Schema{
 		Description: "A message comment represents a comment made by a user on a message.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Message Comment ID",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"body": schema.StringAttribute{
 				Description: "Comment body.",
 				Required:    true,
-			},
-			"reactions": schema.DynamicAttribute{
-				Description: "Reactions to this comment.",
-				Computed:    true,
 			},
 			"user_id": schema.Int64Attribute{
 				Description: "User ID.  Provide a value of `0` to operate the current session's user.",
@@ -87,6 +76,17 @@ func (r *messageCommentResource) Schema(_ context.Context, _ resource.SchemaRequ
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.RequiresReplace(),
 				},
+			},
+			"id": schema.Int64Attribute{
+				Description: "Message Comment ID",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"reactions": schema.DynamicAttribute{
+				Description: "Reactions to this comment.",
+				Computed:    true,
 			},
 		},
 	}
