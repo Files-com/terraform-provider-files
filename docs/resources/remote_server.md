@@ -251,6 +251,7 @@ resource "files_remote_server" "example_remote_server" {
 - `id` (Number) Remote server ID
 - `pinned_region` (String) If set, all communciations with this remote server are made through the provided region.
 - `remote_home_path` (String) Initial home folder on remote server
+- `supports_versioning` (Boolean) If true, this remote server supports file versioning. This value is determined automatically by Files.com.
 
 ## Import
 

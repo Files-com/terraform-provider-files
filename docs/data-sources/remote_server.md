@@ -182,6 +182,7 @@ data "files_remote_server" "example_remote_server" {
 - `server_host_key` (String) Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts
 - `server_type` (String) Remote server type.
 - `ssl` (String) Should we require SSL?
+- `supports_versioning` (Boolean) If true, this remote server supports file versioning. This value is determined automatically by Files.com.
 - `username` (String) Remote server username.  Not needed for S3 buckets.
 - `wasabi_access_key` (String) Wasabi access key.
 - `wasabi_bucket` (String) Wasabi Bucket name

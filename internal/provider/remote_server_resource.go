@@ -91,6 +91,7 @@ type remoteServerResourceModel struct {
 	LinodeBucket                          types.String `tfsdk:"linode_bucket"`
 	LinodeAccessKey                       types.String `tfsdk:"linode_access_key"`
 	LinodeRegion                          types.String `tfsdk:"linode_region"`
+	SupportsVersioning                    types.Bool   `tfsdk:"supports_versioning"`
 	AwsSecretKey                          types.String `tfsdk:"aws_secret_key"`
 	Password                              types.String `tfsdk:"password"`
 	PrivateKey                            types.String `tfsdk:"private_key"`
@@ -564,6 +565,10 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"supports_versioning": schema.BoolAttribute{
+				Description: "If true, this remote server supports file versioning. This value is determined automatically by Files.com.",
+				Computed:    true,
+			},
 			"aws_secret_key": schema.StringAttribute{
 				Description: "AWS secret key.",
 				Optional:    true,
@@ -970,6 +975,7 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.LinodeBucket = types.StringValue(remoteServer.LinodeBucket)
 	state.LinodeAccessKey = types.StringValue(remoteServer.LinodeAccessKey)
 	state.LinodeRegion = types.StringValue(remoteServer.LinodeRegion)
+	state.SupportsVersioning = types.BoolPointerValue(remoteServer.SupportsVersioning)
 
 	return
 }

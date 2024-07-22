@@ -81,6 +81,7 @@ type remoteServerDataSourceModel struct {
 	LinodeBucket                          types.String `tfsdk:"linode_bucket"`
 	LinodeAccessKey                       types.String `tfsdk:"linode_access_key"`
 	LinodeRegion                          types.String `tfsdk:"linode_region"`
+	SupportsVersioning                    types.Bool   `tfsdk:"supports_versioning"`
 }
 
 func (r *remoteServerDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -330,6 +331,10 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Description: "Linode region",
 				Computed:    true,
 			},
+			"supports_versioning": schema.BoolAttribute{
+				Description: "If true, this remote server supports file versioning. This value is determined automatically by Files.com.",
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -420,6 +425,7 @@ func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, re
 	state.LinodeBucket = types.StringValue(remoteServer.LinodeBucket)
 	state.LinodeAccessKey = types.StringValue(remoteServer.LinodeAccessKey)
 	state.LinodeRegion = types.StringValue(remoteServer.LinodeRegion)
+	state.SupportsVersioning = types.BoolPointerValue(remoteServer.SupportsVersioning)
 
 	return
 }
