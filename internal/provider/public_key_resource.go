@@ -167,6 +167,11 @@ func (r *publicKeyResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	publicKey, err := r.client.Find(paramsPublicKeyFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files PublicKey",
 			"Could not read public_key id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -231,7 +236,7 @@ func (r *publicKeyResource) Delete(ctx context.Context, req resource.DeleteReque
 	paramsPublicKeyDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsPublicKeyDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files PublicKey",
 			"Could not delete public_key id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

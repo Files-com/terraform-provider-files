@@ -141,6 +141,11 @@ func (r *fileCommentResource) Read(ctx context.Context, req resource.ReadRequest
 
 	fileCommentIt, err := r.client.ListFor(paramsFileCommentListFor, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files FileComment",
 			"Could not read file_comment id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -158,10 +163,7 @@ func (r *fileCommentResource) Read(ctx context.Context, req resource.ReadRequest
 	}
 
 	if fileComment == nil {
-		resp.Diagnostics.AddError(
-			"Error Reading Files FileComment",
-			"Could not find file_comment id "+fmt.Sprint(state.Id.ValueInt64()),
-		)
+		resp.State.RemoveResource(ctx)
 		return
 	}
 
@@ -222,7 +224,7 @@ func (r *fileCommentResource) Delete(ctx context.Context, req resource.DeleteReq
 	paramsFileCommentDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsFileCommentDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files FileComment",
 			"Could not delete file_comment id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

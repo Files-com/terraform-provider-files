@@ -152,6 +152,11 @@ func (r *groupUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	groupUserIt, err := r.client.List(paramsGroupUserList, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files GroupUser",
 			"Could not read group_user id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -169,10 +174,7 @@ func (r *groupUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 	}
 
 	if groupUser == nil {
-		resp.Diagnostics.AddError(
-			"Error Reading Files GroupUser",
-			"Could not find group_user id "+fmt.Sprint(state.Id.ValueInt64()),
-		)
+		resp.State.RemoveResource(ctx)
 		return
 	}
 
@@ -237,7 +239,7 @@ func (r *groupUserResource) Delete(ctx context.Context, req resource.DeleteReque
 	paramsGroupUserDelete.UserId = state.UserId.ValueInt64()
 
 	err := r.client.Delete(paramsGroupUserDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files GroupUser",
 			"Could not delete group_user id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

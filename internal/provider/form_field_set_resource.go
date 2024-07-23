@@ -189,6 +189,11 @@ func (r *formFieldSetResource) Read(ctx context.Context, req resource.ReadReques
 
 	formFieldSet, err := r.client.Find(paramsFormFieldSetFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files FormFieldSet",
 			"Could not read form_field_set id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -258,7 +263,7 @@ func (r *formFieldSetResource) Delete(ctx context.Context, req resource.DeleteRe
 	paramsFormFieldSetDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsFormFieldSetDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files FormFieldSet",
 			"Could not delete form_field_set id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

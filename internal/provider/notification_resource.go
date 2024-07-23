@@ -336,6 +336,11 @@ func (r *notificationResource) Read(ctx context.Context, req resource.ReadReques
 
 	notification, err := r.client.Find(paramsNotificationFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files Notification",
 			"Could not read notification id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -421,7 +426,7 @@ func (r *notificationResource) Delete(ctx context.Context, req resource.DeleteRe
 	paramsNotificationDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsNotificationDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files Notification",
 			"Could not delete notification id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

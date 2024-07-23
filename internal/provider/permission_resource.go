@@ -196,6 +196,11 @@ func (r *permissionResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	permissionIt, err := r.client.List(paramsPermissionList, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files Permission",
 			"Could not read permission id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -213,10 +218,7 @@ func (r *permissionResource) Read(ctx context.Context, req resource.ReadRequest,
 	}
 
 	if permission == nil {
-		resp.Diagnostics.AddError(
-			"Error Reading Files Permission",
-			"Could not find permission id "+fmt.Sprint(state.Id.ValueInt64()),
-		)
+		resp.State.RemoveResource(ctx)
 		return
 	}
 
@@ -249,7 +251,7 @@ func (r *permissionResource) Delete(ctx context.Context, req resource.DeleteRequ
 	paramsPermissionDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsPermissionDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files Permission",
 			"Could not delete permission id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

@@ -687,6 +687,11 @@ func (r *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 
 	user, err := r.client.Find(paramsUserFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files User",
 			"Could not read user id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -816,7 +821,7 @@ func (r *userResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	paramsUserDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsUserDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files User",
 			"Could not delete user id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

@@ -185,6 +185,11 @@ func (r *gpgKeyResource) Read(ctx context.Context, req resource.ReadRequest, res
 
 	gpgKey, err := r.client.Find(paramsGpgKeyFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files GpgKey",
 			"Could not read gpg_key id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -252,7 +257,7 @@ func (r *gpgKeyResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	paramsGpgKeyDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsGpgKeyDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files GpgKey",
 			"Could not delete gpg_key id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

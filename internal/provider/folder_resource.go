@@ -355,6 +355,11 @@ func (r *folderResource) Read(ctx context.Context, req resource.ReadRequest, res
 
 	folder, err := r.fileClient.Find(paramsFolderFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files Folder",
 			"Could not read folder path "+fmt.Sprint(state.Path.ValueString())+": "+err.Error(),
@@ -461,7 +466,7 @@ func (r *folderResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	}
 
 	err := r.fileClient.Delete(paramsFolderDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files Folder",
 			"Could not delete folder path "+fmt.Sprint(state.Path.ValueString())+": "+err.Error(),

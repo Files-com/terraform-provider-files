@@ -195,6 +195,11 @@ func (r *as2StationResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	as2Station, err := r.client.Find(paramsAs2StationFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files As2Station",
 			"Could not read as2_station id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -262,7 +267,7 @@ func (r *as2StationResource) Delete(ctx context.Context, req resource.DeleteRequ
 	paramsAs2StationDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsAs2StationDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files As2Station",
 			"Could not delete as2_station id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

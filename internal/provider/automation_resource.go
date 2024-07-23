@@ -454,6 +454,11 @@ func (r *automationResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	automation, err := r.client.Find(paramsAutomationFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files Automation",
 			"Could not read automation id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -564,7 +569,7 @@ func (r *automationResource) Delete(ctx context.Context, req resource.DeleteRequ
 	paramsAutomationDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsAutomationDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files Automation",
 			"Could not delete automation id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

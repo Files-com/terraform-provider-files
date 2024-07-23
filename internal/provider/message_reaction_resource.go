@@ -138,6 +138,11 @@ func (r *messageReactionResource) Read(ctx context.Context, req resource.ReadReq
 
 	messageReaction, err := r.client.Find(paramsMessageReactionFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files MessageReaction",
 			"Could not read message_reaction id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -174,7 +179,7 @@ func (r *messageReactionResource) Delete(ctx context.Context, req resource.Delet
 	paramsMessageReactionDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsMessageReactionDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files MessageReaction",
 			"Could not delete message_reaction id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

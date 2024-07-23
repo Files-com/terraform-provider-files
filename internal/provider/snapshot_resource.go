@@ -178,6 +178,11 @@ func (r *snapshotResource) Read(ctx context.Context, req resource.ReadRequest, r
 
 	snapshot, err := r.client.Find(paramsSnapshotFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files Snapshot",
 			"Could not read snapshot id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -258,7 +263,7 @@ func (r *snapshotResource) Delete(ctx context.Context, req resource.DeleteReques
 	paramsSnapshotDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsSnapshotDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files Snapshot",
 			"Could not delete snapshot id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

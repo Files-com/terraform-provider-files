@@ -181,6 +181,11 @@ func (r *clickwrapResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 	clickwrap, err := r.client.Find(paramsClickwrapFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files Clickwrap",
 			"Could not read clickwrap id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -249,7 +254,7 @@ func (r *clickwrapResource) Delete(ctx context.Context, req resource.DeleteReque
 	paramsClickwrapDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsClickwrapDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files Clickwrap",
 			"Could not delete clickwrap id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

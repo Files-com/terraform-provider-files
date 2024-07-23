@@ -170,6 +170,11 @@ func (r *requestResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 	requestIt, err := r.client.List(paramsRequestList, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files Request",
 			"Could not read request id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -187,10 +192,7 @@ func (r *requestResource) Read(ctx context.Context, req resource.ReadRequest, re
 	}
 
 	if request == nil {
-		resp.Diagnostics.AddError(
-			"Error Reading Files Request",
-			"Could not find request id "+fmt.Sprint(state.Id.ValueInt64()),
-		)
+		resp.State.RemoveResource(ctx)
 		return
 	}
 
@@ -223,7 +225,7 @@ func (r *requestResource) Delete(ctx context.Context, req resource.DeleteRequest
 	paramsRequestDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsRequestDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files Request",
 			"Could not delete request id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

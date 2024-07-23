@@ -146,6 +146,11 @@ func (r *sftpHostKeyResource) Read(ctx context.Context, req resource.ReadRequest
 
 	sftpHostKey, err := r.client.Find(paramsSftpHostKeyFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files SftpHostKey",
 			"Could not read sftp_host_key id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -211,7 +216,7 @@ func (r *sftpHostKeyResource) Delete(ctx context.Context, req resource.DeleteReq
 	paramsSftpHostKeyDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsSftpHostKeyDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files SftpHostKey",
 			"Could not delete sftp_host_key id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

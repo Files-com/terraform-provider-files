@@ -224,6 +224,11 @@ func (r *apiKeyResource) Read(ctx context.Context, req resource.ReadRequest, res
 
 	apiKey, err := r.client.Find(paramsApiKeyFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files ApiKey",
 			"Could not read api_key id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -302,7 +307,7 @@ func (r *apiKeyResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	paramsApiKeyDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsApiKeyDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files ApiKey",
 			"Could not delete api_key id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

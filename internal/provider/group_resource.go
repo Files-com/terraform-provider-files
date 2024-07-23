@@ -212,6 +212,11 @@ func (r *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 
 	group, err := r.client.Find(paramsGroupFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files Group",
 			"Could not read group id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -284,7 +289,7 @@ func (r *groupResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 	paramsGroupDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsGroupDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files Group",
 			"Could not delete group id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

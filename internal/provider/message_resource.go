@@ -152,6 +152,11 @@ func (r *messageResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 	message, err := r.client.Find(paramsMessageFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files Message",
 			"Could not read message id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -218,7 +223,7 @@ func (r *messageResource) Delete(ctx context.Context, req resource.DeleteRequest
 	paramsMessageDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsMessageDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files Message",
 			"Could not delete message id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

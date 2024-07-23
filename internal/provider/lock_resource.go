@@ -198,6 +198,11 @@ func (r *lockResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 
 	lockIt, err := r.client.ListFor(paramsLockListFor, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files Lock",
 			"Could not read lock path "+fmt.Sprint(state.Path.ValueString())+": "+err.Error(),
@@ -215,10 +220,7 @@ func (r *lockResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 	}
 
 	if lock == nil {
-		resp.Diagnostics.AddError(
-			"Error Reading Files Lock",
-			"Could not find lock path "+fmt.Sprint(state.Path.ValueString()),
-		)
+		resp.State.RemoveResource(ctx)
 		return
 	}
 
@@ -252,7 +254,7 @@ func (r *lockResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	paramsLockDelete.Token = state.Token.ValueString()
 
 	err := r.client.Delete(paramsLockDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files Lock",
 			"Could not delete lock path "+fmt.Sprint(state.Path.ValueString())+": "+err.Error(),

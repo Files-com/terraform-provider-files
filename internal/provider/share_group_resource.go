@@ -155,6 +155,11 @@ func (r *shareGroupResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	shareGroup, err := r.client.Find(paramsShareGroupFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files ShareGroup",
 			"Could not read share_group id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -222,7 +227,7 @@ func (r *shareGroupResource) Delete(ctx context.Context, req resource.DeleteRequ
 	paramsShareGroupDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsShareGroupDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files ShareGroup",
 			"Could not delete share_group id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

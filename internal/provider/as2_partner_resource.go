@@ -237,6 +237,11 @@ func (r *as2PartnerResource) Read(ctx context.Context, req resource.ReadRequest,
 
 	as2Partner, err := r.client.Find(paramsAs2PartnerFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files As2Partner",
 			"Could not read as2_partner id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -308,7 +313,7 @@ func (r *as2PartnerResource) Delete(ctx context.Context, req resource.DeleteRequ
 	paramsAs2PartnerDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsAs2PartnerDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files As2Partner",
 			"Could not delete as2_partner id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

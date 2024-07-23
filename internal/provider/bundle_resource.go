@@ -471,6 +471,11 @@ func (r *bundleResource) Read(ctx context.Context, req resource.ReadRequest, res
 
 	bundle, err := r.client.Find(paramsBundleFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files Bundle",
 			"Could not read bundle id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -582,7 +587,7 @@ func (r *bundleResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	paramsBundleDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsBundleDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files Bundle",
 			"Could not delete bundle id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

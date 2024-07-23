@@ -160,6 +160,11 @@ func (r *bundleNotificationResource) Read(ctx context.Context, req resource.Read
 
 	bundleNotification, err := r.client.Find(paramsBundleNotificationFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files BundleNotification",
 			"Could not read bundle_notification id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -225,7 +230,7 @@ func (r *bundleNotificationResource) Delete(ctx context.Context, req resource.De
 	paramsBundleNotificationDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsBundleNotificationDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files BundleNotification",
 			"Could not delete bundle_notification id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

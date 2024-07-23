@@ -130,6 +130,11 @@ func (r *projectResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 	project, err := r.client.Find(paramsProjectFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files Project",
 			"Could not read project id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -194,7 +199,7 @@ func (r *projectResource) Delete(ctx context.Context, req resource.DeleteRequest
 	paramsProjectDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsProjectDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files Project",
 			"Could not delete project id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

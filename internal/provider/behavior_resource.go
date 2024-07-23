@@ -208,6 +208,11 @@ func (r *behaviorResource) Read(ctx context.Context, req resource.ReadRequest, r
 
 	behavior, err := r.client.Find(paramsBehaviorFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files Behavior",
 			"Could not read behavior id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -287,7 +292,7 @@ func (r *behaviorResource) Delete(ctx context.Context, req resource.DeleteReques
 	paramsBehaviorDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsBehaviorDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files Behavior",
 			"Could not delete behavior id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),

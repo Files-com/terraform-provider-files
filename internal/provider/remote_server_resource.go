@@ -760,6 +760,11 @@ func (r *remoteServerResource) Read(ctx context.Context, req resource.ReadReques
 
 	remoteServer, err := r.client.Find(paramsRemoteServerFind, files_sdk.WithContext(ctx))
 	if err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
 		resp.Diagnostics.AddError(
 			"Error Reading Files RemoteServer",
 			"Could not read remote_server id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
@@ -888,7 +893,7 @@ func (r *remoteServerResource) Delete(ctx context.Context, req resource.DeleteRe
 	paramsRemoteServerDelete.Id = state.Id.ValueInt64()
 
 	err := r.client.Delete(paramsRemoteServerDelete, files_sdk.WithContext(ctx))
-	if err != nil {
+	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files RemoteServer",
 			"Could not delete remote_server id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
