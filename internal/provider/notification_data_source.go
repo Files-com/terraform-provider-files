@@ -82,7 +82,7 @@ func (r *notificationDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Required:    true,
 			},
 			"path": schema.StringAttribute{
-				Description: "Folder path to notify on This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
+				Description: "Folder path to notify on. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
 				Computed:    true,
 			},
 			"group_id": schema.Int64Attribute{

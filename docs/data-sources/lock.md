@@ -43,7 +43,7 @@ data "files_lock" "example_lock" {
 
 ### Required
 
-- `path` (String) Path This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
+- `path` (String) Path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 
 ### Read-Only
 

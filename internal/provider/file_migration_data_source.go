@@ -69,7 +69,7 @@ func (r *fileMigrationDataSource) Schema(_ context.Context, _ datasource.SchemaR
 				Required:    true,
 			},
 			"path": schema.StringAttribute{
-				Description: "Source path This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
+				Description: "Source path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
 				Computed:    true,
 			},
 			"dest_path": schema.StringAttribute{

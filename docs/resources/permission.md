@@ -34,7 +34,7 @@ resource "files_permission" "example_permission" {
 ### Optional
 
 - `group_id` (Number) Group ID
-- `path` (String) Folder path This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
+- `path` (String) Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `permission` (String) Permission type
 - `recursive` (Boolean) Does this permission apply to subfolders?
 - `user_id` (Number) User ID

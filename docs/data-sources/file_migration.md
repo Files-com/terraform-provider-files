@@ -37,6 +37,6 @@ data "files_file_migration" "example_file_migration" {
 - `files_total` (Number)
 - `log_url` (String) Link to download the log file for this migration.
 - `operation` (String) The type of operation
-- `path` (String) Source path This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
+- `path` (String) Source path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `region` (String) Region
 - `status` (String) Status

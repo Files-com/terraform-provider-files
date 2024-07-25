@@ -23,7 +23,7 @@ data "files_priority" "example_priority" {
 
 ### Required
 
-- `path` (String) The path corresponding to the priority color This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
+- `path` (String) The path corresponding to the priority color. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 
 ### Read-Only
 

@@ -66,7 +66,7 @@ func (r *requestDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Required:    true,
 			},
 			"path": schema.StringAttribute{
-				Description: "Folder path This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
+				Description: "Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
 				Computed:    true,
 			},
 			"source": schema.StringAttribute{

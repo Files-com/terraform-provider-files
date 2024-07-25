@@ -46,7 +46,7 @@ resource "files_notification" "example_notification" {
 - `notify_on_move` (Boolean) Trigger on files moved to this path?
 - `notify_on_upload` (Boolean) Trigger on files created/uploaded/updated/changed in this path?
 - `notify_user_actions` (Boolean) If true, will send notifications about a user's own activity to that user.  If false, only activity performed by other users (or anonymous users) will be sent in notifications.
-- `path` (String) Folder path to notify on This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
+- `path` (String) Folder path to notify on. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `recursive` (Boolean) Apply notification recursively?  This will enable notifications for each subfolder.
 - `send_interval` (String) The time interval that notifications are aggregated to
 - `trigger_by_share_recipients` (Boolean) Notify when actions are performed by a share recipient?

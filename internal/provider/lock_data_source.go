@@ -68,7 +68,7 @@ func (r *lockDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 		Description: "Locks are not used by Files.com's web interface, but can be used by your applications to\n\nimplement locking and concurrency features. Note that these locks are advisory in nature,\n\nand creating a lock does not prevent other API requests from being fulfilled.\n\n\n\nOur lock feature is designed to emulate the locking feature offered by WebDAV.\n\nYou can read the WebDAV spec and understand how all of the below endpoints work.\n\n\n\nFiles.com's WebDAV offering and desktop app does leverage this locking API.",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
-				Description: "Path This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
+				Description: "Path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
 				Required:    true,
 			},
 			"timeout": schema.Int64Attribute{

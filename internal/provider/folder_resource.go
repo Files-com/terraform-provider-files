@@ -103,7 +103,7 @@ func (r *folderResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 		Description: "",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
-				Description: "File/Folder path This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
+				Description: "File/Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),

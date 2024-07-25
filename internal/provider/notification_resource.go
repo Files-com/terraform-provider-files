@@ -89,7 +89,7 @@ func (r *notificationResource) Schema(_ context.Context, _ resource.SchemaReques
 		Description: "Notifications are our feature that send E-Mails when new files are uploaded into a folder.",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
-				Description: "Folder path to notify on This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
+				Description: "Folder path to notify on. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{

@@ -92,7 +92,7 @@ func (r *fileDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 		Description: "",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
-				Description: "File/Folder path This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
+				Description: "File/Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
 				Required:    true,
 			},
 			"created_by_id": schema.Int64Attribute{

@@ -71,7 +71,7 @@ func (r *requestResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 		Description: "A Request represents a file that *should* be uploaded by a specific user or group.\n\n\n\nRequests can either be manually created and managed, or managed automatically by an Automation.",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
-				Description: "Folder path This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
+				Description: "Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),

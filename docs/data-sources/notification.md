@@ -36,7 +36,7 @@ data "files_notification" "example_notification" {
 - `notify_on_move` (Boolean) Trigger on files moved to this path?
 - `notify_on_upload` (Boolean) Trigger on files created/uploaded/updated/changed in this path?
 - `notify_user_actions` (Boolean) If true, will send notifications about a user's own activity to that user.  If false, only activity performed by other users (or anonymous users) will be sent in notifications.
-- `path` (String) Folder path to notify on This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
+- `path` (String) Folder path to notify on. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `recursive` (Boolean) Apply notification recursively?  This will enable notifications for each subfolder.
 - `send_interval` (String) The time interval that notifications are aggregated to
 - `suppressed_email` (Boolean) If true, it means that the recipient at this user's email address has manually unsubscribed from all emails, or had their email "hard bounce", which means that we are unable to send mail to this user's current email address. Notifications will resume if the user changes their email address.

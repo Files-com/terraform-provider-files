@@ -23,7 +23,7 @@ data "files_file" "example_file" {
 
 ### Required
 
-- `path` (String) File/Folder path This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
+- `path` (String) File/Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 
 ### Read-Only
 
