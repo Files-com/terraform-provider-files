@@ -36,7 +36,6 @@ func TestBehaviorResource(t *testing.T) {
 resource "files_behavior" "bar_remote_server_sync" {
   behavior  = "remote_server_sync"
   path      = "Bar"
-  recursive = true
   value     = {
     direction        = "pull_from_server"
     keep_after_copy  = "keep"
@@ -53,7 +52,7 @@ resource "files_behavior" "bar_remote_server_sync" {
 					resource.TestCheckResourceAttr("files_behavior.bar_remote_server_sync", "id", "272843"),
 					resource.TestCheckResourceAttr("files_behavior.bar_remote_server_sync", "behavior", "remote_server_sync"),
 					resource.TestCheckResourceAttr("files_behavior.bar_remote_server_sync", "path", "Bar"),
-					resource.TestCheckResourceAttr("files_behavior.bar_remote_server_sync", "recursive", "true"),
+					resource.TestCheckResourceAttr("files_behavior.bar_remote_server_sync", "recursive", "false"),
 					resource.TestCheckResourceAttr("files_behavior.bar_remote_server_sync", "value.direction", "pull_from_server"),
 					resource.TestCheckResourceAttr("files_behavior.bar_remote_server_sync", "value.schedule.days_of_week.0", "0"),
 					resource.TestCheckResourceAttr("files_behavior.bar_remote_server_sync", "value.schedule.days_of_week.1", "1"),

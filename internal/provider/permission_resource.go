@@ -157,7 +157,9 @@ func (r *permissionResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsPermissionCreate.GroupId = plan.GroupId.ValueInt64()
 	paramsPermissionCreate.Path = plan.Path.ValueString()
 	paramsPermissionCreate.Permission = plan.Permission.ValueString()
-	paramsPermissionCreate.Recursive = plan.Recursive.ValueBoolPointer()
+	if !plan.Recursive.IsNull() && !plan.Recursive.IsUnknown() {
+		paramsPermissionCreate.Recursive = plan.Recursive.ValueBoolPointer()
+	}
 	paramsPermissionCreate.UserId = plan.UserId.ValueInt64()
 	paramsPermissionCreate.Username = plan.Username.ValueString()
 

@@ -398,14 +398,26 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 		resp.Diagnostics.Append(diags...)
 	}
 	paramsAutomationCreate.ScheduleTimeZone = plan.ScheduleTimeZone.ValueString()
-	paramsAutomationCreate.AlwaysOverwriteSizeMatchingFiles = plan.AlwaysOverwriteSizeMatchingFiles.ValueBoolPointer()
+	if !plan.AlwaysOverwriteSizeMatchingFiles.IsNull() && !plan.AlwaysOverwriteSizeMatchingFiles.IsUnknown() {
+		paramsAutomationCreate.AlwaysOverwriteSizeMatchingFiles = plan.AlwaysOverwriteSizeMatchingFiles.ValueBoolPointer()
+	}
 	paramsAutomationCreate.Description = plan.Description.ValueString()
-	paramsAutomationCreate.Disabled = plan.Disabled.ValueBoolPointer()
-	paramsAutomationCreate.FlattenDestinationStructure = plan.FlattenDestinationStructure.ValueBoolPointer()
-	paramsAutomationCreate.IgnoreLockedFolders = plan.IgnoreLockedFolders.ValueBoolPointer()
-	paramsAutomationCreate.LegacyFolderMatching = plan.LegacyFolderMatching.ValueBoolPointer()
+	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
+		paramsAutomationCreate.Disabled = plan.Disabled.ValueBoolPointer()
+	}
+	if !plan.FlattenDestinationStructure.IsNull() && !plan.FlattenDestinationStructure.IsUnknown() {
+		paramsAutomationCreate.FlattenDestinationStructure = plan.FlattenDestinationStructure.ValueBoolPointer()
+	}
+	if !plan.IgnoreLockedFolders.IsNull() && !plan.IgnoreLockedFolders.IsUnknown() {
+		paramsAutomationCreate.IgnoreLockedFolders = plan.IgnoreLockedFolders.ValueBoolPointer()
+	}
+	if !plan.LegacyFolderMatching.IsNull() && !plan.LegacyFolderMatching.IsUnknown() {
+		paramsAutomationCreate.LegacyFolderMatching = plan.LegacyFolderMatching.ValueBoolPointer()
+	}
 	paramsAutomationCreate.Name = plan.Name.ValueString()
-	paramsAutomationCreate.OverwriteFiles = plan.OverwriteFiles.ValueBoolPointer()
+	if !plan.OverwriteFiles.IsNull() && !plan.OverwriteFiles.IsUnknown() {
+		paramsAutomationCreate.OverwriteFiles = plan.OverwriteFiles.ValueBoolPointer()
+	}
 	paramsAutomationCreate.PathTimeZone = plan.PathTimeZone.ValueString()
 	paramsAutomationCreate.Trigger = paramsAutomationCreate.Trigger.Enum()[plan.Trigger.ValueString()]
 	if !plan.TriggerActions.IsNull() && !plan.TriggerActions.IsUnknown() {
@@ -514,14 +526,26 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.Append(diags...)
 	}
 	paramsAutomationUpdate.ScheduleTimeZone = plan.ScheduleTimeZone.ValueString()
-	paramsAutomationUpdate.AlwaysOverwriteSizeMatchingFiles = plan.AlwaysOverwriteSizeMatchingFiles.ValueBoolPointer()
+	if !plan.AlwaysOverwriteSizeMatchingFiles.IsNull() && !plan.AlwaysOverwriteSizeMatchingFiles.IsUnknown() {
+		paramsAutomationUpdate.AlwaysOverwriteSizeMatchingFiles = plan.AlwaysOverwriteSizeMatchingFiles.ValueBoolPointer()
+	}
 	paramsAutomationUpdate.Description = plan.Description.ValueString()
-	paramsAutomationUpdate.Disabled = plan.Disabled.ValueBoolPointer()
-	paramsAutomationUpdate.FlattenDestinationStructure = plan.FlattenDestinationStructure.ValueBoolPointer()
-	paramsAutomationUpdate.IgnoreLockedFolders = plan.IgnoreLockedFolders.ValueBoolPointer()
-	paramsAutomationUpdate.LegacyFolderMatching = plan.LegacyFolderMatching.ValueBoolPointer()
+	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
+		paramsAutomationUpdate.Disabled = plan.Disabled.ValueBoolPointer()
+	}
+	if !plan.FlattenDestinationStructure.IsNull() && !plan.FlattenDestinationStructure.IsUnknown() {
+		paramsAutomationUpdate.FlattenDestinationStructure = plan.FlattenDestinationStructure.ValueBoolPointer()
+	}
+	if !plan.IgnoreLockedFolders.IsNull() && !plan.IgnoreLockedFolders.IsUnknown() {
+		paramsAutomationUpdate.IgnoreLockedFolders = plan.IgnoreLockedFolders.ValueBoolPointer()
+	}
+	if !plan.LegacyFolderMatching.IsNull() && !plan.LegacyFolderMatching.IsUnknown() {
+		paramsAutomationUpdate.LegacyFolderMatching = plan.LegacyFolderMatching.ValueBoolPointer()
+	}
 	paramsAutomationUpdate.Name = plan.Name.ValueString()
-	paramsAutomationUpdate.OverwriteFiles = plan.OverwriteFiles.ValueBoolPointer()
+	if !plan.OverwriteFiles.IsNull() && !plan.OverwriteFiles.IsUnknown() {
+		paramsAutomationUpdate.OverwriteFiles = plan.OverwriteFiles.ValueBoolPointer()
+	}
 	paramsAutomationUpdate.PathTimeZone = plan.PathTimeZone.ValueString()
 	paramsAutomationUpdate.Trigger = paramsAutomationUpdate.Trigger.Enum()[plan.Trigger.ValueString()]
 	if !plan.TriggerActions.IsNull() && !plan.TriggerActions.IsUnknown() {

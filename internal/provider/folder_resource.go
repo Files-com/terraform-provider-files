@@ -270,7 +270,9 @@ func (r *folderResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	paramsFolderCreate := files_sdk.FolderCreateParams{}
 	paramsFolderCreate.Path = plan.Path.ValueString()
-	paramsFolderCreate.MkdirParents = plan.MkdirParents.ValueBoolPointer()
+	if !plan.MkdirParents.IsNull() && !plan.MkdirParents.IsUnknown() {
+		paramsFolderCreate.MkdirParents = plan.MkdirParents.ValueBoolPointer()
+	}
 	if !plan.ProvidedMtime.IsNull() && plan.ProvidedMtime.ValueString() != "" {
 		createProvidedMtime, err := time.Parse(time.RFC3339, plan.ProvidedMtime.ValueString())
 		if err != nil {

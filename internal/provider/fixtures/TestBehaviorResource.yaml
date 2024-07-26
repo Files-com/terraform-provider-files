@@ -2,7 +2,7 @@
 version: 1
 interactions:
 - request:
-    body: '{"behavior":"remote_server_sync","disable_parent_folder_behavior":false,"path":"Bar","recursive":true,"value":"{\"direction\":\"pull_from_server\",\"keep_after_copy\":\"keep\",\"remote_server_id\":21226,\"remote_sync_interval\":111,\"schedule\":{\"days_of_week\":[0,1],\"times_of_day\":[\"12:00\",\"13:00\"]},\"trigger\":\"custom_schedule\"}"}'
+    body: '{"behavior":"remote_server_sync","disable_parent_folder_behavior":false,"path":"Bar","value":"{\"direction\":\"pull_from_server\",\"keep_after_copy\":\"keep\",\"remote_server_id\":21226,\"remote_sync_interval\":111,\"schedule\":{\"days_of_week\":[0,1],\"times_of_day\":[\"12:00\",\"13:00\"]},\"trigger\":\"custom_schedule\"}"}'
     form: {}
     headers:
       Content-Type:
@@ -12,7 +12,7 @@ interactions:
     url: https://app.files.com/api/rest/v1/behaviors
     method: POST
   response:
-    body: '{"id":272843,"path":"Bar","behavior":"remote_server_sync","name":null,"description":null,"value":{"direction":"pull_from_server","keep_after_copy":"keep","remote_server_id":21226,"remote_sync_interval":111,"schedule":{"days_of_week":[0,1],"times_of_day":["12:00","13:00"]},"trigger":"custom_schedule","disabled":false,"manual":false,"delete_empty_folders":false},"disable_parent_folder_behavior":false,"recursive":true}'
+    body: '{"id":272843,"path":"Bar","behavior":"remote_server_sync","name":null,"description":null,"value":{"direction":"pull_from_server","keep_after_copy":"keep","remote_server_id":21226,"remote_sync_interval":111,"schedule":{"days_of_week":[0,1],"times_of_day":["12:00","13:00"]},"trigger":"custom_schedule","disabled":false,"manual":false,"delete_empty_folders":false},"disable_parent_folder_behavior":false,"recursive":false}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
@@ -42,7 +42,7 @@ interactions:
     url: https://app.files.com/api/rest/v1/behaviors/272843
     method: GET
   response:
-    body: '{"id":272843,"path":"Bar","behavior":"remote_server_sync","name":null,"description":null,"value":{"direction":"pull_from_server","keep_after_copy":"keep","remote_server_id":21226,"remote_sync_interval":111,"schedule":{"days_of_week":[0,1],"times_of_day":["12:00","13:00"]},"trigger":"custom_schedule","disabled":false,"manual":false,"delete_empty_folders":false},"disable_parent_folder_behavior":false,"recursive":true}'
+    body: '{"id":272843,"path":"Bar","behavior":"remote_server_sync","name":null,"description":null,"value":{"direction":"pull_from_server","keep_after_copy":"keep","remote_server_id":21226,"remote_sync_interval":111,"schedule":{"days_of_week":[0,1],"times_of_day":["12:00","13:00"]},"trigger":"custom_schedule","disabled":false,"manual":false,"delete_empty_folders":false},"disable_parent_folder_behavior":false,"recursive":false}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
@@ -70,7 +70,7 @@ interactions:
     url: https://app.files.com/api/rest/v1/behaviors/272843
     method: GET
   response:
-    body: '{"id":272843,"path":"Bar","behavior":"remote_server_sync","name":null,"description":null,"value":{"direction":"pull_from_server","keep_after_copy":"keep","remote_server_id":21226,"remote_sync_interval":111,"schedule":{"days_of_week":[0,1],"times_of_day":["12:00","13:00"]},"trigger":"custom_schedule","disabled":false,"manual":false,"delete_empty_folders":false},"disable_parent_folder_behavior":false,"recursive":true}'
+    body: '{"id":272843,"path":"Bar","behavior":"remote_server_sync","name":null,"description":null,"value":{"direction":"pull_from_server","keep_after_copy":"keep","remote_server_id":21226,"remote_sync_interval":111,"schedule":{"days_of_week":[0,1],"times_of_day":["12:00","13:00"]},"trigger":"custom_schedule","disabled":false,"manual":false,"delete_empty_folders":false},"disable_parent_folder_behavior":false,"recursive":false}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate

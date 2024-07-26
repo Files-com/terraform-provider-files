@@ -169,10 +169,18 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	paramsGroupCreate.Notes = plan.Notes.ValueString()
 	paramsGroupCreate.UserIds = plan.UserIds.ValueString()
 	paramsGroupCreate.AdminIds = plan.AdminIds.ValueString()
-	paramsGroupCreate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
-	paramsGroupCreate.SftpPermission = plan.SftpPermission.ValueBoolPointer()
-	paramsGroupCreate.DavPermission = plan.DavPermission.ValueBoolPointer()
-	paramsGroupCreate.RestapiPermission = plan.RestapiPermission.ValueBoolPointer()
+	if !plan.FtpPermission.IsNull() && !plan.FtpPermission.IsUnknown() {
+		paramsGroupCreate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
+	}
+	if !plan.SftpPermission.IsNull() && !plan.SftpPermission.IsUnknown() {
+		paramsGroupCreate.SftpPermission = plan.SftpPermission.ValueBoolPointer()
+	}
+	if !plan.DavPermission.IsNull() && !plan.DavPermission.IsUnknown() {
+		paramsGroupCreate.DavPermission = plan.DavPermission.ValueBoolPointer()
+	}
+	if !plan.RestapiPermission.IsNull() && !plan.RestapiPermission.IsUnknown() {
+		paramsGroupCreate.RestapiPermission = plan.RestapiPermission.ValueBoolPointer()
+	}
 	paramsGroupCreate.AllowedIps = plan.AllowedIps.ValueString()
 	paramsGroupCreate.Name = plan.Name.ValueString()
 
@@ -247,10 +255,18 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	paramsGroupUpdate.Notes = plan.Notes.ValueString()
 	paramsGroupUpdate.UserIds = plan.UserIds.ValueString()
 	paramsGroupUpdate.AdminIds = plan.AdminIds.ValueString()
-	paramsGroupUpdate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
-	paramsGroupUpdate.SftpPermission = plan.SftpPermission.ValueBoolPointer()
-	paramsGroupUpdate.DavPermission = plan.DavPermission.ValueBoolPointer()
-	paramsGroupUpdate.RestapiPermission = plan.RestapiPermission.ValueBoolPointer()
+	if !plan.FtpPermission.IsNull() && !plan.FtpPermission.IsUnknown() {
+		paramsGroupUpdate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
+	}
+	if !plan.SftpPermission.IsNull() && !plan.SftpPermission.IsUnknown() {
+		paramsGroupUpdate.SftpPermission = plan.SftpPermission.ValueBoolPointer()
+	}
+	if !plan.DavPermission.IsNull() && !plan.DavPermission.IsUnknown() {
+		paramsGroupUpdate.DavPermission = plan.DavPermission.ValueBoolPointer()
+	}
+	if !plan.RestapiPermission.IsNull() && !plan.RestapiPermission.IsUnknown() {
+		paramsGroupUpdate.RestapiPermission = plan.RestapiPermission.ValueBoolPointer()
+	}
 	paramsGroupUpdate.AllowedIps = plan.AllowedIps.ValueString()
 	paramsGroupUpdate.Name = plan.Name.ValueString()
 

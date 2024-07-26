@@ -274,13 +274,27 @@ func (r *notificationResource) Create(ctx context.Context, req resource.CreateRe
 
 	paramsNotificationCreate := files_sdk.NotificationCreateParams{}
 	paramsNotificationCreate.UserId = plan.UserId.ValueInt64()
-	paramsNotificationCreate.NotifyOnCopy = plan.NotifyOnCopy.ValueBoolPointer()
-	paramsNotificationCreate.NotifyOnDelete = plan.NotifyOnDelete.ValueBoolPointer()
-	paramsNotificationCreate.NotifyOnDownload = plan.NotifyOnDownload.ValueBoolPointer()
-	paramsNotificationCreate.NotifyOnMove = plan.NotifyOnMove.ValueBoolPointer()
-	paramsNotificationCreate.NotifyOnUpload = plan.NotifyOnUpload.ValueBoolPointer()
-	paramsNotificationCreate.NotifyUserActions = plan.NotifyUserActions.ValueBoolPointer()
-	paramsNotificationCreate.Recursive = plan.Recursive.ValueBoolPointer()
+	if !plan.NotifyOnCopy.IsNull() && !plan.NotifyOnCopy.IsUnknown() {
+		paramsNotificationCreate.NotifyOnCopy = plan.NotifyOnCopy.ValueBoolPointer()
+	}
+	if !plan.NotifyOnDelete.IsNull() && !plan.NotifyOnDelete.IsUnknown() {
+		paramsNotificationCreate.NotifyOnDelete = plan.NotifyOnDelete.ValueBoolPointer()
+	}
+	if !plan.NotifyOnDownload.IsNull() && !plan.NotifyOnDownload.IsUnknown() {
+		paramsNotificationCreate.NotifyOnDownload = plan.NotifyOnDownload.ValueBoolPointer()
+	}
+	if !plan.NotifyOnMove.IsNull() && !plan.NotifyOnMove.IsUnknown() {
+		paramsNotificationCreate.NotifyOnMove = plan.NotifyOnMove.ValueBoolPointer()
+	}
+	if !plan.NotifyOnUpload.IsNull() && !plan.NotifyOnUpload.IsUnknown() {
+		paramsNotificationCreate.NotifyOnUpload = plan.NotifyOnUpload.ValueBoolPointer()
+	}
+	if !plan.NotifyUserActions.IsNull() && !plan.NotifyUserActions.IsUnknown() {
+		paramsNotificationCreate.NotifyUserActions = plan.NotifyUserActions.ValueBoolPointer()
+	}
+	if !plan.Recursive.IsNull() && !plan.Recursive.IsUnknown() {
+		paramsNotificationCreate.Recursive = plan.Recursive.ValueBoolPointer()
+	}
 	paramsNotificationCreate.SendInterval = plan.SendInterval.ValueString()
 	paramsNotificationCreate.Message = plan.Message.ValueString()
 	if !plan.TriggeringFilenames.IsNull() && !plan.TriggeringFilenames.IsUnknown() {
@@ -295,7 +309,9 @@ func (r *notificationResource) Create(ctx context.Context, req resource.CreateRe
 		diags = plan.TriggeringUserIds.ElementsAs(ctx, &paramsNotificationCreate.TriggeringUserIds, false)
 		resp.Diagnostics.Append(diags...)
 	}
-	paramsNotificationCreate.TriggerByShareRecipients = plan.TriggerByShareRecipients.ValueBoolPointer()
+	if !plan.TriggerByShareRecipients.IsNull() && !plan.TriggerByShareRecipients.IsUnknown() {
+		paramsNotificationCreate.TriggerByShareRecipients = plan.TriggerByShareRecipients.ValueBoolPointer()
+	}
 	paramsNotificationCreate.GroupId = plan.GroupId.ValueInt64()
 	paramsNotificationCreate.Path = plan.Path.ValueString()
 	paramsNotificationCreate.Username = plan.Username.ValueString()
@@ -368,13 +384,27 @@ func (r *notificationResource) Update(ctx context.Context, req resource.UpdateRe
 
 	paramsNotificationUpdate := files_sdk.NotificationUpdateParams{}
 	paramsNotificationUpdate.Id = plan.Id.ValueInt64()
-	paramsNotificationUpdate.NotifyOnCopy = plan.NotifyOnCopy.ValueBoolPointer()
-	paramsNotificationUpdate.NotifyOnDelete = plan.NotifyOnDelete.ValueBoolPointer()
-	paramsNotificationUpdate.NotifyOnDownload = plan.NotifyOnDownload.ValueBoolPointer()
-	paramsNotificationUpdate.NotifyOnMove = plan.NotifyOnMove.ValueBoolPointer()
-	paramsNotificationUpdate.NotifyOnUpload = plan.NotifyOnUpload.ValueBoolPointer()
-	paramsNotificationUpdate.NotifyUserActions = plan.NotifyUserActions.ValueBoolPointer()
-	paramsNotificationUpdate.Recursive = plan.Recursive.ValueBoolPointer()
+	if !plan.NotifyOnCopy.IsNull() && !plan.NotifyOnCopy.IsUnknown() {
+		paramsNotificationUpdate.NotifyOnCopy = plan.NotifyOnCopy.ValueBoolPointer()
+	}
+	if !plan.NotifyOnDelete.IsNull() && !plan.NotifyOnDelete.IsUnknown() {
+		paramsNotificationUpdate.NotifyOnDelete = plan.NotifyOnDelete.ValueBoolPointer()
+	}
+	if !plan.NotifyOnDownload.IsNull() && !plan.NotifyOnDownload.IsUnknown() {
+		paramsNotificationUpdate.NotifyOnDownload = plan.NotifyOnDownload.ValueBoolPointer()
+	}
+	if !plan.NotifyOnMove.IsNull() && !plan.NotifyOnMove.IsUnknown() {
+		paramsNotificationUpdate.NotifyOnMove = plan.NotifyOnMove.ValueBoolPointer()
+	}
+	if !plan.NotifyOnUpload.IsNull() && !plan.NotifyOnUpload.IsUnknown() {
+		paramsNotificationUpdate.NotifyOnUpload = plan.NotifyOnUpload.ValueBoolPointer()
+	}
+	if !plan.NotifyUserActions.IsNull() && !plan.NotifyUserActions.IsUnknown() {
+		paramsNotificationUpdate.NotifyUserActions = plan.NotifyUserActions.ValueBoolPointer()
+	}
+	if !plan.Recursive.IsNull() && !plan.Recursive.IsUnknown() {
+		paramsNotificationUpdate.Recursive = plan.Recursive.ValueBoolPointer()
+	}
 	paramsNotificationUpdate.SendInterval = plan.SendInterval.ValueString()
 	paramsNotificationUpdate.Message = plan.Message.ValueString()
 	if !plan.TriggeringFilenames.IsNull() && !plan.TriggeringFilenames.IsUnknown() {
@@ -389,7 +419,9 @@ func (r *notificationResource) Update(ctx context.Context, req resource.UpdateRe
 		diags = plan.TriggeringUserIds.ElementsAs(ctx, &paramsNotificationUpdate.TriggeringUserIds, false)
 		resp.Diagnostics.Append(diags...)
 	}
-	paramsNotificationUpdate.TriggerByShareRecipients = plan.TriggerByShareRecipients.ValueBoolPointer()
+	if !plan.TriggerByShareRecipients.IsNull() && !plan.TriggerByShareRecipients.IsUnknown() {
+		paramsNotificationUpdate.TriggerByShareRecipients = plan.TriggerByShareRecipients.ValueBoolPointer()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return

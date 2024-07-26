@@ -115,7 +115,9 @@ func (r *groupUserResource) Create(ctx context.Context, req resource.CreateReque
 	paramsGroupUserCreate := files_sdk.GroupUserCreateParams{}
 	paramsGroupUserCreate.GroupId = plan.GroupId.ValueInt64()
 	paramsGroupUserCreate.UserId = plan.UserId.ValueInt64()
-	paramsGroupUserCreate.Admin = plan.Admin.ValueBoolPointer()
+	if !plan.Admin.IsNull() && !plan.Admin.IsUnknown() {
+		paramsGroupUserCreate.Admin = plan.Admin.ValueBoolPointer()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -200,7 +202,9 @@ func (r *groupUserResource) Update(ctx context.Context, req resource.UpdateReque
 	paramsGroupUserUpdate.Id = plan.Id.ValueInt64()
 	paramsGroupUserUpdate.GroupId = plan.GroupId.ValueInt64()
 	paramsGroupUserUpdate.UserId = plan.UserId.ValueInt64()
-	paramsGroupUserUpdate.Admin = plan.Admin.ValueBoolPointer()
+	if !plan.Admin.IsNull() && !plan.Admin.IsUnknown() {
+		paramsGroupUserUpdate.Admin = plan.Admin.ValueBoolPointer()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return

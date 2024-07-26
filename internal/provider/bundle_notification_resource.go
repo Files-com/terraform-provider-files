@@ -121,8 +121,12 @@ func (r *bundleNotificationResource) Create(ctx context.Context, req resource.Cr
 	paramsBundleNotificationCreate := files_sdk.BundleNotificationCreateParams{}
 	paramsBundleNotificationCreate.BundleId = plan.BundleId.ValueInt64()
 	paramsBundleNotificationCreate.UserId = plan.UserId.ValueInt64()
-	paramsBundleNotificationCreate.NotifyOnRegistration = plan.NotifyOnRegistration.ValueBoolPointer()
-	paramsBundleNotificationCreate.NotifyOnUpload = plan.NotifyOnUpload.ValueBoolPointer()
+	if !plan.NotifyOnRegistration.IsNull() && !plan.NotifyOnRegistration.IsUnknown() {
+		paramsBundleNotificationCreate.NotifyOnRegistration = plan.NotifyOnRegistration.ValueBoolPointer()
+	}
+	if !plan.NotifyOnUpload.IsNull() && !plan.NotifyOnUpload.IsUnknown() {
+		paramsBundleNotificationCreate.NotifyOnUpload = plan.NotifyOnUpload.ValueBoolPointer()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -192,8 +196,12 @@ func (r *bundleNotificationResource) Update(ctx context.Context, req resource.Up
 
 	paramsBundleNotificationUpdate := files_sdk.BundleNotificationUpdateParams{}
 	paramsBundleNotificationUpdate.Id = plan.Id.ValueInt64()
-	paramsBundleNotificationUpdate.NotifyOnRegistration = plan.NotifyOnRegistration.ValueBoolPointer()
-	paramsBundleNotificationUpdate.NotifyOnUpload = plan.NotifyOnUpload.ValueBoolPointer()
+	if !plan.NotifyOnRegistration.IsNull() && !plan.NotifyOnRegistration.IsUnknown() {
+		paramsBundleNotificationUpdate.NotifyOnRegistration = plan.NotifyOnRegistration.ValueBoolPointer()
+	}
+	if !plan.NotifyOnUpload.IsNull() && !plan.NotifyOnUpload.IsUnknown() {
+		paramsBundleNotificationUpdate.NotifyOnUpload = plan.NotifyOnUpload.ValueBoolPointer()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return

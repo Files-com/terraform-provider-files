@@ -584,7 +584,9 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	paramsUserCreate := files_sdk.UserCreateParams{}
-	paramsUserCreate.AvatarDelete = plan.AvatarDelete.ValueBoolPointer()
+	if !plan.AvatarDelete.IsNull() && !plan.AvatarDelete.IsUnknown() {
+		paramsUserCreate.AvatarDelete = plan.AvatarDelete.ValueBoolPointer()
+	}
 	paramsUserCreate.ChangePassword = plan.ChangePassword.ValueString()
 	paramsUserCreate.ChangePasswordConfirmation = plan.ChangePasswordConfirmation.ValueString()
 	paramsUserCreate.Email = plan.Email.ValueString()
@@ -594,9 +596,13 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	paramsUserCreate.ImportedPasswordHash = plan.ImportedPasswordHash.ValueString()
 	paramsUserCreate.Password = plan.Password.ValueString()
 	paramsUserCreate.PasswordConfirmation = plan.PasswordConfirmation.ValueString()
-	paramsUserCreate.AnnouncementsRead = plan.AnnouncementsRead.ValueBoolPointer()
+	if !plan.AnnouncementsRead.IsNull() && !plan.AnnouncementsRead.IsUnknown() {
+		paramsUserCreate.AnnouncementsRead = plan.AnnouncementsRead.ValueBoolPointer()
+	}
 	paramsUserCreate.AllowedIps = plan.AllowedIps.ValueString()
-	paramsUserCreate.AttachmentsPermission = plan.AttachmentsPermission.ValueBoolPointer()
+	if !plan.AttachmentsPermission.IsNull() && !plan.AttachmentsPermission.IsUnknown() {
+		paramsUserCreate.AttachmentsPermission = plan.AttachmentsPermission.ValueBoolPointer()
+	}
 	if !plan.AuthenticateUntil.IsNull() && plan.AuthenticateUntil.ValueString() != "" {
 		createAuthenticateUntil, err := time.Parse(time.RFC3339, plan.AuthenticateUntil.ValueString())
 		if err != nil {
@@ -610,21 +616,37 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		}
 	}
 	paramsUserCreate.AuthenticationMethod = paramsUserCreate.AuthenticationMethod.Enum()[plan.AuthenticationMethod.ValueString()]
-	paramsUserCreate.BillingPermission = plan.BillingPermission.ValueBoolPointer()
-	paramsUserCreate.BypassInactiveDisable = plan.BypassInactiveDisable.ValueBoolPointer()
-	paramsUserCreate.BypassSiteAllowedIps = plan.BypassSiteAllowedIps.ValueBoolPointer()
-	paramsUserCreate.DavPermission = plan.DavPermission.ValueBoolPointer()
-	paramsUserCreate.Disabled = plan.Disabled.ValueBoolPointer()
-	paramsUserCreate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
+	if !plan.BillingPermission.IsNull() && !plan.BillingPermission.IsUnknown() {
+		paramsUserCreate.BillingPermission = plan.BillingPermission.ValueBoolPointer()
+	}
+	if !plan.BypassInactiveDisable.IsNull() && !plan.BypassInactiveDisable.IsUnknown() {
+		paramsUserCreate.BypassInactiveDisable = plan.BypassInactiveDisable.ValueBoolPointer()
+	}
+	if !plan.BypassSiteAllowedIps.IsNull() && !plan.BypassSiteAllowedIps.IsUnknown() {
+		paramsUserCreate.BypassSiteAllowedIps = plan.BypassSiteAllowedIps.ValueBoolPointer()
+	}
+	if !plan.DavPermission.IsNull() && !plan.DavPermission.IsUnknown() {
+		paramsUserCreate.DavPermission = plan.DavPermission.ValueBoolPointer()
+	}
+	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
+		paramsUserCreate.Disabled = plan.Disabled.ValueBoolPointer()
+	}
+	if !plan.FtpPermission.IsNull() && !plan.FtpPermission.IsUnknown() {
+		paramsUserCreate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
+	}
 	paramsUserCreate.HeaderText = plan.HeaderText.ValueString()
 	paramsUserCreate.Language = plan.Language.ValueString()
 	paramsUserCreate.NotificationDailySendTime = plan.NotificationDailySendTime.ValueInt64()
 	paramsUserCreate.Name = plan.Name.ValueString()
 	paramsUserCreate.Company = plan.Company.ValueString()
 	paramsUserCreate.Notes = plan.Notes.ValueString()
-	paramsUserCreate.OfficeIntegrationEnabled = plan.OfficeIntegrationEnabled.ValueBoolPointer()
+	if !plan.OfficeIntegrationEnabled.IsNull() && !plan.OfficeIntegrationEnabled.IsUnknown() {
+		paramsUserCreate.OfficeIntegrationEnabled = plan.OfficeIntegrationEnabled.ValueBoolPointer()
+	}
 	paramsUserCreate.PasswordValidityDays = plan.PasswordValidityDays.ValueInt64()
-	paramsUserCreate.ReceiveAdminAlerts = plan.ReceiveAdminAlerts.ValueBoolPointer()
+	if !plan.ReceiveAdminAlerts.IsNull() && !plan.ReceiveAdminAlerts.IsUnknown() {
+		paramsUserCreate.ReceiveAdminAlerts = plan.ReceiveAdminAlerts.ValueBoolPointer()
+	}
 	if !plan.RequireLoginBy.IsNull() && plan.RequireLoginBy.ValueString() != "" {
 		createRequireLoginBy, err := time.Parse(time.RFC3339, plan.RequireLoginBy.ValueString())
 		if err != nil {
@@ -637,15 +659,29 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 			paramsUserCreate.RequireLoginBy = &createRequireLoginBy
 		}
 	}
-	paramsUserCreate.RequirePasswordChange = plan.RequirePasswordChange.ValueBoolPointer()
-	paramsUserCreate.RestapiPermission = plan.RestapiPermission.ValueBoolPointer()
-	paramsUserCreate.SelfManaged = plan.SelfManaged.ValueBoolPointer()
-	paramsUserCreate.SftpPermission = plan.SftpPermission.ValueBoolPointer()
-	paramsUserCreate.SiteAdmin = plan.SiteAdmin.ValueBoolPointer()
-	paramsUserCreate.SkipWelcomeScreen = plan.SkipWelcomeScreen.ValueBoolPointer()
+	if !plan.RequirePasswordChange.IsNull() && !plan.RequirePasswordChange.IsUnknown() {
+		paramsUserCreate.RequirePasswordChange = plan.RequirePasswordChange.ValueBoolPointer()
+	}
+	if !plan.RestapiPermission.IsNull() && !plan.RestapiPermission.IsUnknown() {
+		paramsUserCreate.RestapiPermission = plan.RestapiPermission.ValueBoolPointer()
+	}
+	if !plan.SelfManaged.IsNull() && !plan.SelfManaged.IsUnknown() {
+		paramsUserCreate.SelfManaged = plan.SelfManaged.ValueBoolPointer()
+	}
+	if !plan.SftpPermission.IsNull() && !plan.SftpPermission.IsUnknown() {
+		paramsUserCreate.SftpPermission = plan.SftpPermission.ValueBoolPointer()
+	}
+	if !plan.SiteAdmin.IsNull() && !plan.SiteAdmin.IsUnknown() {
+		paramsUserCreate.SiteAdmin = plan.SiteAdmin.ValueBoolPointer()
+	}
+	if !plan.SkipWelcomeScreen.IsNull() && !plan.SkipWelcomeScreen.IsUnknown() {
+		paramsUserCreate.SkipWelcomeScreen = plan.SkipWelcomeScreen.ValueBoolPointer()
+	}
 	paramsUserCreate.SslRequired = paramsUserCreate.SslRequired.Enum()[plan.SslRequired.ValueString()]
 	paramsUserCreate.SsoStrategyId = plan.SsoStrategyId.ValueInt64()
-	paramsUserCreate.SubscribeToNewsletter = plan.SubscribeToNewsletter.ValueBoolPointer()
+	if !plan.SubscribeToNewsletter.IsNull() && !plan.SubscribeToNewsletter.IsUnknown() {
+		paramsUserCreate.SubscribeToNewsletter = plan.SubscribeToNewsletter.ValueBoolPointer()
+	}
 	paramsUserCreate.Require2fa = paramsUserCreate.Require2fa.Enum()[plan.Require2fa.ValueString()]
 	paramsUserCreate.TimeZone = plan.TimeZone.ValueString()
 	paramsUserCreate.UserRoot = plan.UserRoot.ValueString()
@@ -719,7 +755,9 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	paramsUserUpdate := files_sdk.UserUpdateParams{}
 	paramsUserUpdate.Id = plan.Id.ValueInt64()
-	paramsUserUpdate.AvatarDelete = plan.AvatarDelete.ValueBoolPointer()
+	if !plan.AvatarDelete.IsNull() && !plan.AvatarDelete.IsUnknown() {
+		paramsUserUpdate.AvatarDelete = plan.AvatarDelete.ValueBoolPointer()
+	}
 	paramsUserUpdate.ChangePassword = plan.ChangePassword.ValueString()
 	paramsUserUpdate.ChangePasswordConfirmation = plan.ChangePasswordConfirmation.ValueString()
 	paramsUserUpdate.Email = plan.Email.ValueString()
@@ -729,9 +767,13 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	paramsUserUpdate.ImportedPasswordHash = plan.ImportedPasswordHash.ValueString()
 	paramsUserUpdate.Password = plan.Password.ValueString()
 	paramsUserUpdate.PasswordConfirmation = plan.PasswordConfirmation.ValueString()
-	paramsUserUpdate.AnnouncementsRead = plan.AnnouncementsRead.ValueBoolPointer()
+	if !plan.AnnouncementsRead.IsNull() && !plan.AnnouncementsRead.IsUnknown() {
+		paramsUserUpdate.AnnouncementsRead = plan.AnnouncementsRead.ValueBoolPointer()
+	}
 	paramsUserUpdate.AllowedIps = plan.AllowedIps.ValueString()
-	paramsUserUpdate.AttachmentsPermission = plan.AttachmentsPermission.ValueBoolPointer()
+	if !plan.AttachmentsPermission.IsNull() && !plan.AttachmentsPermission.IsUnknown() {
+		paramsUserUpdate.AttachmentsPermission = plan.AttachmentsPermission.ValueBoolPointer()
+	}
 	if !plan.AuthenticateUntil.IsNull() && plan.AuthenticateUntil.ValueString() != "" {
 		updateAuthenticateUntil, err := time.Parse(time.RFC3339, plan.AuthenticateUntil.ValueString())
 		if err != nil {
@@ -745,21 +787,37 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		}
 	}
 	paramsUserUpdate.AuthenticationMethod = paramsUserUpdate.AuthenticationMethod.Enum()[plan.AuthenticationMethod.ValueString()]
-	paramsUserUpdate.BillingPermission = plan.BillingPermission.ValueBoolPointer()
-	paramsUserUpdate.BypassInactiveDisable = plan.BypassInactiveDisable.ValueBoolPointer()
-	paramsUserUpdate.BypassSiteAllowedIps = plan.BypassSiteAllowedIps.ValueBoolPointer()
-	paramsUserUpdate.DavPermission = plan.DavPermission.ValueBoolPointer()
-	paramsUserUpdate.Disabled = plan.Disabled.ValueBoolPointer()
-	paramsUserUpdate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
+	if !plan.BillingPermission.IsNull() && !plan.BillingPermission.IsUnknown() {
+		paramsUserUpdate.BillingPermission = plan.BillingPermission.ValueBoolPointer()
+	}
+	if !plan.BypassInactiveDisable.IsNull() && !plan.BypassInactiveDisable.IsUnknown() {
+		paramsUserUpdate.BypassInactiveDisable = plan.BypassInactiveDisable.ValueBoolPointer()
+	}
+	if !plan.BypassSiteAllowedIps.IsNull() && !plan.BypassSiteAllowedIps.IsUnknown() {
+		paramsUserUpdate.BypassSiteAllowedIps = plan.BypassSiteAllowedIps.ValueBoolPointer()
+	}
+	if !plan.DavPermission.IsNull() && !plan.DavPermission.IsUnknown() {
+		paramsUserUpdate.DavPermission = plan.DavPermission.ValueBoolPointer()
+	}
+	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
+		paramsUserUpdate.Disabled = plan.Disabled.ValueBoolPointer()
+	}
+	if !plan.FtpPermission.IsNull() && !plan.FtpPermission.IsUnknown() {
+		paramsUserUpdate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
+	}
 	paramsUserUpdate.HeaderText = plan.HeaderText.ValueString()
 	paramsUserUpdate.Language = plan.Language.ValueString()
 	paramsUserUpdate.NotificationDailySendTime = plan.NotificationDailySendTime.ValueInt64()
 	paramsUserUpdate.Name = plan.Name.ValueString()
 	paramsUserUpdate.Company = plan.Company.ValueString()
 	paramsUserUpdate.Notes = plan.Notes.ValueString()
-	paramsUserUpdate.OfficeIntegrationEnabled = plan.OfficeIntegrationEnabled.ValueBoolPointer()
+	if !plan.OfficeIntegrationEnabled.IsNull() && !plan.OfficeIntegrationEnabled.IsUnknown() {
+		paramsUserUpdate.OfficeIntegrationEnabled = plan.OfficeIntegrationEnabled.ValueBoolPointer()
+	}
 	paramsUserUpdate.PasswordValidityDays = plan.PasswordValidityDays.ValueInt64()
-	paramsUserUpdate.ReceiveAdminAlerts = plan.ReceiveAdminAlerts.ValueBoolPointer()
+	if !plan.ReceiveAdminAlerts.IsNull() && !plan.ReceiveAdminAlerts.IsUnknown() {
+		paramsUserUpdate.ReceiveAdminAlerts = plan.ReceiveAdminAlerts.ValueBoolPointer()
+	}
 	if !plan.RequireLoginBy.IsNull() && plan.RequireLoginBy.ValueString() != "" {
 		updateRequireLoginBy, err := time.Parse(time.RFC3339, plan.RequireLoginBy.ValueString())
 		if err != nil {
@@ -772,15 +830,29 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 			paramsUserUpdate.RequireLoginBy = &updateRequireLoginBy
 		}
 	}
-	paramsUserUpdate.RequirePasswordChange = plan.RequirePasswordChange.ValueBoolPointer()
-	paramsUserUpdate.RestapiPermission = plan.RestapiPermission.ValueBoolPointer()
-	paramsUserUpdate.SelfManaged = plan.SelfManaged.ValueBoolPointer()
-	paramsUserUpdate.SftpPermission = plan.SftpPermission.ValueBoolPointer()
-	paramsUserUpdate.SiteAdmin = plan.SiteAdmin.ValueBoolPointer()
-	paramsUserUpdate.SkipWelcomeScreen = plan.SkipWelcomeScreen.ValueBoolPointer()
+	if !plan.RequirePasswordChange.IsNull() && !plan.RequirePasswordChange.IsUnknown() {
+		paramsUserUpdate.RequirePasswordChange = plan.RequirePasswordChange.ValueBoolPointer()
+	}
+	if !plan.RestapiPermission.IsNull() && !plan.RestapiPermission.IsUnknown() {
+		paramsUserUpdate.RestapiPermission = plan.RestapiPermission.ValueBoolPointer()
+	}
+	if !plan.SelfManaged.IsNull() && !plan.SelfManaged.IsUnknown() {
+		paramsUserUpdate.SelfManaged = plan.SelfManaged.ValueBoolPointer()
+	}
+	if !plan.SftpPermission.IsNull() && !plan.SftpPermission.IsUnknown() {
+		paramsUserUpdate.SftpPermission = plan.SftpPermission.ValueBoolPointer()
+	}
+	if !plan.SiteAdmin.IsNull() && !plan.SiteAdmin.IsUnknown() {
+		paramsUserUpdate.SiteAdmin = plan.SiteAdmin.ValueBoolPointer()
+	}
+	if !plan.SkipWelcomeScreen.IsNull() && !plan.SkipWelcomeScreen.IsUnknown() {
+		paramsUserUpdate.SkipWelcomeScreen = plan.SkipWelcomeScreen.ValueBoolPointer()
+	}
 	paramsUserUpdate.SslRequired = paramsUserUpdate.SslRequired.Enum()[plan.SslRequired.ValueString()]
 	paramsUserUpdate.SsoStrategyId = plan.SsoStrategyId.ValueInt64()
-	paramsUserUpdate.SubscribeToNewsletter = plan.SubscribeToNewsletter.ValueBoolPointer()
+	if !plan.SubscribeToNewsletter.IsNull() && !plan.SubscribeToNewsletter.IsUnknown() {
+		paramsUserUpdate.SubscribeToNewsletter = plan.SubscribeToNewsletter.ValueBoolPointer()
+	}
 	paramsUserUpdate.Require2fa = paramsUserUpdate.Require2fa.Enum()[plan.Require2fa.ValueString()]
 	paramsUserUpdate.TimeZone = plan.TimeZone.ValueString()
 	paramsUserUpdate.UserRoot = plan.UserRoot.ValueString()

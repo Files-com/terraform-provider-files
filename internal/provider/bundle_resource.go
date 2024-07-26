@@ -391,8 +391,12 @@ func (r *bundleResource) Create(ctx context.Context, req resource.CreateRequest,
 	}
 	paramsBundleCreate.Password = plan.Password.ValueString()
 	paramsBundleCreate.FormFieldSetId = plan.FormFieldSetId.ValueInt64()
-	paramsBundleCreate.CreateSnapshot = plan.CreateSnapshot.ValueBoolPointer()
-	paramsBundleCreate.DontSeparateSubmissionsByFolder = plan.DontSeparateSubmissionsByFolder.ValueBoolPointer()
+	if !plan.CreateSnapshot.IsNull() && !plan.CreateSnapshot.IsUnknown() {
+		paramsBundleCreate.CreateSnapshot = plan.CreateSnapshot.ValueBoolPointer()
+	}
+	if !plan.DontSeparateSubmissionsByFolder.IsNull() && !plan.DontSeparateSubmissionsByFolder.IsUnknown() {
+		paramsBundleCreate.DontSeparateSubmissionsByFolder = plan.DontSeparateSubmissionsByFolder.ValueBoolPointer()
+	}
 	if !plan.ExpiresAt.IsNull() && plan.ExpiresAt.ValueString() != "" {
 		createExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
 		if err != nil {
@@ -405,7 +409,9 @@ func (r *bundleResource) Create(ctx context.Context, req resource.CreateRequest,
 			paramsBundleCreate.ExpiresAt = &createExpiresAt
 		}
 	}
-	paramsBundleCreate.FinalizeSnapshot = plan.FinalizeSnapshot.ValueBoolPointer()
+	if !plan.FinalizeSnapshot.IsNull() && !plan.FinalizeSnapshot.IsUnknown() {
+		paramsBundleCreate.FinalizeSnapshot = plan.FinalizeSnapshot.ValueBoolPointer()
+	}
 	paramsBundleCreate.MaxUses = plan.MaxUses.ValueInt64()
 	paramsBundleCreate.Description = plan.Description.ValueString()
 	paramsBundleCreate.Note = plan.Note.ValueString()
@@ -413,14 +419,26 @@ func (r *bundleResource) Create(ctx context.Context, req resource.CreateRequest,
 	paramsBundleCreate.PathTemplate = plan.PathTemplate.ValueString()
 	paramsBundleCreate.PathTemplateTimeZone = plan.PathTemplateTimeZone.ValueString()
 	paramsBundleCreate.Permissions = paramsBundleCreate.Permissions.Enum()[plan.Permissions.ValueString()]
-	paramsBundleCreate.RequireRegistration = plan.RequireRegistration.ValueBoolPointer()
+	if !plan.RequireRegistration.IsNull() && !plan.RequireRegistration.IsUnknown() {
+		paramsBundleCreate.RequireRegistration = plan.RequireRegistration.ValueBoolPointer()
+	}
 	paramsBundleCreate.ClickwrapId = plan.ClickwrapId.ValueInt64()
 	paramsBundleCreate.InboxId = plan.InboxId.ValueInt64()
-	paramsBundleCreate.RequireShareRecipient = plan.RequireShareRecipient.ValueBoolPointer()
-	paramsBundleCreate.SendEmailReceiptToUploader = plan.SendEmailReceiptToUploader.ValueBoolPointer()
-	paramsBundleCreate.SkipEmail = plan.SkipEmail.ValueBoolPointer()
-	paramsBundleCreate.SkipName = plan.SkipName.ValueBoolPointer()
-	paramsBundleCreate.SkipCompany = plan.SkipCompany.ValueBoolPointer()
+	if !plan.RequireShareRecipient.IsNull() && !plan.RequireShareRecipient.IsUnknown() {
+		paramsBundleCreate.RequireShareRecipient = plan.RequireShareRecipient.ValueBoolPointer()
+	}
+	if !plan.SendEmailReceiptToUploader.IsNull() && !plan.SendEmailReceiptToUploader.IsUnknown() {
+		paramsBundleCreate.SendEmailReceiptToUploader = plan.SendEmailReceiptToUploader.ValueBoolPointer()
+	}
+	if !plan.SkipEmail.IsNull() && !plan.SkipEmail.IsUnknown() {
+		paramsBundleCreate.SkipEmail = plan.SkipEmail.ValueBoolPointer()
+	}
+	if !plan.SkipName.IsNull() && !plan.SkipName.IsUnknown() {
+		paramsBundleCreate.SkipName = plan.SkipName.ValueBoolPointer()
+	}
+	if !plan.SkipCompany.IsNull() && !plan.SkipCompany.IsUnknown() {
+		paramsBundleCreate.SkipCompany = plan.SkipCompany.ValueBoolPointer()
+	}
 	if !plan.StartAccessOnDate.IsNull() && plan.StartAccessOnDate.ValueString() != "" {
 		createStartAccessOnDate, err := time.Parse(time.RFC3339, plan.StartAccessOnDate.ValueString())
 		if err != nil {
@@ -511,9 +529,13 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 	paramsBundleUpdate.FormFieldSetId = plan.FormFieldSetId.ValueInt64()
 	paramsBundleUpdate.ClickwrapId = plan.ClickwrapId.ValueInt64()
 	paramsBundleUpdate.Code = plan.Code.ValueString()
-	paramsBundleUpdate.CreateSnapshot = plan.CreateSnapshot.ValueBoolPointer()
+	if !plan.CreateSnapshot.IsNull() && !plan.CreateSnapshot.IsUnknown() {
+		paramsBundleUpdate.CreateSnapshot = plan.CreateSnapshot.ValueBoolPointer()
+	}
 	paramsBundleUpdate.Description = plan.Description.ValueString()
-	paramsBundleUpdate.DontSeparateSubmissionsByFolder = plan.DontSeparateSubmissionsByFolder.ValueBoolPointer()
+	if !plan.DontSeparateSubmissionsByFolder.IsNull() && !plan.DontSeparateSubmissionsByFolder.IsUnknown() {
+		paramsBundleUpdate.DontSeparateSubmissionsByFolder = plan.DontSeparateSubmissionsByFolder.ValueBoolPointer()
+	}
 	if !plan.ExpiresAt.IsNull() && plan.ExpiresAt.ValueString() != "" {
 		updateExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
 		if err != nil {
@@ -526,17 +548,27 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 			paramsBundleUpdate.ExpiresAt = &updateExpiresAt
 		}
 	}
-	paramsBundleUpdate.FinalizeSnapshot = plan.FinalizeSnapshot.ValueBoolPointer()
+	if !plan.FinalizeSnapshot.IsNull() && !plan.FinalizeSnapshot.IsUnknown() {
+		paramsBundleUpdate.FinalizeSnapshot = plan.FinalizeSnapshot.ValueBoolPointer()
+	}
 	paramsBundleUpdate.InboxId = plan.InboxId.ValueInt64()
 	paramsBundleUpdate.MaxUses = plan.MaxUses.ValueInt64()
 	paramsBundleUpdate.Note = plan.Note.ValueString()
 	paramsBundleUpdate.PathTemplate = plan.PathTemplate.ValueString()
 	paramsBundleUpdate.PathTemplateTimeZone = plan.PathTemplateTimeZone.ValueString()
 	paramsBundleUpdate.Permissions = paramsBundleUpdate.Permissions.Enum()[plan.Permissions.ValueString()]
-	paramsBundleUpdate.RequireRegistration = plan.RequireRegistration.ValueBoolPointer()
-	paramsBundleUpdate.RequireShareRecipient = plan.RequireShareRecipient.ValueBoolPointer()
-	paramsBundleUpdate.SendEmailReceiptToUploader = plan.SendEmailReceiptToUploader.ValueBoolPointer()
-	paramsBundleUpdate.SkipCompany = plan.SkipCompany.ValueBoolPointer()
+	if !plan.RequireRegistration.IsNull() && !plan.RequireRegistration.IsUnknown() {
+		paramsBundleUpdate.RequireRegistration = plan.RequireRegistration.ValueBoolPointer()
+	}
+	if !plan.RequireShareRecipient.IsNull() && !plan.RequireShareRecipient.IsUnknown() {
+		paramsBundleUpdate.RequireShareRecipient = plan.RequireShareRecipient.ValueBoolPointer()
+	}
+	if !plan.SendEmailReceiptToUploader.IsNull() && !plan.SendEmailReceiptToUploader.IsUnknown() {
+		paramsBundleUpdate.SendEmailReceiptToUploader = plan.SendEmailReceiptToUploader.ValueBoolPointer()
+	}
+	if !plan.SkipCompany.IsNull() && !plan.SkipCompany.IsUnknown() {
+		paramsBundleUpdate.SkipCompany = plan.SkipCompany.ValueBoolPointer()
+	}
 	if !plan.StartAccessOnDate.IsNull() && plan.StartAccessOnDate.ValueString() != "" {
 		updateStartAccessOnDate, err := time.Parse(time.RFC3339, plan.StartAccessOnDate.ValueString())
 		if err != nil {
@@ -549,8 +581,12 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 			paramsBundleUpdate.StartAccessOnDate = &updateStartAccessOnDate
 		}
 	}
-	paramsBundleUpdate.SkipEmail = plan.SkipEmail.ValueBoolPointer()
-	paramsBundleUpdate.SkipName = plan.SkipName.ValueBoolPointer()
+	if !plan.SkipEmail.IsNull() && !plan.SkipEmail.IsUnknown() {
+		paramsBundleUpdate.SkipEmail = plan.SkipEmail.ValueBoolPointer()
+	}
+	if !plan.SkipName.IsNull() && !plan.SkipName.IsUnknown() {
+		paramsBundleUpdate.SkipName = plan.SkipName.ValueBoolPointer()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return

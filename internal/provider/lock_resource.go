@@ -157,9 +157,15 @@ func (r *lockResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	paramsLockCreate := files_sdk.LockCreateParams{}
 	paramsLockCreate.Path = plan.Path.ValueString()
-	paramsLockCreate.AllowAccessByAnyUser = plan.AllowAccessByAnyUser.ValueBoolPointer()
-	paramsLockCreate.Exclusive = plan.Exclusive.ValueBoolPointer()
-	paramsLockCreate.Recursive = plan.Recursive.ValueBoolPointer()
+	if !plan.AllowAccessByAnyUser.IsNull() && !plan.AllowAccessByAnyUser.IsUnknown() {
+		paramsLockCreate.AllowAccessByAnyUser = plan.AllowAccessByAnyUser.ValueBoolPointer()
+	}
+	if !plan.Exclusive.IsNull() && !plan.Exclusive.IsUnknown() {
+		paramsLockCreate.Exclusive = plan.Exclusive.ValueBoolPointer()
+	}
+	if !plan.Recursive.IsNull() && !plan.Recursive.IsUnknown() {
+		paramsLockCreate.Recursive = plan.Recursive.ValueBoolPointer()
+	}
 	paramsLockCreate.Timeout = plan.Timeout.ValueInt64()
 
 	if resp.Diagnostics.HasError() {

@@ -670,13 +670,17 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.BackblazeB2KeyId = plan.BackblazeB2KeyId.ValueString()
 	paramsRemoteServerCreate.BackblazeB2ApplicationKey = plan.BackblazeB2ApplicationKey.ValueString()
 	paramsRemoteServerCreate.RackspaceApiKey = plan.RackspaceApiKey.ValueString()
-	paramsRemoteServerCreate.ResetAuthentication = plan.ResetAuthentication.ValueBoolPointer()
+	if !plan.ResetAuthentication.IsNull() && !plan.ResetAuthentication.IsUnknown() {
+		paramsRemoteServerCreate.ResetAuthentication = plan.ResetAuthentication.ValueBoolPointer()
+	}
 	paramsRemoteServerCreate.AzureBlobStorageAccessKey = plan.AzureBlobStorageAccessKey.ValueString()
 	paramsRemoteServerCreate.AzureFilesStorageAccessKey = plan.AzureFilesStorageAccessKey.ValueString()
 	paramsRemoteServerCreate.Hostname = plan.Hostname.ValueString()
 	paramsRemoteServerCreate.Name = plan.Name.ValueString()
 	paramsRemoteServerCreate.MaxConnections = plan.MaxConnections.ValueInt64()
-	paramsRemoteServerCreate.PinToSiteRegion = plan.PinToSiteRegion.ValueBoolPointer()
+	if !plan.PinToSiteRegion.IsNull() && !plan.PinToSiteRegion.IsUnknown() {
+		paramsRemoteServerCreate.PinToSiteRegion = plan.PinToSiteRegion.ValueBoolPointer()
+	}
 	paramsRemoteServerCreate.Port = plan.Port.ValueInt64()
 	paramsRemoteServerCreate.S3Bucket = plan.S3Bucket.ValueString()
 	paramsRemoteServerCreate.S3Region = plan.S3Region.ValueString()
@@ -697,7 +701,9 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.OneDriveAccountType = paramsRemoteServerCreate.OneDriveAccountType.Enum()[plan.OneDriveAccountType.ValueString()]
 	paramsRemoteServerCreate.AzureBlobStorageAccount = plan.AzureBlobStorageAccount.ValueString()
 	paramsRemoteServerCreate.AzureBlobStorageContainer = plan.AzureBlobStorageContainer.ValueString()
-	paramsRemoteServerCreate.AzureBlobStorageHierarchicalNamespace = plan.AzureBlobStorageHierarchicalNamespace.ValueBoolPointer()
+	if !plan.AzureBlobStorageHierarchicalNamespace.IsNull() && !plan.AzureBlobStorageHierarchicalNamespace.IsUnknown() {
+		paramsRemoteServerCreate.AzureBlobStorageHierarchicalNamespace = plan.AzureBlobStorageHierarchicalNamespace.ValueBoolPointer()
+	}
 	paramsRemoteServerCreate.AzureBlobStorageSasToken = plan.AzureBlobStorageSasToken.ValueString()
 	paramsRemoteServerCreate.AzureFilesStorageAccount = plan.AzureFilesStorageAccount.ValueString()
 	paramsRemoteServerCreate.AzureFilesStorageShareName = plan.AzureFilesStorageShareName.ValueString()
@@ -705,7 +711,9 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.S3CompatibleBucket = plan.S3CompatibleBucket.ValueString()
 	paramsRemoteServerCreate.S3CompatibleEndpoint = plan.S3CompatibleEndpoint.ValueString()
 	paramsRemoteServerCreate.S3CompatibleRegion = plan.S3CompatibleRegion.ValueString()
-	paramsRemoteServerCreate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
+	if !plan.EnableDedicatedIps.IsNull() && !plan.EnableDedicatedIps.IsUnknown() {
+		paramsRemoteServerCreate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
+	}
 	paramsRemoteServerCreate.S3CompatibleAccessKey = plan.S3CompatibleAccessKey.ValueString()
 	paramsRemoteServerCreate.S3CompatibleSecretKey = plan.S3CompatibleSecretKey.ValueString()
 	paramsRemoteServerCreate.FilesAgentRoot = plan.FilesAgentRoot.ValueString()
@@ -718,7 +726,9 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.CloudflareSecretKey = plan.CloudflareSecretKey.ValueString()
 	paramsRemoteServerCreate.CloudflareBucket = plan.CloudflareBucket.ValueString()
 	paramsRemoteServerCreate.CloudflareEndpoint = plan.CloudflareEndpoint.ValueString()
-	paramsRemoteServerCreate.DropboxTeams = plan.DropboxTeams.ValueBoolPointer()
+	if !plan.DropboxTeams.IsNull() && !plan.DropboxTeams.IsUnknown() {
+		paramsRemoteServerCreate.DropboxTeams = plan.DropboxTeams.ValueBoolPointer()
+	}
 	paramsRemoteServerCreate.LinodeAccessKey = plan.LinodeAccessKey.ValueString()
 	paramsRemoteServerCreate.LinodeSecretKey = plan.LinodeSecretKey.ValueString()
 	paramsRemoteServerCreate.LinodeBucket = plan.LinodeBucket.ValueString()
@@ -804,13 +814,17 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	paramsRemoteServerUpdate.BackblazeB2KeyId = plan.BackblazeB2KeyId.ValueString()
 	paramsRemoteServerUpdate.BackblazeB2ApplicationKey = plan.BackblazeB2ApplicationKey.ValueString()
 	paramsRemoteServerUpdate.RackspaceApiKey = plan.RackspaceApiKey.ValueString()
-	paramsRemoteServerUpdate.ResetAuthentication = plan.ResetAuthentication.ValueBoolPointer()
+	if !plan.ResetAuthentication.IsNull() && !plan.ResetAuthentication.IsUnknown() {
+		paramsRemoteServerUpdate.ResetAuthentication = plan.ResetAuthentication.ValueBoolPointer()
+	}
 	paramsRemoteServerUpdate.AzureBlobStorageAccessKey = plan.AzureBlobStorageAccessKey.ValueString()
 	paramsRemoteServerUpdate.AzureFilesStorageAccessKey = plan.AzureFilesStorageAccessKey.ValueString()
 	paramsRemoteServerUpdate.Hostname = plan.Hostname.ValueString()
 	paramsRemoteServerUpdate.Name = plan.Name.ValueString()
 	paramsRemoteServerUpdate.MaxConnections = plan.MaxConnections.ValueInt64()
-	paramsRemoteServerUpdate.PinToSiteRegion = plan.PinToSiteRegion.ValueBoolPointer()
+	if !plan.PinToSiteRegion.IsNull() && !plan.PinToSiteRegion.IsUnknown() {
+		paramsRemoteServerUpdate.PinToSiteRegion = plan.PinToSiteRegion.ValueBoolPointer()
+	}
 	paramsRemoteServerUpdate.Port = plan.Port.ValueInt64()
 	paramsRemoteServerUpdate.S3Bucket = plan.S3Bucket.ValueString()
 	paramsRemoteServerUpdate.S3Region = plan.S3Region.ValueString()
@@ -831,7 +845,9 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	paramsRemoteServerUpdate.OneDriveAccountType = paramsRemoteServerUpdate.OneDriveAccountType.Enum()[plan.OneDriveAccountType.ValueString()]
 	paramsRemoteServerUpdate.AzureBlobStorageAccount = plan.AzureBlobStorageAccount.ValueString()
 	paramsRemoteServerUpdate.AzureBlobStorageContainer = plan.AzureBlobStorageContainer.ValueString()
-	paramsRemoteServerUpdate.AzureBlobStorageHierarchicalNamespace = plan.AzureBlobStorageHierarchicalNamespace.ValueBoolPointer()
+	if !plan.AzureBlobStorageHierarchicalNamespace.IsNull() && !plan.AzureBlobStorageHierarchicalNamespace.IsUnknown() {
+		paramsRemoteServerUpdate.AzureBlobStorageHierarchicalNamespace = plan.AzureBlobStorageHierarchicalNamespace.ValueBoolPointer()
+	}
 	paramsRemoteServerUpdate.AzureBlobStorageSasToken = plan.AzureBlobStorageSasToken.ValueString()
 	paramsRemoteServerUpdate.AzureFilesStorageAccount = plan.AzureFilesStorageAccount.ValueString()
 	paramsRemoteServerUpdate.AzureFilesStorageShareName = plan.AzureFilesStorageShareName.ValueString()
@@ -839,7 +855,9 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	paramsRemoteServerUpdate.S3CompatibleBucket = plan.S3CompatibleBucket.ValueString()
 	paramsRemoteServerUpdate.S3CompatibleEndpoint = plan.S3CompatibleEndpoint.ValueString()
 	paramsRemoteServerUpdate.S3CompatibleRegion = plan.S3CompatibleRegion.ValueString()
-	paramsRemoteServerUpdate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
+	if !plan.EnableDedicatedIps.IsNull() && !plan.EnableDedicatedIps.IsUnknown() {
+		paramsRemoteServerUpdate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
+	}
 	paramsRemoteServerUpdate.S3CompatibleAccessKey = plan.S3CompatibleAccessKey.ValueString()
 	paramsRemoteServerUpdate.S3CompatibleSecretKey = plan.S3CompatibleSecretKey.ValueString()
 	paramsRemoteServerUpdate.FilesAgentRoot = plan.FilesAgentRoot.ValueString()
@@ -852,7 +870,9 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	paramsRemoteServerUpdate.CloudflareSecretKey = plan.CloudflareSecretKey.ValueString()
 	paramsRemoteServerUpdate.CloudflareBucket = plan.CloudflareBucket.ValueString()
 	paramsRemoteServerUpdate.CloudflareEndpoint = plan.CloudflareEndpoint.ValueString()
-	paramsRemoteServerUpdate.DropboxTeams = plan.DropboxTeams.ValueBoolPointer()
+	if !plan.DropboxTeams.IsNull() && !plan.DropboxTeams.IsUnknown() {
+		paramsRemoteServerUpdate.DropboxTeams = plan.DropboxTeams.ValueBoolPointer()
+	}
 	paramsRemoteServerUpdate.LinodeAccessKey = plan.LinodeAccessKey.ValueString()
 	paramsRemoteServerUpdate.LinodeSecretKey = plan.LinodeSecretKey.ValueString()
 	paramsRemoteServerUpdate.LinodeBucket = plan.LinodeBucket.ValueString()

@@ -191,7 +191,9 @@ func (r *as2PartnerResource) Create(ctx context.Context, req resource.CreateRequ
 	}
 
 	paramsAs2PartnerCreate := files_sdk.As2PartnerCreateParams{}
-	paramsAs2PartnerCreate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
+	if !plan.EnableDedicatedIps.IsNull() && !plan.EnableDedicatedIps.IsUnknown() {
+		paramsAs2PartnerCreate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
+	}
 	paramsAs2PartnerCreate.HttpAuthUsername = plan.HttpAuthUsername.ValueString()
 	paramsAs2PartnerCreate.HttpAuthPassword = plan.HttpAuthPassword.ValueString()
 	paramsAs2PartnerCreate.MdnValidationLevel = paramsAs2PartnerCreate.MdnValidationLevel.Enum()[plan.MdnValidationLevel.ValueString()]
@@ -269,7 +271,9 @@ func (r *as2PartnerResource) Update(ctx context.Context, req resource.UpdateRequ
 
 	paramsAs2PartnerUpdate := files_sdk.As2PartnerUpdateParams{}
 	paramsAs2PartnerUpdate.Id = plan.Id.ValueInt64()
-	paramsAs2PartnerUpdate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
+	if !plan.EnableDedicatedIps.IsNull() && !plan.EnableDedicatedIps.IsUnknown() {
+		paramsAs2PartnerUpdate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
+	}
 	paramsAs2PartnerUpdate.HttpAuthUsername = plan.HttpAuthUsername.ValueString()
 	paramsAs2PartnerUpdate.HttpAuthPassword = plan.HttpAuthPassword.ValueString()
 	paramsAs2PartnerUpdate.MdnValidationLevel = paramsAs2PartnerUpdate.MdnValidationLevel.Enum()[plan.MdnValidationLevel.ValueString()]

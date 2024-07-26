@@ -165,8 +165,12 @@ func (r *behaviorResource) Create(ctx context.Context, req resource.CreateReques
 	} else {
 		paramsBehaviorCreate.Value = string(createValueBytes)
 	}
-	paramsBehaviorCreate.DisableParentFolderBehavior = plan.DisableParentFolderBehavior.ValueBoolPointer()
-	paramsBehaviorCreate.Recursive = plan.Recursive.ValueBoolPointer()
+	if !plan.DisableParentFolderBehavior.IsNull() && !plan.DisableParentFolderBehavior.IsUnknown() {
+		paramsBehaviorCreate.DisableParentFolderBehavior = plan.DisableParentFolderBehavior.ValueBoolPointer()
+	}
+	if !plan.Recursive.IsNull() && !plan.Recursive.IsUnknown() {
+		paramsBehaviorCreate.Recursive = plan.Recursive.ValueBoolPointer()
+	}
 	paramsBehaviorCreate.Name = plan.Name.ValueString()
 	paramsBehaviorCreate.Description = plan.Description.ValueString()
 	paramsBehaviorCreate.Path = plan.Path.ValueString()
@@ -252,8 +256,12 @@ func (r *behaviorResource) Update(ctx context.Context, req resource.UpdateReques
 	} else {
 		paramsBehaviorUpdate.Value = string(updateValueBytes)
 	}
-	paramsBehaviorUpdate.DisableParentFolderBehavior = plan.DisableParentFolderBehavior.ValueBoolPointer()
-	paramsBehaviorUpdate.Recursive = plan.Recursive.ValueBoolPointer()
+	if !plan.DisableParentFolderBehavior.IsNull() && !plan.DisableParentFolderBehavior.IsUnknown() {
+		paramsBehaviorUpdate.DisableParentFolderBehavior = plan.DisableParentFolderBehavior.ValueBoolPointer()
+	}
+	if !plan.Recursive.IsNull() && !plan.Recursive.IsUnknown() {
+		paramsBehaviorUpdate.Recursive = plan.Recursive.ValueBoolPointer()
+	}
 	paramsBehaviorUpdate.Name = plan.Name.ValueString()
 	paramsBehaviorUpdate.Description = plan.Description.ValueString()
 

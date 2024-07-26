@@ -147,9 +147,15 @@ func (r *formFieldSetResource) Create(ctx context.Context, req resource.CreateRe
 	paramsFormFieldSetCreate := files_sdk.FormFieldSetCreateParams{}
 	paramsFormFieldSetCreate.UserId = plan.UserId.ValueInt64()
 	paramsFormFieldSetCreate.Title = plan.Title.ValueString()
-	paramsFormFieldSetCreate.SkipEmail = plan.SkipEmail.ValueBoolPointer()
-	paramsFormFieldSetCreate.SkipName = plan.SkipName.ValueBoolPointer()
-	paramsFormFieldSetCreate.SkipCompany = plan.SkipCompany.ValueBoolPointer()
+	if !plan.SkipEmail.IsNull() && !plan.SkipEmail.IsUnknown() {
+		paramsFormFieldSetCreate.SkipEmail = plan.SkipEmail.ValueBoolPointer()
+	}
+	if !plan.SkipName.IsNull() && !plan.SkipName.IsUnknown() {
+		paramsFormFieldSetCreate.SkipName = plan.SkipName.ValueBoolPointer()
+	}
+	if !plan.SkipCompany.IsNull() && !plan.SkipCompany.IsUnknown() {
+		paramsFormFieldSetCreate.SkipCompany = plan.SkipCompany.ValueBoolPointer()
+	}
 	paramsFormFieldSetCreate.FormFields, diags = lib.DynamicToStringMapSlice(ctx, path.Root("form_fields"), plan.FormFields)
 	resp.Diagnostics.Append(diags...)
 
@@ -222,9 +228,15 @@ func (r *formFieldSetResource) Update(ctx context.Context, req resource.UpdateRe
 	paramsFormFieldSetUpdate := files_sdk.FormFieldSetUpdateParams{}
 	paramsFormFieldSetUpdate.Id = plan.Id.ValueInt64()
 	paramsFormFieldSetUpdate.Title = plan.Title.ValueString()
-	paramsFormFieldSetUpdate.SkipEmail = plan.SkipEmail.ValueBoolPointer()
-	paramsFormFieldSetUpdate.SkipName = plan.SkipName.ValueBoolPointer()
-	paramsFormFieldSetUpdate.SkipCompany = plan.SkipCompany.ValueBoolPointer()
+	if !plan.SkipEmail.IsNull() && !plan.SkipEmail.IsUnknown() {
+		paramsFormFieldSetUpdate.SkipEmail = plan.SkipEmail.ValueBoolPointer()
+	}
+	if !plan.SkipName.IsNull() && !plan.SkipName.IsUnknown() {
+		paramsFormFieldSetUpdate.SkipName = plan.SkipName.ValueBoolPointer()
+	}
+	if !plan.SkipCompany.IsNull() && !plan.SkipCompany.IsUnknown() {
+		paramsFormFieldSetUpdate.SkipCompany = plan.SkipCompany.ValueBoolPointer()
+	}
 	paramsFormFieldSetUpdate.FormFields, diags = lib.DynamicToStringMapSlice(ctx, path.Root("form_fields"), plan.FormFields)
 	resp.Diagnostics.Append(diags...)
 
