@@ -49,12 +49,13 @@ func (p *filesProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"api_key": schema.StringAttribute{
-				Description: "The API key used to authenticate with Files.com.",
+				Description: "The API key used to authenticate with Files.com. It can also be sourced from the `FILES_API_KEY` environment variable.",
 				Optional:    true,
 				Sensitive:   true,
 			},
 			"endpoint_override": schema.StringAttribute{
-				Optional: true,
+				Description: "Required if your site is configured to disable global acceleration. This can also be set to use a mock server in development or CI.",
+				Optional:    true,
 			},
 			"environment": schema.StringAttribute{
 				Optional: true,
