@@ -56,7 +56,6 @@ type automationResourceModel struct {
 	Path                             types.String  `tfsdk:"path"`
 	PathTimeZone                     types.String  `tfsdk:"path_time_zone"`
 	RecurringDay                     types.Int64   `tfsdk:"recurring_day"`
-	Schedule                         types.Dynamic `tfsdk:"schedule"`
 	ScheduleDaysOfWeek               types.List    `tfsdk:"schedule_days_of_week"`
 	ScheduleTimesOfDay               types.List    `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone                 types.String  `tfsdk:"schedule_time_zone"`
@@ -66,10 +65,10 @@ type automationResourceModel struct {
 	Trigger                          types.String  `tfsdk:"trigger"`
 	UserIds                          types.List    `tfsdk:"user_ids"`
 	Value                            types.Dynamic `tfsdk:"value"`
-	Destination                      types.String  `tfsdk:"destination"`
 	Id                               types.Int64   `tfsdk:"id"`
 	Deleted                          types.Bool    `tfsdk:"deleted"`
 	LastModifiedAt                   types.String  `tfsdk:"last_modified_at"`
+	Schedule                         types.Dynamic `tfsdk:"schedule"`
 	HumanReadableSchedule            types.String  `tfsdk:"human_readable_schedule"`
 	UserId                           types.Int64   `tfsdk:"user_id"`
 	WebhookUrl                       types.String  `tfsdk:"webhook_url"`
@@ -239,14 +238,6 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
-			"schedule": schema.DynamicAttribute{
-				Description: "If trigger is `custom_schedule`, Custom schedule description for when the automation should be run in json format.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Dynamic{
-					dynamicplanmodifier.UseStateForUnknown(),
-				},
-			},
 			"schedule_days_of_week": schema.ListAttribute{
 				Description: "If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.",
 				Computed:    true,
@@ -327,9 +318,6 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					dynamicplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"destination": schema.StringAttribute{
-				Optional: true,
-			},
 			"id": schema.Int64Attribute{
 				Description: "Automation ID",
 				Computed:    true,
@@ -343,6 +331,10 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			},
 			"last_modified_at": schema.StringAttribute{
 				Description: "Time when automation was last modified. Does not change for name or description updates.",
+				Computed:    true,
+			},
+			"schedule": schema.DynamicAttribute{
+				Description: "If trigger is `custom_schedule`, Custom schedule description for when the automation should be run in json format.",
 				Computed:    true,
 			},
 			"human_readable_schedule": schema.StringAttribute{
@@ -371,7 +363,6 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 
 	paramsAutomationCreate := files_sdk.AutomationCreateParams{}
 	paramsAutomationCreate.Source = plan.Source.ValueString()
-	paramsAutomationCreate.Destination = plan.Destination.ValueString()
 	if !plan.Destinations.IsNull() && !plan.Destinations.IsUnknown() {
 		diags = plan.Destinations.ElementsAs(ctx, &paramsAutomationCreate.Destinations, false)
 		resp.Diagnostics.Append(diags...)
@@ -386,9 +377,6 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 	resp.Diagnostics.Append(diags...)
 	paramsAutomationCreate.GroupIds, diags = lib.ListValueToString(ctx, path.Root("group_ids"), plan.GroupIds, ",")
 	resp.Diagnostics.Append(diags...)
-	createSchedule, diags := lib.DynamicToStringMap(ctx, path.Root("schedule"), plan.Schedule)
-	resp.Diagnostics.Append(diags...)
-	paramsAutomationCreate.Schedule = createSchedule
 	if !plan.ScheduleDaysOfWeek.IsNull() && !plan.ScheduleDaysOfWeek.IsUnknown() {
 		diags = plan.ScheduleDaysOfWeek.ElementsAs(ctx, &paramsAutomationCreate.ScheduleDaysOfWeek, false)
 		resp.Diagnostics.Append(diags...)
@@ -499,7 +487,6 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 	paramsAutomationUpdate := files_sdk.AutomationUpdateParams{}
 	paramsAutomationUpdate.Id = plan.Id.ValueInt64()
 	paramsAutomationUpdate.Source = plan.Source.ValueString()
-	paramsAutomationUpdate.Destination = plan.Destination.ValueString()
 	if !plan.Destinations.IsNull() && !plan.Destinations.IsUnknown() {
 		diags = plan.Destinations.ElementsAs(ctx, &paramsAutomationUpdate.Destinations, false)
 		resp.Diagnostics.Append(diags...)
@@ -514,9 +501,6 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 	resp.Diagnostics.Append(diags...)
 	paramsAutomationUpdate.GroupIds, diags = lib.ListValueToString(ctx, path.Root("group_ids"), plan.GroupIds, ",")
 	resp.Diagnostics.Append(diags...)
-	updateSchedule, diags := lib.DynamicToStringMap(ctx, path.Root("schedule"), plan.Schedule)
-	resp.Diagnostics.Append(diags...)
-	paramsAutomationUpdate.Schedule = updateSchedule
 	if !plan.ScheduleDaysOfWeek.IsNull() && !plan.ScheduleDaysOfWeek.IsUnknown() {
 		diags = plan.ScheduleDaysOfWeek.ElementsAs(ctx, &paramsAutomationUpdate.ScheduleDaysOfWeek, false)
 		resp.Diagnostics.Append(diags...)

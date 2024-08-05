@@ -426,7 +426,6 @@ resource "files_automation" "example_automation" {
   sync_ids                             = [1, 2]
   user_ids                             = [1, 2]
   group_ids                            = [1, 2]
-  schedule                             = "example"
   schedule_days_of_week                = [0, 1, 3]
   schedule_times_of_day                = ["7:30", "11:30"]
   schedule_time_zone                   = "Eastern Time (US & Canada)"
@@ -460,7 +459,6 @@ resource "files_automation" "example_automation" {
 
 - `always_overwrite_size_matching_files` (Boolean) Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.
 - `description` (String) Description for the this Automation.
-- `destination` (String)
 - `destination_replace_from` (String) If set, this string in the destination path will be replaced with the value in `destination_replace_to`.
 - `destination_replace_to` (String) If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.
 - `destinations` (List of String) Destination Paths
@@ -475,7 +473,6 @@ resource "files_automation" "example_automation" {
 - `path` (String) Path on which this Automation runs.  Supports globs, except on remote mounts. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `path_time_zone` (String) Timezone to use when rendering timestamps in paths.
 - `recurring_day` (Number) If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.
-- `schedule` (Dynamic) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run in json format.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.
 - `schedule_time_zone` (String) If trigger is `custom_schedule`, Custom schedule Time Zone for when the automation should be run.
 - `schedule_times_of_day` (List of String) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. Times of day in HH:MM format.
@@ -492,6 +489,7 @@ resource "files_automation" "example_automation" {
 - `human_readable_schedule` (String) If trigger is `custom_schedule`, Human readable Custom schedule description for when the automation should be run.
 - `id` (Number) Automation ID
 - `last_modified_at` (String) Time when automation was last modified. Does not change for name or description updates.
+- `schedule` (Dynamic) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run in json format.
 - `user_id` (Number) User ID of the Automation's creator.
 - `webhook_url` (String) If trigger is `webhook`, this is the URL of the webhook to trigger the Automation.
 

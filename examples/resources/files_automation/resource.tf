@@ -17,7 +17,6 @@ resource "files_automation" "example_automation" {
   sync_ids                             = [1, 2]
   user_ids                             = [1, 2]
   group_ids                            = [1, 2]
-  schedule                             = "example"
   schedule_days_of_week                = [0, 1, 3]
   schedule_times_of_day                = ["7:30", "11:30"]
   schedule_time_zone                   = "Eastern Time (US & Canada)"
