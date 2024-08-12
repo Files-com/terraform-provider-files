@@ -64,7 +64,7 @@ func (r *messageCommentResource) Metadata(_ context.Context, req resource.Metada
 
 func (r *messageCommentResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A message comment represents a comment made by a user on a message.",
+		Description: "A MessageComment is a comment made by a user on a message.",
 		Attributes: map[string]schema.Attribute{
 			"body": schema.StringAttribute{
 				Description: "Comment body.",

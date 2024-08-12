@@ -55,7 +55,7 @@ func (r *messageReactionDataSource) Metadata(_ context.Context, req datasource.M
 
 func (r *messageReactionDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A message reaction represents a reaction emoji made by a user on a message.",
+		Description: "A MessageReaction is a reaction emoji made by a user on a message.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Reaction ID",

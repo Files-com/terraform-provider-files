@@ -66,7 +66,7 @@ func (r *messageResource) Metadata(_ context.Context, req resource.MetadataReque
 
 func (r *messageResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Messages are part of Files.com's project management features and represent a message posted by a user to a project.",
+		Description: "A Messages is a part of Files.com's project management features and represent a message posted by a user to a project.",
 		Attributes: map[string]schema.Attribute{
 			"subject": schema.StringAttribute{
 				Description: "Message subject.",

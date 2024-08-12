@@ -3,12 +3,12 @@
 page_title: "files_external_event Data Source - files"
 subcategory: ""
 description: |-
-  ExternalEvents record activity such as logins, credential syncs, and lockouts.
+  An ExternalEvent is a log record with activity such as logins, credential syncs, and lockouts.
 ---
 
 # files_external_event (Data Source)
 
-ExternalEvents record activity such as logins, credential syncs, and lockouts.
+An ExternalEvent is a log record with activity such as logins, credential syncs, and lockouts.
 
 ## Example Usage
 

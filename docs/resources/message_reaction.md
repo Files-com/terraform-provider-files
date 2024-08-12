@@ -3,12 +3,12 @@
 page_title: "files_message_reaction Resource - files"
 subcategory: ""
 description: |-
-  A message reaction represents a reaction emoji made by a user on a message.
+  A MessageReaction is a reaction emoji made by a user on a message.
 ---
 
 # files_message_reaction (Resource)
 
-A message reaction represents a reaction emoji made by a user on a message.
+A MessageReaction is a reaction emoji made by a user on a message.
 
 ## Example Usage
 

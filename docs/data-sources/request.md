@@ -3,13 +3,13 @@
 page_title: "files_request Data Source - files"
 subcategory: ""
 description: |-
-  A Request represents a file that should be uploaded by a specific user or group.
+  A Request is a file that should be uploaded by a specific user or group.
   Requests can either be manually created and managed, or managed automatically by an Automation.
 ---
 
 # files_request (Data Source)
 
-A Request represents a file that *should* be uploaded by a specific user or group.
+A Request is a file that *should* be uploaded by a specific user or group.
 
 
 

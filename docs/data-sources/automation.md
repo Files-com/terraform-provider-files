@@ -3,7 +3,7 @@
 page_title: "files_automation Data Source - files"
 subcategory: ""
 description: |-
-  Automations allow you to automate workflows on your Files.com site.
+  An Automation is an automated process of controlling workflows on your Files.com site.
   Automations are different from Behaviors because Behaviors are associated with a current folder, while Automations apply across your entire site.
   Automations are never removed when folders are removed, while Behaviors are removed when the associated folder is removed.
   Path Matching
@@ -100,7 +100,7 @@ description: |-
 
 # files_automation (Data Source)
 
-Automations allow you to automate workflows on your Files.com site.
+An Automation is an automated process of controlling workflows on your Files.com site.
 
 
 

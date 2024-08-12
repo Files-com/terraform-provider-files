@@ -117,7 +117,7 @@ func (r *userDataSource) Metadata(_ context.Context, req datasource.MetadataRequ
 
 func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "",
+		Description: "A User is a single user that belongs to your site.\n\n\n\nUsers functionality provides the tools and features needed to manage user accounts within your site.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "User ID",

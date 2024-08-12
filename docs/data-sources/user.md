@@ -3,12 +3,17 @@
 page_title: "files_user Data Source - files"
 subcategory: ""
 description: |-
-  
+  A User is a single user that belongs to your site.
+  Users functionality provides the tools and features needed to manage user accounts within your site.
 ---
 
 # files_user (Data Source)
 
+A User is a single user that belongs to your site.
 
+
+
+Users functionality provides the tools and features needed to manage user accounts within your site.
 
 ## Example Usage
 

@@ -72,7 +72,7 @@ func (r *groupResource) Metadata(_ context.Context, req resource.MetadataRequest
 
 func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Groups are a powerful tool for permissions and user management on Files.com. Users can belong to multiple groups.\n\n\n\nAll permissions can be managed via Groups, and Groups can also be synced to your identity platform via LDAP or SCIM.\n\n\n\nFiles.com's Group Admin feature allows you to define Group Admins, who then have access to add and remove users within their groups.",
+		Description: "A Group is a powerful tool for permissions and user management on Files.com. Users can belong to multiple groups.\n\n\n\nAll permissions can be managed via Groups, and Groups can also be synced to your identity platform via LDAP or SCIM.\n\n\n\nFiles.com's Group Admin feature allows you to define Group Admins, who then have access to add and remove users within their groups.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Group name",

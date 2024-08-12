@@ -3,12 +3,12 @@
 page_title: "files_snapshot Resource - files"
 subcategory: ""
 description: |-
-  Snapshots are frozen groups of files in your site's hidden folder.
+  A Snapshot is a frozen group of files in your site's hidden folder.
 ---
 
 # files_snapshot (Resource)
 
-Snapshots are frozen groups of files in your site's hidden folder.
+A Snapshot is a frozen group of files in your site's hidden folder.
 
 ## Example Usage
 

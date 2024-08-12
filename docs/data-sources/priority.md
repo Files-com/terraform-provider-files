@@ -3,12 +3,12 @@
 page_title: "files_priority Data Source - files"
 subcategory: ""
 description: |-
-  
+  A Priority is a color tag that is attached to the path.
 ---
 
 # files_priority (Data Source)
 
-
+A Priority is a color tag that is attached to the path.
 
 ## Example Usage
 

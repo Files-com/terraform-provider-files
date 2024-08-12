@@ -61,7 +61,7 @@ func (r *snapshotDataSource) Metadata(_ context.Context, req datasource.Metadata
 
 func (r *snapshotDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Snapshots are frozen groups of files in your site's hidden folder.",
+		Description: "A Snapshot is a frozen group of files in your site's hidden folder.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "The snapshot's unique ID.",

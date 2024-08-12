@@ -3,12 +3,17 @@
 page_title: "files_notification Data Source - files"
 subcategory: ""
 description: |-
-  Notifications are our feature that send E-Mails when new files are uploaded into a folder.
+  A Notification is our feature that sends E-Mails when specific actions occur in the folder.
+  Emails are sent in batches, with email frequency options of every 5 minutes, every 15 minutes, hourly, or daily. They will include a list of the matching actions within the configured notification period, limited to the first 100.
 ---
 
 # files_notification (Data Source)
 
-Notifications are our feature that send E-Mails when new files are uploaded into a folder.
+A Notification is our feature that sends E-Mails when specific actions occur in the folder.
+
+
+
+Emails are sent in batches, with email frequency options of every 5 minutes, every 15 minutes, hourly, or daily. They will include a list of the matching actions within the configured notification period, limited to the first 100.
 
 ## Example Usage
 

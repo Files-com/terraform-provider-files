@@ -80,7 +80,7 @@ func (r *as2PartnerResource) Metadata(_ context.Context, req resource.MetadataRe
 
 func (r *as2PartnerResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "An AS2 Partner describes a counterparty of the Files.com site's AS2 connectivity. Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.",
+		Description: "An AS2Partner is a counterparty of the Files.com site's AS2 connectivity. Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.",
 		Attributes: map[string]schema.Attribute{
 			"as2_station_id": schema.Int64Attribute{
 				Description: "ID of the AS2 Station associated with this partner.",

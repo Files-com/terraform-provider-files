@@ -3,12 +3,12 @@
 page_title: "files_user_request Data Source - files"
 subcategory: ""
 description: |-
-  User Requests allow anonymous users to place a request for access on the login screen to the site administrator.
+  A UserRequest is an operation that allows anonymous users to place a request for access on the login screen to the site administrator.
 ---
 
 # files_user_request (Data Source)
 
-User Requests allow anonymous users to place a request for access on the login screen to the site administrator.
+A UserRequest is an operation that allows anonymous users to place a request for access on the login screen to the site administrator.
 
 ## Example Usage
 

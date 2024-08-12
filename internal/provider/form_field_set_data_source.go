@@ -62,7 +62,7 @@ func (r *formFieldSetDataSource) Metadata(_ context.Context, req datasource.Meta
 
 func (r *formFieldSetDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Form Field Sets define a custom forms to be used for bundle and inbox registrations.\n\n \n\n Each Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.\n\n \n\n Once created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.",
+		Description: "A Form Field Set is a custom form to be used for bundle and inbox registrations.\n\n\n\nEach Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.\n\n\n\nOnce created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Form field set id",

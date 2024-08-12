@@ -3,12 +3,12 @@
 page_title: "files_message_comment Data Source - files"
 subcategory: ""
 description: |-
-  A message comment represents a comment made by a user on a message.
+  A MessageComment is a comment made by a user on a message.
 ---
 
 # files_message_comment (Data Source)
 
-A message comment represents a comment made by a user on a message.
+A MessageComment is a comment made by a user on a message.
 
 ## Example Usage
 

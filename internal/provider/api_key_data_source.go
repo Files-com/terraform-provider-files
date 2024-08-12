@@ -67,7 +67,7 @@ func (r *apiKeyDataSource) Metadata(_ context.Context, req datasource.MetadataRe
 
 func (r *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "API Keys allow programmatic access to your Site.\n\nAPI keys confer all the permissions of the user who owns them.\n\nIf an API key is created without a user owner, it is considered a site-wide API key, which has full permissions to do anything on the Site.",
+		Description: "An APIKey is a key that allows programmatic access to your Site.\n\n\n\nAPI keys confer all the permissions of the user who owns them.\n\nIf an API key is created without a user owner, it is considered a site-wide API key, which has full permissions to do anything on the Site.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "API Key ID",

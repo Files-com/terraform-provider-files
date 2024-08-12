@@ -99,7 +99,7 @@ func (r *ssoStrategyDataSource) Metadata(_ context.Context, req datasource.Metad
 
 func (r *ssoStrategyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "An SSO Strategy is a method for allowing users to sign in via another identity provider, such as Okta or Auth0.\n\n\n\nIt is rare that you will need to use API endpoints for managing these, and we recommend instead managing these via the web interface.\n\nNevertheless, we share the API documentation here.",
+		Description: "An SSOStrategy is a way for users to sign in via another identity provider, such as Okta or Auth0.\n\n\n\nIt is rare that you will need to use API endpoints for managing these, and we recommend instead managing these via the web interface.\n\nNevertheless, we share the API documentation here.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "ID",

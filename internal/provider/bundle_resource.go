@@ -109,7 +109,7 @@ func (r *bundleResource) Metadata(_ context.Context, req resource.MetadataReques
 
 func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Bundles are the API/SDK term for the feature called Share Links in the web interface.\n\nThe API provides the full set of actions related to Share Links, including sending them via E-Mail.\n\n\n\nPlease note that we very closely monitor the E-Mailing feature and any abuse will result in disabling of your site.",
+		Description: "A Bundle is the API/SDK term for the feature called Share Links in the web interface.\n\nThe API provides the full set of actions related to Share Links, including sending them via E-Mail.\n\n\n\nPlease note that we very closely monitor the E-Mailing feature and any abuse will result in disabling of your site.",
 		Attributes: map[string]schema.Attribute{
 			"paths": schema.ListAttribute{
 				Description: "A list of paths in this bundle.  For performance reasons, this is not provided when listing bundles.",

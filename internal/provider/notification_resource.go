@@ -86,7 +86,7 @@ func (r *notificationResource) Metadata(_ context.Context, req resource.Metadata
 
 func (r *notificationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Notifications are our feature that send E-Mails when new files are uploaded into a folder.",
+		Description: "A Notification is our feature that sends E-Mails when specific actions occur in the folder.\n\n\n\nEmails are sent in batches, with email frequency options of every 5 minutes, every 15 minutes, hourly, or daily. They will include a list of the matching actions within the configured notification period, limited to the first 100.",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
 				Description: "Folder path to notify on. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",

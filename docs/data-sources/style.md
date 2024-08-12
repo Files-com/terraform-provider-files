@@ -3,14 +3,14 @@
 page_title: "files_style Data Source - files"
 subcategory: ""
 description: |-
-  Styles are custom sets of branding that can be applied on a per-folder basis.
+  A Style is a custom set of branding that can be applied on a per-folder basis.
   Currently these only support Logos per folder, but in the future we may extend these to also support colors.
   If you want to see that, please let us know so we can add your vote to the list.
 ---
 
 # files_style (Data Source)
 
-Styles are custom sets of branding that can be applied on a per-folder basis.
+A Style is a custom set of branding that can be applied on a per-folder basis.
 
 Currently these only support Logos per folder, but in the future we may extend these to also support colors.
 

@@ -65,7 +65,7 @@ func (r *bundleNotificationResource) Metadata(_ context.Context, req resource.Me
 
 func (r *bundleNotificationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Bundle notifications are emails sent out to users when certain actions are performed on or within a shared set of files and folders.",
+		Description: "A BundleNotification is an E-Mail sent out to users when certain actions are performed on or within a shared set of files and folders.",
 		Attributes: map[string]schema.Attribute{
 			"bundle_id": schema.Int64Attribute{
 				Description: "Bundle ID to notify on",

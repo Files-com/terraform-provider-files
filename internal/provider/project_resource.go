@@ -63,7 +63,7 @@ func (r *projectResource) Metadata(_ context.Context, req resource.MetadataReque
 
 func (r *projectResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Projects are associated with a folder and add project management features to that folder.",
+		Description: "A Project is associated with a folder and add project management features to that folder.",
 		Attributes: map[string]schema.Attribute{
 			"global_access": schema.StringAttribute{
 				Description: "Global access settings",

@@ -3,7 +3,7 @@
 page_title: "files_action_notification_export Data Source - files"
 subcategory: ""
 description: |-
-  The Action Notification Export API provides access to outgoing webhook logs. Querying webhook logs is a little different than other APIs.
+  An ActionNotificationExport is an operation that provides access to outgoing webhook logs. Querying webhook logs is a little different than other APIs.
   All queries against the archive must be submitted as Exports. (Even our Web UI creates an Export behind the scenes.)
   In any query field in this API, you may specify multiple values separated by commas. That means that commas
   cannot be searched for themselves, and neither can single quotation marks.
@@ -23,7 +23,7 @@ description: |-
 
 # files_action_notification_export (Data Source)
 
-The Action Notification Export API provides access to outgoing webhook logs. Querying webhook logs is a little different than other APIs.
+An ActionNotificationExport is an operation that provides access to outgoing webhook logs. Querying webhook logs is a little different than other APIs.
 
 
 

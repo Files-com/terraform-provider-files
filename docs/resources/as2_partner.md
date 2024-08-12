@@ -3,12 +3,12 @@
 page_title: "files_as2_partner Resource - files"
 subcategory: ""
 description: |-
-  An AS2 Partner describes a counterparty of the Files.com site's AS2 connectivity. Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.
+  An AS2Partner is a counterparty of the Files.com site's AS2 connectivity. Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.
 ---
 
 # files_as2_partner (Resource)
 
-An AS2 Partner describes a counterparty of the Files.com site's AS2 connectivity. Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.
+An AS2Partner is a counterparty of the Files.com site's AS2 connectivity. Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.
 
 ## Example Usage
 

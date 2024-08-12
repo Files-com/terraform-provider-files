@@ -3,14 +3,16 @@
 page_title: "files_api_key Data Source - files"
 subcategory: ""
 description: |-
-  API Keys allow programmatic access to your Site.
+  An APIKey is a key that allows programmatic access to your Site.
   API keys confer all the permissions of the user who owns them.
   If an API key is created without a user owner, it is considered a site-wide API key, which has full permissions to do anything on the Site.
 ---
 
 # files_api_key (Data Source)
 
-API Keys allow programmatic access to your Site.
+An APIKey is a key that allows programmatic access to your Site.
+
+
 
 API keys confer all the permissions of the user who owns them.
 

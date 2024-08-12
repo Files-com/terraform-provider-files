@@ -55,7 +55,7 @@ func (r *priorityDataSource) Metadata(_ context.Context, req datasource.Metadata
 
 func (r *priorityDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "",
+		Description: "A Priority is a color tag that is attached to the path.",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
 				Description: "The path corresponding to the priority color. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",

@@ -3,12 +3,12 @@
 page_title: "files_project Data Source - files"
 subcategory: ""
 description: |-
-  Projects are associated with a folder and add project management features to that folder.
+  A Project is associated with a folder and add project management features to that folder.
 ---
 
 # files_project (Data Source)
 
-Projects are associated with a folder and add project management features to that folder.
+A Project is associated with a folder and add project management features to that folder.
 
 ## Example Usage
 

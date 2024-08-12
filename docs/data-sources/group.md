@@ -3,14 +3,14 @@
 page_title: "files_group Data Source - files"
 subcategory: ""
 description: |-
-  Groups are a powerful tool for permissions and user management on Files.com. Users can belong to multiple groups.
+  A Group is a powerful tool for permissions and user management on Files.com. Users can belong to multiple groups.
   All permissions can be managed via Groups, and Groups can also be synced to your identity platform via LDAP or SCIM.
   Files.com's Group Admin feature allows you to define Group Admins, who then have access to add and remove users within their groups.
 ---
 
 # files_group (Data Source)
 
-Groups are a powerful tool for permissions and user management on Files.com. Users can belong to multiple groups.
+A Group is a powerful tool for permissions and user management on Files.com. Users can belong to multiple groups.
 
 
 

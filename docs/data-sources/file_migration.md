@@ -3,13 +3,13 @@
 page_title: "files_file_migration Data Source - files"
 subcategory: ""
 description: |-
-  FileMigrations represent background operations on one or more files, such as a copy or a region migration.
+  A FileMigration is a background operation on one or more files, such as a copy or a region migration.
   If no operation or dest_path is present, then the record represents a region migration.
 ---
 
 # files_file_migration (Data Source)
 
-FileMigrations represent background operations on one or more files, such as a copy or a region migration.
+A FileMigration is a background operation on one or more files, such as a copy or a region migration.
 
 
 

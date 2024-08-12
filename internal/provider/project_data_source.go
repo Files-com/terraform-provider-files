@@ -55,7 +55,7 @@ func (r *projectDataSource) Metadata(_ context.Context, req datasource.MetadataR
 
 func (r *projectDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Projects are associated with a folder and add project management features to that folder.",
+		Description: "A Project is associated with a folder and add project management features to that folder.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Project ID",

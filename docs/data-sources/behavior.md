@@ -3,7 +3,7 @@
 page_title: "files_behavior Data Source - files"
 subcategory: ""
 description: |-
-  Behaviors are the API resource for what are also known as Folder Settings. Every behavior is associated with a folder.
+  A Behavior is an API resource for what are also known as Folder Settings. Every behavior is associated with a folder.
   Depending on the behavior, it may also operate on child folders. It may be overridable at the child folder level or maybe can be added to at the child folder level. The exact options for each behavior type are explained in the table below.
   Additionally, some behaviors are visible to non-admins, and others are even settable by non-admins. All the details are below.
   Each behavior uses a different format for storing its settings value. Next to each behavior type is an example value. Our API and SDKs currently require that the value for behaviors be sent as raw JSON within the value field. Our SDK generator and API documentation generator doesn't fully keep up with this requirement, so if you need any help finding the exact syntax to use for your language or use case, just reach out.
@@ -12,7 +12,7 @@ description: |-
 
 # files_behavior (Data Source)
 
-Behaviors are the API resource for what are also known as Folder Settings. Every behavior is associated with a folder.
+A Behavior is an API resource for what are also known as Folder Settings. Every behavior is associated with a folder.
 
 
 

@@ -3,7 +3,7 @@
 page_title: "files_group_user Data Source - files"
 subcategory: ""
 description: |-
-  A GroupUser describes the membership of a User within a Group.
+  A GroupUser is a record about membership of a User within a Group.
   Creating GroupUsers
   GroupUsers can be created via the normal create action. When using the update action, if the
   GroupUser record does not exist for the given user/group IDs it will be created.
@@ -11,7 +11,7 @@ description: |-
 
 # files_group_user (Data Source)
 
-A GroupUser describes the membership of a User within a Group.
+A GroupUser is a record about membership of a User within a Group.
 
 
 

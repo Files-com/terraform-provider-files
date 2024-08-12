@@ -58,7 +58,7 @@ func (r *messageCommentDataSource) Metadata(_ context.Context, req datasource.Me
 
 func (r *messageCommentDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A message comment represents a comment made by a user on a message.",
+		Description: "A MessageComment is a comment made by a user on a message.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Message Comment ID",

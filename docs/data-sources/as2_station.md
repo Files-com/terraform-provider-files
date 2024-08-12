@@ -3,12 +3,12 @@
 page_title: "files_as2_station Data Source - files"
 subcategory: ""
 description: |-
-  AS2 Station defines a remote AS2 server that can send data into Files.com and received data from Files.com
+  An AS2Station is a remote AS2 server that can send data into Files.com and received data from Files.com
 ---
 
 # files_as2_station (Data Source)
 
-AS2 Station defines a remote AS2 server that can send data into Files.com and received data from Files.com
+An AS2Station is a remote AS2 server that can send data into Files.com and received data from Files.com
 
 ## Example Usage
 

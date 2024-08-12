@@ -3,12 +3,12 @@
 page_title: "files_payment Data Source - files"
 subcategory: ""
 description: |-
-  
+  An AccountLineItem is a single line item in the accounting ledger for a billing account. These include payments and invoices.
 ---
 
 # files_payment (Data Source)
 
-
+An AccountLineItem is a single line item in the accounting ledger for a billing account. These include payments and invoices.
 
 ## Example Usage
 

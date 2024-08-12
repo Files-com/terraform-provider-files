@@ -66,7 +66,7 @@ func (r *shareGroupResource) Metadata(_ context.Context, req resource.MetadataRe
 
 func (r *shareGroupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Share groups allow you to store and name groups of email contacts to be used for sending share and inbox invitations.",
+		Description: "A ShareGroup is a way for you to store and name groups of email contacts to be used for sending share and inbox invitations.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Name of the share group",

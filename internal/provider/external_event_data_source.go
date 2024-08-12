@@ -68,7 +68,7 @@ func (r *externalEventDataSource) Metadata(_ context.Context, req datasource.Met
 
 func (r *externalEventDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "ExternalEvents record activity such as logins, credential syncs, and lockouts.",
+		Description: "An ExternalEvent is a log record with activity such as logins, credential syncs, and lockouts.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Event ID",

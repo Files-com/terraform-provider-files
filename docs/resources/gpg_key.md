@@ -3,12 +3,12 @@
 page_title: "files_gpg_key Resource - files"
 subcategory: ""
 description: |-
-  GPG keys for decrypt or encrypt behaviors.
+  A GPGKey is a key record for decrypt or encrypt Behavior. It can hold both private and public key in a single record.
 ---
 
 # files_gpg_key (Resource)
 
-GPG keys for decrypt or encrypt behaviors.
+A GPGKey is a key record for decrypt or encrypt Behavior. It can hold both private and public key in a single record.
 
 ## Example Usage
 

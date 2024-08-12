@@ -71,7 +71,7 @@ func (r *gpgKeyResource) Metadata(_ context.Context, req resource.MetadataReques
 
 func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "GPG keys for decrypt or encrypt behaviors.",
+		Description: "A GPGKey is a key record for decrypt or encrypt Behavior. It can hold both private and public key in a single record.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Your GPG key name.",

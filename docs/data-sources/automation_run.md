@@ -3,12 +3,12 @@
 page_title: "files_automation_run Data Source - files"
 subcategory: ""
 description: |-
-  AutomationRuns represent a single execution of a given Automation.
+  An AutomationRun is a record with information about a single execution of a given Automation.
 ---
 
 # files_automation_run (Data Source)
 
-AutomationRuns represent a single execution of a given Automation.
+An AutomationRun is a record with information about a single execution of a given Automation.
 
 ## Example Usage
 

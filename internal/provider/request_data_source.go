@@ -59,7 +59,7 @@ func (r *requestDataSource) Metadata(_ context.Context, req datasource.MetadataR
 
 func (r *requestDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Request represents a file that *should* be uploaded by a specific user or group.\n\n\n\nRequests can either be manually created and managed, or managed automatically by an Automation.",
+		Description: "A Request is a file that *should* be uploaded by a specific user or group.\n\n\n\nRequests can either be manually created and managed, or managed automatically by an Automation.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Request ID",

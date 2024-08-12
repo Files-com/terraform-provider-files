@@ -3,7 +3,7 @@
 page_title: "files_remote_server Resource - files"
 subcategory: ""
 description: |-
-  Remote servers are used with the remote_server_sync Behavior.
+  A RemoteServer is a specific type of Behavior called remote_server_sync.
   Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.
   Not every attribute will apply to every remote server.
   FTP Servers require that you specify their hostname, port, username, password, and a value for ssl. Optionally, provide server_certificate.
@@ -29,7 +29,7 @@ description: |-
 
 # files_remote_server (Resource)
 
-Remote servers are used with the `remote_server_sync` Behavior.
+A RemoteServer is a specific type of Behavior called `remote_server_sync`.
 
 
 

@@ -3,7 +3,7 @@
 page_title: "files_lock Data Source - files"
 subcategory: ""
 description: |-
-  Locks are not used by Files.com's web interface, but can be used by your applications to
+  A Lock is not used by Files.com's web interface, but can be used by your applications to
   implement locking and concurrency features. Note that these locks are advisory in nature,
   and creating a lock does not prevent other API requests from being fulfilled.
   Our lock feature is designed to emulate the locking feature offered by WebDAV.
@@ -13,7 +13,7 @@ description: |-
 
 # files_lock (Data Source)
 
-Locks are not used by Files.com's web interface, but can be used by your applications to
+A Lock is not used by Files.com's web interface, but can be used by your applications to
 
 implement locking and concurrency features. Note that these locks are advisory in nature,
 

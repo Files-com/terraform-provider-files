@@ -75,7 +75,7 @@ func (r *notificationDataSource) Metadata(_ context.Context, req datasource.Meta
 
 func (r *notificationDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Notifications are our feature that send E-Mails when new files are uploaded into a folder.",
+		Description: "A Notification is our feature that sends E-Mails when specific actions occur in the folder.\n\n\n\nEmails are sent in batches, with email frequency options of every 5 minutes, every 15 minutes, hourly, or daily. They will include a list of the matching actions within the configured notification period, limited to the first 100.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Notification ID",

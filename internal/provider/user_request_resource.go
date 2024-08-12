@@ -65,7 +65,7 @@ func (r *userRequestResource) Metadata(_ context.Context, req resource.MetadataR
 
 func (r *userRequestResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "User Requests allow anonymous users to place a request for access on the login screen to the site administrator.",
+		Description: "A UserRequest is an operation that allows anonymous users to place a request for access on the login screen to the site administrator.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "User's full name",

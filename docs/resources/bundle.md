@@ -3,14 +3,14 @@
 page_title: "files_bundle Resource - files"
 subcategory: ""
 description: |-
-  Bundles are the API/SDK term for the feature called Share Links in the web interface.
+  A Bundle is the API/SDK term for the feature called Share Links in the web interface.
   The API provides the full set of actions related to Share Links, including sending them via E-Mail.
   Please note that we very closely monitor the E-Mailing feature and any abuse will result in disabling of your site.
 ---
 
 # files_bundle (Resource)
 
-Bundles are the API/SDK term for the feature called Share Links in the web interface.
+A Bundle is the API/SDK term for the feature called Share Links in the web interface.
 
 The API provides the full set of actions related to Share Links, including sending them via E-Mail.
 

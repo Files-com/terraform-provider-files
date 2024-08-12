@@ -3,22 +3,22 @@
 page_title: "files_form_field_set Data Source - files"
 subcategory: ""
 description: |-
-  Form Field Sets define a custom forms to be used for bundle and inbox registrations.
+  A Form Field Set is a custom form to be used for bundle and inbox registrations.
   Each Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.
   Once created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.
 ---
 
 # files_form_field_set (Data Source)
 
-Form Field Sets define a custom forms to be used for bundle and inbox registrations.
+A Form Field Set is a custom form to be used for bundle and inbox registrations.
 
- 
 
- Each Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.
 
- 
+Each Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.
 
- Once created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.
+
+
+Once created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.
 
 ## Example Usage
 

@@ -61,7 +61,7 @@ func (r *permissionDataSource) Metadata(_ context.Context, req datasource.Metada
 
 func (r *permissionDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Permission objects represent the grant of permissions to a user or group.\n\n\n\nThey are specific to a path and can be either recursive or nonrecursive into the subfolders of that path.",
+		Description: "A Permission is a way to grant permissions to a user or group.\n\n\n\nThey are specific to a path and can be either recursive or nonrecursive into the subfolders of that path.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Permission ID",

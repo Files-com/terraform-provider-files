@@ -3,12 +3,12 @@
 page_title: "files_message_comment_reaction Data Source - files"
 subcategory: ""
 description: |-
-  A message comment reaction represents a reaction emoji made by a user on a message comment.
+  A MessageCommentReaction is a reaction emoji made by a user on a message comment.
 ---
 
 # files_message_comment_reaction (Data Source)
 
-A message comment reaction represents a reaction emoji made by a user on a message comment.
+A MessageCommentReaction is a reaction emoji made by a user on a message comment.
 
 ## Example Usage
 

@@ -69,7 +69,7 @@ func (r *snapshotResource) Metadata(_ context.Context, req resource.MetadataRequ
 
 func (r *snapshotResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Snapshots are frozen groups of files in your site's hidden folder.",
+		Description: "A Snapshot is a frozen group of files in your site's hidden folder.",
 		Attributes: map[string]schema.Attribute{
 			"expires_at": schema.StringAttribute{
 				Description: "When the snapshot expires.",

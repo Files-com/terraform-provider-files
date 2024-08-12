@@ -59,7 +59,7 @@ func (r *fileCommentDataSource) Metadata(_ context.Context, req datasource.Metad
 
 func (r *fileCommentDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "File Comments are comments attached to a file by a user.",
+		Description: "A FileComment is a comments attached to a file by a user.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "File Comment ID",

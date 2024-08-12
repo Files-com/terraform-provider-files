@@ -59,7 +59,7 @@ func (r *messageDataSource) Metadata(_ context.Context, req datasource.MetadataR
 
 func (r *messageDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Messages are part of Files.com's project management features and represent a message posted by a user to a project.",
+		Description: "A Messages is a part of Files.com's project management features and represent a message posted by a user to a project.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Message ID",

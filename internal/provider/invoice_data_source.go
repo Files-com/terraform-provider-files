@@ -68,7 +68,7 @@ func (r *invoiceDataSource) Metadata(_ context.Context, req datasource.MetadataR
 
 func (r *invoiceDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "",
+		Description: "An AccountLineItem is a single line item in the accounting ledger for a billing account. These include payments and invoices.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Line item Id",

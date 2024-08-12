@@ -3,12 +3,12 @@
 page_title: "files_share_group Resource - files"
 subcategory: ""
 description: |-
-  Share groups allow you to store and name groups of email contacts to be used for sending share and inbox invitations.
+  A ShareGroup is a way for you to store and name groups of email contacts to be used for sending share and inbox invitations.
 ---
 
 # files_share_group (Resource)
 
-Share groups allow you to store and name groups of email contacts to be used for sending share and inbox invitations.
+A ShareGroup is a way for you to store and name groups of email contacts to be used for sending share and inbox invitations.
 
 ## Example Usage
 

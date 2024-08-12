@@ -3,12 +3,12 @@
 page_title: "files_bundle_notification Data Source - files"
 subcategory: ""
 description: |-
-  Bundle notifications are emails sent out to users when certain actions are performed on or within a shared set of files and folders.
+  A BundleNotification is an E-Mail sent out to users when certain actions are performed on or within a shared set of files and folders.
 ---
 
 # files_bundle_notification (Data Source)
 
-Bundle notifications are emails sent out to users when certain actions are performed on or within a shared set of files and folders.
+A BundleNotification is an E-Mail sent out to users when certain actions are performed on or within a shared set of files and folders.
 
 ## Example Usage
 

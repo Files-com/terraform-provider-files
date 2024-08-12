@@ -3,13 +3,13 @@
 page_title: "files_permission Resource - files"
 subcategory: ""
 description: |-
-  Permission objects represent the grant of permissions to a user or group.
+  A Permission is a way to grant permissions to a user or group.
   They are specific to a path and can be either recursive or nonrecursive into the subfolders of that path.
 ---
 
 # files_permission (Resource)
 
-Permission objects represent the grant of permissions to a user or group.
+A Permission is a way to grant permissions to a user or group.
 
 
 

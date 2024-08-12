@@ -3,21 +3,13 @@
 page_title: "files_site Data Source - files"
 subcategory: ""
 description: |-
-  Site
-  The Site resource in the REST API allows you to operate on your Site.
-  This is the place you'll come to update site settings, as well as manage sitewide API keys.
+  A Site is the place you'll come to update site settings, as well as manage sitewide API keys.
   Most site settings can be set via the API.
 ---
 
 # files_site (Data Source)
 
-# Site
-
-
-
-The Site resource in the REST API allows you to operate on your Site.
-
-This is the place you'll come to update site settings, as well as manage sitewide API keys.
+A Site is the place you'll come to update site settings, as well as manage sitewide API keys.
 
 
 

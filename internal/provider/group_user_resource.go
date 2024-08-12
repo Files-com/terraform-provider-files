@@ -66,7 +66,7 @@ func (r *groupUserResource) Metadata(_ context.Context, req resource.MetadataReq
 
 func (r *groupUserResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A GroupUser describes the membership of a User within a Group.\n\n\n\n## Creating GroupUsers\n\nGroupUsers can be created via the normal `create` action. When using the `update` action, if the\n\nGroupUser record does not exist for the given user/group IDs it will be created.",
+		Description: "A GroupUser is a record about membership of a User within a Group.\n\n\n\n## Creating GroupUsers\n\nGroupUsers can be created via the normal `create` action. When using the `update` action, if the\n\nGroupUser record does not exist for the given user/group IDs it will be created.",
 		Attributes: map[string]schema.Attribute{
 			"group_id": schema.Int64Attribute{
 				Description: "Group ID",

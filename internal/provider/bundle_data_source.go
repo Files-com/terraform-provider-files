@@ -95,7 +95,7 @@ func (r *bundleDataSource) Metadata(_ context.Context, req datasource.MetadataRe
 
 func (r *bundleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Bundles are the API/SDK term for the feature called Share Links in the web interface.\n\nThe API provides the full set of actions related to Share Links, including sending them via E-Mail.\n\n\n\nPlease note that we very closely monitor the E-Mailing feature and any abuse will result in disabling of your site.",
+		Description: "A Bundle is the API/SDK term for the feature called Share Links in the web interface.\n\nThe API provides the full set of actions related to Share Links, including sending them via E-Mail.\n\n\n\nPlease note that we very closely monitor the E-Mailing feature and any abuse will result in disabling of your site.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Bundle ID",

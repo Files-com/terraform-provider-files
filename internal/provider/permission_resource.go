@@ -71,7 +71,7 @@ func (r *permissionResource) Metadata(_ context.Context, req resource.MetadataRe
 
 func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Permission objects represent the grant of permissions to a user or group.\n\n\n\nThey are specific to a path and can be either recursive or nonrecursive into the subfolders of that path.",
+		Description: "A Permission is a way to grant permissions to a user or group.\n\n\n\nThey are specific to a path and can be either recursive or nonrecursive into the subfolders of that path.",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
 				Description: "Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",

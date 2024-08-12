@@ -64,7 +64,7 @@ func (r *automationRunDataSource) Metadata(_ context.Context, req datasource.Met
 
 func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "AutomationRuns represent a single execution of a given Automation.",
+		Description: "An AutomationRun is a record with information about a single execution of a given Automation.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "ID.",

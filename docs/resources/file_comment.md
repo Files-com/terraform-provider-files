@@ -3,12 +3,12 @@
 page_title: "files_file_comment Resource - files"
 subcategory: ""
 description: |-
-  File Comments are comments attached to a file by a user.
+  A FileComment is a comments attached to a file by a user.
 ---
 
 # files_file_comment (Resource)
 
-File Comments are comments attached to a file by a user.
+A FileComment is a comments attached to a file by a user.
 
 ## Example Usage
 

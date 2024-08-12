@@ -3,12 +3,12 @@
 page_title: "files_project Resource - files"
 subcategory: ""
 description: |-
-  Projects are associated with a folder and add project management features to that folder.
+  A Project is associated with a folder and add project management features to that folder.
 ---
 
 # files_project (Resource)
 
-Projects are associated with a folder and add project management features to that folder.
+A Project is associated with a folder and add project management features to that folder.
 
 ## Example Usage
 

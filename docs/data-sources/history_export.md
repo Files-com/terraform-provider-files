@@ -3,7 +3,7 @@
 page_title: "files_history_export Data Source - files"
 subcategory: ""
 description: |-
-  The History Export resource on the API is used to export historical action (history) logs.
+  A History Export is a resource on the API that is used to export historical action (history) logs.
   All queries against the archive must be submitted as Exports. (Even our Web UI creates an Export behind
   the scenes.)
   We use Amazon Athena behind the scenes for processing these queries, and as such, have powerful
@@ -27,7 +27,7 @@ description: |-
 
 # files_history_export (Data Source)
 
-The History Export resource on the API is used to export historical action (history) logs.
+A History Export is a resource on the API that is used to export historical action (history) logs.
 
 
 
