@@ -3,7 +3,7 @@ module github.com/Files-com/terraform-provider-files
 go 1.21
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.2.31
+	github.com/Files-com/files-sdk-go/v3 v3.2.32
 	github.com/hashicorp/terraform-plugin-docs v0.19.4
 	github.com/hashicorp/terraform-plugin-framework v1.9.0
 	github.com/hashicorp/terraform-plugin-testing v1.8.0
@@ -89,7 +89,7 @@ require (
 	github.com/panjf2000/ants/v2 v2.10.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06 // indirect
-	github.com/samber/lo v1.46.0 // indirect
+	github.com/samber/lo v1.47.0 // indirect
 	github.com/stretchr/testify v1.9.0
 	github.com/tunabay/go-infounit v1.1.3 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
