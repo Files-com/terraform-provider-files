@@ -75,6 +75,7 @@ type userDataSourceModel struct {
 	Active2fa                        types.Bool   `tfsdk:"active_2fa"`
 	RequirePasswordChange            types.Bool   `tfsdk:"require_password_change"`
 	PasswordExpired                  types.Bool   `tfsdk:"password_expired"`
+	ReadonlySiteAdmin                types.Bool   `tfsdk:"readonly_site_admin"`
 	RestapiPermission                types.Bool   `tfsdk:"restapi_permission"`
 	SelfManaged                      types.Bool   `tfsdk:"self_managed"`
 	SftpPermission                   types.Bool   `tfsdk:"sftp_permission"`
@@ -308,6 +309,10 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Is user's password expired?",
 				Computed:    true,
 			},
+			"readonly_site_admin": schema.BoolAttribute{
+				Description: "Is the user an allowed to view all (non-billing) site configuration for this site?",
+				Computed:    true,
+			},
 			"restapi_permission": schema.BoolAttribute{
 				Description: "Can this user access the Web app, Desktop app, SDKs, or REST API?  (All of these tools use the API internally, so this is one unified permission set.)",
 				Computed:    true,
@@ -528,6 +533,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.Active2fa = types.BoolPointerValue(user.Active2fa)
 	state.RequirePasswordChange = types.BoolPointerValue(user.RequirePasswordChange)
 	state.PasswordExpired = types.BoolPointerValue(user.PasswordExpired)
+	state.ReadonlySiteAdmin = types.BoolPointerValue(user.ReadonlySiteAdmin)
 	state.RestapiPermission = types.BoolPointerValue(user.RestapiPermission)
 	state.SelfManaged = types.BoolPointerValue(user.SelfManaged)
 	state.SftpPermission = types.BoolPointerValue(user.SftpPermission)

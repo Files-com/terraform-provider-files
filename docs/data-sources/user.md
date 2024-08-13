@@ -76,6 +76,7 @@ data "files_user" "example_user" {
 - `password_set_at` (String) Last time the user's password was set
 - `password_validity_days` (Number) Number of days to allow user to use the same password
 - `public_keys_count` (Number) Number of public keys associated with this user
+- `readonly_site_admin` (Boolean) Is the user an allowed to view all (non-billing) site configuration for this site?
 - `receive_admin_alerts` (Boolean) Should the user receive admin alerts such a certificate expiration notifications and overages?
 - `require_2fa` (String) 2FA required setting
 - `require_login_by` (String) Require user to login by specified date otherwise it will be disabled.

@@ -42,6 +42,7 @@ resource "files_user" "example_user" {
   notes                        = "Internal notes on this user."
   office_integration_enabled   = true
   password_validity_days       = 1
+  readonly_site_admin          = true
   receive_admin_alerts         = true
   require_login_by             = "2000-01-01T01:00:00Z"
   require_password_change      = true
@@ -98,6 +99,7 @@ resource "files_user" "example_user" {
 - `password` (String) User password.
 - `password_confirmation` (String) Optional, but if provided, we will ensure that it matches the value sent in `password`.
 - `password_validity_days` (Number) Number of days to allow user to use the same password
+- `readonly_site_admin` (Boolean) Is the user an allowed to view all (non-billing) site configuration for this site?
 - `receive_admin_alerts` (Boolean) Should the user receive admin alerts such a certificate expiration notifications and overages?
 - `require_2fa` (String) 2FA required setting
 - `require_login_by` (String) Require user to login by specified date otherwise it will be disabled.

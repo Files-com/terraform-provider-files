@@ -63,6 +63,7 @@ type userResourceModel struct {
 	Require2fa                       types.String `tfsdk:"require_2fa"`
 	RequireLoginBy                   types.String `tfsdk:"require_login_by"`
 	RequirePasswordChange            types.Bool   `tfsdk:"require_password_change"`
+	ReadonlySiteAdmin                types.Bool   `tfsdk:"readonly_site_admin"`
 	RestapiPermission                types.Bool   `tfsdk:"restapi_permission"`
 	SelfManaged                      types.Bool   `tfsdk:"self_managed"`
 	SftpPermission                   types.Bool   `tfsdk:"sftp_permission"`
@@ -334,6 +335,14 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"require_password_change": schema.BoolAttribute{
 				Description: "Is a password change required upon next user login?",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"readonly_site_admin": schema.BoolAttribute{
+				Description: "Is the user an allowed to view all (non-billing) site configuration for this site?",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -644,6 +653,9 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		paramsUserCreate.OfficeIntegrationEnabled = plan.OfficeIntegrationEnabled.ValueBoolPointer()
 	}
 	paramsUserCreate.PasswordValidityDays = plan.PasswordValidityDays.ValueInt64()
+	if !plan.ReadonlySiteAdmin.IsNull() && !plan.ReadonlySiteAdmin.IsUnknown() {
+		paramsUserCreate.ReadonlySiteAdmin = plan.ReadonlySiteAdmin.ValueBoolPointer()
+	}
 	if !plan.ReceiveAdminAlerts.IsNull() && !plan.ReceiveAdminAlerts.IsUnknown() {
 		paramsUserCreate.ReceiveAdminAlerts = plan.ReceiveAdminAlerts.ValueBoolPointer()
 	}
@@ -815,6 +827,9 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		paramsUserUpdate.OfficeIntegrationEnabled = plan.OfficeIntegrationEnabled.ValueBoolPointer()
 	}
 	paramsUserUpdate.PasswordValidityDays = plan.PasswordValidityDays.ValueInt64()
+	if !plan.ReadonlySiteAdmin.IsNull() && !plan.ReadonlySiteAdmin.IsUnknown() {
+		paramsUserUpdate.ReadonlySiteAdmin = plan.ReadonlySiteAdmin.ValueBoolPointer()
+	}
 	if !plan.ReceiveAdminAlerts.IsNull() && !plan.ReceiveAdminAlerts.IsUnknown() {
 		paramsUserUpdate.ReceiveAdminAlerts = plan.ReceiveAdminAlerts.ValueBoolPointer()
 	}
@@ -1050,6 +1065,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.Active2fa = types.BoolPointerValue(user.Active2fa)
 	state.RequirePasswordChange = types.BoolPointerValue(user.RequirePasswordChange)
 	state.PasswordExpired = types.BoolPointerValue(user.PasswordExpired)
+	state.ReadonlySiteAdmin = types.BoolPointerValue(user.ReadonlySiteAdmin)
 	state.RestapiPermission = types.BoolPointerValue(user.RestapiPermission)
 	state.SelfManaged = types.BoolPointerValue(user.SelfManaged)
 	state.SftpPermission = types.BoolPointerValue(user.SftpPermission)

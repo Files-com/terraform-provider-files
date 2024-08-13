@@ -22,6 +22,7 @@ resource "files_user" "example_user" {
   notes                        = "Internal notes on this user."
   office_integration_enabled   = true
   password_validity_days       = 1
+  readonly_site_admin          = true
   receive_admin_alerts         = true
   require_login_by             = "2000-01-01T01:00:00Z"
   require_password_change      = true
