@@ -42,7 +42,7 @@ data "files_api_key" "example_api_key" {
 - `key` (String) API Key actual key string
 - `last_use_at` (String) API Key last used - note this value is only updated once per 3 hour period, so the 'actual' time of last use may be up to 3 hours later than this timestamp.
 - `name` (String) Internal name for the API Key.  For your use.
-- `permission_set` (String) Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations).  Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.
+- `permission_set` (String) Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.
 - `platform` (String) If this API key represents a Desktop app, what platform was it created on?
 - `url` (String) URL for API host.
 - `user_id` (Number) User ID for the owner of this API Key.  May be blank for Site-wide API Keys.
