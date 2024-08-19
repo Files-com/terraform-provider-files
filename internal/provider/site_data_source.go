@@ -273,7 +273,7 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed:    true,
 			},
 			"allowed_countries": schema.StringAttribute{
-				Description: "Comma seperated list of allowed Country codes",
+				Description: "Comma separated list of allowed Country codes",
 				Computed:    true,
 			},
 			"allowed_ips": schema.StringAttribute{
@@ -422,7 +422,7 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed:    true,
 			},
 			"disallowed_countries": schema.StringAttribute{
-				Description: "Comma seperated list of disallowed Country codes",
+				Description: "Comma separated list of disallowed Country codes",
 				Computed:    true,
 			},
 			"disable_files_certificate_generation": schema.BoolAttribute{
@@ -710,7 +710,7 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed:    true,
 			},
 			"sftp_insecure_ciphers": schema.BoolAttribute{
-				Description: "If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severly weakens the security of your site and it is not recommend, except as a last resort for compatibility.",
+				Description: "If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility.",
 				Computed:    true,
 			},
 			"sftp_insecure_diffie_hellman": schema.BoolAttribute{

@@ -90,7 +90,7 @@ resource "files_user" "example_user" {
 - `group_id` (Number) Group ID to associate this user with.
 - `group_ids` (String) Comma-separated list of group IDs of which this user is a member
 - `header_text` (String) Text to display to the user in the header of the UI
-- `imported_password_hash` (String) Pre-calculated hash of the user's password. If supplied, this will be used to authenticate the user on first login. Supported hash menthods are MD5, SHA1, and SHA256.
+- `imported_password_hash` (String) Pre-calculated hash of the user's password. If supplied, this will be used to authenticate the user on first login. Supported hash methods are MD5, SHA1, and SHA256.
 - `language` (String) Preferred language
 - `name` (String) User's full name
 - `notes` (String) Any internal notes on the user

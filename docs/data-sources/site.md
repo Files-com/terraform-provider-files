@@ -40,7 +40,7 @@ data "files_site" "example_site" {
 - `allowed_2fa_method_u2f` (Boolean) Is U2F two factor authentication allowed?
 - `allowed_2fa_method_webauthn` (Boolean) Is WebAuthn two factor authentication allowed?
 - `allowed_2fa_method_yubi` (Boolean) Is yubikey two factor authentication allowed?
-- `allowed_countries` (String) Comma seperated list of allowed Country codes
+- `allowed_countries` (String) Comma separated list of allowed Country codes
 - `allowed_ips` (String) List of allowed IP addresses
 - `always_mkdir_parents` (Boolean) Create parent directories if they do not exist during uploads?  This is primarily used to work around broken upload clients that assume servers will perform this step.
 - `ask_about_overwrites` (Boolean) If false, rename conflicting files instead of asking for overwrite confirmation.  Only applies to web interface.
@@ -77,7 +77,7 @@ data "files_site" "example_site" {
 - `disable_notifications` (Boolean) Are notifications disabled?
 - `disable_password_reset` (Boolean) Is password reset disabled?
 - `disable_users_from_inactivity_period_days` (Number) If greater than zero, users will unable to login if they do not show activity within this number of days.
-- `disallowed_countries` (String) Comma seperated list of disallowed Country codes
+- `disallowed_countries` (String) Comma separated list of disallowed Country codes
 - `domain` (String) Custom domain
 - `domain_hsts_header` (Boolean) Send HSTS (HTTP Strict Transport Security) header when visitors access the site via a custom domain?
 - `domain_letsencrypt_chain` (String) Letsencrypt chain to use when registering SSL Certificate for domain.
@@ -152,7 +152,7 @@ data "files_site" "example_site" {
 - `session_pinned_by_ip` (Boolean) Are sessions locked to the same IP? (i.e. do users need to log in again if they change IPs?)
 - `sftp_enabled` (Boolean) Is SFTP enabled?
 - `sftp_host_key_type` (String) Sftp Host Key Type
-- `sftp_insecure_ciphers` (Boolean) If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severly weakens the security of your site and it is not recommend, except as a last resort for compatibility.
+- `sftp_insecure_ciphers` (Boolean) If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility.
 - `sftp_insecure_diffie_hellman` (Boolean) If true, we will allow weak Diffie Hellman parameters to be used within ciphers for SFTP that are otherwise on our secure list.  This has the effect of making the cipher weaker than our normal threshold for security, but is required to support certain legacy or broken SSH and MFT clients.  Enabling this weakens security, but not nearly as much as enabling the full `sftp_insecure_ciphers` option.
 - `sftp_user_root_enabled` (Boolean) Use user FTP roots also for SFTP?
 - `sharing_enabled` (Boolean) Allow bundle creation
