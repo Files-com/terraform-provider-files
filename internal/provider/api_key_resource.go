@@ -120,7 +120,7 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				},
 			},
 			"path": schema.StringAttribute{
-				Description: "Folder path restriction for this API key.",
+				Description: "Folder path restriction for `office_integration` permission set API keys.",
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
