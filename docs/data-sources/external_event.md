@@ -37,5 +37,6 @@ data "files_external_event" "example_external_event" {
 - `event_type` (String) Type of event being recorded.
 - `folder_behavior_id` (Number) Folder Behavior ID
 - `remote_server_type` (String) Associated Remote Server type, if any
+- `siem_http_destination_id` (Number) SIEM HTTP Destination ID.
 - `status` (String) Status of event.
 - `successful_files` (Number) For sync events, the number of files handled successfully.

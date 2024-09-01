@@ -28,19 +28,20 @@ type externalEventDataSource struct {
 }
 
 type externalEventDataSourceModel struct {
-	Id               types.Int64  `tfsdk:"id"`
-	EventType        types.String `tfsdk:"event_type"`
-	Status           types.String `tfsdk:"status"`
-	Body             types.String `tfsdk:"body"`
-	CreatedAt        types.String `tfsdk:"created_at"`
-	BodyUrl          types.String `tfsdk:"body_url"`
-	FolderBehaviorId types.Int64  `tfsdk:"folder_behavior_id"`
-	SuccessfulFiles  types.Int64  `tfsdk:"successful_files"`
-	ErroredFiles     types.Int64  `tfsdk:"errored_files"`
-	BytesSynced      types.Int64  `tfsdk:"bytes_synced"`
-	ComparedFiles    types.Int64  `tfsdk:"compared_files"`
-	ComparedFolders  types.Int64  `tfsdk:"compared_folders"`
-	RemoteServerType types.String `tfsdk:"remote_server_type"`
+	Id                    types.Int64  `tfsdk:"id"`
+	EventType             types.String `tfsdk:"event_type"`
+	Status                types.String `tfsdk:"status"`
+	Body                  types.String `tfsdk:"body"`
+	CreatedAt             types.String `tfsdk:"created_at"`
+	BodyUrl               types.String `tfsdk:"body_url"`
+	FolderBehaviorId      types.Int64  `tfsdk:"folder_behavior_id"`
+	SiemHttpDestinationId types.Int64  `tfsdk:"siem_http_destination_id"`
+	SuccessfulFiles       types.Int64  `tfsdk:"successful_files"`
+	ErroredFiles          types.Int64  `tfsdk:"errored_files"`
+	BytesSynced           types.Int64  `tfsdk:"bytes_synced"`
+	ComparedFiles         types.Int64  `tfsdk:"compared_files"`
+	ComparedFolders       types.Int64  `tfsdk:"compared_folders"`
+	RemoteServerType      types.String `tfsdk:"remote_server_type"`
 }
 
 func (r *externalEventDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -96,6 +97,10 @@ func (r *externalEventDataSource) Schema(_ context.Context, _ datasource.SchemaR
 			},
 			"folder_behavior_id": schema.Int64Attribute{
 				Description: "Folder Behavior ID",
+				Computed:    true,
+			},
+			"siem_http_destination_id": schema.Int64Attribute{
+				Description: "SIEM HTTP Destination ID.",
 				Computed:    true,
 			},
 			"successful_files": schema.Int64Attribute{
@@ -169,6 +174,7 @@ func (r *externalEventDataSource) populateDataSourceModel(ctx context.Context, e
 	}
 	state.BodyUrl = types.StringValue(externalEvent.BodyUrl)
 	state.FolderBehaviorId = types.Int64Value(externalEvent.FolderBehaviorId)
+	state.SiemHttpDestinationId = types.Int64Value(externalEvent.SiemHttpDestinationId)
 	state.SuccessfulFiles = types.Int64Value(externalEvent.SuccessfulFiles)
 	state.ErroredFiles = types.Int64Value(externalEvent.ErroredFiles)
 	state.BytesSynced = types.Int64Value(externalEvent.BytesSynced)
