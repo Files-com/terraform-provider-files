@@ -1,12 +1,12 @@
 ---
 page_title: "Files.com Provider"
 description: |-
-  The Files.com Terraform Provider provides convenient access to the Files.com API for managing your Files.com account.
+  The Files.com Terraform Provider provides convenient access to the Files.com API for managing your Files.com account via Terraform.
 ---
 
 # Files.com Provider
 
-The [Files.com](https://www.files.com/) Terraform Provider provides convenient access to the Files.com API for managing your Files.com account.
+The [Files.com](https://www.files.com/) Terraform Provider provides access to the Files.com API for managing your Files.com account via Terraform or OpenTofu.
 
 You must configure the provider with the proper credentials before you can use it.
 
