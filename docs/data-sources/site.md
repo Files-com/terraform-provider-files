@@ -90,6 +90,7 @@ data "files_site" "example_site" {
 - `icon16` (String) Branded icon 16x16
 - `icon32` (String) Branded icon 32x32
 - `icon48` (String) Branded icon 48x48
+- `id` (Number) Site Id
 - `immutable_files_set_at` (String) Can files be modified?
 - `include_password_in_welcome_email` (Boolean) Include password in emails to new users?
 - `language` (String) Site default language

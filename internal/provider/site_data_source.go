@@ -29,6 +29,7 @@ type siteDataSource struct {
 }
 
 type siteDataSourceModel struct {
+	Id                                       types.Int64   `tfsdk:"id"`
 	Name                                     types.String  `tfsdk:"name"`
 	AdditionalTextFileTypes                  types.List    `tfsdk:"additional_text_file_types"`
 	Allowed2faMethodSms                      types.Bool    `tfsdk:"allowed_2fa_method_sms"`
@@ -219,6 +220,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 	resp.Schema = schema.Schema{
 		Description: "A Site is the place you'll come to update site settings, as well as manage sitewide API keys.\n\n\n\nMost site settings can be set via the API.",
 		Attributes: map[string]schema.Attribute{
+			"id": schema.Int64Attribute{
+				Description: "Site Id",
+				Computed:    true,
+			},
 			"name": schema.StringAttribute{
 				Description: "Site name",
 				Computed:    true,
@@ -899,6 +904,7 @@ func (r *siteDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files_sdk.Site, state *siteDataSourceModel) (diags diag.Diagnostics) {
 	var propDiags diag.Diagnostics
 
+	state.Id = types.Int64Value(site.Id)
 	state.Name = types.StringValue(site.Name)
 	state.AdditionalTextFileTypes, propDiags = types.ListValueFrom(ctx, types.StringType, site.AdditionalTextFileTypes)
 	diags.Append(propDiags...)
