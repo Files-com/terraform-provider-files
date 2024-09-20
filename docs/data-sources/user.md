@@ -90,7 +90,7 @@ data "files_user" "example_user" {
 - `sso_strategy_id` (Number) SSO (Single Sign On) strategy ID for the user, if applicable.
 - `subscribe_to_newsletter` (Boolean) Is the user subscribed to the newsletter?
 - `time_zone` (String) User time zone
-- `type_of_2fa` (String) Type(s) of 2FA methods in use, for programmatic use.  Will be either `sms`, `totp`, `u2f`, `yubi`, or multiple values sorted alphabetically and joined by an underscore.  Does not specify whether user has more than one of a given method.
+- `type_of_2fa` (String) Type(s) of 2FA methods in use, for programmatic use.  Will be either `sms`, `totp`, `webauthn`, `yubi`, `email`, or multiple values sorted alphabetically and joined by an underscore.  Does not specify whether user has more than one of a given method.
 - `type_of_2fa_for_display` (String) Type(s) of 2FA methods in use, formatted for displaying in the UI.  Unlike `type_of_2fa`, this value will make clear when a user has more than 1 of the same type of method.
 - `user_root` (String) Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set.)  Note that this is not used for API, Desktop, or Web interface.
 - `username` (String) User's username

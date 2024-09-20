@@ -142,7 +142,7 @@ resource "files_user" "example_user" {
 - `password_expired` (Boolean) Is user's password expired?
 - `password_set_at` (String) Last time the user's password was set
 - `public_keys_count` (Number) Number of public keys associated with this user
-- `type_of_2fa` (String) Type(s) of 2FA methods in use, for programmatic use.  Will be either `sms`, `totp`, `u2f`, `yubi`, or multiple values sorted alphabetically and joined by an underscore.  Does not specify whether user has more than one of a given method.
+- `type_of_2fa` (String) Type(s) of 2FA methods in use, for programmatic use.  Will be either `sms`, `totp`, `webauthn`, `yubi`, `email`, or multiple values sorted alphabetically and joined by an underscore.  Does not specify whether user has more than one of a given method.
 - `type_of_2fa_for_display` (String) Type(s) of 2FA methods in use, formatted for displaying in the UI.  Unlike `type_of_2fa`, this value will make clear when a user has more than 1 of the same type of method.
 
 ## Import

@@ -34,7 +34,6 @@ type siteDataSourceModel struct {
 	AdditionalTextFileTypes                  types.List    `tfsdk:"additional_text_file_types"`
 	Allowed2faMethodSms                      types.Bool    `tfsdk:"allowed_2fa_method_sms"`
 	Allowed2faMethodTotp                     types.Bool    `tfsdk:"allowed_2fa_method_totp"`
-	Allowed2faMethodU2f                      types.Bool    `tfsdk:"allowed_2fa_method_u2f"`
 	Allowed2faMethodWebauthn                 types.Bool    `tfsdk:"allowed_2fa_method_webauthn"`
 	Allowed2faMethodYubi                     types.Bool    `tfsdk:"allowed_2fa_method_yubi"`
 	Allowed2faMethodEmail                    types.Bool    `tfsdk:"allowed_2fa_method_email"`
@@ -239,10 +238,6 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"allowed_2fa_method_totp": schema.BoolAttribute{
 				Description: "Is TOTP two factor authentication allowed?",
-				Computed:    true,
-			},
-			"allowed_2fa_method_u2f": schema.BoolAttribute{
-				Description: "Is U2F two factor authentication allowed?",
 				Computed:    true,
 			},
 			"allowed_2fa_method_webauthn": schema.BoolAttribute{
@@ -910,7 +905,6 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	diags.Append(propDiags...)
 	state.Allowed2faMethodSms = types.BoolPointerValue(site.Allowed2faMethodSms)
 	state.Allowed2faMethodTotp = types.BoolPointerValue(site.Allowed2faMethodTotp)
-	state.Allowed2faMethodU2f = types.BoolPointerValue(site.Allowed2faMethodU2f)
 	state.Allowed2faMethodWebauthn = types.BoolPointerValue(site.Allowed2faMethodWebauthn)
 	state.Allowed2faMethodYubi = types.BoolPointerValue(site.Allowed2faMethodYubi)
 	state.Allowed2faMethodEmail = types.BoolPointerValue(site.Allowed2faMethodEmail)

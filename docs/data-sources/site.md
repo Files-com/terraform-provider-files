@@ -37,7 +37,6 @@ data "files_site" "example_site" {
 - `allowed_2fa_method_sms` (Boolean) Is SMS two factor authentication allowed?
 - `allowed_2fa_method_static` (Boolean) Is OTP via static codes for two factor authentication allowed?
 - `allowed_2fa_method_totp` (Boolean) Is TOTP two factor authentication allowed?
-- `allowed_2fa_method_u2f` (Boolean) Is U2F two factor authentication allowed?
 - `allowed_2fa_method_webauthn` (Boolean) Is WebAuthn two factor authentication allowed?
 - `allowed_2fa_method_yubi` (Boolean) Is yubikey two factor authentication allowed?
 - `allowed_countries` (String) Comma separated list of allowed Country codes
