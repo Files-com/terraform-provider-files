@@ -3,17 +3,56 @@
 page_title: "files_permission Resource - files"
 subcategory: ""
 description: |-
-  A Permission is a way to grant permissions to a user or group.
-  They are specific to a path and can be either recursive or nonrecursive into the subfolders of that path.
+  A Permission object represents a grant of access permission on a specific Path to a User or Group.
+  They can be optionally recursive or nonrecursive into the subfolders of that path.
+  A Permission may be applied to a User or a Group, but not both at once.
+  The following table sets forth the available Permission types:
+  | Permission | Access Level Granted | Automatically Also Includes/Implies Permissions |
+  | --- | ----------- | --------------------- |
+  | `admin` | Able to manage Folder Behaviors, Permissions, and Notifications for the folder. Also grants all other permissions. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |
+  | `full` | Able to read, write, move, delete, and rename files and folders. Also grants the ability to overwrite files upon upload. | `writeonly`, `readonly`, `list` |
+  | `readonly` | Able to list, preview, and download files and folders. | `list` |
+  | `writeonly` | Able to upload files, create folders and list subfolders the user has write permission to. | none |
+  | `list` | Able to list files and folders, but not download. | none |
+  | `bundle` | Able to share files and folders via a Bundle (share link). | `readonly`, `list` |
+  | `history` | Able to view the history of files and folders and to create email notifications for themselves. | `list` |
 ---
 
 # files_permission (Resource)
 
-A Permission is a way to grant permissions to a user or group.
+A Permission object represents a grant of access permission on a specific Path to a User or Group.
 
 
 
-They are specific to a path and can be either recursive or nonrecursive into the subfolders of that path.
+They can be optionally recursive or nonrecursive into the subfolders of that path.
+
+
+
+A Permission may be applied to a User *or* a Group, but not both at once.
+
+
+
+The following table sets forth the available Permission types:
+
+
+
+| Permission | Access Level Granted | Automatically Also Includes/Implies Permissions |
+
+| --- | ----------- | --------------------- |
+
+| `admin` | Able to manage Folder Behaviors, Permissions, and Notifications for the folder. Also grants all other permissions. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |
+
+| `full` | Able to read, write, move, delete, and rename files and folders. Also grants the ability to overwrite files upon upload. | `writeonly`, `readonly`, `list` |
+
+| `readonly` | Able to list, preview, and download files and folders. | `list` |
+
+| `writeonly` | Able to upload files, create folders and list subfolders the user has write permission to. | none |
+
+| `list` | Able to list files and folders, but not download. | none |
+
+| `bundle` | Able to share files and folders via a Bundle (share link). | `readonly`, `list` |
+
+| `history` | Able to view the history of files and folders and to create email notifications for themselves. | `list` |
 
 ## Example Usage
 
@@ -34,15 +73,15 @@ resource "files_permission" "example_permission" {
 ### Optional
 
 - `group_id` (Number) Group ID
-- `path` (String) Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
-- `permission` (String) Permission type
-- `recursive` (Boolean) Does this permission apply to subfolders?
+- `path` (String) Path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
+- `permission` (String) Permission type.  See the table referenced in the documentation for an explanation of each permission.
+- `recursive` (Boolean) Recursive: does this permission apply to subfolders?
 - `user_id` (Number) User ID
-- `username` (String) User's username
+- `username` (String) Username (if applicable)
 
 ### Read-Only
 
-- `group_name` (String) Group name if applicable
+- `group_name` (String) Group name (if applicable)
 - `id` (Number) Permission ID
 
 ## Import
