@@ -182,8 +182,8 @@ func (r *userRequestResource) Read(ctx context.Context, req resource.ReadRequest
 
 func (r *userRequestResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	resp.Diagnostics.AddError(
-		"Error Updating Files UserRequest",
-		"Update operation not implemented",
+		"Resource Update Not Implemented",
+		"This resource does not support updates.",
 	)
 }
 

@@ -242,8 +242,8 @@ func (r *lockResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 
 func (r *lockResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	resp.Diagnostics.AddError(
-		"Error Updating Files Lock",
-		"Update operation not implemented",
+		"Resource Update Not Implemented",
+		"This resource does not support updates.",
 	)
 }
 

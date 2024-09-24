@@ -162,8 +162,8 @@ func (r *messageCommentReactionResource) Read(ctx context.Context, req resource.
 
 func (r *messageCommentReactionResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	resp.Diagnostics.AddError(
-		"Error Updating Files MessageCommentReaction",
-		"Update operation not implemented",
+		"Resource Update Not Implemented",
+		"This resource does not support updates.",
 	)
 }
 

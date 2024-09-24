@@ -252,6 +252,7 @@ func (p *filesProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewSftpHostKeyResource,
 		NewShareGroupResource,
 		NewSiemHttpDestinationResource,
+		NewSiteResource,
 		NewSnapshotResource,
 		NewUserResource,
 		NewUserRequestResource,

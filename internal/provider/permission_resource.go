@@ -236,8 +236,8 @@ func (r *permissionResource) Read(ctx context.Context, req resource.ReadRequest,
 
 func (r *permissionResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	resp.Diagnostics.AddError(
-		"Error Updating Files Permission",
-		"Update operation not implemented",
+		"Resource Update Not Implemented",
+		"This resource does not support updates.",
 	)
 }
 
