@@ -619,7 +619,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				Computed:    true,
 			},
 			"pinned_region": schema.StringAttribute{
-				Description: "If set, all communciations with this remote server are made through the provided region.",
+				Description: "If set, all communications with this remote server are made through the provided region.",
 				Computed:    true,
 			},
 			"auth_setup_link": schema.StringAttribute{

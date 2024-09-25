@@ -249,7 +249,7 @@ resource "files_remote_server" "example_remote_server" {
 - `disabled` (Boolean) If true, this server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.
 - `files_agent_api_token` (String) Files Agent API Token
 - `id` (Number) Remote server ID
-- `pinned_region` (String) If set, all communciations with this remote server are made through the provided region.
+- `pinned_region` (String) If set, all communications with this remote server are made through the provided region.
 - `remote_home_path` (String) Initial home folder on remote server
 - `supports_versioning` (Boolean) If true, this remote server supports file versioning. This value is determined automatically by Files.com.
 

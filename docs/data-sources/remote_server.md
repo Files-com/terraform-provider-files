@@ -166,7 +166,7 @@ data "files_remote_server" "example_remote_server" {
 - `name` (String) Internal name for your reference
 - `one_drive_account_type` (String) Either personal or business_other account types
 - `pin_to_site_region` (Boolean) If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a sitewide setting which will force it to true.
-- `pinned_region` (String) If set, all communciations with this remote server are made through the provided region.
+- `pinned_region` (String) If set, all communications with this remote server are made through the provided region.
 - `port` (Number) Port for remote server.  Not needed for S3.
 - `rackspace_container` (String) The name of the container (top level directory) where files will sync.
 - `rackspace_region` (String) Three letter airport code for Rackspace region. See https://support.rackspace.com/how-to/about-regions/

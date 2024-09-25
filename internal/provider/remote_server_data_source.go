@@ -148,7 +148,7 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Computed:    true,
 			},
 			"pinned_region": schema.StringAttribute{
-				Description: "If set, all communciations with this remote server are made through the provided region.",
+				Description: "If set, all communications with this remote server are made through the provided region.",
 				Computed:    true,
 			},
 			"s3_bucket": schema.StringAttribute{
