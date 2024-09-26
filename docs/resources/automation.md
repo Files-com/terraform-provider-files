@@ -10,7 +10,7 @@ description: |-
   The path attribute specifies which folders this automation applies to.
   It gets combined with the source attribute to determine which files are actually affected by the automation.
   Note that the path attribute supports globs, and only refers to folders.
-  It's the source attribute combined with the path attribute that determines which files are affected, and automations only operate on the files themselves.
+  It's the source attribute, which also supports globs, combined with the path attribute that determines which files are affected, and automations only operate on the files themselves.
   Additionally, paths in Automations can refer to folders which don't yet exist.
   Path Globs
   Although Automations may have a path specified, it can be a glob (which includes wildcards), which affects multiple folders.
@@ -22,7 +22,7 @@ description: |-
   These alternatives can either be literal text or include special characters including nested curly brackets.
   For example {Mon,Tue,Wed,Thu,Fri} would match abbreviated weekdays, and 202{3-{0[7-9],1?},4-0[1-6]}-* would match dates from 2023-07-01 through 2024-06-30.
   To match any of the special characters literally, precede it with a backslash and enclose that pair with square brackets. For example to match a literal ?, use [\?].
-  Globs are not supported on remote paths of any kind.
+  Globs are supported on path, source, and exclude_pattern fields. Globs are not supported on remote paths of any kind or for any field.
   By default, Copy and Move automations that use globs will implicitly replicate matched folder structures at the destination. If you want to flatten the folder structure, set flatten_destination_structure to true.
   Automation Triggers
   Automations can be triggered in the following ways:
@@ -122,7 +122,7 @@ It gets combined with the `source` attribute to determine which files are actual
 
 Note that the `path` attribute supports globs, and only refers to _folders_.
 
-It's the `source` attribute combined with the `path` attribute that determines which files are affected, and automations only operate on the files themselves.
+It's the `source` attribute, which also supports globs, combined with the `path` attribute that determines which files are affected, and automations only operate on the files themselves.
 
 Additionally, paths in Automations can refer to folders which don't yet exist.
 
@@ -164,7 +164,7 @@ To match any of the special characters literally, precede it with a backslash an
 
 
 
-Globs are not supported on remote paths of any kind.
+Globs are supported on `path`, `source`, and `exclude_pattern` fields. Globs are not supported on remote paths of any kind or for any field.
 
 
 
@@ -476,7 +476,7 @@ resource "files_automation" "example_automation" {
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.
 - `schedule_time_zone` (String) If trigger is `custom_schedule`, Custom schedule Time Zone for when the automation should be run.
 - `schedule_times_of_day` (List of String) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. Times of day in HH:MM format.
-- `source` (String) Source Path
+- `source` (String) Source path. Supports globs, except on remote mounts.
 - `sync_ids` (List of Number) IDs of remote sync folder behaviors to run by this Automation
 - `trigger` (String) How this automation is triggered to run.
 - `trigger_actions` (List of String) If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, read, update, destroy, move, copy
@@ -486,6 +486,7 @@ resource "files_automation" "example_automation" {
 ### Read-Only
 
 - `deleted` (Boolean) Indicates if the automation has been deleted.
+- `exclude_pattern` (String) If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.
 - `human_readable_schedule` (String) If trigger is `custom_schedule`, Human readable Custom schedule description for when the automation should be run.
 - `id` (Number) Automation ID
 - `last_modified_at` (String) Time when automation was last modified. Does not change for name or description updates.
