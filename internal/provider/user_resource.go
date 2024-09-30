@@ -74,6 +74,7 @@ type userResourceModel struct {
 	SubscribeToNewsletter            types.Bool   `tfsdk:"subscribe_to_newsletter"`
 	TimeZone                         types.String `tfsdk:"time_zone"`
 	UserRoot                         types.String `tfsdk:"user_root"`
+	UserHome                         types.String `tfsdk:"user_home"`
 	AvatarDelete                     types.Bool   `tfsdk:"avatar_delete"`
 	ChangePassword                   types.String `tfsdk:"change_password"`
 	ChangePasswordConfirmation       types.String `tfsdk:"change_password_confirmation"`
@@ -425,7 +426,15 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"user_root": schema.StringAttribute{
-				Description: "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set.)  Note that this is not used for API, Desktop, or Web interface.",
+				Description: "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"user_home": schema.StringAttribute{
+				Description: "Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -697,6 +706,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	paramsUserCreate.Require2fa = paramsUserCreate.Require2fa.Enum()[plan.Require2fa.ValueString()]
 	paramsUserCreate.TimeZone = plan.TimeZone.ValueString()
 	paramsUserCreate.UserRoot = plan.UserRoot.ValueString()
+	paramsUserCreate.UserHome = plan.UserHome.ValueString()
 	paramsUserCreate.Username = plan.Username.ValueString()
 
 	if resp.Diagnostics.HasError() {
@@ -871,6 +881,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	paramsUserUpdate.Require2fa = paramsUserUpdate.Require2fa.Enum()[plan.Require2fa.ValueString()]
 	paramsUserUpdate.TimeZone = plan.TimeZone.ValueString()
 	paramsUserUpdate.UserRoot = plan.UserRoot.ValueString()
+	paramsUserUpdate.UserHome = plan.UserHome.ValueString()
 	paramsUserUpdate.Username = plan.Username.ValueString()
 
 	if resp.Diagnostics.HasError() {
@@ -1079,6 +1090,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.TypeOf2fa = types.StringValue(user.TypeOf2fa)
 	state.TypeOf2faForDisplay = types.StringValue(user.TypeOf2faForDisplay)
 	state.UserRoot = types.StringValue(user.UserRoot)
+	state.UserHome = types.StringValue(user.UserHome)
 	state.DaysRemainingUntilPasswordExpire = types.Int64Value(user.DaysRemainingUntilPasswordExpire)
 	if err := lib.TimeToStringType(ctx, path.Root("password_expire_at"), user.PasswordExpireAt, &state.PasswordExpireAt); err != nil {
 		diags.AddError(

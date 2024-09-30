@@ -89,6 +89,7 @@ type userDataSourceModel struct {
 	TypeOf2fa                        types.String `tfsdk:"type_of_2fa"`
 	TypeOf2faForDisplay              types.String `tfsdk:"type_of_2fa_for_display"`
 	UserRoot                         types.String `tfsdk:"user_root"`
+	UserHome                         types.String `tfsdk:"user_home"`
 	DaysRemainingUntilPasswordExpire types.Int64  `tfsdk:"days_remaining_until_password_expire"`
 	PasswordExpireAt                 types.String `tfsdk:"password_expire_at"`
 }
@@ -362,7 +363,11 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed:    true,
 			},
 			"user_root": schema.StringAttribute{
-				Description: "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set.)  Note that this is not used for API, Desktop, or Web interface.",
+				Description: "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface.",
+				Computed:    true,
+			},
+			"user_home": schema.StringAttribute{
+				Description: "Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface.",
 				Computed:    true,
 			},
 			"days_remaining_until_password_expire": schema.Int64Attribute{
@@ -547,6 +552,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.TypeOf2fa = types.StringValue(user.TypeOf2fa)
 	state.TypeOf2faForDisplay = types.StringValue(user.TypeOf2faForDisplay)
 	state.UserRoot = types.StringValue(user.UserRoot)
+	state.UserHome = types.StringValue(user.UserHome)
 	state.DaysRemainingUntilPasswordExpire = types.Int64Value(user.DaysRemainingUntilPasswordExpire)
 	if err := lib.TimeToStringType(ctx, path.Root("password_expire_at"), user.PasswordExpireAt, &state.PasswordExpireAt); err != nil {
 		diags.AddError(

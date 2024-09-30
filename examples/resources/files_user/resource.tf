@@ -37,6 +37,7 @@ resource "files_user" "example_user" {
   require_2fa                  = "always_require"
   time_zone                    = "Pacific Time (US & Canada)"
   user_root                    = "example"
+  user_home                    = "example"
   username                     = "user"
 }
 
