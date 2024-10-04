@@ -127,10 +127,17 @@ func (r *permissionDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		}
 	}
 
+	if err = permissionIt.Err(); err != nil {
+		resp.Diagnostics.AddError(
+			"Error Reading Files Permission",
+			"Could not read permission id "+fmt.Sprint(data.Id.ValueInt64())+": "+err.Error(),
+		)
+	}
+
 	if permission == nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Files Permission",
-			"Could not find permission id "+fmt.Sprint(data.Id.ValueInt64()),
+			"Could not find permission id "+fmt.Sprint(data.Id.ValueInt64())+"",
 		)
 		return
 	}

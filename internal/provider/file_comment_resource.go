@@ -162,6 +162,18 @@ func (r *fileCommentResource) Read(ctx context.Context, req resource.ReadRequest
 		}
 	}
 
+	if err = fileCommentIt.Err(); err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
+		resp.Diagnostics.AddError(
+			"Error Reading Files FileComment",
+			"Could not read file_comment id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
+		)
+	}
+
 	if fileComment == nil {
 		resp.State.RemoveResource(ctx)
 		return

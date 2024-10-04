@@ -191,6 +191,18 @@ func (r *requestResource) Read(ctx context.Context, req resource.ReadRequest, re
 		}
 	}
 
+	if err = requestIt.Err(); err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
+		resp.Diagnostics.AddError(
+			"Error Reading Files Request",
+			"Could not read request id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
+		)
+	}
+
 	if request == nil {
 		resp.State.RemoveResource(ctx)
 		return

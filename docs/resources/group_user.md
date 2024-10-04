@@ -46,7 +46,6 @@ resource "files_group_user" "example_group_user" {
 ### Read-Only
 
 - `group_name` (String) Group name
-- `id` (Number) Group User ID.
 - `usernames` (List of String) A list of usernames for users in this group
 
 ## Import
@@ -54,6 +53,6 @@ resource "files_group_user" "example_group_user" {
 Import is supported using the following syntax:
 
 ```shell
-# Group Users can be imported by specifying the id.
-terraform import files_group_user.example_group_user 1
+# Group Users can be imported by specifying the group_id and user_id.
+terraform import files_group_user.example_group_user 1,1
 ```

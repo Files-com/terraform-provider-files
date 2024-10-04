@@ -145,10 +145,17 @@ func (r *lockDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		}
 	}
 
+	if err = lockIt.Err(); err != nil {
+		resp.Diagnostics.AddError(
+			"Error Reading Files Lock",
+			"Could not read lock path "+fmt.Sprint(data.Path.ValueString())+": "+err.Error(),
+		)
+	}
+
 	if lock == nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Files Lock",
-			"Could not find lock path "+fmt.Sprint(data.Path.ValueString()),
+			"Could not find lock path "+fmt.Sprint(data.Path.ValueString())+"",
 		)
 		return
 	}

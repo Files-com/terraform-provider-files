@@ -25,7 +25,6 @@ GroupUser record does not exist for the given user/group IDs it will be created.
 
 ```terraform
 data "files_group_user" "example_group_user" {
-  id       = 1
   group_id = 1
   user_id  = 1
 }
@@ -36,12 +35,11 @@ data "files_group_user" "example_group_user" {
 
 ### Required
 
-- `id` (Number) Group User ID.
+- `group_id` (Number) Group ID
+- `user_id` (Number) User ID
 
 ### Read-Only
 
 - `admin` (Boolean) Is this user an administrator of this group?
-- `group_id` (Number) Group ID
 - `group_name` (String) Group name
-- `user_id` (Number) User ID
 - `usernames` (List of String) A list of usernames for users in this group

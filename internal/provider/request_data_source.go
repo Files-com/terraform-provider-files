@@ -117,10 +117,17 @@ func (r *requestDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		}
 	}
 
+	if err = requestIt.Err(); err != nil {
+		resp.Diagnostics.AddError(
+			"Error Reading Files Request",
+			"Could not read request id "+fmt.Sprint(data.Id.ValueInt64())+": "+err.Error(),
+		)
+	}
+
 	if request == nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Files Request",
-			"Could not find request id "+fmt.Sprint(data.Id.ValueInt64()),
+			"Could not find request id "+fmt.Sprint(data.Id.ValueInt64())+"",
 		)
 		return
 	}

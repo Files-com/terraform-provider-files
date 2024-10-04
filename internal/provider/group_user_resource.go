@@ -38,7 +38,6 @@ type groupUserResourceModel struct {
 	Admin     types.Bool   `tfsdk:"admin"`
 	GroupName types.String `tfsdk:"group_name"`
 	Usernames types.List   `tfsdk:"usernames"`
-	Id        types.Int64  `tfsdk:"id"`
 }
 
 func (r *groupUserResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -71,10 +70,16 @@ func (r *groupUserResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"group_id": schema.Int64Attribute{
 				Description: "Group ID",
 				Required:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.RequiresReplace(),
+				},
 			},
 			"user_id": schema.Int64Attribute{
 				Description: "User ID",
 				Required:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.RequiresReplace(),
+				},
 			},
 			"admin": schema.BoolAttribute{
 				Description: "Is this user an administrator of this group?",
@@ -82,6 +87,7 @@ func (r *groupUserResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+					boolplanmodifier.RequiresReplace(),
 				},
 			},
 			"group_name": schema.StringAttribute{
@@ -92,13 +98,6 @@ func (r *groupUserResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Description: "A list of usernames for users in this group",
 				Computed:    true,
 				ElementType: types.StringType,
-			},
-			"id": schema.Int64Attribute{
-				Description: "Group User ID.",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
 			},
 		},
 	}
@@ -151,6 +150,8 @@ func (r *groupUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 	}
 
 	paramsGroupUserList := files_sdk.GroupUserListParams{}
+	paramsGroupUserList.GroupId = state.GroupId.ValueInt64()
+	paramsGroupUserList.UserId = state.UserId.ValueInt64()
 
 	groupUserIt, err := r.client.List(paramsGroupUserList, files_sdk.WithContext(ctx))
 	if err != nil {
@@ -161,7 +162,7 @@ func (r *groupUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 
 		resp.Diagnostics.AddError(
 			"Error Reading Files GroupUser",
-			"Could not read group_user id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
+			"Could not read group_user group_id "+fmt.Sprint(state.GroupId.ValueInt64())+" user_id "+fmt.Sprint(state.UserId.ValueInt64())+": "+err.Error(),
 		)
 		return
 	}
@@ -169,10 +170,22 @@ func (r *groupUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 	var groupUser *files_sdk.GroupUser
 	for groupUserIt.Next() {
 		entry := groupUserIt.GroupUser()
-		if entry.Id == state.Id.ValueInt64() {
+		if entry.GroupId == state.GroupId.ValueInt64() && entry.UserId == state.UserId.ValueInt64() {
 			groupUser = &entry
 			break
 		}
+	}
+
+	if err = groupUserIt.Err(); err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
+		resp.Diagnostics.AddError(
+			"Error Reading Files GroupUser",
+			"Could not read group_user group_id "+fmt.Sprint(state.GroupId.ValueInt64())+" user_id "+fmt.Sprint(state.UserId.ValueInt64())+": "+err.Error(),
+		)
 	}
 
 	if groupUser == nil {
@@ -191,42 +204,10 @@ func (r *groupUserResource) Read(ctx context.Context, req resource.ReadRequest, 
 }
 
 func (r *groupUserResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	var plan groupUserResourceModel
-	diags := req.Plan.Get(ctx, &plan)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	paramsGroupUserUpdate := files_sdk.GroupUserUpdateParams{}
-	paramsGroupUserUpdate.Id = plan.Id.ValueInt64()
-	paramsGroupUserUpdate.GroupId = plan.GroupId.ValueInt64()
-	paramsGroupUserUpdate.UserId = plan.UserId.ValueInt64()
-	if !plan.Admin.IsNull() && !plan.Admin.IsUnknown() {
-		paramsGroupUserUpdate.Admin = plan.Admin.ValueBoolPointer()
-	}
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	groupUser, err := r.client.Update(paramsGroupUserUpdate, files_sdk.WithContext(ctx))
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error Updating Files GroupUser",
-			"Could not update group_user, unexpected error: "+err.Error(),
-		)
-		return
-	}
-
-	diags = r.populateResourceModel(ctx, groupUser, &plan)
-	resp.Diagnostics.Append(diags...)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	diags = resp.State.Set(ctx, plan)
-	resp.Diagnostics.Append(diags...)
+	resp.Diagnostics.AddError(
+		"Resource Update Not Implemented",
+		"This resource does not support updates.",
+	)
 }
 
 func (r *groupUserResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -238,7 +219,7 @@ func (r *groupUserResource) Delete(ctx context.Context, req resource.DeleteReque
 	}
 
 	paramsGroupUserDelete := files_sdk.GroupUserDeleteParams{}
-	paramsGroupUserDelete.Id = state.Id.ValueInt64()
+	paramsGroupUserDelete.Id = state.GroupId.ValueInt64()
 	paramsGroupUserDelete.GroupId = state.GroupId.ValueInt64()
 	paramsGroupUserDelete.UserId = state.UserId.ValueInt64()
 
@@ -246,31 +227,40 @@ func (r *groupUserResource) Delete(ctx context.Context, req resource.DeleteReque
 	if err != nil && !files_sdk.IsNotExist(err) {
 		resp.Diagnostics.AddError(
 			"Error Deleting Files GroupUser",
-			"Could not delete group_user id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
+			"Could not delete group_user group_id "+fmt.Sprint(state.GroupId.ValueInt64())+" user_id "+fmt.Sprint(state.UserId.ValueInt64())+": "+err.Error(),
 		)
 	}
 }
 
 func (r *groupUserResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	idParts := strings.SplitN(req.ID, ",", 1)
+	idParts := strings.SplitN(req.ID, ",", 2)
 
-	if len(idParts) != 1 || idParts[0] == "" {
+	if len(idParts) != 2 || idParts[0] == "" || idParts[1] == "" {
 		resp.Diagnostics.AddError(
 			"Unexpected Import Identifier",
-			fmt.Sprintf("Expected import identifier with format: id. Got: %q", req.ID),
+			fmt.Sprintf("Expected import identifier with format: group_id,user_id. Got: %q", req.ID),
 		)
 		return
 	}
 
-	idPart, err := strconv.ParseFloat(idParts[0], 64)
+	group_idPart, err := strconv.ParseFloat(idParts[0], 64)
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Parsing ID",
-			"Could not parse id: "+err.Error(),
+			"Could not parse group_id: "+err.Error(),
 		)
 		return
 	}
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), idPart)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("group_id"), group_idPart)...)
+	user_idPart, err := strconv.ParseFloat(idParts[1], 64)
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Parsing ID",
+			"Could not parse user_id: "+err.Error(),
+		)
+		return
+	}
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("user_id"), user_idPart)...)
 
 }
 

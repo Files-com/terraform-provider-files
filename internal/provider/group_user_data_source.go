@@ -26,10 +26,9 @@ type groupUserDataSource struct {
 }
 
 type groupUserDataSourceModel struct {
-	Id        types.Int64  `tfsdk:"id"`
-	GroupName types.String `tfsdk:"group_name"`
 	GroupId   types.Int64  `tfsdk:"group_id"`
 	UserId    types.Int64  `tfsdk:"user_id"`
+	GroupName types.String `tfsdk:"group_name"`
 	Admin     types.Bool   `tfsdk:"admin"`
 	Usernames types.List   `tfsdk:"usernames"`
 }
@@ -61,20 +60,16 @@ func (r *groupUserDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 	resp.Schema = schema.Schema{
 		Description: "A GroupUser is a record about membership of a User within a Group.\n\n\n\n## Creating GroupUsers\n\nGroupUsers can be created via the normal `create` action. When using the `update` action, if the\n\nGroupUser record does not exist for the given user/group IDs it will be created.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				Description: "Group User ID.",
+			"group_id": schema.Int64Attribute{
+				Description: "Group ID",
+				Required:    true,
+			},
+			"user_id": schema.Int64Attribute{
+				Description: "User ID",
 				Required:    true,
 			},
 			"group_name": schema.StringAttribute{
 				Description: "Group name",
-				Computed:    true,
-			},
-			"group_id": schema.Int64Attribute{
-				Description: "Group ID",
-				Computed:    true,
-			},
-			"user_id": schema.Int64Attribute{
-				Description: "User ID",
 				Computed:    true,
 			},
 			"admin": schema.BoolAttribute{
@@ -99,12 +94,14 @@ func (r *groupUserDataSource) Read(ctx context.Context, req datasource.ReadReque
 	}
 
 	paramsGroupUserList := files_sdk.GroupUserListParams{}
+	paramsGroupUserList.GroupId = data.GroupId.ValueInt64()
+	paramsGroupUserList.UserId = data.UserId.ValueInt64()
 
 	groupUserIt, err := r.client.List(paramsGroupUserList, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Files GroupUser",
-			"Could not read group_user id "+fmt.Sprint(data.Id.ValueInt64())+": "+err.Error(),
+			"Could not read group_user group_id "+fmt.Sprint(data.GroupId.ValueInt64())+" user_id "+fmt.Sprint(data.UserId.ValueInt64())+": "+err.Error(),
 		)
 		return
 	}
@@ -112,16 +109,23 @@ func (r *groupUserDataSource) Read(ctx context.Context, req datasource.ReadReque
 	var groupUser *files_sdk.GroupUser
 	for groupUserIt.Next() {
 		entry := groupUserIt.GroupUser()
-		if entry.Id == data.Id.ValueInt64() {
+		if entry.GroupId == data.GroupId.ValueInt64() && entry.UserId == data.UserId.ValueInt64() {
 			groupUser = &entry
 			break
 		}
 	}
 
+	if err = groupUserIt.Err(); err != nil {
+		resp.Diagnostics.AddError(
+			"Error Reading Files GroupUser",
+			"Could not read group_user group_id "+fmt.Sprint(data.GroupId.ValueInt64())+" user_id "+fmt.Sprint(data.UserId.ValueInt64())+": "+err.Error(),
+		)
+	}
+
 	if groupUser == nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Files GroupUser",
-			"Could not find group_user id "+fmt.Sprint(data.Id.ValueInt64()),
+			"Could not find group_user group_id "+fmt.Sprint(data.GroupId.ValueInt64())+" user_id "+fmt.Sprint(data.UserId.ValueInt64())+"",
 		)
 		return
 	}

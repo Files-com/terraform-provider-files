@@ -219,6 +219,18 @@ func (r *permissionResource) Read(ctx context.Context, req resource.ReadRequest,
 		}
 	}
 
+	if err = permissionIt.Err(); err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
+		resp.Diagnostics.AddError(
+			"Error Reading Files Permission",
+			"Could not read permission id "+fmt.Sprint(state.Id.ValueInt64())+": "+err.Error(),
+		)
+	}
+
 	if permission == nil {
 		resp.State.RemoveResource(ctx)
 		return

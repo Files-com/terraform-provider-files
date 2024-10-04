@@ -110,10 +110,17 @@ func (r *fileCommentDataSource) Read(ctx context.Context, req datasource.ReadReq
 		}
 	}
 
+	if err = fileCommentIt.Err(); err != nil {
+		resp.Diagnostics.AddError(
+			"Error Reading Files FileComment",
+			"Could not read file_comment id "+fmt.Sprint(data.Id.ValueInt64())+": "+err.Error(),
+		)
+	}
+
 	if fileComment == nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Files FileComment",
-			"Could not find file_comment id "+fmt.Sprint(data.Id.ValueInt64()),
+			"Could not find file_comment id "+fmt.Sprint(data.Id.ValueInt64())+"",
 		)
 		return
 	}

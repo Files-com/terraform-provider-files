@@ -225,6 +225,18 @@ func (r *lockResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		}
 	}
 
+	if err = lockIt.Err(); err != nil {
+		if files_sdk.IsNotExist(err) {
+			resp.State.RemoveResource(ctx)
+			return
+		}
+
+		resp.Diagnostics.AddError(
+			"Error Reading Files Lock",
+			"Could not read lock path "+fmt.Sprint(state.Path.ValueString())+": "+err.Error(),
+		)
+	}
+
 	if lock == nil {
 		resp.State.RemoveResource(ctx)
 		return

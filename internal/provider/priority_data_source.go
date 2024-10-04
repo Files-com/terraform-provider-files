@@ -98,10 +98,17 @@ func (r *priorityDataSource) Read(ctx context.Context, req datasource.ReadReques
 		}
 	}
 
+	if err = priorityIt.Err(); err != nil {
+		resp.Diagnostics.AddError(
+			"Error Reading Files Priority",
+			"Could not read priority path "+fmt.Sprint(data.Path.ValueString())+": "+err.Error(),
+		)
+	}
+
 	if priority == nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Files Priority",
-			"Could not find priority path "+fmt.Sprint(data.Path.ValueString()),
+			"Could not find priority path "+fmt.Sprint(data.Path.ValueString())+"",
 		)
 		return
 	}
