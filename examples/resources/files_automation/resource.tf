@@ -23,6 +23,7 @@ resource "files_automation" "example_automation" {
   always_overwrite_size_matching_files = true
   description                          = "example"
   disabled                             = true
+  exclude_pattern                      = "path/to/exclude/*"
   flatten_destination_structure        = true
   ignore_locked_folders                = true
   legacy_folder_matching               = true

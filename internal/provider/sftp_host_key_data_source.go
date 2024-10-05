@@ -68,11 +68,11 @@ func (r *sftpHostKeyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Computed:    true,
 			},
 			"fingerprint_md5": schema.StringAttribute{
-				Description: "MD5 Fingerpint of the public key",
+				Description: "MD5 Fingerprint of the public key",
 				Computed:    true,
 			},
 			"fingerprint_sha256": schema.StringAttribute{
-				Description: "SHA256 Fingerpint of the public key",
+				Description: "SHA256 Fingerprint of the public key",
 				Computed:    true,
 			},
 		},

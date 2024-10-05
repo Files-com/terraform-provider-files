@@ -108,14 +108,14 @@ data "files_history_export" "example_history_export" {
 - `query_parent_id` (String) Return results that are file actions inside the parent folder specified by this folder ID
 - `query_path` (String) Return results that are file actions related to paths matching this pattern.
 - `query_src` (String) Return results that are file moves originating from paths matching this pattern.
-- `query_target_id` (String) If searching for Histories about specific objects (such as Users, or API Keys), this paremeter restricts results to objects that match this ID.
+- `query_target_id` (String) If searching for Histories about specific objects (such as Users, or API Keys), this parameter restricts results to objects that match this ID.
 - `query_target_name` (String) If searching for Histories about Users, Groups or other objects with names, this parameter restricts results to objects with this name/username.
-- `query_target_permission` (String) If searching for Histories about Permisisons, this parameter restricts results to permissions of this level.
+- `query_target_permission` (String) If searching for Histories about Permissions, this parameter restricts results to permissions of this level.
 - `query_target_permission_set` (String) If searching for Histories about API keys, this parameter restricts results to API keys with this permission set.
 - `query_target_platform` (String) If searching for Histories about API keys, this parameter restricts results to API keys associated with this platform.
 - `query_target_user_id` (String) If searching for Histories about API keys, this parameter restricts results to API keys created by/for this user ID.
 - `query_target_username` (String) If searching for Histories about API keys, this parameter restricts results to API keys created by/for this username.
-- `query_user_id` (String) Return results that are actions performed by the user indiciated by this User ID
+- `query_user_id` (String) Return results that are actions performed by the user indicated by this User ID
 - `query_username` (String) Filter results by this username.
 - `results_url` (String) If `status` is `ready`, this will be a URL where all the results can be downloaded at once as a CSV.
 - `start_at` (String) Start date/time of export range.

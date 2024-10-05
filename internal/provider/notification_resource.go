@@ -116,7 +116,7 @@ func (r *notificationResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"triggering_user_ids": schema.ListAttribute{
-				Description: "If set, will onlynotify on actions made one of the specified users",
+				Description: "If set, will only notify on actions made one of the specified users",
 				Computed:    true,
 				Optional:    true,
 				ElementType: types.Int64Type,

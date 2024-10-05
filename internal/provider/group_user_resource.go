@@ -37,7 +37,7 @@ type groupUserResourceModel struct {
 	UserId    types.Int64  `tfsdk:"user_id"`
 	Admin     types.Bool   `tfsdk:"admin"`
 	GroupName types.String `tfsdk:"group_name"`
-	Usernames types.List   `tfsdk:"usernames"`
+	Usernames types.String `tfsdk:"usernames"`
 }
 
 func (r *groupUserResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -94,10 +94,9 @@ func (r *groupUserResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Description: "Group name",
 				Computed:    true,
 			},
-			"usernames": schema.ListAttribute{
-				Description: "A list of usernames for users in this group",
+			"usernames": schema.StringAttribute{
+				Description: "Comma-delimited list of usernames who belong to this group (separated by commas).",
 				Computed:    true,
-				ElementType: types.StringType,
 			},
 		},
 	}
@@ -265,14 +264,11 @@ func (r *groupUserResource) ImportState(ctx context.Context, req resource.Import
 }
 
 func (r *groupUserResource) populateResourceModel(ctx context.Context, groupUser files_sdk.GroupUser, state *groupUserResourceModel) (diags diag.Diagnostics) {
-	var propDiags diag.Diagnostics
-
 	state.GroupName = types.StringValue(groupUser.GroupName)
 	state.GroupId = types.Int64Value(groupUser.GroupId)
 	state.UserId = types.Int64Value(groupUser.UserId)
 	state.Admin = types.BoolPointerValue(groupUser.Admin)
-	state.Usernames, propDiags = types.ListValueFrom(ctx, types.StringType, groupUser.Usernames)
-	diags.Append(propDiags...)
+	state.Usernames = types.StringValue(groupUser.Usernames)
 
 	return
 }

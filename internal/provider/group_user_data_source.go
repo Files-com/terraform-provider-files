@@ -30,7 +30,7 @@ type groupUserDataSourceModel struct {
 	UserId    types.Int64  `tfsdk:"user_id"`
 	GroupName types.String `tfsdk:"group_name"`
 	Admin     types.Bool   `tfsdk:"admin"`
-	Usernames types.List   `tfsdk:"usernames"`
+	Usernames types.String `tfsdk:"usernames"`
 }
 
 func (r *groupUserDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -76,10 +76,9 @@ func (r *groupUserDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 				Description: "Is this user an administrator of this group?",
 				Computed:    true,
 			},
-			"usernames": schema.ListAttribute{
-				Description: "A list of usernames for users in this group",
+			"usernames": schema.StringAttribute{
+				Description: "Comma-delimited list of usernames who belong to this group (separated by commas).",
 				Computed:    true,
-				ElementType: types.StringType,
 			},
 		},
 	}
@@ -141,14 +140,11 @@ func (r *groupUserDataSource) Read(ctx context.Context, req datasource.ReadReque
 }
 
 func (r *groupUserDataSource) populateDataSourceModel(ctx context.Context, groupUser files_sdk.GroupUser, state *groupUserDataSourceModel) (diags diag.Diagnostics) {
-	var propDiags diag.Diagnostics
-
 	state.GroupName = types.StringValue(groupUser.GroupName)
 	state.GroupId = types.Int64Value(groupUser.GroupId)
 	state.UserId = types.Int64Value(groupUser.UserId)
 	state.Admin = types.BoolPointerValue(groupUser.Admin)
-	state.Usernames, propDiags = types.ListValueFrom(ctx, types.StringType, groupUser.Usernames)
-	diags.Append(propDiags...)
+	state.Usernames = types.StringValue(groupUser.Usernames)
 
 	return
 }

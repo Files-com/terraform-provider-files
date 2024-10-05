@@ -42,4 +42,4 @@ data "files_group_user" "example_group_user" {
 
 - `admin` (Boolean) Is this user an administrator of this group?
 - `group_name` (String) Group name
-- `usernames` (List of String) A list of usernames for users in this group
+- `usernames` (String) Comma-delimited list of usernames who belong to this group (separated by commas).

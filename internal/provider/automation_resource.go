@@ -46,6 +46,7 @@ type automationResourceModel struct {
 	DestinationReplaceTo             types.String  `tfsdk:"destination_replace_to"`
 	Destinations                     types.List    `tfsdk:"destinations"`
 	Disabled                         types.Bool    `tfsdk:"disabled"`
+	ExcludePattern                   types.String  `tfsdk:"exclude_pattern"`
 	FlattenDestinationStructure      types.Bool    `tfsdk:"flatten_destination_structure"`
 	GroupIds                         types.List    `tfsdk:"group_ids"`
 	IgnoreLockedFolders              types.Bool    `tfsdk:"ignore_locked_folders"`
@@ -67,7 +68,6 @@ type automationResourceModel struct {
 	Value                            types.Dynamic `tfsdk:"value"`
 	Id                               types.Int64   `tfsdk:"id"`
 	Deleted                          types.Bool    `tfsdk:"deleted"`
-	ExcludePattern                   types.String  `tfsdk:"exclude_pattern"`
 	LastModifiedAt                   types.String  `tfsdk:"last_modified_at"`
 	Schedule                         types.Dynamic `tfsdk:"schedule"`
 	HumanReadableSchedule            types.String  `tfsdk:"human_readable_schedule"`
@@ -156,6 +156,14 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"exclude_pattern": schema.StringAttribute{
+				Description: "If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"flatten_destination_structure": schema.BoolAttribute{
@@ -330,10 +338,6 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Description: "Indicates if the automation has been deleted.",
 				Computed:    true,
 			},
-			"exclude_pattern": schema.StringAttribute{
-				Description: "If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.",
-				Computed:    true,
-			},
 			"last_modified_at": schema.StringAttribute{
 				Description: "Time when automation was last modified. Does not change for name or description updates.",
 				Computed:    true,
@@ -398,6 +402,7 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
 		paramsAutomationCreate.Disabled = plan.Disabled.ValueBoolPointer()
 	}
+	paramsAutomationCreate.ExcludePattern = plan.ExcludePattern.ValueString()
 	if !plan.FlattenDestinationStructure.IsNull() && !plan.FlattenDestinationStructure.IsUnknown() {
 		paramsAutomationCreate.FlattenDestinationStructure = plan.FlattenDestinationStructure.ValueBoolPointer()
 	}
@@ -522,6 +527,7 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
 		paramsAutomationUpdate.Disabled = plan.Disabled.ValueBoolPointer()
 	}
+	paramsAutomationUpdate.ExcludePattern = plan.ExcludePattern.ValueString()
 	if !plan.FlattenDestinationStructure.IsNull() && !plan.FlattenDestinationStructure.IsUnknown() {
 		paramsAutomationUpdate.FlattenDestinationStructure = plan.FlattenDestinationStructure.ValueBoolPointer()
 	}

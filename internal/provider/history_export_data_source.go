@@ -111,7 +111,7 @@ func (r *historyExportDataSource) Schema(_ context.Context, _ datasource.SchemaR
 				Computed:    true,
 			},
 			"query_user_id": schema.StringAttribute{
-				Description: "Return results that are actions performed by the user indiciated by this User ID",
+				Description: "Return results that are actions performed by the user indicated by this User ID",
 				Computed:    true,
 			},
 			"query_file_id": schema.StringAttribute{
@@ -151,7 +151,7 @@ func (r *historyExportDataSource) Schema(_ context.Context, _ datasource.SchemaR
 				Computed:    true,
 			},
 			"query_target_id": schema.StringAttribute{
-				Description: "If searching for Histories about specific objects (such as Users, or API Keys), this paremeter restricts results to objects that match this ID.",
+				Description: "If searching for Histories about specific objects (such as Users, or API Keys), this parameter restricts results to objects that match this ID.",
 				Computed:    true,
 			},
 			"query_target_name": schema.StringAttribute{
@@ -159,7 +159,7 @@ func (r *historyExportDataSource) Schema(_ context.Context, _ datasource.SchemaR
 				Computed:    true,
 			},
 			"query_target_permission": schema.StringAttribute{
-				Description: "If searching for Histories about Permisisons, this parameter restricts results to permissions of this level.",
+				Description: "If searching for Histories about Permissions, this parameter restricts results to permissions of this level.",
 				Computed:    true,
 			},
 			"query_target_user_id": schema.StringAttribute{

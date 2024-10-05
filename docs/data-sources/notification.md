@@ -48,7 +48,7 @@ data "files_notification" "example_notification" {
 - `trigger_by_share_recipients` (Boolean) Notify when actions are performed by a share recipient?
 - `triggering_filenames` (List of String) Array of filenames (possibly with wildcards) to scope trigger
 - `triggering_group_ids` (List of Number) If set, will only notify on actions made by a member of one of the specified groups
-- `triggering_user_ids` (List of Number) If set, will onlynotify on actions made one of the specified users
+- `triggering_user_ids` (List of Number) If set, will only notify on actions made one of the specified users
 - `unsubscribed` (Boolean) Is the user unsubscribed from this notification?
 - `unsubscribed_reason` (String) The reason that the user unsubscribed
 - `user_id` (Number) Notification user ID

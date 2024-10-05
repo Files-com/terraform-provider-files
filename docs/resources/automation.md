@@ -432,6 +432,7 @@ resource "files_automation" "example_automation" {
   always_overwrite_size_matching_files = true
   description                          = "example"
   disabled                             = true
+  exclude_pattern                      = "path/to/exclude/*"
   flatten_destination_structure        = true
   ignore_locked_folders                = true
   legacy_folder_matching               = true
@@ -463,6 +464,7 @@ resource "files_automation" "example_automation" {
 - `destination_replace_to` (String) If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.
 - `destinations` (List of String) Destination Paths
 - `disabled` (Boolean) If true, this automation will not run.
+- `exclude_pattern` (String) If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.
 - `flatten_destination_structure` (Boolean) Normally copy and move automations that use globs will implicitly preserve the source folder structure in the destination.  If this flag is `true`, the source folder structure will be flattened in the destination.  This is useful for copying or moving files from multiple folders into a single destination folder.
 - `group_ids` (List of Number) IDs of Groups for the Automation (i.e. who to Request File from)
 - `ignore_locked_folders` (Boolean) If true, the Lock Folders behavior will be disregarded for automated actions.
@@ -486,7 +488,6 @@ resource "files_automation" "example_automation" {
 ### Read-Only
 
 - `deleted` (Boolean) Indicates if the automation has been deleted.
-- `exclude_pattern` (String) If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.
 - `human_readable_schedule` (String) If trigger is `custom_schedule`, Human readable Custom schedule description for when the automation should be run.
 - `id` (Number) Automation ID
 - `last_modified_at` (String) Time when automation was last modified. Does not change for name or description updates.
