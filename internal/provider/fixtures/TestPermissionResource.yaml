@@ -1,0 +1,203 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{"path":"","permission":"full","recursive":true,"username":"example_user"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/permissions
+    method: POST
+  response:
+    body: '{"id":1791134,"path":"","user_id":1122264,"username":"example_user","group_id":null,"group_name":null,"permission":"full","recursive":true}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "139"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 07 Oct 2024 17:43:03 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - 5abbbfed943bb40c85127819e0c2a97f
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/permissions
+    method: GET
+  response:
+    body: '[{"id":1499622,"path":"","user_id":1028730,"username":"samharri","group_id":null,"group_name":null,"permission":"readonly","recursive":true},{"id":1791134,"path":"","user_id":1122264,"username":"example_user","group_id":null,"group_name":null,"permission":"full","recursive":true}]'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 07 Oct 2024 17:43:03 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - 5859141b260779817b13959dfdeeab10
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/permissions
+    method: GET
+  response:
+    body: '[{"id":1499622,"path":"","user_id":1028730,"username":"samharri","group_id":null,"group_name":null,"permission":"readonly","recursive":true},{"id":1791134,"path":"","user_id":1122264,"username":"example_user","group_id":null,"group_name":null,"permission":"full","recursive":true}]'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 07 Oct 2024 17:43:03 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - 438f442d0c5e88e0583ee5f3565f4a25
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/permissions/1791134
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Date:
+      - Mon, 07 Oct 2024 17:43:04 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - 2105399b0c56e61258840ceb55c48bc1
+    status: 204 No Content
+    code: 204
+    duration: ""
+- request:
+    body: '{"path":"","permission":"readonly","recursive":true,"username":"example_user"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/permissions
+    method: POST
+  response:
+    body: '{"id":1791135,"path":"","user_id":1122264,"username":"example_user","group_id":null,"group_name":null,"permission":"readonly","recursive":true}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Length:
+      - "143"
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 07 Oct 2024 17:43:04 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - ad146bdc99e4814565f649c5e6494c42
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/permissions
+    method: GET
+  response:
+    body: '[{"id":1499622,"path":"","user_id":1028730,"username":"samharri","group_id":null,"group_name":null,"permission":"readonly","recursive":true},{"id":1791135,"path":"","user_id":1122264,"username":"example_user","group_id":null,"group_name":null,"permission":"readonly","recursive":true}]'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 07 Oct 2024 17:43:04 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - 6cd1fc872468de204c72f515d73328cc
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/permissions/1791135
+    method: DELETE
+  response:
+    body: ""
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Date:
+      - Mon, 07 Oct 2024 17:43:04 GMT
+      Expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - files.com
+      X-Request-Id:
+      - 216646de9b837863ac2b21087617833f
+    status: 204 No Content
+    code: 204
+    duration: ""
