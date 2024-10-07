@@ -75,10 +75,8 @@ func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
 				Description: "Path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
-				Computed:    true,
-				Optional:    true,
+				Required:    true,
 				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
@@ -154,8 +152,8 @@ func (r *permissionResource) Create(ctx context.Context, req resource.CreateRequ
 	}
 
 	paramsPermissionCreate := files_sdk.PermissionCreateParams{}
-	paramsPermissionCreate.GroupId = plan.GroupId.ValueInt64()
 	paramsPermissionCreate.Path = plan.Path.ValueString()
+	paramsPermissionCreate.GroupId = plan.GroupId.ValueInt64()
 	paramsPermissionCreate.Permission = plan.Permission.ValueString()
 	if !plan.Recursive.IsNull() && !plan.Recursive.IsUnknown() {
 		paramsPermissionCreate.Recursive = plan.Recursive.ValueBoolPointer()
