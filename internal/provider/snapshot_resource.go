@@ -124,16 +124,20 @@ func (r *snapshotResource) Create(ctx context.Context, req resource.CreateReques
 	}
 
 	paramsSnapshotCreate := files_sdk.SnapshotCreateParams{}
-	if !plan.ExpiresAt.IsNull() && plan.ExpiresAt.ValueString() != "" {
-		createExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("expires_at"),
-				"Error Parsing expires_at Time",
-				"Could not parse expires_at time: "+err.Error(),
-			)
+	if !plan.ExpiresAt.IsNull() {
+		if plan.ExpiresAt.ValueString() == "" {
+			paramsSnapshotCreate.ExpiresAt = new(time.Time)
 		} else {
-			paramsSnapshotCreate.ExpiresAt = &createExpiresAt
+			createExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("expires_at"),
+					"Error Parsing expires_at Time",
+					"Could not parse expires_at time: "+err.Error(),
+				)
+			} else {
+				paramsSnapshotCreate.ExpiresAt = &createExpiresAt
+			}
 		}
 	}
 	paramsSnapshotCreate.Name = plan.Name.ValueString()
@@ -210,16 +214,20 @@ func (r *snapshotResource) Update(ctx context.Context, req resource.UpdateReques
 
 	paramsSnapshotUpdate := files_sdk.SnapshotUpdateParams{}
 	paramsSnapshotUpdate.Id = plan.Id.ValueInt64()
-	if !plan.ExpiresAt.IsNull() && plan.ExpiresAt.ValueString() != "" {
-		updateExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("expires_at"),
-				"Error Parsing expires_at Time",
-				"Could not parse expires_at time: "+err.Error(),
-			)
+	if !plan.ExpiresAt.IsNull() {
+		if plan.ExpiresAt.ValueString() == "" {
+			paramsSnapshotUpdate.ExpiresAt = new(time.Time)
 		} else {
-			paramsSnapshotUpdate.ExpiresAt = &updateExpiresAt
+			updateExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("expires_at"),
+					"Error Parsing expires_at Time",
+					"Could not parse expires_at time: "+err.Error(),
+				)
+			} else {
+				paramsSnapshotUpdate.ExpiresAt = &updateExpiresAt
+			}
 		}
 	}
 	paramsSnapshotUpdate.Name = plan.Name.ValueString()

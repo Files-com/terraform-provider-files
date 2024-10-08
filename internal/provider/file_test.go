@@ -52,7 +52,7 @@ resource "files_file" "bar_file" {
 resource "files_file" "bar_file" {
 	source          = "fixtures/test_file.txt"
 	path            = "Test Folder/Subfolder/Bar.txt"
-	provided_mtime  = "2020-06-01T01:02:03Z"
+	provided_mtime  = ""
 	priority_color  = "red"
 	custom_metadata = {
 		custom = "metadata"
@@ -61,7 +61,7 @@ resource "files_file" "bar_file" {
 `,
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttr("files_file.bar_file", "path", "Test Folder/Subfolder/Bar.txt"),
-					resource.TestCheckResourceAttr("files_file.bar_file", "provided_mtime", "2020-06-01T01:02:03Z"),
+					resource.TestCheckResourceAttr("files_file.bar_file", "provided_mtime", ""),
 					resource.TestCheckResourceAttr("files_file.bar_file", "priority_color", "red"),
 					resource.TestCheckResourceAttr("files_file.bar_file", "custom_metadata.custom", "metadata"),
 				),

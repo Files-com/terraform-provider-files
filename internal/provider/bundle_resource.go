@@ -397,16 +397,20 @@ func (r *bundleResource) Create(ctx context.Context, req resource.CreateRequest,
 	if !plan.DontSeparateSubmissionsByFolder.IsNull() && !plan.DontSeparateSubmissionsByFolder.IsUnknown() {
 		paramsBundleCreate.DontSeparateSubmissionsByFolder = plan.DontSeparateSubmissionsByFolder.ValueBoolPointer()
 	}
-	if !plan.ExpiresAt.IsNull() && plan.ExpiresAt.ValueString() != "" {
-		createExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("expires_at"),
-				"Error Parsing expires_at Time",
-				"Could not parse expires_at time: "+err.Error(),
-			)
+	if !plan.ExpiresAt.IsNull() {
+		if plan.ExpiresAt.ValueString() == "" {
+			paramsBundleCreate.ExpiresAt = new(time.Time)
 		} else {
-			paramsBundleCreate.ExpiresAt = &createExpiresAt
+			createExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("expires_at"),
+					"Error Parsing expires_at Time",
+					"Could not parse expires_at time: "+err.Error(),
+				)
+			} else {
+				paramsBundleCreate.ExpiresAt = &createExpiresAt
+			}
 		}
 	}
 	if !plan.FinalizeSnapshot.IsNull() && !plan.FinalizeSnapshot.IsUnknown() {
@@ -439,16 +443,20 @@ func (r *bundleResource) Create(ctx context.Context, req resource.CreateRequest,
 	if !plan.SkipCompany.IsNull() && !plan.SkipCompany.IsUnknown() {
 		paramsBundleCreate.SkipCompany = plan.SkipCompany.ValueBoolPointer()
 	}
-	if !plan.StartAccessOnDate.IsNull() && plan.StartAccessOnDate.ValueString() != "" {
-		createStartAccessOnDate, err := time.Parse(time.RFC3339, plan.StartAccessOnDate.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("start_access_on_date"),
-				"Error Parsing start_access_on_date Time",
-				"Could not parse start_access_on_date time: "+err.Error(),
-			)
+	if !plan.StartAccessOnDate.IsNull() {
+		if plan.StartAccessOnDate.ValueString() == "" {
+			paramsBundleCreate.StartAccessOnDate = new(time.Time)
 		} else {
-			paramsBundleCreate.StartAccessOnDate = &createStartAccessOnDate
+			createStartAccessOnDate, err := time.Parse(time.RFC3339, plan.StartAccessOnDate.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("start_access_on_date"),
+					"Error Parsing start_access_on_date Time",
+					"Could not parse start_access_on_date time: "+err.Error(),
+				)
+			} else {
+				paramsBundleCreate.StartAccessOnDate = &createStartAccessOnDate
+			}
 		}
 	}
 	paramsBundleCreate.SnapshotId = plan.SnapshotId.ValueInt64()
@@ -536,16 +544,20 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if !plan.DontSeparateSubmissionsByFolder.IsNull() && !plan.DontSeparateSubmissionsByFolder.IsUnknown() {
 		paramsBundleUpdate.DontSeparateSubmissionsByFolder = plan.DontSeparateSubmissionsByFolder.ValueBoolPointer()
 	}
-	if !plan.ExpiresAt.IsNull() && plan.ExpiresAt.ValueString() != "" {
-		updateExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("expires_at"),
-				"Error Parsing expires_at Time",
-				"Could not parse expires_at time: "+err.Error(),
-			)
+	if !plan.ExpiresAt.IsNull() {
+		if plan.ExpiresAt.ValueString() == "" {
+			paramsBundleUpdate.ExpiresAt = new(time.Time)
 		} else {
-			paramsBundleUpdate.ExpiresAt = &updateExpiresAt
+			updateExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("expires_at"),
+					"Error Parsing expires_at Time",
+					"Could not parse expires_at time: "+err.Error(),
+				)
+			} else {
+				paramsBundleUpdate.ExpiresAt = &updateExpiresAt
+			}
 		}
 	}
 	if !plan.FinalizeSnapshot.IsNull() && !plan.FinalizeSnapshot.IsUnknown() {
@@ -569,16 +581,20 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if !plan.SkipCompany.IsNull() && !plan.SkipCompany.IsUnknown() {
 		paramsBundleUpdate.SkipCompany = plan.SkipCompany.ValueBoolPointer()
 	}
-	if !plan.StartAccessOnDate.IsNull() && plan.StartAccessOnDate.ValueString() != "" {
-		updateStartAccessOnDate, err := time.Parse(time.RFC3339, plan.StartAccessOnDate.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("start_access_on_date"),
-				"Error Parsing start_access_on_date Time",
-				"Could not parse start_access_on_date time: "+err.Error(),
-			)
+	if !plan.StartAccessOnDate.IsNull() {
+		if plan.StartAccessOnDate.ValueString() == "" {
+			paramsBundleUpdate.StartAccessOnDate = new(time.Time)
 		} else {
-			paramsBundleUpdate.StartAccessOnDate = &updateStartAccessOnDate
+			updateStartAccessOnDate, err := time.Parse(time.RFC3339, plan.StartAccessOnDate.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("start_access_on_date"),
+					"Error Parsing start_access_on_date Time",
+					"Could not parse start_access_on_date time: "+err.Error(),
+				)
+			} else {
+				paramsBundleUpdate.StartAccessOnDate = &updateStartAccessOnDate
+			}
 		}
 	}
 	if !plan.SkipEmail.IsNull() && !plan.SkipEmail.IsUnknown() {

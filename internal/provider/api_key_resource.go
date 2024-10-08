@@ -172,16 +172,20 @@ func (r *apiKeyResource) Create(ctx context.Context, req resource.CreateRequest,
 	paramsApiKeyCreate := files_sdk.ApiKeyCreateParams{}
 	paramsApiKeyCreate.UserId = plan.UserId.ValueInt64()
 	paramsApiKeyCreate.Description = plan.Description.ValueString()
-	if !plan.ExpiresAt.IsNull() && plan.ExpiresAt.ValueString() != "" {
-		createExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("expires_at"),
-				"Error Parsing expires_at Time",
-				"Could not parse expires_at time: "+err.Error(),
-			)
+	if !plan.ExpiresAt.IsNull() {
+		if plan.ExpiresAt.ValueString() == "" {
+			paramsApiKeyCreate.ExpiresAt = new(time.Time)
 		} else {
-			paramsApiKeyCreate.ExpiresAt = &createExpiresAt
+			createExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("expires_at"),
+					"Error Parsing expires_at Time",
+					"Could not parse expires_at time: "+err.Error(),
+				)
+			} else {
+				paramsApiKeyCreate.ExpiresAt = &createExpiresAt
+			}
 		}
 	}
 	paramsApiKeyCreate.PermissionSet = paramsApiKeyCreate.PermissionSet.Enum()[plan.PermissionSet.ValueString()]
@@ -257,16 +261,20 @@ func (r *apiKeyResource) Update(ctx context.Context, req resource.UpdateRequest,
 	paramsApiKeyUpdate := files_sdk.ApiKeyUpdateParams{}
 	paramsApiKeyUpdate.Id = plan.Id.ValueInt64()
 	paramsApiKeyUpdate.Description = plan.Description.ValueString()
-	if !plan.ExpiresAt.IsNull() && plan.ExpiresAt.ValueString() != "" {
-		updateExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("expires_at"),
-				"Error Parsing expires_at Time",
-				"Could not parse expires_at time: "+err.Error(),
-			)
+	if !plan.ExpiresAt.IsNull() {
+		if plan.ExpiresAt.ValueString() == "" {
+			paramsApiKeyUpdate.ExpiresAt = new(time.Time)
 		} else {
-			paramsApiKeyUpdate.ExpiresAt = &updateExpiresAt
+			updateExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("expires_at"),
+					"Error Parsing expires_at Time",
+					"Could not parse expires_at time: "+err.Error(),
+				)
+			} else {
+				paramsApiKeyUpdate.ExpiresAt = &updateExpiresAt
+			}
 		}
 	}
 	paramsApiKeyUpdate.PermissionSet = paramsApiKeyUpdate.PermissionSet.Enum()[plan.PermissionSet.ValueString()]

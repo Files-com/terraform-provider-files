@@ -289,16 +289,20 @@ func (r *fileResource) Create(ctx context.Context, req resource.CreateRequest, r
 	updateCustomMetadata, diags := lib.DynamicToStringMap(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
 	resp.Diagnostics.Append(diags...)
 	paramsFileUpdate.CustomMetadata = updateCustomMetadata
-	if !plan.ProvidedMtime.IsNull() && plan.ProvidedMtime.ValueString() != "" {
-		updateProvidedMtime, err := time.Parse(time.RFC3339, plan.ProvidedMtime.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("provided_mtime"),
-				"Error Parsing provided_mtime Time",
-				"Could not parse provided_mtime time: "+err.Error(),
-			)
+	if !plan.ProvidedMtime.IsNull() {
+		if plan.ProvidedMtime.ValueString() == "" {
+			paramsFileUpdate.ProvidedMtime = new(time.Time)
 		} else {
-			paramsFileUpdate.ProvidedMtime = &updateProvidedMtime
+			updateProvidedMtime, err := time.Parse(time.RFC3339, plan.ProvidedMtime.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("provided_mtime"),
+					"Error Parsing provided_mtime Time",
+					"Could not parse provided_mtime time: "+err.Error(),
+				)
+			} else {
+				paramsFileUpdate.ProvidedMtime = &updateProvidedMtime
+			}
 		}
 	}
 	paramsFileUpdate.PriorityColor = plan.PriorityColor.ValueString()
@@ -403,16 +407,20 @@ func (r *fileResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	updateCustomMetadata, diags := lib.DynamicToStringMap(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
 	resp.Diagnostics.Append(diags...)
 	paramsFileUpdate.CustomMetadata = updateCustomMetadata
-	if !plan.ProvidedMtime.IsNull() && plan.ProvidedMtime.ValueString() != "" {
-		updateProvidedMtime, err := time.Parse(time.RFC3339, plan.ProvidedMtime.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("provided_mtime"),
-				"Error Parsing provided_mtime Time",
-				"Could not parse provided_mtime time: "+err.Error(),
-			)
+	if !plan.ProvidedMtime.IsNull() {
+		if plan.ProvidedMtime.ValueString() == "" {
+			paramsFileUpdate.ProvidedMtime = new(time.Time)
 		} else {
-			paramsFileUpdate.ProvidedMtime = &updateProvidedMtime
+			updateProvidedMtime, err := time.Parse(time.RFC3339, plan.ProvidedMtime.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("provided_mtime"),
+					"Error Parsing provided_mtime Time",
+					"Could not parse provided_mtime time: "+err.Error(),
+				)
+			} else {
+				paramsFileUpdate.ProvidedMtime = &updateProvidedMtime
+			}
 		}
 	}
 	paramsFileUpdate.PriorityColor = plan.PriorityColor.ValueString()

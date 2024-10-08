@@ -273,16 +273,20 @@ func (r *folderResource) Create(ctx context.Context, req resource.CreateRequest,
 	if !plan.MkdirParents.IsNull() && !plan.MkdirParents.IsUnknown() {
 		paramsFolderCreate.MkdirParents = plan.MkdirParents.ValueBoolPointer()
 	}
-	if !plan.ProvidedMtime.IsNull() && plan.ProvidedMtime.ValueString() != "" {
-		createProvidedMtime, err := time.Parse(time.RFC3339, plan.ProvidedMtime.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("provided_mtime"),
-				"Error Parsing provided_mtime Time",
-				"Could not parse provided_mtime time: "+err.Error(),
-			)
+	if !plan.ProvidedMtime.IsNull() {
+		if plan.ProvidedMtime.ValueString() == "" {
+			paramsFolderCreate.ProvidedMtime = new(time.Time)
 		} else {
-			paramsFolderCreate.ProvidedMtime = &createProvidedMtime
+			createProvidedMtime, err := time.Parse(time.RFC3339, plan.ProvidedMtime.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("provided_mtime"),
+					"Error Parsing provided_mtime Time",
+					"Could not parse provided_mtime time: "+err.Error(),
+				)
+			} else {
+				paramsFolderCreate.ProvidedMtime = &createProvidedMtime
+			}
 		}
 	}
 
@@ -304,16 +308,20 @@ func (r *folderResource) Create(ctx context.Context, req resource.CreateRequest,
 	updateCustomMetadata, diags := lib.DynamicToStringMap(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
 	resp.Diagnostics.Append(diags...)
 	paramsFolderUpdate.CustomMetadata = updateCustomMetadata
-	if !plan.ProvidedMtime.IsNull() && plan.ProvidedMtime.ValueString() != "" {
-		updateProvidedMtime, err := time.Parse(time.RFC3339, plan.ProvidedMtime.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("provided_mtime"),
-				"Error Parsing provided_mtime Time",
-				"Could not parse provided_mtime time: "+err.Error(),
-			)
+	if !plan.ProvidedMtime.IsNull() {
+		if plan.ProvidedMtime.ValueString() == "" {
+			paramsFolderUpdate.ProvidedMtime = new(time.Time)
 		} else {
-			paramsFolderUpdate.ProvidedMtime = &updateProvidedMtime
+			updateProvidedMtime, err := time.Parse(time.RFC3339, plan.ProvidedMtime.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("provided_mtime"),
+					"Error Parsing provided_mtime Time",
+					"Could not parse provided_mtime time: "+err.Error(),
+				)
+			} else {
+				paramsFolderUpdate.ProvidedMtime = &updateProvidedMtime
+			}
 		}
 	}
 	paramsFolderUpdate.PriorityColor = plan.PriorityColor.ValueString()
@@ -418,16 +426,20 @@ func (r *folderResource) Update(ctx context.Context, req resource.UpdateRequest,
 	updateCustomMetadata, diags := lib.DynamicToStringMap(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
 	resp.Diagnostics.Append(diags...)
 	paramsFolderUpdate.CustomMetadata = updateCustomMetadata
-	if !plan.ProvidedMtime.IsNull() && plan.ProvidedMtime.ValueString() != "" {
-		updateProvidedMtime, err := time.Parse(time.RFC3339, plan.ProvidedMtime.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("provided_mtime"),
-				"Error Parsing provided_mtime Time",
-				"Could not parse provided_mtime time: "+err.Error(),
-			)
+	if !plan.ProvidedMtime.IsNull() {
+		if plan.ProvidedMtime.ValueString() == "" {
+			paramsFolderUpdate.ProvidedMtime = new(time.Time)
 		} else {
-			paramsFolderUpdate.ProvidedMtime = &updateProvidedMtime
+			updateProvidedMtime, err := time.Parse(time.RFC3339, plan.ProvidedMtime.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("provided_mtime"),
+					"Error Parsing provided_mtime Time",
+					"Could not parse provided_mtime time: "+err.Error(),
+				)
+			} else {
+				paramsFolderUpdate.ProvidedMtime = &updateProvidedMtime
+			}
 		}
 	}
 	paramsFolderUpdate.PriorityColor = plan.PriorityColor.ValueString()

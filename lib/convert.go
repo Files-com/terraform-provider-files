@@ -17,7 +17,7 @@ func TimeToStringType(ctx context.Context, path path.Path, source *time.Time, de
 	ctx = setAttributePath(ctx, path)
 
 	if source == nil {
-		*dest = types.StringNull()
+		*dest = types.StringValue("")
 	} else {
 		if dest.IsNull() || dest.ValueString() == "" {
 			*dest = types.StringValue(source.Format(time.RFC3339))

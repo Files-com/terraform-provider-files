@@ -621,16 +621,20 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !plan.AttachmentsPermission.IsNull() && !plan.AttachmentsPermission.IsUnknown() {
 		paramsUserCreate.AttachmentsPermission = plan.AttachmentsPermission.ValueBoolPointer()
 	}
-	if !plan.AuthenticateUntil.IsNull() && plan.AuthenticateUntil.ValueString() != "" {
-		createAuthenticateUntil, err := time.Parse(time.RFC3339, plan.AuthenticateUntil.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("authenticate_until"),
-				"Error Parsing authenticate_until Time",
-				"Could not parse authenticate_until time: "+err.Error(),
-			)
+	if !plan.AuthenticateUntil.IsNull() {
+		if plan.AuthenticateUntil.ValueString() == "" {
+			paramsUserCreate.AuthenticateUntil = new(time.Time)
 		} else {
-			paramsUserCreate.AuthenticateUntil = &createAuthenticateUntil
+			createAuthenticateUntil, err := time.Parse(time.RFC3339, plan.AuthenticateUntil.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("authenticate_until"),
+					"Error Parsing authenticate_until Time",
+					"Could not parse authenticate_until time: "+err.Error(),
+				)
+			} else {
+				paramsUserCreate.AuthenticateUntil = &createAuthenticateUntil
+			}
 		}
 	}
 	paramsUserCreate.AuthenticationMethod = paramsUserCreate.AuthenticationMethod.Enum()[plan.AuthenticationMethod.ValueString()]
@@ -668,16 +672,20 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !plan.ReceiveAdminAlerts.IsNull() && !plan.ReceiveAdminAlerts.IsUnknown() {
 		paramsUserCreate.ReceiveAdminAlerts = plan.ReceiveAdminAlerts.ValueBoolPointer()
 	}
-	if !plan.RequireLoginBy.IsNull() && plan.RequireLoginBy.ValueString() != "" {
-		createRequireLoginBy, err := time.Parse(time.RFC3339, plan.RequireLoginBy.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("require_login_by"),
-				"Error Parsing require_login_by Time",
-				"Could not parse require_login_by time: "+err.Error(),
-			)
+	if !plan.RequireLoginBy.IsNull() {
+		if plan.RequireLoginBy.ValueString() == "" {
+			paramsUserCreate.RequireLoginBy = new(time.Time)
 		} else {
-			paramsUserCreate.RequireLoginBy = &createRequireLoginBy
+			createRequireLoginBy, err := time.Parse(time.RFC3339, plan.RequireLoginBy.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("require_login_by"),
+					"Error Parsing require_login_by Time",
+					"Could not parse require_login_by time: "+err.Error(),
+				)
+			} else {
+				paramsUserCreate.RequireLoginBy = &createRequireLoginBy
+			}
 		}
 	}
 	if !plan.RequirePasswordChange.IsNull() && !plan.RequirePasswordChange.IsUnknown() {
@@ -796,16 +804,20 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.AttachmentsPermission.IsNull() && !plan.AttachmentsPermission.IsUnknown() {
 		paramsUserUpdate.AttachmentsPermission = plan.AttachmentsPermission.ValueBoolPointer()
 	}
-	if !plan.AuthenticateUntil.IsNull() && plan.AuthenticateUntil.ValueString() != "" {
-		updateAuthenticateUntil, err := time.Parse(time.RFC3339, plan.AuthenticateUntil.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("authenticate_until"),
-				"Error Parsing authenticate_until Time",
-				"Could not parse authenticate_until time: "+err.Error(),
-			)
+	if !plan.AuthenticateUntil.IsNull() {
+		if plan.AuthenticateUntil.ValueString() == "" {
+			paramsUserUpdate.AuthenticateUntil = new(time.Time)
 		} else {
-			paramsUserUpdate.AuthenticateUntil = &updateAuthenticateUntil
+			updateAuthenticateUntil, err := time.Parse(time.RFC3339, plan.AuthenticateUntil.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("authenticate_until"),
+					"Error Parsing authenticate_until Time",
+					"Could not parse authenticate_until time: "+err.Error(),
+				)
+			} else {
+				paramsUserUpdate.AuthenticateUntil = &updateAuthenticateUntil
+			}
 		}
 	}
 	paramsUserUpdate.AuthenticationMethod = paramsUserUpdate.AuthenticationMethod.Enum()[plan.AuthenticationMethod.ValueString()]
@@ -843,16 +855,20 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.ReceiveAdminAlerts.IsNull() && !plan.ReceiveAdminAlerts.IsUnknown() {
 		paramsUserUpdate.ReceiveAdminAlerts = plan.ReceiveAdminAlerts.ValueBoolPointer()
 	}
-	if !plan.RequireLoginBy.IsNull() && plan.RequireLoginBy.ValueString() != "" {
-		updateRequireLoginBy, err := time.Parse(time.RFC3339, plan.RequireLoginBy.ValueString())
-		if err != nil {
-			resp.Diagnostics.AddAttributeError(
-				path.Root("require_login_by"),
-				"Error Parsing require_login_by Time",
-				"Could not parse require_login_by time: "+err.Error(),
-			)
+	if !plan.RequireLoginBy.IsNull() {
+		if plan.RequireLoginBy.ValueString() == "" {
+			paramsUserUpdate.RequireLoginBy = new(time.Time)
 		} else {
-			paramsUserUpdate.RequireLoginBy = &updateRequireLoginBy
+			updateRequireLoginBy, err := time.Parse(time.RFC3339, plan.RequireLoginBy.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("require_login_by"),
+					"Error Parsing require_login_by Time",
+					"Could not parse require_login_by time: "+err.Error(),
+				)
+			} else {
+				paramsUserUpdate.RequireLoginBy = &updateRequireLoginBy
+			}
 		}
 	}
 	if !plan.RequirePasswordChange.IsNull() && !plan.RequirePasswordChange.IsUnknown() {

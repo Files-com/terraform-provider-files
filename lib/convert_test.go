@@ -27,6 +27,12 @@ func TestTimeToStringType(t *testing.T) {
 			expected: types.StringValue("2021-01-01T00:00:00-07:00"),
 		},
 		{
+			message:  "Source is empty so destination should be empty",
+			source:   "",
+			dest:     "",
+			expected: types.StringValue(""),
+		},
+		{
 			message:  "Destination does not match source so source should be copied",
 			source:   "2021-01-01T00:00:00Z",
 			dest:     "2021-01-01T01:01:01Z",
@@ -52,11 +58,16 @@ func TestTimeToStringType(t *testing.T) {
 		},
 	}
 	for _, c := range tests {
-		source, err := time.Parse(time.RFC3339, c.source)
-		assert.NoError(t, err, c.message)
+		var sourcePtr *time.Time
+
+		if c.source != "" {
+			source, err := time.Parse(time.RFC3339, c.source)
+			assert.NoError(t, err, c.message)
+			sourcePtr = &source
+		}
 		dest := types.StringValue(c.dest)
 
-		err = TimeToStringType(context.Background(), path.Empty(), &source, &dest)
+		err := TimeToStringType(context.Background(), path.Empty(), sourcePtr, &dest)
 		assert.NoError(t, err, c.message)
 		assert.Equal(t, c.expected, dest, c.message)
 	}
