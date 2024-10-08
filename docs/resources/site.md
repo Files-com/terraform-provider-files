@@ -90,6 +90,7 @@ resource "files_site" "example_site" {
   bundle_registration_notifications             = "never"
   bundle_activity_notifications                 = "never"
   bundle_upload_receipt_notifications           = "never"
+  document_edits_in_bundle_allowed              = "example"
   password_requirements_apply_to_bundles        = true
   prevent_root_permissions_for_non_site_admins  = true
   opt_out_global                                = true
@@ -217,6 +218,7 @@ resource "files_site" "example_site" {
 - `disable_password_reset` (Boolean) Is password reset disabled?
 - `disable_users_from_inactivity_period_days` (Number) If greater than zero, users will unable to login if they do not show activity within this number of days.
 - `disallowed_countries` (String) Comma separated list of disallowed Country codes
+- `document_edits_in_bundle_allowed` (String) If true, allow public viewers of Bundles with full permissions to use document editing integrations.
 - `domain` (String) Custom domain
 - `domain_hsts_header` (Boolean) Send HSTS (HTTP Strict Transport Security) header when visitors access the site via a custom domain?
 - `domain_letsencrypt_chain` (String) Letsencrypt chain to use when registering SSL Certificate for domain.
@@ -253,8 +255,8 @@ resource "files_site" "example_site" {
 - `name` (String) Site name
 - `non_sso_groups_allowed` (Boolean) If true, groups can be manually created / modified / deleted by Site Admins. Otherwise, groups can only be managed via your SSO provider.
 - `non_sso_users_allowed` (Boolean) If true, users can be manually created / modified / deleted by Site Admins. Otherwise, users can only be managed via your SSO provider.
-- `office_integration_available` (Boolean) Allow users to use Office for the web?
-- `office_integration_type` (String) Office integration application used to edit and view the MS Office documents
+- `office_integration_available` (Boolean) If true, allows users to use a document editing integration.
+- `office_integration_type` (String) Which document editing integration to support. Files.com Editor or Microsoft Office for the Web.
 - `opt_out_global` (Boolean) Use servers in the USA only?
 - `password_min_length` (Number) Shortest password length for users
 - `password_require_letter` (Boolean) Require a letter in passwords?

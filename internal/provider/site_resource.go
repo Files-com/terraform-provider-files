@@ -75,6 +75,7 @@ type siteResourceModel struct {
 	DavEnabled                               types.Bool    `tfsdk:"dav_enabled"`
 	DavUserRootEnabled                       types.Bool    `tfsdk:"dav_user_root_enabled"`
 	DaysToRetainBackups                      types.Int64   `tfsdk:"days_to_retain_backups"`
+	DocumentEditsInBundleAllowed             types.String  `tfsdk:"document_edits_in_bundle_allowed"`
 	DefaultTimeZone                          types.String  `tfsdk:"default_time_zone"`
 	DesktopApp                               types.Bool    `tfsdk:"desktop_app"`
 	DesktopAppSessionIpPinning               types.Bool    `tfsdk:"desktop_app_session_ip_pinning"`
@@ -535,6 +536,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"document_edits_in_bundle_allowed": schema.StringAttribute{
+				Description: "If true, allow public viewers of Bundles with full permissions to use document editing integrations.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"default_time_zone": schema.StringAttribute{
 				Description: "Site default time zone",
 				Computed:    true,
@@ -875,7 +884,7 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"office_integration_available": schema.BoolAttribute{
-				Description: "Allow users to use Office for the web?",
+				Description: "If true, allows users to use a document editing integration.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -883,7 +892,7 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"office_integration_type": schema.StringAttribute{
-				Description: "Office integration application used to edit and view the MS Office documents",
+				Description: "Which document editing integration to support. Files.com Editor or Microsoft Office for the Web.",
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
@@ -1640,6 +1649,7 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	paramsSiteUpdate.BundleRegistrationNotifications = plan.BundleRegistrationNotifications.ValueString()
 	paramsSiteUpdate.BundleActivityNotifications = plan.BundleActivityNotifications.ValueString()
 	paramsSiteUpdate.BundleUploadReceiptNotifications = plan.BundleUploadReceiptNotifications.ValueString()
+	paramsSiteUpdate.DocumentEditsInBundleAllowed = plan.DocumentEditsInBundleAllowed.ValueString()
 	if !plan.PasswordRequirementsApplyToBundles.IsNull() && !plan.PasswordRequirementsApplyToBundles.IsUnknown() {
 		paramsSiteUpdate.PasswordRequirementsApplyToBundles = plan.PasswordRequirementsApplyToBundles.ValueBoolPointer()
 	}
@@ -1868,6 +1878,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.DavEnabled = types.BoolPointerValue(site.DavEnabled)
 	state.DavUserRootEnabled = types.BoolPointerValue(site.DavUserRootEnabled)
 	state.DaysToRetainBackups = types.Int64Value(site.DaysToRetainBackups)
+	state.DocumentEditsInBundleAllowed = types.StringValue(site.DocumentEditsInBundleAllowed)
 	state.DefaultTimeZone = types.StringValue(site.DefaultTimeZone)
 	state.DesktopApp = types.BoolPointerValue(site.DesktopApp)
 	state.DesktopAppSessionIpPinning = types.BoolPointerValue(site.DesktopAppSessionIpPinning)
