@@ -5,5 +5,6 @@ resource "files_permission" "example_permission" {
   recursive  = true
   user_id    = 1
   username   = "user"
+  group_name = "example"
 }
 

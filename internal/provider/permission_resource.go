@@ -40,10 +40,10 @@ type permissionResourceModel struct {
 	UserId     types.Int64  `tfsdk:"user_id"`
 	Username   types.String `tfsdk:"username"`
 	GroupId    types.Int64  `tfsdk:"group_id"`
+	GroupName  types.String `tfsdk:"group_name"`
 	Permission types.String `tfsdk:"permission"`
 	Recursive  types.Bool   `tfsdk:"recursive"`
 	Id         types.Int64  `tfsdk:"id"`
-	GroupName  types.String `tfsdk:"group_name"`
 }
 
 func (r *permissionResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -107,6 +107,15 @@ func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					int64planmodifier.RequiresReplace(),
 				},
 			},
+			"group_name": schema.StringAttribute{
+				Description: "Group name (if applicable)",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
 			"permission": schema.StringAttribute{
 				Description: "Permission type.  See the table referenced in the documentation for an explanation of each permission.",
 				Computed:    true,
@@ -135,10 +144,6 @@ func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
-			"group_name": schema.StringAttribute{
-				Description: "Group name (if applicable)",
-				Computed:    true,
-			},
 		},
 	}
 }
@@ -160,6 +165,7 @@ func (r *permissionResource) Create(ctx context.Context, req resource.CreateRequ
 	}
 	paramsPermissionCreate.UserId = plan.UserId.ValueInt64()
 	paramsPermissionCreate.Username = plan.Username.ValueString()
+	paramsPermissionCreate.GroupName = plan.GroupName.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return

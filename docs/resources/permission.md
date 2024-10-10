@@ -64,6 +64,7 @@ resource "files_permission" "example_permission" {
   recursive  = true
   user_id    = 1
   username   = "user"
+  group_name = "example"
 }
 ```
 
@@ -77,6 +78,7 @@ resource "files_permission" "example_permission" {
 ### Optional
 
 - `group_id` (Number) Group ID
+- `group_name` (String) Group name (if applicable)
 - `permission` (String) Permission type.  See the table referenced in the documentation for an explanation of each permission.
 - `recursive` (Boolean) Recursive: does this permission apply to subfolders?
 - `user_id` (Number) User ID
@@ -84,7 +86,6 @@ resource "files_permission" "example_permission" {
 
 ### Read-Only
 
-- `group_name` (String) Group name (if applicable)
 - `id` (Number) Permission ID
 
 ## Import
