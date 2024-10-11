@@ -87,6 +87,7 @@ resource "files_site" "example_site" {
   sftp_enabled                                  = true
   users_can_create_api_keys                     = true
   users_can_create_ssh_keys                     = true
+  show_user_notifications_log_in_link           = true
   sftp_host_key_type                            = "default"
   active_sftp_host_key_id                       = 1
   protocol_access_groups_only                   = true

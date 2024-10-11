@@ -156,6 +156,7 @@ type siteDataSourceModel struct {
 	SftpInsecureDiffieHellman                types.Bool    `tfsdk:"sftp_insecure_diffie_hellman"`
 	SftpUserRootEnabled                      types.Bool    `tfsdk:"sftp_user_root_enabled"`
 	SharingEnabled                           types.Bool    `tfsdk:"sharing_enabled"`
+	ShowUserNotificationsLogInLink           types.Bool    `tfsdk:"show_user_notifications_log_in_link"`
 	ShowRequestAccessLink                    types.Bool    `tfsdk:"show_request_access_link"`
 	SiteFooter                               types.String  `tfsdk:"site_footer"`
 	SiteHeader                               types.String  `tfsdk:"site_header"`
@@ -730,6 +731,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Allow bundle creation",
 				Computed:    true,
 			},
+			"show_user_notifications_log_in_link": schema.BoolAttribute{
+				Description: "Show log in link in user notifications?",
+				Computed:    true,
+			},
 			"show_request_access_link": schema.BoolAttribute{
 				Description: "Show request access link for users without access?  Currently unused.",
 				Computed:    true,
@@ -1105,6 +1110,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.SftpInsecureDiffieHellman = types.BoolPointerValue(site.SftpInsecureDiffieHellman)
 	state.SftpUserRootEnabled = types.BoolPointerValue(site.SftpUserRootEnabled)
 	state.SharingEnabled = types.BoolPointerValue(site.SharingEnabled)
+	state.ShowUserNotificationsLogInLink = types.BoolPointerValue(site.ShowUserNotificationsLogInLink)
 	state.ShowRequestAccessLink = types.BoolPointerValue(site.ShowRequestAccessLink)
 	state.SiteFooter = types.StringValue(site.SiteFooter)
 	state.SiteHeader = types.StringValue(site.SiteHeader)

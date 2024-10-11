@@ -143,6 +143,7 @@ type siteResourceModel struct {
 	SftpInsecureDiffieHellman                types.Bool    `tfsdk:"sftp_insecure_diffie_hellman"`
 	SftpUserRootEnabled                      types.Bool    `tfsdk:"sftp_user_root_enabled"`
 	SharingEnabled                           types.Bool    `tfsdk:"sharing_enabled"`
+	ShowUserNotificationsLogInLink           types.Bool    `tfsdk:"show_user_notifications_log_in_link"`
 	ShowRequestAccessLink                    types.Bool    `tfsdk:"show_request_access_link"`
 	SiteFooter                               types.String  `tfsdk:"site_footer"`
 	SiteHeader                               types.String  `tfsdk:"site_header"`
@@ -1092,6 +1093,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"show_user_notifications_log_in_link": schema.BoolAttribute{
+				Description: "Show log in link in user notifications?",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"show_request_access_link": schema.BoolAttribute{
 				Description: "Show request access link for users without access?  Currently unused.",
 				Computed:    true,
@@ -1696,6 +1705,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.UsersCanCreateSshKeys.IsNull() && !plan.UsersCanCreateSshKeys.IsUnknown() {
 		paramsSiteUpdate.UsersCanCreateSshKeys = plan.UsersCanCreateSshKeys.ValueBoolPointer()
 	}
+	if !plan.ShowUserNotificationsLogInLink.IsNull() && !plan.ShowUserNotificationsLogInLink.IsUnknown() {
+		paramsSiteUpdate.ShowUserNotificationsLogInLink = plan.ShowUserNotificationsLogInLink.ValueBoolPointer()
+	}
 	paramsSiteUpdate.SftpHostKeyType = plan.SftpHostKeyType.ValueString()
 	paramsSiteUpdate.ActiveSftpHostKeyId = plan.ActiveSftpHostKeyId.ValueInt64()
 	if !plan.ProtocolAccessGroupsOnly.IsNull() && !plan.ProtocolAccessGroupsOnly.IsUnknown() {
@@ -2021,6 +2033,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.SftpInsecureDiffieHellman = types.BoolPointerValue(site.SftpInsecureDiffieHellman)
 	state.SftpUserRootEnabled = types.BoolPointerValue(site.SftpUserRootEnabled)
 	state.SharingEnabled = types.BoolPointerValue(site.SharingEnabled)
+	state.ShowUserNotificationsLogInLink = types.BoolPointerValue(site.ShowUserNotificationsLogInLink)
 	state.ShowRequestAccessLink = types.BoolPointerValue(site.ShowRequestAccessLink)
 	state.SiteFooter = types.StringValue(site.SiteFooter)
 	state.SiteHeader = types.StringValue(site.SiteHeader)

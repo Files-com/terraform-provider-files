@@ -107,6 +107,7 @@ resource "files_site" "example_site" {
   sftp_enabled                                  = true
   users_can_create_api_keys                     = true
   users_can_create_ssh_keys                     = true
+  show_user_notifications_log_in_link           = true
   sftp_host_key_type                            = "default"
   active_sftp_host_key_id                       = 1
   protocol_access_groups_only                   = true
@@ -283,6 +284,7 @@ resource "files_site" "example_site" {
 - `sftp_user_root_enabled` (Boolean) Use user FTP roots also for SFTP?
 - `sharing_enabled` (Boolean) Allow bundle creation
 - `show_request_access_link` (Boolean) Show request access link for users without access?  Currently unused.
+- `show_user_notifications_log_in_link` (Boolean) Show log in link in user notifications?
 - `site_footer` (String) Custom site footer text
 - `site_header` (String) Custom site header text
 - `smtp_address` (String) SMTP server hostname or IP
