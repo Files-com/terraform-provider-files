@@ -2,53 +2,103 @@
 
 The Files.com Terraform Provider provides convenient access to the Files.com API for managing your Files.com account.
 
-## Requirements
+## Introduction
+
+Terraform lets you manage your Files.com resources using Infrastructure-as-Code (IaC) processes.
+
+Terraform users define and configure data center infrastructure using a declarative configuration language known as Terraform Configuration Language, or optionally JSON.
+
+The Files.com Provider for Terraform allows you to automate the management of your Files.com site, including resources such as users, groups, folders, share links, inboxes, automations, security, encryption, access protocols, permissions, remote servers, remote syncs, data governance, and more.
+
+### Requirements
 
 - [Terraform](https://www.terraform.io/downloads.html) 0.13+
 
-## Installation
+### Installation
 
 Require the provider in your Terraform configuration:
 
-```terraform
+```hcl title="Getting started"
+## Specify that we want to use the Files.com Provider
+
 terraform {
   required_providers {
     files = {
       source = "Files-com/files"
-      version = "0.1.87"
     }
   }
 }
-```
 
-## Setting API Key
+## Configure the Files.com Provider with your API Key and site URL
 
-### Setting by ENV
-
-```sh
-export FILES_API_KEY="XXXX-XXXX..."
-```
-
-### Set by Provider Configuration
-
-```terraform
 provider "files" {
-  api_key = "XXXX-XXXX..."
+  api_key = "YOUR_API_KEY"
+  endpoint_override = "https://MYSITE.files.com"
 }
 ```
 
-## Provider Configuration Options
+Explore the [terraform-provider-files](https://github.com/Files-com/terraform-provider-files) code on GitHub.
 
-### Endpoint Override
+## Authentication
 
-Set client to use your site subdomain if your site is configured to disable global acceleration.
-Otherwise, don't change this setting for production. For dev/CI, you can point this to the mock server.
+### Authenticate with an API Key
 
-```terraform
+Authenticating with an API key is the recommended authentication method for most scenarios, and is
+the method used in the examples on this site.
+
+To use the Terraform provider with an API Key, first generate an API key from the [web
+interface](https://www.files.com/docs/sdk-and-apis/api-keys) or [via the API or an
+SDK](/rest/resources/developers/api-keys).
+
+Note that when using a user-specific API key, if the user is an administrator, you will have full
+access to the entire API. If the user is not an administrator, you will only be able to access files
+that user can access, and no access will be granted to site administration functions in the API.
+
+```hcl title="Example Configuration"
+provider "files" {
+  api_key = "YOUR_API_KEY"
+}
+```
+
+```shell title="Environment Variable"
+## Alternatively, you can set the API key as an environment variable.
+export FILES_API_KEY="YOUR_API_KEY"
+```
+
+Don't forget to replace the placeholder, `YOUR_API_KEY`, with your actual API key.
+
+## Configuration
+
+### Configuration Options
+
+#### Endpoint Override
+
+Setting the endpoint override for the API is required if your site is configured to disable global acceleration.
+This can also be set to use a mock server in development or CI.
+
+```hcl title="Example Configuration"
 provider "files" {
   endpoint_override = "https://SUBDOMAIN.files.com"
 }
 ```
+
+## Mock Server
+
+Files.com publishes a Files.com API server, which is useful for testing your use of the Files.com
+SDKs and other direct integrations against the Files.com API in an integration test environment.
+
+It is a Ruby app that operates as a minimal server for the purpose of testing basic network
+operations and JSON encoding for your SDK or API client. It does not maintain state and it does not
+deeply inspect your submissions for correctness.
+
+Eventually we will add more features intended for integration testing, such as the ability to
+intentionally provoke errors.
+
+Download the server as a Docker image via [Docker Hub](https://hub.docker.com/r/filescom/files-mock-server).
+
+The Source Code is also available on [GitHub](https://github.com/Files-com/files-mock-server).
+
+A README is available on the GitHub link.
 
 ## Usage
 
