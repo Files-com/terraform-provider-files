@@ -46,7 +46,7 @@ description: |-
   %tf : The name of the file that triggered the automation.
   %tp : The path of the file that triggered the automation.
   %td : The directory of the file that triggered the automation.
-  %tb : The base name of the file that triggered the automation.
+  %tb : The name of the file (without extension) that triggered the automation.
   %te : The extension of the file that triggered the automation.
   For example, if the triggering file is at path/to/file.txt, then the automation destination path/to/dest/incoming-%tf will result in the actual destination being path/to/dest/incoming-file.txt.
   Parent Folders
@@ -242,7 +242,7 @@ If the destination path ends with a `/`, the filename from the source path will 
 
 * `%td` : The directory of the file that triggered the automation.
 
-* `%tb` : The base name of the file that triggered the automation.
+* `%tb` : The name of the file (without extension) that triggered the automation.
 
 * `%te` : The extension of the file that triggered the automation.
 
