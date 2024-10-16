@@ -88,6 +88,7 @@ type userResourceModel struct {
 	AdminGroupIds                    types.List   `tfsdk:"admin_group_ids"`
 	ApiKeysCount                     types.Int64  `tfsdk:"api_keys_count"`
 	AvatarUrl                        types.String `tfsdk:"avatar_url"`
+	Billable                         types.Bool   `tfsdk:"billable"`
 	CreatedAt                        types.String `tfsdk:"created_at"`
 	DisabledExpiredOrInactive        types.Bool   `tfsdk:"disabled_expired_or_inactive"`
 	FirstLoginAt                     types.String `tfsdk:"first_login_at"`
@@ -495,6 +496,10 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"avatar_url": schema.StringAttribute{
 				Description: "URL holding the user's avatar",
+				Computed:    true,
+			},
+			"billable": schema.BoolAttribute{
+				Description: "Is this a billable user record?",
 				Computed:    true,
 			},
 			"created_at": schema.StringAttribute{
@@ -984,6 +989,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	}
 	state.AuthenticationMethod = types.StringValue(user.AuthenticationMethod)
 	state.AvatarUrl = types.StringValue(user.AvatarUrl)
+	state.Billable = types.BoolPointerValue(user.Billable)
 	state.BillingPermission = types.BoolPointerValue(user.BillingPermission)
 	state.BypassSiteAllowedIps = types.BoolPointerValue(user.BypassSiteAllowedIps)
 	state.BypassInactiveDisable = types.BoolPointerValue(user.BypassInactiveDisable)

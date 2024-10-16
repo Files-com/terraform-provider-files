@@ -123,6 +123,7 @@ resource "files_user" "example_user" {
 - `admin_group_ids` (List of Number) List of group IDs of which this user is an administrator
 - `api_keys_count` (Number) Number of API keys associated with this user
 - `avatar_url` (String) URL holding the user's avatar
+- `billable` (Boolean) Is this a billable user record?
 - `created_at` (String) When this user was created
 - `days_remaining_until_password_expire` (Number) Number of days remaining until password expires
 - `disabled_expired_or_inactive` (Boolean) Computed property that returns true if user disabled or expired or inactive.

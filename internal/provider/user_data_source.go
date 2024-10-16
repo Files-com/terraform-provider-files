@@ -37,6 +37,7 @@ type userDataSourceModel struct {
 	AuthenticateUntil                types.String `tfsdk:"authenticate_until"`
 	AuthenticationMethod             types.String `tfsdk:"authentication_method"`
 	AvatarUrl                        types.String `tfsdk:"avatar_url"`
+	Billable                         types.Bool   `tfsdk:"billable"`
 	BillingPermission                types.Bool   `tfsdk:"billing_permission"`
 	BypassSiteAllowedIps             types.Bool   `tfsdk:"bypass_site_allowed_ips"`
 	BypassInactiveDisable            types.Bool   `tfsdk:"bypass_inactive_disable"`
@@ -156,6 +157,10 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"avatar_url": schema.StringAttribute{
 				Description: "URL holding the user's avatar",
+				Computed:    true,
+			},
+			"billable": schema.BoolAttribute{
+				Description: "Is this a billable user record?",
 				Computed:    true,
 			},
 			"billing_permission": schema.BoolAttribute{
@@ -430,6 +435,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	}
 	state.AuthenticationMethod = types.StringValue(user.AuthenticationMethod)
 	state.AvatarUrl = types.StringValue(user.AvatarUrl)
+	state.Billable = types.BoolPointerValue(user.Billable)
 	state.BillingPermission = types.BoolPointerValue(user.BillingPermission)
 	state.BypassSiteAllowedIps = types.BoolPointerValue(user.BypassSiteAllowedIps)
 	state.BypassInactiveDisable = types.BoolPointerValue(user.BypassInactiveDisable)

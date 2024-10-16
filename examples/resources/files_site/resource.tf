@@ -34,6 +34,7 @@ resource "files_site" "example_site" {
   motd_use_for_sftp                             = true
   additional_text_file_types                    = ["example"]
   bundle_require_note                           = true
+  bundle_send_shared_receipts                   = true
   session_expiry                                = 1.0
   ssl_required                                  = true
   tls_disabled                                  = true

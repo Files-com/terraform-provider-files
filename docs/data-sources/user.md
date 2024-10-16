@@ -40,6 +40,7 @@ data "files_user" "example_user" {
 - `authenticate_until` (String) Scheduled Date/Time at which user will be deactivated
 - `authentication_method` (String) How is this user authenticated?
 - `avatar_url` (String) URL holding the user's avatar
+- `billable` (Boolean) Is this a billable user record?
 - `billing_permission` (Boolean) Allow this user to perform operations on the account, payments, and invoices?
 - `bypass_inactive_disable` (Boolean) Exempt this user from being disabled based on inactivity?
 - `bypass_site_allowed_ips` (Boolean) Allow this user to skip site-wide IP blacklists?

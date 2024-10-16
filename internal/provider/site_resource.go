@@ -63,6 +63,7 @@ type siteResourceModel struct {
 	BundleRequireRegistration                types.Bool    `tfsdk:"bundle_require_registration"`
 	BundleRequireShareRecipient              types.Bool    `tfsdk:"bundle_require_share_recipient"`
 	BundleRequireNote                        types.Bool    `tfsdk:"bundle_require_note"`
+	BundleSendSharedReceipts                 types.Bool    `tfsdk:"bundle_send_shared_receipts"`
 	BundleUploadReceiptNotifications         types.String  `tfsdk:"bundle_upload_receipt_notifications"`
 	BundleWatermarkValue                     types.Dynamic `tfsdk:"bundle_watermark_value"`
 	UploadsViaEmailAuthentication            types.Bool    `tfsdk:"uploads_via_email_authentication"`
@@ -432,6 +433,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"bundle_require_note": schema.BoolAttribute{
 				Description: "Do Bundles require internal notes?",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"bundle_send_shared_receipts": schema.BoolAttribute{
+				Description: "Do Bundle creators receive receipts of invitations?",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -1583,6 +1592,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.BundleRequireNote.IsNull() && !plan.BundleRequireNote.IsUnknown() {
 		paramsSiteUpdate.BundleRequireNote = plan.BundleRequireNote.ValueBoolPointer()
 	}
+	if !plan.BundleSendSharedReceipts.IsNull() && !plan.BundleSendSharedReceipts.IsUnknown() {
+		paramsSiteUpdate.BundleSendSharedReceipts = plan.BundleSendSharedReceipts.ValueBoolPointer()
+	}
 	paramsSiteUpdate.SessionExpiry = plan.SessionExpiry.ValueString()
 	if !plan.SslRequired.IsNull() && !plan.SslRequired.IsUnknown() {
 		paramsSiteUpdate.SslRequired = plan.SslRequired.ValueBoolPointer()
@@ -1861,6 +1873,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.BundleRequireRegistration = types.BoolPointerValue(site.BundleRequireRegistration)
 	state.BundleRequireShareRecipient = types.BoolPointerValue(site.BundleRequireShareRecipient)
 	state.BundleRequireNote = types.BoolPointerValue(site.BundleRequireNote)
+	state.BundleSendSharedReceipts = types.BoolPointerValue(site.BundleSendSharedReceipts)
 	state.BundleUploadReceiptNotifications = types.StringValue(site.BundleUploadReceiptNotifications)
 	respBundleWatermarkAttachment, err := json.Marshal(site.BundleWatermarkAttachment)
 	if err != nil {

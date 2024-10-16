@@ -54,6 +54,7 @@ resource "files_site" "example_site" {
   motd_use_for_sftp                             = true
   additional_text_file_types                    = ["example"]
   bundle_require_note                           = true
+  bundle_send_shared_receipts                   = true
   session_expiry                                = 1.0
   ssl_required                                  = true
   tls_disabled                                  = true
@@ -200,6 +201,7 @@ resource "files_site" "example_site" {
 - `bundle_require_note` (Boolean) Do Bundles require internal notes?
 - `bundle_require_registration` (Boolean) Do Bundles require registration?
 - `bundle_require_share_recipient` (Boolean) Do Bundles require recipients for sharing?
+- `bundle_send_shared_receipts` (Boolean) Do Bundle creators receive receipts of invitations?
 - `bundle_upload_receipt_notifications` (String) Do Bundle uploaders receive upload confirmation notifications?
 - `bundle_watermark_value` (Dynamic) Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value
 - `color2_left` (String) Page link and button color

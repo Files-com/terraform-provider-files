@@ -53,6 +53,7 @@ data "files_site" "example_site" {
 - `bundle_require_note` (Boolean) Do Bundles require internal notes?
 - `bundle_require_registration` (Boolean) Do Bundles require registration?
 - `bundle_require_share_recipient` (Boolean) Do Bundles require recipients for sharing?
+- `bundle_send_shared_receipts` (Boolean) Do Bundle creators receive receipts of invitations?
 - `bundle_upload_receipt_notifications` (String) Do Bundle uploaders receive upload confirmation notifications?
 - `bundle_watermark_attachment` (String) Preview watermark image applied to all bundle items.
 - `bundle_watermark_value` (Dynamic) Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value
