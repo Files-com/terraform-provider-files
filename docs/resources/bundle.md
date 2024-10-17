@@ -94,6 +94,7 @@ resource "files_bundle" "example_bundle" {
 - `color_top` (String) Top bar background color
 - `color_top_text` (String) Top bar text color
 - `created_at` (String) Bundle created at date/time
+- `dont_allow_folders_in_uploads` (Boolean) Should folder uploads be prevented?
 - `form_field_set` (String) Custom Form to use
 - `has_inbox` (Boolean) Does this bundle have an associated inbox?
 - `id` (Number) Bundle ID

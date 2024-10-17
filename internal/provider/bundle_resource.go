@@ -81,6 +81,7 @@ type bundleResourceModel struct {
 	WatermarkAttachment             types.String  `tfsdk:"watermark_attachment"`
 	WatermarkValue                  types.Dynamic `tfsdk:"watermark_value"`
 	HasInbox                        types.Bool    `tfsdk:"has_inbox"`
+	DontAllowFoldersInUploads       types.Bool    `tfsdk:"dont_allow_folders_in_uploads"`
 	Bundlepaths                     types.Dynamic `tfsdk:"bundlepaths"`
 }
 
@@ -365,6 +366,10 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			},
 			"has_inbox": schema.BoolAttribute{
 				Description: "Does this bundle have an associated inbox?",
+				Computed:    true,
+			},
+			"dont_allow_folders_in_uploads": schema.BoolAttribute{
+				Description: "Should folder uploads be prevented?",
 				Computed:    true,
 			},
 			"bundlepaths": schema.DynamicAttribute{
@@ -740,6 +745,7 @@ func (r *bundleResource) populateResourceModel(ctx context.Context, bundle files
 	state.WatermarkValue, propDiags = lib.ToDynamic(ctx, path.Root("watermark_value"), bundle.WatermarkValue, state.WatermarkValue.UnderlyingValue())
 	diags.Append(propDiags...)
 	state.HasInbox = types.BoolPointerValue(bundle.HasInbox)
+	state.DontAllowFoldersInUploads = types.BoolPointerValue(bundle.DontAllowFoldersInUploads)
 	state.Paths, propDiags = types.ListValueFrom(ctx, types.StringType, bundle.Paths)
 	diags.Append(propDiags...)
 	state.Bundlepaths, propDiags = lib.ToDynamic(ctx, path.Root("bundlepaths"), bundle.Bundlepaths, state.Bundlepaths.UnderlyingValue())
