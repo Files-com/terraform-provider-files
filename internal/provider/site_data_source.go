@@ -60,6 +60,10 @@ type siteDataSourceModel struct {
 	BundleUploadReceiptNotifications         types.String  `tfsdk:"bundle_upload_receipt_notifications"`
 	BundleWatermarkAttachment                types.String  `tfsdk:"bundle_watermark_attachment"`
 	BundleWatermarkValue                     types.Dynamic `tfsdk:"bundle_watermark_value"`
+	CalculateFileChecksumsCrc32              types.Bool    `tfsdk:"calculate_file_checksums_crc32"`
+	CalculateFileChecksumsMd5                types.Bool    `tfsdk:"calculate_file_checksums_md5"`
+	CalculateFileChecksumsSha1               types.Bool    `tfsdk:"calculate_file_checksums_sha1"`
+	CalculateFileChecksumsSha256             types.Bool    `tfsdk:"calculate_file_checksums_sha256"`
 	UploadsViaEmailAuthentication            types.Bool    `tfsdk:"uploads_via_email_authentication"`
 	Color2Left                               types.String  `tfsdk:"color2_left"`
 	Color2Link                               types.String  `tfsdk:"color2_link"`
@@ -78,6 +82,7 @@ type siteDataSourceModel struct {
 	DesktopApp                               types.Bool    `tfsdk:"desktop_app"`
 	DesktopAppSessionIpPinning               types.Bool    `tfsdk:"desktop_app_session_ip_pinning"`
 	DesktopAppSessionLifetime                types.Int64   `tfsdk:"desktop_app_session_lifetime"`
+	LegacyChecksumsMode                      types.Bool    `tfsdk:"legacy_checksums_mode"`
 	MobileApp                                types.Bool    `tfsdk:"mobile_app"`
 	MobileAppSessionIpPinning                types.Bool    `tfsdk:"mobile_app_session_ip_pinning"`
 	MobileAppSessionLifetime                 types.Int64   `tfsdk:"mobile_app_session_lifetime"`
@@ -348,6 +353,22 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value",
 				Computed:    true,
 			},
+			"calculate_file_checksums_crc32": schema.BoolAttribute{
+				Description: "Calculate CRC32 checksums for files?",
+				Computed:    true,
+			},
+			"calculate_file_checksums_md5": schema.BoolAttribute{
+				Description: "Calculate MD5 checksums for files?",
+				Computed:    true,
+			},
+			"calculate_file_checksums_sha1": schema.BoolAttribute{
+				Description: "Calculate SHA1 checksums for files?",
+				Computed:    true,
+			},
+			"calculate_file_checksums_sha256": schema.BoolAttribute{
+				Description: "Calculate SHA256 checksums for files?",
+				Computed:    true,
+			},
 			"uploads_via_email_authentication": schema.BoolAttribute{
 				Description: "Do incoming emails in the Inboxes require checking for SPF/DKIM/DMARC?",
 				Computed:    true,
@@ -418,6 +439,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"desktop_app_session_lifetime": schema.Int64Attribute{
 				Description: "Desktop app session lifetime (in hours)",
+				Computed:    true,
+			},
+			"legacy_checksums_mode": schema.BoolAttribute{
+				Description: "Use legacy checksums mode?",
 				Computed:    true,
 			},
 			"mobile_app": schema.BoolAttribute{
@@ -955,6 +980,10 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.BundleWatermarkAttachment = types.StringValue(string(respBundleWatermarkAttachment))
 	state.BundleWatermarkValue, propDiags = lib.ToDynamic(ctx, path.Root("bundle_watermark_value"), site.BundleWatermarkValue, state.BundleWatermarkValue.UnderlyingValue())
 	diags.Append(propDiags...)
+	state.CalculateFileChecksumsCrc32 = types.BoolPointerValue(site.CalculateFileChecksumsCrc32)
+	state.CalculateFileChecksumsMd5 = types.BoolPointerValue(site.CalculateFileChecksumsMd5)
+	state.CalculateFileChecksumsSha1 = types.BoolPointerValue(site.CalculateFileChecksumsSha1)
+	state.CalculateFileChecksumsSha256 = types.BoolPointerValue(site.CalculateFileChecksumsSha256)
 	state.UploadsViaEmailAuthentication = types.BoolPointerValue(site.UploadsViaEmailAuthentication)
 	state.Color2Left = types.StringValue(site.Color2Left)
 	state.Color2Link = types.StringValue(site.Color2Link)
@@ -978,6 +1007,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.DesktopApp = types.BoolPointerValue(site.DesktopApp)
 	state.DesktopAppSessionIpPinning = types.BoolPointerValue(site.DesktopAppSessionIpPinning)
 	state.DesktopAppSessionLifetime = types.Int64Value(site.DesktopAppSessionLifetime)
+	state.LegacyChecksumsMode = types.BoolPointerValue(site.LegacyChecksumsMode)
 	state.MobileApp = types.BoolPointerValue(site.MobileApp)
 	state.MobileAppSessionIpPinning = types.BoolPointerValue(site.MobileAppSessionIpPinning)
 	state.MobileAppSessionLifetime = types.Int64Value(site.MobileAppSessionLifetime)

@@ -55,6 +55,8 @@ type folderDataSourceModel struct {
 	ProvidedMtime                      types.String  `tfsdk:"provided_mtime"`
 	Crc32                              types.String  `tfsdk:"crc32"`
 	Md5                                types.String  `tfsdk:"md5"`
+	Sha1                               types.String  `tfsdk:"sha1"`
+	Sha256                             types.String  `tfsdk:"sha256"`
 	MimeType                           types.String  `tfsdk:"mime_type"`
 	Region                             types.String  `tfsdk:"region"`
 	Permissions                        types.String  `tfsdk:"permissions"`
@@ -190,6 +192,14 @@ func (r *folderDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Description: "File MD5 checksum. This is sometimes delayed, so if you get a blank response, wait and try again.",
 				Computed:    true,
 			},
+			"sha1": schema.StringAttribute{
+				Description: "File SHA1 checksum. This is sometimes delayed, so if you get a blank response, wait and try again.",
+				Computed:    true,
+			},
+			"sha256": schema.StringAttribute{
+				Description: "File SHA256 checksum. This is sometimes delayed, so if you get a blank response, wait and try again.",
+				Computed:    true,
+			},
 			"mime_type": schema.StringAttribute{
 				Description: "MIME Type.  This is determined by the filename extension and is not stored separately internally.",
 				Computed:    true,
@@ -306,6 +316,8 @@ func (r *folderDataSource) populateDataSourceModel(ctx context.Context, folder f
 	}
 	state.Crc32 = types.StringValue(folder.Crc32)
 	state.Md5 = types.StringValue(folder.Md5)
+	state.Sha1 = types.StringValue(folder.Sha1)
+	state.Sha256 = types.StringValue(folder.Sha256)
 	state.MimeType = types.StringValue(folder.MimeType)
 	state.Region = types.StringValue(folder.Region)
 	state.Permissions = types.StringValue(folder.Permissions)

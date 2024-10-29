@@ -57,6 +57,10 @@ data "files_site" "example_site" {
 - `bundle_upload_receipt_notifications` (String) Do Bundle uploaders receive upload confirmation notifications?
 - `bundle_watermark_attachment` (String) Preview watermark image applied to all bundle items.
 - `bundle_watermark_value` (Dynamic) Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value
+- `calculate_file_checksums_crc32` (Boolean) Calculate CRC32 checksums for files?
+- `calculate_file_checksums_md5` (Boolean) Calculate MD5 checksums for files?
+- `calculate_file_checksums_sha1` (Boolean) Calculate SHA1 checksums for files?
+- `calculate_file_checksums_sha256` (Boolean) Calculate SHA256 checksums for files?
 - `color2_left` (String) Page link and button color
 - `color2_link` (String) Top bar link color
 - `color2_text` (String) Page link and button color
@@ -111,6 +115,7 @@ data "files_site" "example_site" {
 - `ldap_user_include_groups` (String) Comma or newline separated list of group names (with optional wildcards) - if provided, only users in these groups will be added or synced.
 - `ldap_username` (String) Username for signing in to LDAP server.
 - `ldap_username_field` (String) LDAP username field
+- `legacy_checksums_mode` (Boolean) Use legacy checksums mode?
 - `login_help_text` (String) Login help text
 - `login_page_background_image` (String) Branded login page background
 - `logo` (String) Branded logo

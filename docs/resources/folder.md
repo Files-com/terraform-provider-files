@@ -66,6 +66,8 @@ resource "files_folder" "example_folder" {
 - `preview` (String) File preview
 - `preview_id` (Number) File preview ID
 - `region` (String) Region location
+- `sha1` (String) File SHA1 checksum. This is sometimes delayed, so if you get a blank response, wait and try again.
+- `sha256` (String) File SHA256 checksum. This is sometimes delayed, so if you get a blank response, wait and try again.
 - `size` (Number) File/Folder size
 - `subfolders_locked` (Boolean) Are subfolders locked and unable to be modified?
 - `type` (String) Type: `directory` or `file`.

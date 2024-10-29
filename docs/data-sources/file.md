@@ -56,6 +56,8 @@ data "files_file" "example_file" {
 - `priority_color` (String) Bookmark/priority color of file/folder
 - `provided_mtime` (String) File last modified date/time, according to the client who set it.  Files.com allows desktop, FTP, SFTP, and WebDAV clients to set modified at times.  This allows Desktop<->Cloud syncing to preserve modified at times.
 - `region` (String) Region location
+- `sha1` (String) File SHA1 checksum. This is sometimes delayed, so if you get a blank response, wait and try again.
+- `sha256` (String) File SHA256 checksum. This is sometimes delayed, so if you get a blank response, wait and try again.
 - `size` (Number) File/Folder size
 - `subfolders_locked` (Boolean) Are subfolders locked and unable to be modified?
 - `type` (String) Type: `directory` or `file`.

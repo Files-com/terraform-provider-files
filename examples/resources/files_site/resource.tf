@@ -35,6 +35,11 @@ resource "files_site" "example_site" {
   additional_text_file_types                    = ["example"]
   bundle_require_note                           = true
   bundle_send_shared_receipts                   = true
+  calculate_file_checksums_crc32                = true
+  calculate_file_checksums_md5                  = true
+  calculate_file_checksums_sha1                 = true
+  calculate_file_checksums_sha256               = true
+  legacy_checksums_mode                         = true
   session_expiry                                = 1.0
   ssl_required                                  = true
   tls_disabled                                  = true

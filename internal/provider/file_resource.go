@@ -62,6 +62,8 @@ type fileResourceModel struct {
 	LastModifiedByRemoteServerSyncId   types.Int64   `tfsdk:"last_modified_by_remote_server_sync_id"`
 	Mtime                              types.String  `tfsdk:"mtime"`
 	Crc32                              types.String  `tfsdk:"crc32"`
+	Sha1                               types.String  `tfsdk:"sha1"`
+	Sha256                             types.String  `tfsdk:"sha256"`
 	MimeType                           types.String  `tfsdk:"mime_type"`
 	Region                             types.String  `tfsdk:"region"`
 	Permissions                        types.String  `tfsdk:"permissions"`
@@ -229,6 +231,14 @@ func (r *fileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"crc32": schema.StringAttribute{
 				Description: "File CRC32 checksum. This is sometimes delayed, so if you get a blank response, wait and try again.",
+				Computed:    true,
+			},
+			"sha1": schema.StringAttribute{
+				Description: "File SHA1 checksum. This is sometimes delayed, so if you get a blank response, wait and try again.",
+				Computed:    true,
+			},
+			"sha256": schema.StringAttribute{
+				Description: "File SHA256 checksum. This is sometimes delayed, so if you get a blank response, wait and try again.",
 				Computed:    true,
 			},
 			"mime_type": schema.StringAttribute{
@@ -515,6 +525,8 @@ func (r *fileResource) populateResourceModel(ctx context.Context, file files_sdk
 		)
 	}
 	state.Crc32 = types.StringValue(file.Crc32)
+	state.Sha1 = types.StringValue(file.Sha1)
+	state.Sha256 = types.StringValue(file.Sha256)
 	state.MimeType = types.StringValue(file.MimeType)
 	state.Region = types.StringValue(file.Region)
 	state.Permissions = types.StringValue(file.Permissions)
