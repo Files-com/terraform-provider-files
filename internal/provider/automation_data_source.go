@@ -200,7 +200,7 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Computed:    true,
 			},
 			"source": schema.StringAttribute{
-				Description: "Source path. Supports globs, except on remote mounts.",
+				Description: "Source path/glob.  See Automation docs for exact description, but this is used to filter for files in the `path` to find files to operate on. Supports globs, except on remote mounts.",
 				Computed:    true,
 			},
 			"sync_ids": schema.ListAttribute{

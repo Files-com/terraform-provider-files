@@ -274,7 +274,7 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				},
 			},
 			"source": schema.StringAttribute{
-				Description: "Source path. Supports globs, except on remote mounts.",
+				Description: "Source path/glob.  See Automation docs for exact description, but this is used to filter for files in the `path` to find files to operate on. Supports globs, except on remote mounts.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{

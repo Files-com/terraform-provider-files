@@ -1,5 +1,5 @@
 resource "files_automation" "example_automation" {
-  source                               = "source"
+  source                               = "example"
   destinations                         = [
     "folder_a/file_a.txt",
     {

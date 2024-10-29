@@ -452,7 +452,7 @@ data "files_automation" "example_automation" {
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.
 - `schedule_time_zone` (String) If trigger is `custom_schedule`, Custom schedule Time Zone for when the automation should be run.
 - `schedule_times_of_day` (List of String) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. Times of day in HH:MM format.
-- `source` (String) Source path. Supports globs, except on remote mounts.
+- `source` (String) Source path/glob.  See Automation docs for exact description, but this is used to filter for files in the `path` to find files to operate on. Supports globs, except on remote mounts.
 - `sync_ids` (List of Number) IDs of remote sync folder behaviors to run by this Automation
 - `trigger` (String) How this automation is triggered to run.
 - `trigger_actions` (List of String) If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, read, update, destroy, move, copy
