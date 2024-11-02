@@ -8,12 +8,14 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	as2_partner "github.com/Files-com/files-sdk-go/v3/as2partner"
+	"github.com/Files-com/terraform-provider-files/lib"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/dynamicplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -36,23 +38,25 @@ type as2PartnerResource struct {
 }
 
 type as2PartnerResourceModel struct {
-	As2StationId               types.Int64  `tfsdk:"as2_station_id"`
-	Name                       types.String `tfsdk:"name"`
-	Uri                        types.String `tfsdk:"uri"`
-	PublicCertificate          types.String `tfsdk:"public_certificate"`
-	ServerCertificate          types.String `tfsdk:"server_certificate"`
-	HttpAuthUsername           types.String `tfsdk:"http_auth_username"`
-	MdnValidationLevel         types.String `tfsdk:"mdn_validation_level"`
-	EnableDedicatedIps         types.Bool   `tfsdk:"enable_dedicated_ips"`
-	HttpAuthPassword           types.String `tfsdk:"http_auth_password"`
-	Id                         types.Int64  `tfsdk:"id"`
-	HexPublicCertificateSerial types.String `tfsdk:"hex_public_certificate_serial"`
-	PublicCertificateMd5       types.String `tfsdk:"public_certificate_md5"`
-	PublicCertificateSubject   types.String `tfsdk:"public_certificate_subject"`
-	PublicCertificateIssuer    types.String `tfsdk:"public_certificate_issuer"`
-	PublicCertificateSerial    types.String `tfsdk:"public_certificate_serial"`
-	PublicCertificateNotBefore types.String `tfsdk:"public_certificate_not_before"`
-	PublicCertificateNotAfter  types.String `tfsdk:"public_certificate_not_after"`
+	As2StationId               types.Int64   `tfsdk:"as2_station_id"`
+	Name                       types.String  `tfsdk:"name"`
+	Uri                        types.String  `tfsdk:"uri"`
+	PublicCertificate          types.String  `tfsdk:"public_certificate"`
+	ServerCertificate          types.String  `tfsdk:"server_certificate"`
+	HttpAuthUsername           types.String  `tfsdk:"http_auth_username"`
+	AdditionalHttpHeaders      types.Dynamic `tfsdk:"additional_http_headers"`
+	DefaultMimeType            types.String  `tfsdk:"default_mime_type"`
+	MdnValidationLevel         types.String  `tfsdk:"mdn_validation_level"`
+	EnableDedicatedIps         types.Bool    `tfsdk:"enable_dedicated_ips"`
+	HttpAuthPassword           types.String  `tfsdk:"http_auth_password"`
+	Id                         types.Int64   `tfsdk:"id"`
+	HexPublicCertificateSerial types.String  `tfsdk:"hex_public_certificate_serial"`
+	PublicCertificateMd5       types.String  `tfsdk:"public_certificate_md5"`
+	PublicCertificateSubject   types.String  `tfsdk:"public_certificate_subject"`
+	PublicCertificateIssuer    types.String  `tfsdk:"public_certificate_issuer"`
+	PublicCertificateSerial    types.String  `tfsdk:"public_certificate_serial"`
+	PublicCertificateNotBefore types.String  `tfsdk:"public_certificate_not_before"`
+	PublicCertificateNotAfter  types.String  `tfsdk:"public_certificate_not_after"`
 }
 
 func (r *as2PartnerResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -120,6 +124,22 @@ func (r *as2PartnerResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"additional_http_headers": schema.DynamicAttribute{
+				Description: "Additional HTTP Headers for outgoing message sent to this partner.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Dynamic{
+					dynamicplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"default_mime_type": schema.StringAttribute{
+				Description: "Default mime type of the file attached to the encrypted message",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"mdn_validation_level": schema.StringAttribute{
 				Description: "How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates.",
 				Computed:    true,
@@ -132,7 +152,7 @@ func (r *as2PartnerResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				},
 			},
 			"enable_dedicated_ips": schema.BoolAttribute{
-				Description: "If `true`, we will use your site's dedicated IPs for all outbound connections to this AS2 PArtner.",
+				Description: "If `true`, we will use your site's dedicated IPs for all outbound connections to this AS2 Partner.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -198,6 +218,10 @@ func (r *as2PartnerResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsAs2PartnerCreate.HttpAuthPassword = plan.HttpAuthPassword.ValueString()
 	paramsAs2PartnerCreate.MdnValidationLevel = paramsAs2PartnerCreate.MdnValidationLevel.Enum()[plan.MdnValidationLevel.ValueString()]
 	paramsAs2PartnerCreate.ServerCertificate = paramsAs2PartnerCreate.ServerCertificate.Enum()[plan.ServerCertificate.ValueString()]
+	paramsAs2PartnerCreate.DefaultMimeType = plan.DefaultMimeType.ValueString()
+	createAdditionalHttpHeaders, diags := lib.DynamicToStringMap(ctx, path.Root("additional_http_headers"), plan.AdditionalHttpHeaders)
+	resp.Diagnostics.Append(diags...)
+	paramsAs2PartnerCreate.AdditionalHttpHeaders = createAdditionalHttpHeaders
 	paramsAs2PartnerCreate.As2StationId = plan.As2StationId.ValueInt64()
 	paramsAs2PartnerCreate.Name = plan.Name.ValueString()
 	paramsAs2PartnerCreate.Uri = plan.Uri.ValueString()
@@ -278,6 +302,10 @@ func (r *as2PartnerResource) Update(ctx context.Context, req resource.UpdateRequ
 	paramsAs2PartnerUpdate.HttpAuthPassword = plan.HttpAuthPassword.ValueString()
 	paramsAs2PartnerUpdate.MdnValidationLevel = paramsAs2PartnerUpdate.MdnValidationLevel.Enum()[plan.MdnValidationLevel.ValueString()]
 	paramsAs2PartnerUpdate.ServerCertificate = paramsAs2PartnerUpdate.ServerCertificate.Enum()[plan.ServerCertificate.ValueString()]
+	paramsAs2PartnerUpdate.DefaultMimeType = plan.DefaultMimeType.ValueString()
+	updateAdditionalHttpHeaders, diags := lib.DynamicToStringMap(ctx, path.Root("additional_http_headers"), plan.AdditionalHttpHeaders)
+	resp.Diagnostics.Append(diags...)
+	paramsAs2PartnerUpdate.AdditionalHttpHeaders = updateAdditionalHttpHeaders
 	paramsAs2PartnerUpdate.Name = plan.Name.ValueString()
 	paramsAs2PartnerUpdate.Uri = plan.Uri.ValueString()
 	paramsAs2PartnerUpdate.PublicCertificate = plan.PublicCertificate.ValueString()
@@ -349,12 +377,17 @@ func (r *as2PartnerResource) ImportState(ctx context.Context, req resource.Impor
 }
 
 func (r *as2PartnerResource) populateResourceModel(ctx context.Context, as2Partner files_sdk.As2Partner, state *as2PartnerResourceModel) (diags diag.Diagnostics) {
+	var propDiags diag.Diagnostics
+
 	state.Id = types.Int64Value(as2Partner.Id)
 	state.As2StationId = types.Int64Value(as2Partner.As2StationId)
 	state.Name = types.StringValue(as2Partner.Name)
 	state.Uri = types.StringValue(as2Partner.Uri)
 	state.ServerCertificate = types.StringValue(as2Partner.ServerCertificate)
 	state.HttpAuthUsername = types.StringValue(as2Partner.HttpAuthUsername)
+	state.AdditionalHttpHeaders, propDiags = lib.ToDynamic(ctx, path.Root("additional_http_headers"), as2Partner.AdditionalHttpHeaders, state.AdditionalHttpHeaders.UnderlyingValue())
+	diags.Append(propDiags...)
+	state.DefaultMimeType = types.StringValue(as2Partner.DefaultMimeType)
 	state.MdnValidationLevel = types.StringValue(as2Partner.MdnValidationLevel)
 	state.EnableDedicatedIps = types.BoolPointerValue(as2Partner.EnableDedicatedIps)
 	state.HexPublicCertificateSerial = types.StringValue(as2Partner.HexPublicCertificateSerial)

@@ -14,14 +14,18 @@ An AS2Partner is a counterparty of the Files.com site's AS2 connectivity. Genera
 
 ```terraform
 resource "files_as2_partner" "example_as2_partner" {
-  enable_dedicated_ips = true
-  http_auth_username   = "username"
-  mdn_validation_level = "none"
-  server_certificate   = "require_match"
-  as2_station_id       = 1
-  name                 = "AS2 Partner Name"
-  uri                  = "example"
-  public_certificate   = "public_certificate"
+  enable_dedicated_ips    = true
+  http_auth_username      = "username"
+  mdn_validation_level    = "none"
+  server_certificate      = "require_match"
+  default_mime_type       = "application/octet-stream"
+  additional_http_headers = {
+    key = "example value"
+  }
+  as2_station_id          = 1
+  name                    = "AS2 Partner Name"
+  uri                     = "example"
+  public_certificate      = "public_certificate"
 }
 ```
 
@@ -37,7 +41,9 @@ resource "files_as2_partner" "example_as2_partner" {
 
 ### Optional
 
-- `enable_dedicated_ips` (Boolean) If `true`, we will use your site's dedicated IPs for all outbound connections to this AS2 PArtner.
+- `additional_http_headers` (Dynamic) Additional HTTP Headers for outgoing message sent to this partner.
+- `default_mime_type` (String) Default mime type of the file attached to the encrypted message
+- `enable_dedicated_ips` (Boolean) If `true`, we will use your site's dedicated IPs for all outbound connections to this AS2 Partner.
 - `http_auth_password` (String) Password to send to server for HTTP Authentication.
 - `http_auth_username` (String) Username to send to server for HTTP Authentication.
 - `mdn_validation_level` (String) How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates.
