@@ -28,7 +28,7 @@ type ssoStrategyDataSource struct {
 type ssoStrategyDataSourceModel struct {
 	Id                             types.Int64  `tfsdk:"id"`
 	Protocol                       types.String `tfsdk:"protocol"`
-	Provider_                      types.String `tfsdk:"provider"`
+	Provider_                      types.String `tfsdk:"provider_"`
 	Label                          types.String `tfsdk:"label"`
 	LogoUrl                        types.String `tfsdk:"logo_url"`
 	UserCount                      types.Int64  `tfsdk:"user_count"`
