@@ -133,6 +133,7 @@ resource "files_behavior" "example_inbox_behavior" {
     allow_whitelisting                             = true
     whitelist                                      = ["john@test.com", "mydomain.com"]
     disable_web_upload                             = true
+    capture_email_body_filename                    = "_body.txt"
   }
 }
 
