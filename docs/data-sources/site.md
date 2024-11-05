@@ -82,7 +82,7 @@ data "files_site" "example_site" {
 - `disable_password_reset` (Boolean) Is password reset disabled?
 - `disable_users_from_inactivity_period_days` (Number) If greater than zero, users will unable to login if they do not show activity within this number of days.
 - `disallowed_countries` (String) Comma separated list of disallowed Country codes
-- `document_edits_in_bundle_allowed` (String) If true, allow public viewers of Bundles with full permissions to use document editing integrations.
+- `document_edits_in_bundle_allowed` (Boolean) If true, allow public viewers of Bundles with full permissions to use document editing integrations.
 - `domain` (String) Custom domain
 - `domain_hsts_header` (Boolean) Send HSTS (HTTP Strict Transport Security) header when visitors access the site via a custom domain?
 - `domain_letsencrypt_chain` (String) Letsencrypt chain to use when registering SSL Certificate for domain.

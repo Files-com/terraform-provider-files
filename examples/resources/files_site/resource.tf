@@ -76,7 +76,7 @@ resource "files_site" "example_site" {
   bundle_registration_notifications             = "never"
   bundle_activity_notifications                 = "never"
   bundle_upload_receipt_notifications           = "never"
-  document_edits_in_bundle_allowed              = "example"
+  document_edits_in_bundle_allowed              = true
   password_requirements_apply_to_bundles        = true
   prevent_root_permissions_for_non_site_admins  = true
   opt_out_global                                = true

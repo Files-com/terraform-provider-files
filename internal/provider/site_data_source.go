@@ -77,7 +77,7 @@ type siteDataSourceModel struct {
 	DavEnabled                               types.Bool    `tfsdk:"dav_enabled"`
 	DavUserRootEnabled                       types.Bool    `tfsdk:"dav_user_root_enabled"`
 	DaysToRetainBackups                      types.Int64   `tfsdk:"days_to_retain_backups"`
-	DocumentEditsInBundleAllowed             types.String  `tfsdk:"document_edits_in_bundle_allowed"`
+	DocumentEditsInBundleAllowed             types.Bool    `tfsdk:"document_edits_in_bundle_allowed"`
 	DefaultTimeZone                          types.String  `tfsdk:"default_time_zone"`
 	DesktopApp                               types.Bool    `tfsdk:"desktop_app"`
 	DesktopAppSessionIpPinning               types.Bool    `tfsdk:"desktop_app_session_ip_pinning"`
@@ -421,7 +421,7 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Number of days to keep deleted files",
 				Computed:    true,
 			},
-			"document_edits_in_bundle_allowed": schema.StringAttribute{
+			"document_edits_in_bundle_allowed": schema.BoolAttribute{
 				Description: "If true, allow public viewers of Bundles with full permissions to use document editing integrations.",
 				Computed:    true,
 			},
@@ -1002,7 +1002,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.DavEnabled = types.BoolPointerValue(site.DavEnabled)
 	state.DavUserRootEnabled = types.BoolPointerValue(site.DavUserRootEnabled)
 	state.DaysToRetainBackups = types.Int64Value(site.DaysToRetainBackups)
-	state.DocumentEditsInBundleAllowed = types.StringValue(site.DocumentEditsInBundleAllowed)
+	state.DocumentEditsInBundleAllowed = types.BoolPointerValue(site.DocumentEditsInBundleAllowed)
 	state.DefaultTimeZone = types.StringValue(site.DefaultTimeZone)
 	state.DesktopApp = types.BoolPointerValue(site.DesktopApp)
 	state.DesktopAppSessionIpPinning = types.BoolPointerValue(site.DesktopAppSessionIpPinning)
