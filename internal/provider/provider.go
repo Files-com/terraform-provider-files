@@ -185,6 +185,7 @@ func (p *filesProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewBundleDataSource,
 		NewBundleNotificationDataSource,
 		NewClickwrapDataSource,
+		NewExportDataSource,
 		NewExternalEventDataSource,
 		NewFileDataSource,
 		NewFileCommentDataSource,
