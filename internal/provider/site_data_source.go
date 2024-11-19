@@ -154,7 +154,6 @@ type siteDataSourceModel struct {
 	Require2faUserType                       types.String  `tfsdk:"require_2fa_user_type"`
 	RequireLogoutFromBundlesAndInboxes       types.Bool    `tfsdk:"require_logout_from_bundles_and_inboxes"`
 	Session                                  types.String  `tfsdk:"session"`
-	SessionPinnedByIp                        types.Bool    `tfsdk:"session_pinned_by_ip"`
 	SftpEnabled                              types.Bool    `tfsdk:"sftp_enabled"`
 	SftpHostKeyType                          types.String  `tfsdk:"sftp_host_key_type"`
 	ActiveSftpHostKeyId                      types.Int64   `tfsdk:"active_sftp_host_key_id"`
@@ -729,10 +728,6 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Current session",
 				Computed:    true,
 			},
-			"session_pinned_by_ip": schema.BoolAttribute{
-				Description: "Are sessions locked to the same IP? (i.e. do users need to log in again if they change IPs?)",
-				Computed:    true,
-			},
 			"sftp_enabled": schema.BoolAttribute{
 				Description: "Is SFTP enabled?",
 				Computed:    true,
@@ -1138,7 +1133,6 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 		)
 	}
 	state.Session = types.StringValue(string(respSession))
-	state.SessionPinnedByIp = types.BoolPointerValue(site.SessionPinnedByIp)
 	state.SftpEnabled = types.BoolPointerValue(site.SftpEnabled)
 	state.SftpHostKeyType = types.StringValue(site.SftpHostKeyType)
 	state.ActiveSftpHostKeyId = types.Int64Value(site.ActiveSftpHostKeyId)

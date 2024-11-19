@@ -141,7 +141,6 @@ type siteResourceModel struct {
 	Require2fa                               types.Bool    `tfsdk:"require_2fa"`
 	Require2faUserType                       types.String  `tfsdk:"require_2fa_user_type"`
 	RequireLogoutFromBundlesAndInboxes       types.Bool    `tfsdk:"require_logout_from_bundles_and_inboxes"`
-	SessionPinnedByIp                        types.Bool    `tfsdk:"session_pinned_by_ip"`
 	SftpEnabled                              types.Bool    `tfsdk:"sftp_enabled"`
 	SftpHostKeyType                          types.String  `tfsdk:"sftp_host_key_type"`
 	ActiveSftpHostKeyId                      types.Int64   `tfsdk:"active_sftp_host_key_id"`
@@ -1080,14 +1079,6 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"session_pinned_by_ip": schema.BoolAttribute{
-				Description: "Are sessions locked to the same IP? (i.e. do users need to log in again if they change IPs?)",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
-				},
-			},
 			"sftp_enabled": schema.BoolAttribute{
 				Description: "Is SFTP enabled?",
 				Computed:    true,
@@ -1714,9 +1705,6 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.DisablePasswordReset.IsNull() && !plan.DisablePasswordReset.IsUnknown() {
 		paramsSiteUpdate.DisablePasswordReset = plan.DisablePasswordReset.ValueBoolPointer()
 	}
-	if !plan.SessionPinnedByIp.IsNull() && !plan.SessionPinnedByIp.IsUnknown() {
-		paramsSiteUpdate.SessionPinnedByIp = plan.SessionPinnedByIp.ValueBoolPointer()
-	}
 	paramsSiteUpdate.BundleNotFoundMessage = plan.BundleNotFoundMessage.ValueString()
 	if !plan.BundlePasswordRequired.IsNull() && !plan.BundlePasswordRequired.IsUnknown() {
 		paramsSiteUpdate.BundlePasswordRequired = plan.BundlePasswordRequired.ValueBoolPointer()
@@ -2105,7 +2093,6 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 		)
 	}
 	state.Session = types.StringValue(string(respSession))
-	state.SessionPinnedByIp = types.BoolPointerValue(site.SessionPinnedByIp)
 	state.SftpEnabled = types.BoolPointerValue(site.SftpEnabled)
 	state.SftpHostKeyType = types.StringValue(site.SftpHostKeyType)
 	state.ActiveSftpHostKeyId = types.Int64Value(site.ActiveSftpHostKeyId)

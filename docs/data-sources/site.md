@@ -156,7 +156,6 @@ data "files_site" "example_site" {
 - `session` (String) Current session
 - `session_expiry` (String) Session expiry in hours
 - `session_expiry_minutes` (Number) Session expiry in minutes
-- `session_pinned_by_ip` (Boolean) Are sessions locked to the same IP? (i.e. do users need to log in again if they change IPs?)
 - `sftp_enabled` (Boolean) Is SFTP enabled?
 - `sftp_host_key_type` (String) Sftp Host Key Type
 - `sftp_insecure_ciphers` (Boolean) If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility.

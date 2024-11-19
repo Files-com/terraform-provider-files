@@ -88,7 +88,6 @@ resource "files_site" "example_site" {
   sftp_user_root_enabled                        = true
   disable_password_reset                        = true
   immutable_files                               = true
-  session_pinned_by_ip                          = true
   bundle_not_found_message                      = "example"
   bundle_password_required                      = true
   bundle_require_registration                   = true
@@ -288,7 +287,6 @@ resource "files_site" "example_site" {
 - `require_logout_from_bundles_and_inboxes` (Boolean) If true, we will hide the 'Remember Me' box on Inbox and Bundle registration pages, requiring that the user logout and log back in every time they visit the page.
 - `session_expiry` (String) Session expiry in hours
 - `session_expiry_minutes` (Number) Session expiry in minutes
-- `session_pinned_by_ip` (Boolean) Are sessions locked to the same IP? (i.e. do users need to log in again if they change IPs?)
 - `sftp_enabled` (Boolean) Is SFTP enabled?
 - `sftp_host_key_type` (String) Sftp Host Key Type
 - `sftp_insecure_ciphers` (Boolean) If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility.

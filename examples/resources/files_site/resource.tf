@@ -68,7 +68,6 @@ resource "files_site" "example_site" {
   sftp_user_root_enabled                        = true
   disable_password_reset                        = true
   immutable_files                               = true
-  session_pinned_by_ip                          = true
   bundle_not_found_message                      = "example"
   bundle_password_required                      = true
   bundle_require_registration                   = true
