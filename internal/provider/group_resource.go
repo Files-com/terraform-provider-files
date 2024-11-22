@@ -45,6 +45,7 @@ type groupResourceModel struct {
 	RestapiPermission types.Bool   `tfsdk:"restapi_permission"`
 	Id                types.Int64  `tfsdk:"id"`
 	Usernames         types.String `tfsdk:"usernames"`
+	SiteId            types.Int64  `tfsdk:"site_id"`
 }
 
 func (r *groupResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -151,6 +152,10 @@ func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 			},
 			"usernames": schema.StringAttribute{
 				Description: "Comma-delimited list of usernames who belong to this group (separated by commas)",
+				Computed:    true,
+			},
+			"site_id": schema.Int64Attribute{
+				Description: "Site ID",
 				Computed:    true,
 			},
 		},
@@ -348,6 +353,7 @@ func (r *groupResource) populateResourceModel(ctx context.Context, group files_s
 	state.SftpPermission = types.BoolPointerValue(group.SftpPermission)
 	state.DavPermission = types.BoolPointerValue(group.DavPermission)
 	state.RestapiPermission = types.BoolPointerValue(group.RestapiPermission)
+	state.SiteId = types.Int64Value(group.SiteId)
 
 	return
 }

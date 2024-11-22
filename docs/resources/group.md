@@ -57,6 +57,7 @@ resource "files_group" "example_group" {
 ### Read-Only
 
 - `id` (Number) Group ID
+- `site_id` (Number) Site ID
 - `usernames` (String) Comma-delimited list of usernames who belong to this group (separated by commas)
 
 ## Import

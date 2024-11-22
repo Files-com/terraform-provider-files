@@ -45,5 +45,6 @@ data "files_group" "example_group" {
 - `notes` (String) Notes about this group
 - `restapi_permission` (Boolean) If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.
 - `sftp_permission` (Boolean) If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level.
+- `site_id` (Number) Site ID
 - `user_ids` (String) Comma-delimited list of user IDs who belong to this group (separated by commas)
 - `usernames` (String) Comma-delimited list of usernames who belong to this group (separated by commas)

@@ -107,6 +107,7 @@ type userResourceModel struct {
 	PublicKeysCount                  types.Int64  `tfsdk:"public_keys_count"`
 	Active2fa                        types.Bool   `tfsdk:"active_2fa"`
 	PasswordExpired                  types.Bool   `tfsdk:"password_expired"`
+	SiteId                           types.Int64  `tfsdk:"site_id"`
 	ExternallyManaged                types.Bool   `tfsdk:"externally_managed"`
 	TypeOf2fa                        types.String `tfsdk:"type_of_2fa"`
 	TypeOf2faForDisplay              types.String `tfsdk:"type_of_2fa_for_display"`
@@ -572,6 +573,10 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"password_expired": schema.BoolAttribute{
 				Description: "Is user's password expired?",
+				Computed:    true,
+			},
+			"site_id": schema.Int64Attribute{
+				Description: "Site ID",
 				Computed:    true,
 			},
 			"externally_managed": schema.BoolAttribute{
@@ -1103,6 +1108,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.SelfManaged = types.BoolPointerValue(user.SelfManaged)
 	state.SftpPermission = types.BoolPointerValue(user.SftpPermission)
 	state.SiteAdmin = types.BoolPointerValue(user.SiteAdmin)
+	state.SiteId = types.Int64Value(user.SiteId)
 	state.SkipWelcomeScreen = types.BoolPointerValue(user.SkipWelcomeScreen)
 	state.SslRequired = types.StringValue(user.SslRequired)
 	state.SsoStrategyId = types.Int64Value(user.SsoStrategyId)

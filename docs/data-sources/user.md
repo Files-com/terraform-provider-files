@@ -86,6 +86,7 @@ data "files_user" "example_user" {
 - `self_managed` (Boolean) Does this user manage it's own credentials or is it a shared/bot user?
 - `sftp_permission` (Boolean) Can the user access with SFTP?
 - `site_admin` (Boolean) Is the user an administrator for this site?
+- `site_id` (Number) Site ID
 - `skip_welcome_screen` (Boolean) Skip Welcome page in the UI?
 - `ssl_required` (String) SSL required setting
 - `sso_strategy_id` (Number) SSO (Single Sign On) strategy ID for the user, if applicable.

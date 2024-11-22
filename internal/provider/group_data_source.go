@@ -37,6 +37,7 @@ type groupDataSourceModel struct {
 	SftpPermission    types.Bool   `tfsdk:"sftp_permission"`
 	DavPermission     types.Bool   `tfsdk:"dav_permission"`
 	RestapiPermission types.Bool   `tfsdk:"restapi_permission"`
+	SiteId            types.Int64  `tfsdk:"site_id"`
 }
 
 func (r *groupDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -110,6 +111,10 @@ func (r *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				Description: "If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.",
 				Computed:    true,
 			},
+			"site_id": schema.Int64Attribute{
+				Description: "Site ID",
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -156,6 +161,7 @@ func (r *groupDataSource) populateDataSourceModel(ctx context.Context, group fil
 	state.SftpPermission = types.BoolPointerValue(group.SftpPermission)
 	state.DavPermission = types.BoolPointerValue(group.DavPermission)
 	state.RestapiPermission = types.BoolPointerValue(group.RestapiPermission)
+	state.SiteId = types.Int64Value(group.SiteId)
 
 	return
 }
