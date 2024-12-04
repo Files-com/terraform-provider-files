@@ -3,12 +3,12 @@
 page_title: "files_sftp_host_key Resource - files"
 subcategory: ""
 description: |-
-  A SFTPHostKey is a secure cryptography key record which is used to confirm connection to the correct server (host).
+  An SFTPHostKey is a secure cryptography key record which is used to confirm connection to the correct server (host).
 ---
 
 # files_sftp_host_key (Resource)
 
-A SFTPHostKey is a secure cryptography key record which is used to confirm connection to the correct server (host).
+An SFTPHostKey is a secure cryptography key record which is used to confirm connection to the correct server (host).
 
 ## Example Usage
 

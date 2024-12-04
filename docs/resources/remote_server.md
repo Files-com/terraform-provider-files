@@ -213,7 +213,7 @@ resource "files_remote_server" "example_remote_server" {
 - `name` (String) Internal name for your reference
 - `one_drive_account_type` (String) Either personal or business_other account types
 - `password` (String) Password if needed.
-- `pin_to_site_region` (Boolean) If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a sitewide setting which will force it to true.
+- `pin_to_site_region` (Boolean) If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.
 - `port` (Number) Port for remote server.  Not needed for S3.
 - `private_key` (String) Private key if needed.
 - `private_key_passphrase` (String) Passphrase for private key if needed.

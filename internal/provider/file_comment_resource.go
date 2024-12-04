@@ -65,7 +65,7 @@ func (r *fileCommentResource) Metadata(_ context.Context, req resource.MetadataR
 
 func (r *fileCommentResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A FileComment is a comments attached to a file by a user.",
+		Description: "A FileComment is a comment attached to a file by a user.",
 		Attributes: map[string]schema.Attribute{
 			"body": schema.StringAttribute{
 				Description: "Comment body.",

@@ -3,13 +3,13 @@
 page_title: "files_public_key Data Source - files"
 subcategory: ""
 description: |-
-  A PublicKeys is used by Users who want to connect via SFTP/SSH.
+  A PublicKey is used by Users who want to connect via SFTP/SSH.
   (Note that our SSH support is limited to file operations only, no shell is provided.)
 ---
 
 # files_public_key (Data Source)
 
-A PublicKeys is used by Users who want to connect via SFTP/SSH.
+A PublicKey is used by Users who want to connect via SFTP/SSH.
 
 (Note that our SSH support is limited to file operations only, no shell is provided.)
 

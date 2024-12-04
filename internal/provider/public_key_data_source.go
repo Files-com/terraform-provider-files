@@ -62,7 +62,7 @@ func (r *publicKeyDataSource) Metadata(_ context.Context, req datasource.Metadat
 
 func (r *publicKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A PublicKeys is used by Users who want to connect via SFTP/SSH.\n\n(Note that our SSH support is limited to file operations only, no shell is provided.)",
+		Description: "A PublicKey is used by Users who want to connect via SFTP/SSH.\n\n(Note that our SSH support is limited to file operations only, no shell is provided.)",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Public key ID",

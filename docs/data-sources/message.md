@@ -3,12 +3,12 @@
 page_title: "files_message Data Source - files"
 subcategory: ""
 description: |-
-  A Messages is a part of Files.com's project management features and represent a message posted by a user to a project.
+  A Message is a part of Files.com's project management features and represents a message posted by a user to a project.
 ---
 
 # files_message (Data Source)
 
-A Messages is a part of Files.com's project management features and represent a message posted by a user to a project.
+A Message is a part of Files.com's project management features and represents a message posted by a user to a project.
 
 ## Example Usage
 

@@ -3,13 +3,13 @@
 page_title: "files_site Data Source - files"
 subcategory: ""
 description: |-
-  A Site is the place you'll come to update site settings, as well as manage sitewide API keys.
+  A Site is the place you'll come to update site settings, as well as manage site-wide API keys.
   Most site settings can be set via the API.
 ---
 
 # files_site (Data Source)
 
-A Site is the place you'll come to update site settings, as well as manage sitewide API keys.
+A Site is the place you'll come to update site settings, as well as manage site-wide API keys.
 
 
 

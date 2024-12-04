@@ -144,7 +144,7 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Computed:    true,
 			},
 			"pin_to_site_region": schema.BoolAttribute{
-				Description: "If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a sitewide setting which will force it to true.",
+				Description: "If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.",
 				Computed:    true,
 			},
 			"pinned_region": schema.StringAttribute{

@@ -233,7 +233,7 @@ func (r *siteResource) Metadata(_ context.Context, req resource.MetadataRequest,
 
 func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Site is the place you'll come to update site settings, as well as manage sitewide API keys.\n\n\n\nMost site settings can be set via the API.",
+		Description: "A Site is the place you'll come to update site settings, as well as manage site-wide API keys.\n\n\n\nMost site settings can be set via the API.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Site name",

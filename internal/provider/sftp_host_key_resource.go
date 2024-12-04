@@ -65,7 +65,7 @@ func (r *sftpHostKeyResource) Metadata(_ context.Context, req resource.MetadataR
 
 func (r *sftpHostKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A SFTPHostKey is a secure cryptography key record which is used to confirm connection to the correct server (host).",
+		Description: "An SFTPHostKey is a secure cryptography key record which is used to confirm connection to the correct server (host).",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "The friendly name of this SFTP Host Key.",
