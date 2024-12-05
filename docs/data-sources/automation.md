@@ -95,6 +95,41 @@ description: |-
   The Run Remote Server Sync automation runs the remote server syncs specified by the sync_ids.
   Typically when this automation is used, the remote server syncs in question are set to the manual
   scheduling mode (manual to true via the API) to disable the built in sync scheduler.
+  Import File
+  Retrieves files from one or more URLs and saves the results under the path specified in destinations.
+  The URLs to retrieve are specified as a JSON array in the import_urls property.
+  
+  
+  [
+  
+   {
+  
+   "name": "response.json",
+  
+   "url": "https://example.com/api",
+  
+   "method": "post",
+  
+   "headers": {
+  
+   "Content-Type": "application/json"
+  
+   },
+  
+   "content": { "trigger-file": "%tp" }
+  
+   }
+  
+  ]
+  
+  
+  The recognized keys are:
+  
+  name: The file name which will be used to save the returned content. Required. % tokens will be replaced as described under Formatting Parameters.
+  url: The URL which will be requested. Required.
+  method: The HTTP method to be used for the request. May be either get or post (case insensitive). Defaults to get.
+  headers: Optional headers to be included in the request. % tokens in the values will be replaced as described under Formatting Parameters.
+  content: Optional body to send for POST request. If supplied as a string, % tokens will be expanded. If supplied as a JSON Object, % tokens will be expanded for top-level values. Other JSON types will be sent as-is.
   Help us build the future of Automations
   Do you have an idea for something that would work well as a Files.com Automation? Let us know!
   We are actively improving the types of automations offered on our platform.
@@ -348,6 +383,8 @@ Note this assumes you have folders in `AccountingAndTax/SalesTax/State/` already
 
 
 
+
+
 ### Delete File
 
 
@@ -386,6 +423,8 @@ Note that for a move with multiple destinations, all but one destination is trea
 
 
 
+
+
 ### Run Remote Server Sync
 
 
@@ -397,6 +436,64 @@ The Run Remote Server Sync automation runs the remote server syncs specified by 
 Typically when this automation is used, the remote server syncs in question are set to the manual
 
 scheduling mode (`manual` to `true` via the API) to disable the built in sync scheduler.
+
+
+
+
+
+### Import File
+
+
+
+Retrieves files from one or more URLs and saves the results under the path specified in `destinations`.
+
+
+
+The URLs to retrieve are specified as a JSON array in the `import_urls` property.
+
+
+
+```json
+
+[
+
+ {
+
+ "name": "response.json",
+
+ "url": "https://example.com/api",
+
+ "method": "post",
+
+ "headers": {
+
+ "Content-Type": "application/json"
+
+ },
+
+ "content": { "trigger-file": "%tp" }
+
+ }
+
+]
+
+```
+
+
+
+The recognized keys are:
+
+
+
+* `name`: The file name which will be used to save the returned content. Required. `%` tokens will be replaced as described under Formatting Parameters.
+
+* `url`: The URL which will be requested. Required.
+
+* `method`: The HTTP method to be used for the request. May be either `get` or `post` (case insensitive). Defaults to `get`.
+
+* `headers`: Optional headers to be included in the request. `%` tokens in the values will be replaced as described under Formatting Parameters.
+
+* `content`: Optional body to send for POST request. If supplied as a string, `%` tokens will be expanded. If supplied as a JSON Object, `%` tokens will be expanded for top-level values. Other JSON types will be sent as-is.
 
 
 
@@ -440,6 +537,7 @@ data "files_automation" "example_automation" {
 - `group_ids` (List of Number) IDs of Groups for the Automation (i.e. who to Request File from)
 - `human_readable_schedule` (String) If trigger is `custom_schedule`, Human readable Custom schedule description for when the automation should be run.
 - `ignore_locked_folders` (Boolean) If true, the Lock Folders behavior will be disregarded for automated actions.
+- `import_urls` (Dynamic) List of URLs to be imported and names to be used.
 - `interval` (String) If trigger is `daily`, this specifies how often to run this automation.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`
 - `last_modified_at` (String) Time when automation was last modified. Does not change for name or description updates.
 - `legacy_folder_matching` (Boolean) If `true`, use the legacy behavior for this automation, where it can operate on folders in addition to just files.  This behavior no longer works and should not be used.

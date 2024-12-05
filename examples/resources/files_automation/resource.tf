@@ -24,6 +24,19 @@ resource "files_automation" "example_automation" {
   description                          = "example"
   disabled                             = true
   exclude_pattern                      = "path/to/exclude/*"
+  import_urls                          = [
+    {
+      name    = "users.json"
+      url     = "http://example.com/users"
+      method  = "POST"
+      headers = {
+        Content-Type = "application/json"
+      }
+      content = {
+        group = "support"
+      }
+    }
+  ]
   flatten_destination_structure        = true
   ignore_locked_folders                = true
   legacy_folder_matching               = true
