@@ -278,6 +278,7 @@ resource "files_behavior" "example_organize_files_into_subfolders_behavior" {
     subfolder_name_type = "regex, extension, created_at, :provided_modified_at"
     regex               = "(?<=\\-)(.*?)(?=\\.)"
     strftime_format     = "%Y-%m-%d"
+    time_zone           = "Eastern Time (US & Canada)"
     apply_behavior      = true
   }
 }
