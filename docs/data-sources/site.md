@@ -72,6 +72,7 @@ data "files_site" "example_site" {
 - `custom_namespace` (Boolean) Is this site using a custom namespace for users?
 - `dav_enabled` (Boolean) Is WebDAV enabled?
 - `dav_user_root_enabled` (Boolean) Use user FTP roots also for WebDAV?
+- `days_before_deleting_disabled_users` (Number) Number of days to keep disabled users before deleting them. If set to 0, disabled users will not be deleted.
 - `days_to_retain_backups` (Number) Number of days to keep deleted files
 - `default_time_zone` (String) Site default time zone
 - `desktop_app` (Boolean) Is the desktop app enabled?

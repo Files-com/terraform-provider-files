@@ -79,6 +79,7 @@ type siteResourceModel struct {
 	CustomNamespace                          types.Bool    `tfsdk:"custom_namespace"`
 	DavEnabled                               types.Bool    `tfsdk:"dav_enabled"`
 	DavUserRootEnabled                       types.Bool    `tfsdk:"dav_user_root_enabled"`
+	DaysBeforeDeletingDisabledUsers          types.Int64   `tfsdk:"days_before_deleting_disabled_users"`
 	DaysToRetainBackups                      types.Int64   `tfsdk:"days_to_retain_backups"`
 	DocumentEditsInBundleAllowed             types.Bool    `tfsdk:"document_edits_in_bundle_allowed"`
 	DefaultTimeZone                          types.String  `tfsdk:"default_time_zone"`
@@ -572,6 +573,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"days_before_deleting_disabled_users": schema.Int64Attribute{
+				Description: "Number of days to keep disabled users before deleting them. If set to 0, disabled users will not be deleted.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"days_to_retain_backups": schema.Int64Attribute{
@@ -1674,6 +1683,7 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	paramsSiteUpdate.AllowedCountries = plan.AllowedCountries.ValueString()
 	paramsSiteUpdate.AllowedIps = plan.AllowedIps.ValueString()
 	paramsSiteUpdate.DisallowedCountries = plan.DisallowedCountries.ValueString()
+	paramsSiteUpdate.DaysBeforeDeletingDisabledUsers = plan.DaysBeforeDeletingDisabledUsers.ValueInt64()
 	paramsSiteUpdate.DaysToRetainBackups = plan.DaysToRetainBackups.ValueInt64()
 	paramsSiteUpdate.MaxPriorPasswords = plan.MaxPriorPasswords.ValueInt64()
 	paramsSiteUpdate.PasswordValidityDays = plan.PasswordValidityDays.ValueInt64()
@@ -1956,6 +1966,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.CustomNamespace = types.BoolPointerValue(site.CustomNamespace)
 	state.DavEnabled = types.BoolPointerValue(site.DavEnabled)
 	state.DavUserRootEnabled = types.BoolPointerValue(site.DavUserRootEnabled)
+	state.DaysBeforeDeletingDisabledUsers = types.Int64Value(site.DaysBeforeDeletingDisabledUsers)
 	state.DaysToRetainBackups = types.Int64Value(site.DaysToRetainBackups)
 	state.DocumentEditsInBundleAllowed = types.BoolPointerValue(site.DocumentEditsInBundleAllowed)
 	state.DefaultTimeZone = types.StringValue(site.DefaultTimeZone)
