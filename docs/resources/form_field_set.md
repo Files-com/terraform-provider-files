@@ -26,9 +26,9 @@ Once created, a form field set can then be associated with one or more bundle(s)
 resource "files_form_field_set" "example_form_field_set" {
   user_id      = 1
   title        = "Sample Form Title"
-  skip_email   = true
-  skip_name    = true
-  skip_company = true
+  skip_email   = false
+  skip_name    = false
+  skip_company = false
   form_fields  = [
     {
       label              = "Sample Label"

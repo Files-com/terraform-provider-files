@@ -1,16 +1,16 @@
 resource "files_user" "example_user" {
-  avatar_delete                = true
+  avatar_delete                = false
   email                        = "example"
   group_id                     = 1
   group_ids                    = "example"
-  announcements_read           = true
+  announcements_read           = false
   allowed_ips                  = "10.0.0.0/8\n127.0.0.1"
   attachments_permission       = true
   authenticate_until           = "2000-01-01T01:00:00Z"
   authentication_method        = "password"
-  billing_permission           = true
-  bypass_inactive_disable      = true
-  bypass_site_allowed_ips      = true
+  billing_permission           = false
+  bypass_inactive_disable      = false
+  bypass_site_allowed_ips      = false
   dav_permission               = true
   disabled                     = true
   ftp_permission               = true

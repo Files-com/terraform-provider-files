@@ -551,7 +551,7 @@ resource "files_automation" "example_automation" {
   ]
   flatten_destination_structure        = true
   ignore_locked_folders                = true
-  legacy_folder_matching               = true
+  legacy_folder_matching               = false
   name                                 = "example"
   overwrite_files                      = true
   path_time_zone                       = "Eastern Time (US & Canada)"

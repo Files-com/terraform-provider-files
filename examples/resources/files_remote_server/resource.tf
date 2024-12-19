@@ -1,7 +1,7 @@
 resource "files_remote_server" "example_remote_server" {
   aws_access_key                            = "example"
   wasabi_access_key                         = "example"
-  reset_authentication                      = true
+  reset_authentication                      = false
   hostname                                  = "remote-server.com"
   name                                      = "My Remote server"
   max_connections                           = 1

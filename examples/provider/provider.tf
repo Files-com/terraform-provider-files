@@ -13,7 +13,7 @@ provider "files" {
 
 resource "files_folder" "example_folder" {
   path            = "public/photos"
-  mkdir_parents   = true
+  mkdir_parents   = false
   provided_mtime  = "2000-01-01T01:00:00Z"
   custom_metadata = {
     key = "value"

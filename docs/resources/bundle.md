@@ -26,10 +26,10 @@ resource "files_bundle" "example_bundle" {
   paths                               = ["file.txt"]
   password                            = "Password"
   form_field_set_id                   = 1
-  create_snapshot                     = true
+  create_snapshot                     = false
   dont_separate_submissions_by_folder = true
   expires_at                          = "2000-01-01T01:00:00Z"
-  finalize_snapshot                   = true
+  finalize_snapshot                   = false
   max_uses                            = 1
   description                         = "The public description of the bundle."
   note                                = "The internal note on the bundle."
@@ -37,10 +37,10 @@ resource "files_bundle" "example_bundle" {
   path_template                       = "{{name}}_{{ip}}"
   path_template_time_zone             = "Eastern Time (US & Canada)"
   permissions                         = "read"
-  require_registration                = true
+  require_registration                = false
   clickwrap_id                        = 1
   inbox_id                            = 1
-  require_share_recipient             = true
+  require_share_recipient             = false
   send_email_receipt_to_uploader      = true
   skip_email                          = true
   skip_name                           = true

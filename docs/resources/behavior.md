@@ -37,8 +37,8 @@ resource "files_behavior" "example_behavior" {
   value                          = {
     method = "GET"
   }
-  disable_parent_folder_behavior = true
-  recursive                      = true
+  disable_parent_folder_behavior = false
+  recursive                      = false
   name                           = "example"
   description                    = "example"
   path                           = "path"

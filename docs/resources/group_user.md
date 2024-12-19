@@ -27,7 +27,7 @@ GroupUser record does not exist for the given user/group IDs it will be created.
 resource "files_group_user" "example_group_user" {
   group_id = 1
   user_id  = 1
-  admin    = true
+  admin    = false
 }
 ```
 
