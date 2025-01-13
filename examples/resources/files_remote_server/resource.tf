@@ -29,6 +29,7 @@ resource "files_remote_server" "example_remote_server" {
   azure_blob_storage_hierarchical_namespace = true
   azure_files_storage_account               = "storage-account-name"
   azure_files_storage_share_name            = "share-name"
+  azure_files_storage_dns_suffix            = "file.core.windows.net"
   s3_compatible_bucket                      = "my-bucket"
   s3_compatible_endpoint                    = "mys3platform.com"
   s3_compatible_region                      = "us-east-1"

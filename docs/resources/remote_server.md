@@ -21,7 +21,7 @@ description: |-
   Dropbox specify if dropbox_teams then follow the auth_setup_link and login with Dropbox.
   Google Drive follow the auth_setup_link and login with Google.
   Azure Blob Storage azure_blob_storage_account, azure_blob_storage_container, azure_blob_storage_access_key, azure_blob_storage_sas_token
-  Azure File Storage azure_files_storage_account, azure_files_storage_access_key, azure_files_storage_share_name
+  Azure File Storage azure_files_storage_account, azure_files_storage_access_key, azure_files_storage_share_name, azure_files_storage_dns_suffix
   Filebase requires filebase_bucket, filebase_access_key, and filebase_secret_key.
   Cloudflare requires cloudflare_bucket, cloudflare_access_key, cloudflare_secret_key and cloudflare_endpoint.
   Linode requires linode_bucket, linode_access_key, linode_secret_key and linode_region.
@@ -101,7 +101,7 @@ Azure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`,
 
 
 
-Azure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`
+Azure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`, `azure_files_storage_dns_suffix`
 
 
 
@@ -149,6 +149,7 @@ resource "files_remote_server" "example_remote_server" {
   azure_blob_storage_hierarchical_namespace = true
   azure_files_storage_account               = "storage-account-name"
   azure_files_storage_share_name            = "share-name"
+  azure_files_storage_dns_suffix            = "file.core.windows.net"
   s3_compatible_bucket                      = "my-bucket"
   s3_compatible_endpoint                    = "mys3platform.com"
   s3_compatible_region                      = "us-east-1"
@@ -183,6 +184,7 @@ resource "files_remote_server" "example_remote_server" {
 - `azure_blob_storage_sas_token` (String) Shared Access Signature (SAS) token
 - `azure_files_storage_access_key` (String) Azure File Storage access key.
 - `azure_files_storage_account` (String) Azure File Storage Account name
+- `azure_files_storage_dns_suffix` (String) Custom DNS suffix
 - `azure_files_storage_sas_token` (String) Shared Access Signature (SAS) token
 - `azure_files_storage_share_name` (String) Azure File Storage Share name
 - `backblaze_b2_application_key` (String) Backblaze B2 Cloud Storage applicationKey.

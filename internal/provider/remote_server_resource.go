@@ -65,6 +65,7 @@ type remoteServerResourceModel struct {
 	AzureBlobStorageHierarchicalNamespace types.Bool   `tfsdk:"azure_blob_storage_hierarchical_namespace"`
 	AzureFilesStorageAccount              types.String `tfsdk:"azure_files_storage_account"`
 	AzureFilesStorageShareName            types.String `tfsdk:"azure_files_storage_share_name"`
+	AzureFilesStorageDnsSuffix            types.String `tfsdk:"azure_files_storage_dns_suffix"`
 	S3CompatibleBucket                    types.String `tfsdk:"s3_compatible_bucket"`
 	S3CompatibleEndpoint                  types.String `tfsdk:"s3_compatible_endpoint"`
 	S3CompatibleRegion                    types.String `tfsdk:"s3_compatible_region"`
@@ -138,7 +139,7 @@ func (r *remoteServerResource) Metadata(_ context.Context, req resource.Metadata
 
 func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A RemoteServer is a specific type of Behavior called `remote_server_sync`.\n\n\n\nRemote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.\n\n\n\nNot every attribute will apply to every remote server.\n\n\n\nFTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`. Optionally, provide `server_certificate`.\n\n\n\nSFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`. Optionally, provide `server_certificate`, `private_key_passphrase`.\n\n\n\nS3 Buckets require that you specify their `s3_bucket` name, and `s3_region`. Optionally provide a `aws_access_key`, and `aws_secret_key`. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.\n\n\n\nS3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`.\n\n\n\nGoogle Cloud Storage requires that you specify `google_cloud_storage_bucket`, `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`.\n\n\n\nWasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.\n\n\n\nBackblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453\n\n\n\nRackspace Cloud Files requires `rackspace_username`, `rackspace_api_key`, `rackspace_region`, and `rackspace_container`.\n\n\n\nWebDAV Servers require that you specify their `hostname`, `username`, and `password`.\n\n\n\nOneDrive follow the `auth_setup_link` and login with Microsoft.\n\n\n\nSharepoint follow the `auth_setup_link` and login with Microsoft.\n\n\n\nBox follow the `auth_setup_link` and login with Box.\n\n\n\nDropbox specify if `dropbox_teams` then follow the `auth_setup_link` and login with Dropbox.\n\n\n\nGoogle Drive follow the `auth_setup_link` and login with Google.\n\n\n\nAzure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`\n\n\n\nAzure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`\n\n\n\nFilebase requires `filebase_bucket`, `filebase_access_key`, and `filebase_secret_key`.\n\n\n\nCloudflare requires `cloudflare_bucket`, `cloudflare_access_key`, `cloudflare_secret_key` and `cloudflare_endpoint`.\n\n\n\nLinode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `linode_region`.",
+		Description: "A RemoteServer is a specific type of Behavior called `remote_server_sync`.\n\n\n\nRemote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.\n\n\n\nNot every attribute will apply to every remote server.\n\n\n\nFTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`. Optionally, provide `server_certificate`.\n\n\n\nSFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`. Optionally, provide `server_certificate`, `private_key_passphrase`.\n\n\n\nS3 Buckets require that you specify their `s3_bucket` name, and `s3_region`. Optionally provide a `aws_access_key`, and `aws_secret_key`. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.\n\n\n\nS3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`.\n\n\n\nGoogle Cloud Storage requires that you specify `google_cloud_storage_bucket`, `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`.\n\n\n\nWasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.\n\n\n\nBackblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453\n\n\n\nRackspace Cloud Files requires `rackspace_username`, `rackspace_api_key`, `rackspace_region`, and `rackspace_container`.\n\n\n\nWebDAV Servers require that you specify their `hostname`, `username`, and `password`.\n\n\n\nOneDrive follow the `auth_setup_link` and login with Microsoft.\n\n\n\nSharepoint follow the `auth_setup_link` and login with Microsoft.\n\n\n\nBox follow the `auth_setup_link` and login with Box.\n\n\n\nDropbox specify if `dropbox_teams` then follow the `auth_setup_link` and login with Dropbox.\n\n\n\nGoogle Drive follow the `auth_setup_link` and login with Google.\n\n\n\nAzure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`\n\n\n\nAzure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`, `azure_files_storage_dns_suffix`\n\n\n\nFilebase requires `filebase_bucket`, `filebase_access_key`, and `filebase_secret_key`.\n\n\n\nCloudflare requires `cloudflare_bucket`, `cloudflare_access_key`, `cloudflare_secret_key` and `cloudflare_endpoint`.\n\n\n\nLinode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `linode_region`.",
 		Attributes: map[string]schema.Attribute{
 			"hostname": schema.StringAttribute{
 				Description: "Hostname or IP address",
@@ -378,6 +379,14 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 			},
 			"azure_files_storage_share_name": schema.StringAttribute{
 				Description: "Azure File Storage Share name",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"azure_files_storage_dns_suffix": schema.StringAttribute{
+				Description: "Custom DNS suffix",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -707,6 +716,7 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.AzureBlobStorageSasToken = plan.AzureBlobStorageSasToken.ValueString()
 	paramsRemoteServerCreate.AzureFilesStorageAccount = plan.AzureFilesStorageAccount.ValueString()
 	paramsRemoteServerCreate.AzureFilesStorageShareName = plan.AzureFilesStorageShareName.ValueString()
+	paramsRemoteServerCreate.AzureFilesStorageDnsSuffix = plan.AzureFilesStorageDnsSuffix.ValueString()
 	paramsRemoteServerCreate.AzureFilesStorageSasToken = plan.AzureFilesStorageSasToken.ValueString()
 	paramsRemoteServerCreate.S3CompatibleBucket = plan.S3CompatibleBucket.ValueString()
 	paramsRemoteServerCreate.S3CompatibleEndpoint = plan.S3CompatibleEndpoint.ValueString()
@@ -851,6 +861,7 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	paramsRemoteServerUpdate.AzureBlobStorageSasToken = plan.AzureBlobStorageSasToken.ValueString()
 	paramsRemoteServerUpdate.AzureFilesStorageAccount = plan.AzureFilesStorageAccount.ValueString()
 	paramsRemoteServerUpdate.AzureFilesStorageShareName = plan.AzureFilesStorageShareName.ValueString()
+	paramsRemoteServerUpdate.AzureFilesStorageDnsSuffix = plan.AzureFilesStorageDnsSuffix.ValueString()
 	paramsRemoteServerUpdate.AzureFilesStorageSasToken = plan.AzureFilesStorageSasToken.ValueString()
 	paramsRemoteServerUpdate.S3CompatibleBucket = plan.S3CompatibleBucket.ValueString()
 	paramsRemoteServerUpdate.S3CompatibleEndpoint = plan.S3CompatibleEndpoint.ValueString()
@@ -982,6 +993,7 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.AzureBlobStorageHierarchicalNamespace = types.BoolPointerValue(remoteServer.AzureBlobStorageHierarchicalNamespace)
 	state.AzureFilesStorageAccount = types.StringValue(remoteServer.AzureFilesStorageAccount)
 	state.AzureFilesStorageShareName = types.StringValue(remoteServer.AzureFilesStorageShareName)
+	state.AzureFilesStorageDnsSuffix = types.StringValue(remoteServer.AzureFilesStorageDnsSuffix)
 	state.S3CompatibleBucket = types.StringValue(remoteServer.S3CompatibleBucket)
 	state.S3CompatibleEndpoint = types.StringValue(remoteServer.S3CompatibleEndpoint)
 	state.S3CompatibleRegion = types.StringValue(remoteServer.S3CompatibleRegion)
