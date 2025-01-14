@@ -3,15 +3,22 @@
 page_title: "files_public_key Resource - files"
 subcategory: ""
 description: |-
-  A PublicKey is used by Users who want to connect via SFTP/SSH.
-  (Note that our SSH support is limited to file operations only, no shell is provided.)
+  A PublicKey is used to authenticate to Files.com via SFTP (SSH File Transfer Protocol). This method of authentication allows users to use their private key (which is never shared with Files.com) to authenticate themselves against the PublicKey stored on Files.com.
+  When a user configures their PublicKey, it allows them to bypass traditional password-based authentication, leveraging the security of key-based authentication instead.
+  Note that Files.com’s SSH support is limited to file operations only. While users can securely transfer files and manage their data via SFTP, they do not have access to a full shell environment for executing arbitrary commands.
 ---
 
 # files_public_key (Resource)
 
-A PublicKey is used by Users who want to connect via SFTP/SSH.
+A PublicKey is used to authenticate to Files.com via SFTP (SSH File Transfer Protocol). This method of authentication allows users to use their private key (which is never shared with Files.com) to authenticate themselves against the PublicKey stored on Files.com.
 
-(Note that our SSH support is limited to file operations only, no shell is provided.)
+
+
+When a user configures their PublicKey, it allows them to bypass traditional password-based authentication, leveraging the security of key-based authentication instead.
+
+
+
+Note that Files.com’s SSH support is limited to file operations only. While users can securely transfer files and manage their data via SFTP, they do not have access to a full shell environment for executing arbitrary commands.
 
 ## Example Usage
 

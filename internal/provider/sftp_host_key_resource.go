@@ -65,7 +65,7 @@ func (r *sftpHostKeyResource) Metadata(_ context.Context, req resource.MetadataR
 
 func (r *sftpHostKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "An SFTPHostKey is a secure cryptography key record which is used to confirm connection to the correct server (host).",
+		Description: "An SFTP Host Key is a cryptographic key used to verify the identity of the server during an SFTP connection. This allows the client to be sure that it is connecting to the intended server, preventing man-in-the-middle attacks and ensuring secure communication between the client and Files.com.\n\n\n\nFiles.com allows you to provide custom SFTP Host Keys, which is particularly useful when migrating to Files.com from an existing SFTP server, allowing the Files.com platform to match your previously-installed host key for a seamless transition.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "The friendly name of this SFTP Host Key.",

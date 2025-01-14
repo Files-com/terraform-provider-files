@@ -69,7 +69,7 @@ func (r *publicKeyResource) Metadata(_ context.Context, req resource.MetadataReq
 
 func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A PublicKey is used by Users who want to connect via SFTP/SSH.\n\n(Note that our SSH support is limited to file operations only, no shell is provided.)",
+		Description: "A PublicKey is used to authenticate to Files.com via SFTP (SSH File Transfer Protocol). This method of authentication allows users to use their private key (which is never shared with Files.com) to authenticate themselves against the PublicKey stored on Files.com.\n\n\n\nWhen a user configures their PublicKey, it allows them to bypass traditional password-based authentication, leveraging the security of key-based authentication instead.\n\n\n\nNote that Files.com’s SSH support is limited to file operations only. While users can securely transfer files and manage their data via SFTP, they do not have access to a full shell environment for executing arbitrary commands.",
 		Attributes: map[string]schema.Attribute{
 			"title": schema.StringAttribute{
 				Description: "Public key title",

@@ -69,7 +69,7 @@ func (r *snapshotResource) Metadata(_ context.Context, req resource.MetadataRequ
 
 func (r *snapshotResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Snapshot is a frozen group of files in your site's hidden folder.",
+		Description: "Snapshots allow you to create a read-only archive of files at a specific point in time. You can define a snapshot, add files to it, and then finalize it. Once finalized, the snapshot’s contents are immutable.\n\n\n\nEach snapshot may have an expiration date. When the expiration date is reached, the snapshot is automatically deleted from the Files.com platform.",
 		Attributes: map[string]schema.Attribute{
 			"expires_at": schema.StringAttribute{
 				Description: "When the snapshot expires.",

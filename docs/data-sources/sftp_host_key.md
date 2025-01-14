@@ -3,12 +3,17 @@
 page_title: "files_sftp_host_key Data Source - files"
 subcategory: ""
 description: |-
-  An SFTPHostKey is a secure cryptography key record which is used to confirm connection to the correct server (host).
+  An SFTP Host Key is a cryptographic key used to verify the identity of the server during an SFTP connection. This allows the client to be sure that it is connecting to the intended server, preventing man-in-the-middle attacks and ensuring secure communication between the client and Files.com.
+  Files.com allows you to provide custom SFTP Host Keys, which is particularly useful when migrating to Files.com from an existing SFTP server, allowing the Files.com platform to match your previously-installed host key for a seamless transition.
 ---
 
 # files_sftp_host_key (Data Source)
 
-An SFTPHostKey is a secure cryptography key record which is used to confirm connection to the correct server (host).
+An SFTP Host Key is a cryptographic key used to verify the identity of the server during an SFTP connection. This allows the client to be sure that it is connecting to the intended server, preventing man-in-the-middle attacks and ensuring secure communication between the client and Files.com.
+
+
+
+Files.com allows you to provide custom SFTP Host Keys, which is particularly useful when migrating to Files.com from an existing SFTP server, allowing the Files.com platform to match your previously-installed host key for a seamless transition.
 
 ## Example Usage
 

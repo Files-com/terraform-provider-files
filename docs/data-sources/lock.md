@@ -3,31 +3,22 @@
 page_title: "files_lock Data Source - files"
 subcategory: ""
 description: |-
-  A Lock is not used by Files.com's web interface, but can be used by your applications to
-  implement locking and concurrency features. Note that these locks are advisory in nature,
-  and creating a lock does not prevent other API requests from being fulfilled.
-  Our lock feature is designed to emulate the locking feature offered by WebDAV.
-  You can read the WebDAV spec and understand how all of the below endpoints work.
-  Files.com's WebDAV offering and desktop app does leverage this locking API.
+  A Lock can be used by your custom-developed applications to implement file locking and concurrency features. These locks are advisory, meaning that while a lock can be created, it does not prevent other API requests from being processed concurrently. You are responsible for checking locks prior to accessing a file.
+  The lock feature is designed to emulate the locking functionality provided by WebDAV. For a deeper understanding of how the lock mechanism works, refer to the WebDAV specification, which outlines how these endpoints function.
+  Files.com's WebDAV offering and desktop app leverage this locking API to manage concurrent file operations, ensuring consistency when multiple users or systems interact with the same files. It is not used within the Files.com web interface.
 ---
 
 # files_lock (Data Source)
 
-A Lock is not used by Files.com's web interface, but can be used by your applications to
-
-implement locking and concurrency features. Note that these locks are advisory in nature,
-
-and creating a lock does not prevent other API requests from being fulfilled.
+A Lock can be used by your custom-developed applications to implement file locking and concurrency features. These locks are advisory, meaning that while a lock can be created, it does not prevent other API requests from being processed concurrently. You are responsible for checking locks prior to accessing a file.
 
 
 
-Our lock feature is designed to emulate the locking feature offered by WebDAV.
-
-You can read the WebDAV spec and understand how all of the below endpoints work.
+The lock feature is designed to emulate the locking functionality provided by WebDAV. For a deeper understanding of how the lock mechanism works, refer to the WebDAV specification, which outlines how these endpoints function.
 
 
 
-Files.com's WebDAV offering and desktop app does leverage this locking API.
+Files.com's WebDAV offering and desktop app leverage this locking API to manage concurrent file operations, ensuring consistency when multiple users or systems interact with the same files. It is not used within the Files.com web interface.
 
 ## Example Usage
 
