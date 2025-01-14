@@ -43,6 +43,8 @@ resource "files_automation" "example_automation" {
   name                                 = "example"
   overwrite_files                      = true
   path_time_zone                       = "Eastern Time (US & Canada)"
+  retry_on_failure_interval_in_minutes = 60
+  retry_on_failure_number_of_attempts  = 10
   trigger                              = "daily"
   trigger_actions                      = ["create"]
   value                                = {

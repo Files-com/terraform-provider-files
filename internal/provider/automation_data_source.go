@@ -50,6 +50,8 @@ type automationDataSourceModel struct {
 	Path                             types.String  `tfsdk:"path"`
 	PathTimeZone                     types.String  `tfsdk:"path_time_zone"`
 	RecurringDay                     types.Int64   `tfsdk:"recurring_day"`
+	RetryOnFailureIntervalInMinutes  types.Int64   `tfsdk:"retry_on_failure_interval_in_minutes"`
+	RetryOnFailureNumberOfAttempts   types.Int64   `tfsdk:"retry_on_failure_number_of_attempts"`
 	Schedule                         types.Dynamic `tfsdk:"schedule"`
 	HumanReadableSchedule            types.String  `tfsdk:"human_readable_schedule"`
 	ScheduleDaysOfWeek               types.List    `tfsdk:"schedule_days_of_week"`
@@ -182,6 +184,14 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Description: "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.",
 				Computed:    true,
 			},
+			"retry_on_failure_interval_in_minutes": schema.Int64Attribute{
+				Description: "If the Automation fails, retry at this interval (in minutes).",
+				Computed:    true,
+			},
+			"retry_on_failure_number_of_attempts": schema.Int64Attribute{
+				Description: "If the Automation fails, retry at most this many times.",
+				Computed:    true,
+			},
 			"schedule": schema.DynamicAttribute{
 				Description: "If trigger is `custom_schedule`, Custom schedule description for when the automation should be run in json format.",
 				Computed:    true,
@@ -306,6 +316,8 @@ func (r *automationDataSource) populateDataSourceModel(ctx context.Context, auto
 	state.Path = types.StringValue(automation.Path)
 	state.PathTimeZone = types.StringValue(automation.PathTimeZone)
 	state.RecurringDay = types.Int64Value(automation.RecurringDay)
+	state.RetryOnFailureIntervalInMinutes = types.Int64Value(automation.RetryOnFailureIntervalInMinutes)
+	state.RetryOnFailureNumberOfAttempts = types.Int64Value(automation.RetryOnFailureNumberOfAttempts)
 	state.Schedule, propDiags = lib.ToDynamic(ctx, path.Root("schedule"), automation.Schedule, state.Schedule.UnderlyingValue())
 	diags.Append(propDiags...)
 	state.HumanReadableSchedule = types.StringValue(automation.HumanReadableSchedule)

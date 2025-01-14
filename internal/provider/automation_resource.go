@@ -58,6 +58,8 @@ type automationResourceModel struct {
 	Path                             types.String  `tfsdk:"path"`
 	PathTimeZone                     types.String  `tfsdk:"path_time_zone"`
 	RecurringDay                     types.Int64   `tfsdk:"recurring_day"`
+	RetryOnFailureIntervalInMinutes  types.Int64   `tfsdk:"retry_on_failure_interval_in_minutes"`
+	RetryOnFailureNumberOfAttempts   types.Int64   `tfsdk:"retry_on_failure_number_of_attempts"`
 	ScheduleDaysOfWeek               types.List    `tfsdk:"schedule_days_of_week"`
 	ScheduleTimesOfDay               types.List    `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone                 types.String  `tfsdk:"schedule_time_zone"`
@@ -256,6 +258,22 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"retry_on_failure_interval_in_minutes": schema.Int64Attribute{
+				Description: "If the Automation fails, retry at this interval (in minutes).",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"retry_on_failure_number_of_attempts": schema.Int64Attribute{
+				Description: "If the Automation fails, retry at most this many times.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"schedule_days_of_week": schema.ListAttribute{
 				Description: "If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.",
 				Computed:    true,
@@ -428,6 +446,8 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 		paramsAutomationCreate.OverwriteFiles = plan.OverwriteFiles.ValueBoolPointer()
 	}
 	paramsAutomationCreate.PathTimeZone = plan.PathTimeZone.ValueString()
+	paramsAutomationCreate.RetryOnFailureIntervalInMinutes = plan.RetryOnFailureIntervalInMinutes.ValueInt64()
+	paramsAutomationCreate.RetryOnFailureNumberOfAttempts = plan.RetryOnFailureNumberOfAttempts.ValueInt64()
 	paramsAutomationCreate.Trigger = paramsAutomationCreate.Trigger.Enum()[plan.Trigger.ValueString()]
 	if !plan.TriggerActions.IsNull() && !plan.TriggerActions.IsUnknown() {
 		diags = plan.TriggerActions.ElementsAs(ctx, &paramsAutomationCreate.TriggerActions, false)
@@ -555,6 +575,8 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 		paramsAutomationUpdate.OverwriteFiles = plan.OverwriteFiles.ValueBoolPointer()
 	}
 	paramsAutomationUpdate.PathTimeZone = plan.PathTimeZone.ValueString()
+	paramsAutomationUpdate.RetryOnFailureIntervalInMinutes = plan.RetryOnFailureIntervalInMinutes.ValueInt64()
+	paramsAutomationUpdate.RetryOnFailureNumberOfAttempts = plan.RetryOnFailureNumberOfAttempts.ValueInt64()
 	paramsAutomationUpdate.Trigger = paramsAutomationUpdate.Trigger.Enum()[plan.Trigger.ValueString()]
 	if !plan.TriggerActions.IsNull() && !plan.TriggerActions.IsUnknown() {
 		diags = plan.TriggerActions.ElementsAs(ctx, &paramsAutomationUpdate.TriggerActions, false)
@@ -665,6 +687,8 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	state.Path = types.StringValue(automation.Path)
 	state.PathTimeZone = types.StringValue(automation.PathTimeZone)
 	state.RecurringDay = types.Int64Value(automation.RecurringDay)
+	state.RetryOnFailureIntervalInMinutes = types.Int64Value(automation.RetryOnFailureIntervalInMinutes)
+	state.RetryOnFailureNumberOfAttempts = types.Int64Value(automation.RetryOnFailureNumberOfAttempts)
 	state.Schedule, propDiags = lib.ToDynamic(ctx, path.Root("schedule"), automation.Schedule, state.Schedule.UnderlyingValue())
 	diags.Append(propDiags...)
 	state.HumanReadableSchedule = types.StringValue(automation.HumanReadableSchedule)

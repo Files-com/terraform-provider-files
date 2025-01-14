@@ -546,6 +546,8 @@ data "files_automation" "example_automation" {
 - `path` (String) Path on which this Automation runs.  Supports globs, except on remote mounts. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `path_time_zone` (String) Timezone to use when rendering timestamps in paths.
 - `recurring_day` (Number) If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.
+- `retry_on_failure_interval_in_minutes` (Number) If the Automation fails, retry at this interval (in minutes).
+- `retry_on_failure_number_of_attempts` (Number) If the Automation fails, retry at most this many times.
 - `schedule` (Dynamic) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run in json format.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.
 - `schedule_time_zone` (String) If trigger is `custom_schedule`, Custom schedule Time Zone for when the automation should be run.
