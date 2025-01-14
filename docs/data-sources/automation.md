@@ -133,6 +133,11 @@ description: |-
   Help us build the future of Automations
   Do you have an idea for something that would work well as a Files.com Automation? Let us know!
   We are actively improving the types of automations offered on our platform.
+  Retrying Failues
+  Automations will automatically retry individual action steps up to 3 times, with pauses between retries that increase from 15 seconds to 1 minute. If individual action steps fail after our 3rd attempt, that action will fail. If every action step in an Automation Run fails, that automation run will move to a failure status. If at least one step succeeds and one step fails, that automation run will move to a partial_failure status.
+  Automation Runs can be retried automatically when they enter a failure or partial_failure status as described above. A retry will re-run the automation from scratch, including the "planning" phase, which expands globs (wildcards) and identifies which files to transfer or skip.
+  Retrying of entire Automation Runs must be explicitly enabled by setting the retry_on_failure_interval_in_minutes and retry_on_failure_number_of_attempts values on the Automation.
+  When retrying entire Automation Runs, we currently do not skip action steps which were skipped or successfully completed in a previous version of the Automation Run. We will soon be adding this functionality, which should enhance the usefulness of the retry apparatus for Automations in most situations.
 ---
 
 # files_automation (Data Source)
@@ -507,6 +512,28 @@ Do you have an idea for something that would work well as a Files.com Automation
 
 We are actively improving the types of automations offered on our platform.
 
+
+
+
+
+## Retrying Failues
+
+
+
+Automations will automatically retry individual action steps up to 3 times, with pauses between retries that increase from 15 seconds to 1 minute. If individual action steps fail after our 3rd attempt, that action will fail. If every action step in an Automation Run fails, that automation run will move to a `failure` status. If at least one step succeeds and one step fails, that automation run will move to a `partial_failure` status.
+
+
+
+Automation Runs can be retried automatically when they enter a `failure` or `partial_failure` status as described above. A retry will re-run the automation from scratch, including the "planning" phase, which expands globs (wildcards) and identifies which files to transfer or skip.
+
+
+
+Retrying of entire Automation Runs must be explicitly enabled by setting the `retry_on_failure_interval_in_minutes` and `retry_on_failure_number_of_attempts` values on the Automation.
+
+
+
+When retrying entire Automation Runs, we currently do not skip action steps which were skipped or successfully completed in a previous version of the Automation Run. We will soon be adding this functionality, which should enhance the usefulness of the retry apparatus for Automations in most situations.
+
 ## Example Usage
 
 ```terraform
@@ -546,8 +573,8 @@ data "files_automation" "example_automation" {
 - `path` (String) Path on which this Automation runs.  Supports globs, except on remote mounts. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `path_time_zone` (String) Timezone to use when rendering timestamps in paths.
 - `recurring_day` (Number) If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.
-- `retry_on_failure_interval_in_minutes` (Number) If the Automation fails, retry at this interval (in minutes).
-- `retry_on_failure_number_of_attempts` (Number) If the Automation fails, retry at most this many times.
+- `retry_on_failure_interval_in_minutes` (Number) If the Automation fails, retry at this interval (in minutes).  Acceptable values are 5 through 1440 (one day).  Set to null to disable.
+- `retry_on_failure_number_of_attempts` (Number) If the Automation fails, retry at most this many times.  Maximum allowed value: 10.  Set to null to disable.
 - `schedule` (Dynamic) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run in json format.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.
 - `schedule_time_zone` (String) If trigger is `custom_schedule`, Custom schedule Time Zone for when the automation should be run.

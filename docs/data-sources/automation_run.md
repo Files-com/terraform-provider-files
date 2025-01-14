@@ -4,7 +4,8 @@ page_title: "files_automation_run Data Source - files"
 subcategory: ""
 description: |-
   An AutomationRun is a record with information about a single execution of a given Automation.
-  Automation Runs can be retried upon failure or partial_failure by setting the retry_on_failure_interval_in_minutes and retry_on_failure_number_of_attempts settings on the associated Automation. When retries occur, a new AutomationRun will be created for each retry. The properties retried_at and retried_in_run_id will be set in the original run that failed, at the time of retry. The property retry_of_run_id will be set in the new run.
+  Automation Runs can be retried upon failure or partial_failure by setting the retry_on_failure_interval_in_minutes and retry_on_failure_number_of_attempts settings on the associated Automation.
+  When retries occur, a new AutomationRun will be created for each retry. The property retry_at on the original run, if set, represents when that run will be retried next. The properties retried_at and retried_in_run_id will be set in the original run that failed, at the time of retry. The property retry_of_run_id will be set in the new run.
 ---
 
 # files_automation_run (Data Source)
@@ -13,7 +14,11 @@ An AutomationRun is a record with information about a single execution of a give
 
 
 
-Automation Runs can be retried upon `failure` or `partial_failure` by setting the `retry_on_failure_interval_in_minutes` and `retry_on_failure_number_of_attempts` settings on the associated Automation. When retries occur, a new AutomationRun will be created for each retry. The properties `retried_at` and `retried_in_run_id` will be set in the original run that failed, at the time of retry. The property `retry_of_run_id` will be set in the new run.
+Automation Runs can be retried upon `failure` or `partial_failure` by setting the `retry_on_failure_interval_in_minutes` and `retry_on_failure_number_of_attempts` settings on the associated Automation.
+
+
+
+When retries occur, a new AutomationRun will be created for each retry. The property `retry_at` on the original run, if set, represents when that run will be retried next. The properties `retried_at` and `retried_in_run_id` will be set in the original run that failed, at the time of retry. The property `retry_of_run_id` will be set in the new run.
 
 ## Example Usage
 
@@ -38,6 +43,7 @@ data "files_automation_run" "example_automation_run" {
 - `failed_operations` (Number) Count of failed operations.
 - `retried_at` (String) If set, this Automation run was retried due to `failure` or `partial_failure`.
 - `retried_in_run_id` (Number) ID of the run that is or will be retrying this run.
+- `retry_at` (String) If set, this automation will be retried at this date/time due to `failure` or `partial_failure`.
 - `retry_of_run_id` (Number) ID of the original run that this run is retrying.
 - `runtime` (String) Automation run runtime.
 - `status` (String) The success status of the AutomationRun. One of `running`, `success`, `partial_failure`, or `failure`.

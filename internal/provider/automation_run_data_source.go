@@ -32,9 +32,10 @@ type automationRunDataSourceModel struct {
 	AutomationId         types.Int64  `tfsdk:"automation_id"`
 	CompletedAt          types.String `tfsdk:"completed_at"`
 	CreatedAt            types.String `tfsdk:"created_at"`
+	RetryAt              types.String `tfsdk:"retry_at"`
 	RetriedAt            types.String `tfsdk:"retried_at"`
-	RetryOfRunId         types.Int64  `tfsdk:"retry_of_run_id"`
 	RetriedInRunId       types.Int64  `tfsdk:"retried_in_run_id"`
+	RetryOfRunId         types.Int64  `tfsdk:"retry_of_run_id"`
 	Runtime              types.String `tfsdk:"runtime"`
 	Status               types.String `tfsdk:"status"`
 	SuccessfulOperations types.Int64  `tfsdk:"successful_operations"`
@@ -67,7 +68,7 @@ func (r *automationRunDataSource) Metadata(_ context.Context, req datasource.Met
 
 func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "An AutomationRun is a record with information about a single execution of a given Automation.\n\n\n\nAutomation Runs can be retried upon `failure` or `partial_failure` by setting the `retry_on_failure_interval_in_minutes` and `retry_on_failure_number_of_attempts` settings on the associated Automation. When retries occur, a new AutomationRun will be created for each retry. The properties `retried_at` and `retried_in_run_id` will be set in the original run that failed, at the time of retry. The property `retry_of_run_id` will be set in the new run.",
+		Description: "An AutomationRun is a record with information about a single execution of a given Automation.\n\n\n\nAutomation Runs can be retried upon `failure` or `partial_failure` by setting the `retry_on_failure_interval_in_minutes` and `retry_on_failure_number_of_attempts` settings on the associated Automation.\n\n\n\nWhen retries occur, a new AutomationRun will be created for each retry. The property `retry_at` on the original run, if set, represents when that run will be retried next. The properties `retried_at` and `retried_in_run_id` will be set in the original run that failed, at the time of retry. The property `retry_of_run_id` will be set in the new run.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "ID.",
@@ -85,16 +86,20 @@ func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaR
 				Description: "Automation run start date/time.",
 				Computed:    true,
 			},
+			"retry_at": schema.StringAttribute{
+				Description: "If set, this automation will be retried at this date/time due to `failure` or `partial_failure`.",
+				Computed:    true,
+			},
 			"retried_at": schema.StringAttribute{
 				Description: "If set, this Automation run was retried due to `failure` or `partial_failure`.",
 				Computed:    true,
 			},
-			"retry_of_run_id": schema.Int64Attribute{
-				Description: "ID of the original run that this run is retrying.",
-				Computed:    true,
-			},
 			"retried_in_run_id": schema.Int64Attribute{
 				Description: "ID of the run that is or will be retrying this run.",
+				Computed:    true,
+			},
+			"retry_of_run_id": schema.Int64Attribute{
+				Description: "ID of the original run that this run is retrying.",
 				Computed:    true,
 			},
 			"runtime": schema.StringAttribute{
@@ -166,14 +171,15 @@ func (r *automationRunDataSource) populateDataSourceModel(ctx context.Context, a
 			"Could not convert state created_at to string: "+err.Error(),
 		)
 	}
+	state.RetryAt = types.StringValue(automationRun.RetryAt)
 	if err := lib.TimeToStringType(ctx, path.Root("retried_at"), automationRun.RetriedAt, &state.RetriedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files AutomationRun",
 			"Could not convert state retried_at to string: "+err.Error(),
 		)
 	}
-	state.RetryOfRunId = types.Int64Value(automationRun.RetryOfRunId)
 	state.RetriedInRunId = types.Int64Value(automationRun.RetriedInRunId)
+	state.RetryOfRunId = types.Int64Value(automationRun.RetryOfRunId)
 	state.Runtime = types.StringValue(automationRun.Runtime)
 	state.Status = types.StringValue(automationRun.Status)
 	state.SuccessfulOperations = types.Int64Value(automationRun.SuccessfulOperations)
