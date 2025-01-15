@@ -3,17 +3,55 @@
 page_title: "files_user Data Source - files"
 subcategory: ""
 description: |-
-  A User is a single user that belongs to your site.
-  Users functionality provides the tools and features needed to manage user accounts within your site.
+  A User represents a human or system/service user with the ability to connect to Files.com via any of the available connectivity methods (unless restricted to specific protocols).
+  Users are associated with API Keys, SSH (SFTP) Keys, Notifications, Permissions, and Group memberships.
+  Authentication
+  The authentication_method property on a User determines exactly how that user can login and authenticate to their Files.com account. Files.com offers a variety of authentication methods to ensure flexibility, security, migration, and compliance.
+  These authentication methods can be configured during user creation and can be modified at any time by site administrators. The meanings of the available values are as follows:
+  
+  password - Allows authentication via a password. If API Keys or SSH (SFTP) Keys are also configured, those can be used instead of the password. If Two Factor Authentication (2FA) methods are also configured, a valid 2nd factor is required in addition to the password.
+  email_signup - When set upon user creation, an email will be sent to the new user with a link for them to create their password. Once the user has created their password, their authentication type will change to password.
+  sso - Allows authentication via a linked Single Sign On provider. If API Keys or SSH (SFTP) Keys are also configured, those can be used instead of Single Sign On. If Two Factor Authentication (2FA) methods are also configured, a valid 2nd factor is required in addition to Single Sign On. When using this method, you must also provide a valid sso_strategy_id to associate the User to the appropriate SSO provider.
+  password_with_imported_hash - Works like the password method but allows importing a hashed password in MD5, SHA-1, or SHA-256 format. Provide the imported hash in the field imported_password_hash. Upon first use, the password will be converted to Files.com's internal storage format and the authentication type will change to password. Typically only used when migrating to Files.com from another MFT solution.
+  none - Does not allow authentication via username and password, but does allow authentication via API Key or SSH (SFTP) Key. Typically only used for service users.
+  password_and_ssh_key - Allows authentication only by providing a password and also a valid SSH (SFTP) Key in a single attempt. If API Keys are also configured, those can be used instead of the password and key combination. This method only works with (typically enterprise) SSH/SFTP clients capable of sending both authentication methods at once. Typically only used for service users.
 ---
 
 # files_user (Data Source)
 
-A User is a single user that belongs to your site.
+A User represents a human or system/service user with the ability to connect to Files.com via any of the available connectivity methods (unless restricted to specific protocols).
 
 
 
-Users functionality provides the tools and features needed to manage user accounts within your site.
+Users are associated with API Keys, SSH (SFTP) Keys, Notifications, Permissions, and Group memberships.
+
+
+
+
+
+# Authentication
+
+
+
+The `authentication_method` property on a User determines exactly how that user can login and authenticate to their Files.com account. Files.com offers a variety of authentication methods to ensure flexibility, security, migration, and compliance.
+
+
+
+These authentication methods can be configured during user creation and can be modified at any time by site administrators. The meanings of the available values are as follows:
+
+
+
+* `password` - Allows authentication via a password. If API Keys or SSH (SFTP) Keys are also configured, those can be used *instead* of the password. If Two Factor Authentication (2FA) methods are also configured, a valid 2nd factor is required in addition to the password.
+
+* `email_signup` - When set upon user creation, an email will be sent to the new user with a link for them to create their password. Once the user has created their password, their authentication type will change to `password`.
+
+* `sso` - Allows authentication via a linked Single Sign On provider. If API Keys or SSH (SFTP) Keys are also configured, those can be used *instead* of Single Sign On. If Two Factor Authentication (2FA) methods are also configured, a valid 2nd factor is required in addition to Single Sign On. When using this method, you must also provide a valid `sso_strategy_id` to associate the User to the appropriate SSO provider.
+
+* `password_with_imported_hash` - Works like the `password` method but allows importing a hashed password in MD5, SHA-1, or SHA-256 format. Provide the imported hash in the field `imported_password_hash`. Upon first use, the password will be converted to Files.com's internal storage format and the authentication type will change to `password`. Typically only used when migrating to Files.com from another MFT solution.
+
+* `none` - Does not allow authentication via username and password, but does allow authentication via API Key or SSH (SFTP) Key. Typically only used for service users.
+
+* `password_and_ssh_key` - Allows authentication only by providing a password and also a valid SSH (SFTP) Key in a single attempt. If API Keys are also configured, those can be used *instead* of the password and key combination. This method only works with (typically enterprise) SSH/SFTP clients capable of sending both authentication methods at once. Typically only used for service users.
 
 ## Example Usage
 
