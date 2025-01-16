@@ -76,5 +76,6 @@ data "files_permission" "example_permission" {
 - `path` (String) Path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `permission` (String) Permission type.  See the table referenced in the documentation for an explanation of each permission.
 - `recursive` (Boolean) Recursive: does this permission apply to subfolders?
+- `site_id` (Number) Site ID
 - `user_id` (Number) User ID
 - `username` (String) Username (if applicable)

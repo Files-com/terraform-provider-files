@@ -34,6 +34,7 @@ type permissionDataSourceModel struct {
 	GroupName  types.String `tfsdk:"group_name"`
 	Permission types.String `tfsdk:"permission"`
 	Recursive  types.Bool   `tfsdk:"recursive"`
+	SiteId     types.Int64  `tfsdk:"site_id"`
 }
 
 func (r *permissionDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -93,6 +94,10 @@ func (r *permissionDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			},
 			"recursive": schema.BoolAttribute{
 				Description: "Recursive: does this permission apply to subfolders?",
+				Computed:    true,
+			},
+			"site_id": schema.Int64Attribute{
+				Description: "Site ID",
 				Computed:    true,
 			},
 		},
@@ -161,6 +166,7 @@ func (r *permissionDataSource) populateDataSourceModel(ctx context.Context, perm
 	state.GroupName = types.StringValue(permission.GroupName)
 	state.Permission = types.StringValue(permission.Permission)
 	state.Recursive = types.BoolPointerValue(permission.Recursive)
+	state.SiteId = types.Int64Value(permission.SiteId)
 
 	return
 }

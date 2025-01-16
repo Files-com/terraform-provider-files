@@ -43,6 +43,7 @@ type permissionResourceModel struct {
 	GroupName  types.String `tfsdk:"group_name"`
 	Permission types.String `tfsdk:"permission"`
 	Recursive  types.Bool   `tfsdk:"recursive"`
+	SiteId     types.Int64  `tfsdk:"site_id"`
 	Id         types.Int64  `tfsdk:"id"`
 }
 
@@ -137,6 +138,15 @@ func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					boolplanmodifier.RequiresReplace(),
 				},
 			},
+			"site_id": schema.Int64Attribute{
+				Description: "Site ID",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
+				},
+			},
 			"id": schema.Int64Attribute{
 				Description: "Permission ID",
 				Computed:    true,
@@ -166,6 +176,7 @@ func (r *permissionResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsPermissionCreate.UserId = plan.UserId.ValueInt64()
 	paramsPermissionCreate.Username = plan.Username.ValueString()
 	paramsPermissionCreate.GroupName = plan.GroupName.ValueString()
+	paramsPermissionCreate.SiteId = plan.SiteId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -309,6 +320,7 @@ func (r *permissionResource) populateResourceModel(ctx context.Context, permissi
 	state.GroupName = types.StringValue(permission.GroupName)
 	state.Permission = types.StringValue(permission.Permission)
 	state.Recursive = types.BoolPointerValue(permission.Recursive)
+	state.SiteId = types.Int64Value(permission.SiteId)
 
 	return
 }

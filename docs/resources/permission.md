@@ -65,6 +65,7 @@ resource "files_permission" "example_permission" {
   user_id    = 1
   username   = "user"
   group_name = "example"
+  site_id    = 1
 }
 ```
 
@@ -81,6 +82,7 @@ resource "files_permission" "example_permission" {
 - `group_name` (String) Group name (if applicable)
 - `permission` (String) Permission type.  See the table referenced in the documentation for an explanation of each permission.
 - `recursive` (Boolean) Recursive: does this permission apply to subfolders?
+- `site_id` (Number) Site ID
 - `user_id` (Number) User ID
 - `username` (String) Username (if applicable)
 
