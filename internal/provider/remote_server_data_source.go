@@ -54,7 +54,6 @@ type remoteServerDataSourceModel struct {
 	RackspaceUsername                     types.String `tfsdk:"rackspace_username"`
 	RackspaceRegion                       types.String `tfsdk:"rackspace_region"`
 	RackspaceContainer                    types.String `tfsdk:"rackspace_container"`
-	AuthSetupLink                         types.String `tfsdk:"auth_setup_link"`
 	AuthStatus                            types.String `tfsdk:"auth_status"`
 	AuthAccountName                       types.String `tfsdk:"auth_account_name"`
 	OneDriveAccountType                   types.String `tfsdk:"one_drive_account_type"`
@@ -222,10 +221,6 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			},
 			"rackspace_container": schema.StringAttribute{
 				Description: "The name of the container (top level directory) where files will sync.",
-				Computed:    true,
-			},
-			"auth_setup_link": schema.StringAttribute{
-				Description: "Returns link to login with an Oauth provider",
 				Computed:    true,
 			},
 			"auth_status": schema.StringAttribute{
@@ -403,7 +398,6 @@ func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, re
 	state.RackspaceUsername = types.StringValue(remoteServer.RackspaceUsername)
 	state.RackspaceRegion = types.StringValue(remoteServer.RackspaceRegion)
 	state.RackspaceContainer = types.StringValue(remoteServer.RackspaceContainer)
-	state.AuthSetupLink = types.StringValue(remoteServer.AuthSetupLink)
 	state.AuthStatus = types.StringValue(remoteServer.AuthStatus)
 	state.AuthAccountName = types.StringValue(remoteServer.AuthAccountName)
 	state.OneDriveAccountType = types.StringValue(remoteServer.OneDriveAccountType)

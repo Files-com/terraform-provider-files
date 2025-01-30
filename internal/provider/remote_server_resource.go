@@ -107,7 +107,6 @@ type remoteServerResourceModel struct {
 	AuthenticationMethod                  types.String `tfsdk:"authentication_method"`
 	RemoteHomePath                        types.String `tfsdk:"remote_home_path"`
 	PinnedRegion                          types.String `tfsdk:"pinned_region"`
-	AuthSetupLink                         types.String `tfsdk:"auth_setup_link"`
 	AuthStatus                            types.String `tfsdk:"auth_status"`
 	AuthAccountName                       types.String `tfsdk:"auth_account_name"`
 	FilesAgentApiToken                    types.String `tfsdk:"files_agent_api_token"`
@@ -631,10 +630,6 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				Description: "If set, all communications with this remote server are made through the provided region.",
 				Computed:    true,
 			},
-			"auth_setup_link": schema.StringAttribute{
-				Description: "Returns link to login with an Oauth provider",
-				Computed:    true,
-			},
 			"auth_status": schema.StringAttribute{
 				Description: "Either `in_setup` or `complete`",
 				Computed:    true,
@@ -984,7 +979,6 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.RackspaceUsername = types.StringValue(remoteServer.RackspaceUsername)
 	state.RackspaceRegion = types.StringValue(remoteServer.RackspaceRegion)
 	state.RackspaceContainer = types.StringValue(remoteServer.RackspaceContainer)
-	state.AuthSetupLink = types.StringValue(remoteServer.AuthSetupLink)
 	state.AuthStatus = types.StringValue(remoteServer.AuthStatus)
 	state.AuthAccountName = types.StringValue(remoteServer.AuthAccountName)
 	state.OneDriveAccountType = types.StringValue(remoteServer.OneDriveAccountType)

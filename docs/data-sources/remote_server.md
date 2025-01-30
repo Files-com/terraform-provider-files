@@ -133,7 +133,6 @@ data "files_remote_server" "example_remote_server" {
 ### Read-Only
 
 - `auth_account_name` (String) Describes the authorized account
-- `auth_setup_link` (String) Returns link to login with an Oauth provider
 - `auth_status` (String) Either `in_setup` or `complete`
 - `authentication_method` (String) Type of authentication method
 - `aws_access_key` (String) AWS Access Key.
