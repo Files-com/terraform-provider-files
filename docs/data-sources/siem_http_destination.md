@@ -28,9 +28,9 @@ data "files_siem_http_destination" "example_siem_http_destination" {
 ### Read-Only
 
 - `additional_headers` (Dynamic) Additional HTTP Headers included in calls to the destination URL
-- `api_request_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `api_request_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `api_request_send_enabled` (Boolean) Whether or not sending is enabled for api_request logs.
-- `automation_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `automation_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `automation_send_enabled` (Boolean) Whether or not sending is enabled for automation logs.
 - `azure_dcr_immutable_id` (String) Applicable only for destination type: azure. Immutable ID of the Data Collection Rule.
 - `azure_oauth_client_credentials_client_id` (String) Applicable only for destination type: azure. Client Credentials OAuth Client ID.
@@ -41,11 +41,11 @@ data "files_siem_http_destination" "example_siem_http_destination" {
 - `datadog_api_key_masked` (String) Applicable only for destination type: datadog. API key provided by Datadog.
 - `destination_type` (String) Destination Type
 - `destination_url` (String) Destination Url
-- `email_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `email_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `email_send_enabled` (Boolean) Whether or not sending is enabled for email logs.
-- `exavault_api_request_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `exavault_api_request_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `exavault_api_request_send_enabled` (Boolean) Whether or not sending is enabled for exavault_api_request logs.
-- `ftp_action_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `ftp_action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `ftp_action_send_enabled` (Boolean) Whether or not sending is enabled for ftp_action logs.
 - `generic_payload_type` (String) Applicable only for destination type: generic. Indicates the type of HTTP body. Can be json_newline or json_array. json_newline is multiple log entries as JSON separated by newlines. json_array is a single JSON array containing multiple log entries as JSON.
 - `last_http_call_duration_ms` (Number) Duration of the last HTTP Call in milliseconds
@@ -58,18 +58,18 @@ data "files_siem_http_destination" "example_siem_http_destination" {
 - `most_recent_http_call_success_time` (String) Time of Most Recent Successful HTTP Call
 - `name` (String) Name for this Destination
 - `new_relic_api_key_masked` (String) Applicable only for destination type: new_relic. API key provided by New Relic.
-- `outbound_connection_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `outbound_connection_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `outbound_connection_send_enabled` (Boolean) Whether or not sending is enabled for outbound_connection logs.
-- `public_hosting_request_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `public_hosting_request_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `public_hosting_request_send_enabled` (Boolean) Whether or not sending is enabled for public_hosting_request logs.
 - `qradar_password_masked` (String) Applicable only for destination type: qradar. Basic auth password provided by QRadar.
 - `qradar_username` (String) Applicable only for destination type: qradar. Basic auth username provided by QRadar.
 - `sending_active` (Boolean) Whether this SIEM HTTP Destination is currently being sent to or not
-- `sftp_action_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `sftp_action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `sftp_action_send_enabled` (Boolean) Whether or not sending is enabled for sftp_action logs.
 - `solar_winds_token_masked` (String) Applicable only for destination type: solar_winds. Authentication token provided by Solar Winds.
 - `splunk_token_masked` (String) Applicable only for destination type: splunk. Authentication token provided by Splunk.
-- `sync_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `sync_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `sync_send_enabled` (Boolean) Whether or not sending is enabled for sync logs.
-- `web_dav_action_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `web_dav_action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `web_dav_action_send_enabled` (Boolean) Whether or not sending is enabled for web_dav_action logs.

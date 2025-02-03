@@ -47,25 +47,25 @@ type siemHttpDestinationDataSourceModel struct {
 	NewRelicApiKeyMasked                          types.String  `tfsdk:"new_relic_api_key_masked"`
 	DatadogApiKeyMasked                           types.String  `tfsdk:"datadog_api_key_masked"`
 	SftpActionSendEnabled                         types.Bool    `tfsdk:"sftp_action_send_enabled"`
-	SftpActionRecordsSentEntriesSent              types.Int64   `tfsdk:"sftp_action_records_sent_entries_sent"`
+	SftpActionEntriesSent                         types.Int64   `tfsdk:"sftp_action_entries_sent"`
 	FtpActionSendEnabled                          types.Bool    `tfsdk:"ftp_action_send_enabled"`
-	FtpActionRecordsSentEntriesSent               types.Int64   `tfsdk:"ftp_action_records_sent_entries_sent"`
+	FtpActionEntriesSent                          types.Int64   `tfsdk:"ftp_action_entries_sent"`
 	WebDavActionSendEnabled                       types.Bool    `tfsdk:"web_dav_action_send_enabled"`
-	WebDavActionRecordsSentEntriesSent            types.Int64   `tfsdk:"web_dav_action_records_sent_entries_sent"`
+	WebDavActionEntriesSent                       types.Int64   `tfsdk:"web_dav_action_entries_sent"`
 	SyncSendEnabled                               types.Bool    `tfsdk:"sync_send_enabled"`
-	SyncRecordsSentEntriesSent                    types.Int64   `tfsdk:"sync_records_sent_entries_sent"`
+	SyncEntriesSent                               types.Int64   `tfsdk:"sync_entries_sent"`
 	OutboundConnectionSendEnabled                 types.Bool    `tfsdk:"outbound_connection_send_enabled"`
-	OutboundConnectionRecordsSentEntriesSent      types.Int64   `tfsdk:"outbound_connection_records_sent_entries_sent"`
+	OutboundConnectionEntriesSent                 types.Int64   `tfsdk:"outbound_connection_entries_sent"`
 	AutomationSendEnabled                         types.Bool    `tfsdk:"automation_send_enabled"`
-	AutomationRecordsSentEntriesSent              types.Int64   `tfsdk:"automation_records_sent_entries_sent"`
+	AutomationEntriesSent                         types.Int64   `tfsdk:"automation_entries_sent"`
 	ApiRequestSendEnabled                         types.Bool    `tfsdk:"api_request_send_enabled"`
-	ApiRequestRecordsSentEntriesSent              types.Int64   `tfsdk:"api_request_records_sent_entries_sent"`
+	ApiRequestEntriesSent                         types.Int64   `tfsdk:"api_request_entries_sent"`
 	PublicHostingRequestSendEnabled               types.Bool    `tfsdk:"public_hosting_request_send_enabled"`
-	PublicHostingRequestRecordsSentEntriesSent    types.Int64   `tfsdk:"public_hosting_request_records_sent_entries_sent"`
+	PublicHostingRequestEntriesSent               types.Int64   `tfsdk:"public_hosting_request_entries_sent"`
 	EmailSendEnabled                              types.Bool    `tfsdk:"email_send_enabled"`
-	EmailRecordsSentEntriesSent                   types.Int64   `tfsdk:"email_records_sent_entries_sent"`
+	EmailEntriesSent                              types.Int64   `tfsdk:"email_entries_sent"`
 	ExavaultApiRequestSendEnabled                 types.Bool    `tfsdk:"exavault_api_request_send_enabled"`
-	ExavaultApiRequestRecordsSentEntriesSent      types.Int64   `tfsdk:"exavault_api_request_records_sent_entries_sent"`
+	ExavaultApiRequestEntriesSent                 types.Int64   `tfsdk:"exavault_api_request_entries_sent"`
 	LastHttpCallTargetType                        types.String  `tfsdk:"last_http_call_target_type"`
 	LastHttpCallSuccess                           types.Bool    `tfsdk:"last_http_call_success"`
 	LastHttpCallResponseCode                      types.Int64   `tfsdk:"last_http_call_response_code"`
@@ -180,7 +180,7 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 				Description: "Whether or not sending is enabled for sftp_action logs.",
 				Computed:    true,
 			},
-			"sftp_action_records_sent_entries_sent": schema.Int64Attribute{
+			"sftp_action_entries_sent": schema.Int64Attribute{
 				Description: "Number of log entries sent for the lifetime of this destination.",
 				Computed:    true,
 			},
@@ -188,7 +188,7 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 				Description: "Whether or not sending is enabled for ftp_action logs.",
 				Computed:    true,
 			},
-			"ftp_action_records_sent_entries_sent": schema.Int64Attribute{
+			"ftp_action_entries_sent": schema.Int64Attribute{
 				Description: "Number of log entries sent for the lifetime of this destination.",
 				Computed:    true,
 			},
@@ -196,7 +196,7 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 				Description: "Whether or not sending is enabled for web_dav_action logs.",
 				Computed:    true,
 			},
-			"web_dav_action_records_sent_entries_sent": schema.Int64Attribute{
+			"web_dav_action_entries_sent": schema.Int64Attribute{
 				Description: "Number of log entries sent for the lifetime of this destination.",
 				Computed:    true,
 			},
@@ -204,7 +204,7 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 				Description: "Whether or not sending is enabled for sync logs.",
 				Computed:    true,
 			},
-			"sync_records_sent_entries_sent": schema.Int64Attribute{
+			"sync_entries_sent": schema.Int64Attribute{
 				Description: "Number of log entries sent for the lifetime of this destination.",
 				Computed:    true,
 			},
@@ -212,7 +212,7 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 				Description: "Whether or not sending is enabled for outbound_connection logs.",
 				Computed:    true,
 			},
-			"outbound_connection_records_sent_entries_sent": schema.Int64Attribute{
+			"outbound_connection_entries_sent": schema.Int64Attribute{
 				Description: "Number of log entries sent for the lifetime of this destination.",
 				Computed:    true,
 			},
@@ -220,7 +220,7 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 				Description: "Whether or not sending is enabled for automation logs.",
 				Computed:    true,
 			},
-			"automation_records_sent_entries_sent": schema.Int64Attribute{
+			"automation_entries_sent": schema.Int64Attribute{
 				Description: "Number of log entries sent for the lifetime of this destination.",
 				Computed:    true,
 			},
@@ -228,7 +228,7 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 				Description: "Whether or not sending is enabled for api_request logs.",
 				Computed:    true,
 			},
-			"api_request_records_sent_entries_sent": schema.Int64Attribute{
+			"api_request_entries_sent": schema.Int64Attribute{
 				Description: "Number of log entries sent for the lifetime of this destination.",
 				Computed:    true,
 			},
@@ -236,7 +236,7 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 				Description: "Whether or not sending is enabled for public_hosting_request logs.",
 				Computed:    true,
 			},
-			"public_hosting_request_records_sent_entries_sent": schema.Int64Attribute{
+			"public_hosting_request_entries_sent": schema.Int64Attribute{
 				Description: "Number of log entries sent for the lifetime of this destination.",
 				Computed:    true,
 			},
@@ -244,7 +244,7 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 				Description: "Whether or not sending is enabled for email logs.",
 				Computed:    true,
 			},
-			"email_records_sent_entries_sent": schema.Int64Attribute{
+			"email_entries_sent": schema.Int64Attribute{
 				Description: "Number of log entries sent for the lifetime of this destination.",
 				Computed:    true,
 			},
@@ -252,7 +252,7 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 				Description: "Whether or not sending is enabled for exavault_api_request logs.",
 				Computed:    true,
 			},
-			"exavault_api_request_records_sent_entries_sent": schema.Int64Attribute{
+			"exavault_api_request_entries_sent": schema.Int64Attribute{
 				Description: "Number of log entries sent for the lifetime of this destination.",
 				Computed:    true,
 			},
@@ -349,25 +349,25 @@ func (r *siemHttpDestinationDataSource) populateDataSourceModel(ctx context.Cont
 	state.NewRelicApiKeyMasked = types.StringValue(siemHttpDestination.NewRelicApiKeyMasked)
 	state.DatadogApiKeyMasked = types.StringValue(siemHttpDestination.DatadogApiKeyMasked)
 	state.SftpActionSendEnabled = types.BoolPointerValue(siemHttpDestination.SftpActionSendEnabled)
-	state.SftpActionRecordsSentEntriesSent = types.Int64Value(siemHttpDestination.SftpActionRecordsSentEntriesSent)
+	state.SftpActionEntriesSent = types.Int64Value(siemHttpDestination.SftpActionEntriesSent)
 	state.FtpActionSendEnabled = types.BoolPointerValue(siemHttpDestination.FtpActionSendEnabled)
-	state.FtpActionRecordsSentEntriesSent = types.Int64Value(siemHttpDestination.FtpActionRecordsSentEntriesSent)
+	state.FtpActionEntriesSent = types.Int64Value(siemHttpDestination.FtpActionEntriesSent)
 	state.WebDavActionSendEnabled = types.BoolPointerValue(siemHttpDestination.WebDavActionSendEnabled)
-	state.WebDavActionRecordsSentEntriesSent = types.Int64Value(siemHttpDestination.WebDavActionRecordsSentEntriesSent)
+	state.WebDavActionEntriesSent = types.Int64Value(siemHttpDestination.WebDavActionEntriesSent)
 	state.SyncSendEnabled = types.BoolPointerValue(siemHttpDestination.SyncSendEnabled)
-	state.SyncRecordsSentEntriesSent = types.Int64Value(siemHttpDestination.SyncRecordsSentEntriesSent)
+	state.SyncEntriesSent = types.Int64Value(siemHttpDestination.SyncEntriesSent)
 	state.OutboundConnectionSendEnabled = types.BoolPointerValue(siemHttpDestination.OutboundConnectionSendEnabled)
-	state.OutboundConnectionRecordsSentEntriesSent = types.Int64Value(siemHttpDestination.OutboundConnectionRecordsSentEntriesSent)
+	state.OutboundConnectionEntriesSent = types.Int64Value(siemHttpDestination.OutboundConnectionEntriesSent)
 	state.AutomationSendEnabled = types.BoolPointerValue(siemHttpDestination.AutomationSendEnabled)
-	state.AutomationRecordsSentEntriesSent = types.Int64Value(siemHttpDestination.AutomationRecordsSentEntriesSent)
+	state.AutomationEntriesSent = types.Int64Value(siemHttpDestination.AutomationEntriesSent)
 	state.ApiRequestSendEnabled = types.BoolPointerValue(siemHttpDestination.ApiRequestSendEnabled)
-	state.ApiRequestRecordsSentEntriesSent = types.Int64Value(siemHttpDestination.ApiRequestRecordsSentEntriesSent)
+	state.ApiRequestEntriesSent = types.Int64Value(siemHttpDestination.ApiRequestEntriesSent)
 	state.PublicHostingRequestSendEnabled = types.BoolPointerValue(siemHttpDestination.PublicHostingRequestSendEnabled)
-	state.PublicHostingRequestRecordsSentEntriesSent = types.Int64Value(siemHttpDestination.PublicHostingRequestRecordsSentEntriesSent)
+	state.PublicHostingRequestEntriesSent = types.Int64Value(siemHttpDestination.PublicHostingRequestEntriesSent)
 	state.EmailSendEnabled = types.BoolPointerValue(siemHttpDestination.EmailSendEnabled)
-	state.EmailRecordsSentEntriesSent = types.Int64Value(siemHttpDestination.EmailRecordsSentEntriesSent)
+	state.EmailEntriesSent = types.Int64Value(siemHttpDestination.EmailEntriesSent)
 	state.ExavaultApiRequestSendEnabled = types.BoolPointerValue(siemHttpDestination.ExavaultApiRequestSendEnabled)
-	state.ExavaultApiRequestRecordsSentEntriesSent = types.Int64Value(siemHttpDestination.ExavaultApiRequestRecordsSentEntriesSent)
+	state.ExavaultApiRequestEntriesSent = types.Int64Value(siemHttpDestination.ExavaultApiRequestEntriesSent)
 	state.LastHttpCallTargetType = types.StringValue(siemHttpDestination.LastHttpCallTargetType)
 	state.LastHttpCallSuccess = types.BoolPointerValue(siemHttpDestination.LastHttpCallSuccess)
 	state.LastHttpCallResponseCode = types.Int64Value(siemHttpDestination.LastHttpCallResponseCode)

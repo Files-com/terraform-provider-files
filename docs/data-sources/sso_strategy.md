@@ -39,6 +39,7 @@ data "files_sso_strategy" "example_sso_strategy" {
 - `deprovision_groups` (Boolean) Auto-deprovision group membership based on group memberships on the SSO side?
 - `deprovision_users` (Boolean) Auto-deprovision users?
 - `enabled` (Boolean) Is strategy enabled?  This may become automatically set to `false` after a high number and duration of failures.
+- `identifier` (String) URL-friendly, unique identifier for Azure SAML configuration
 - `label` (String) Custom label for the SSO provider on the login page.
 - `ldap_base_dn` (String) Base DN for looking up users in LDAP server
 - `ldap_domain` (String) Domain name that will be appended to LDAP usernames

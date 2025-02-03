@@ -78,14 +78,14 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
 
 ### Read-Only
 
-- `api_request_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
-- `automation_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `api_request_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `automation_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `azure_oauth_client_credentials_client_secret_masked` (String) Applicable only for destination type: azure. Client Credentials OAuth Client Secret.
 - `connection_test_entry` (String) Connection Test Entry
 - `datadog_api_key_masked` (String) Applicable only for destination type: datadog. API key provided by Datadog.
-- `email_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
-- `exavault_api_request_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
-- `ftp_action_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `email_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `exavault_api_request_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `ftp_action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `id` (Number) SIEM HTTP Destination ID
 - `last_http_call_duration_ms` (Number) Duration of the last HTTP Call in milliseconds
 - `last_http_call_error_message` (String) Last HTTP Call Error Message if applicable
@@ -96,14 +96,14 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
 - `last_http_call_time` (String) Time of Last HTTP Call
 - `most_recent_http_call_success_time` (String) Time of Most Recent Successful HTTP Call
 - `new_relic_api_key_masked` (String) Applicable only for destination type: new_relic. API key provided by New Relic.
-- `outbound_connection_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
-- `public_hosting_request_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `outbound_connection_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `public_hosting_request_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `qradar_password_masked` (String) Applicable only for destination type: qradar. Basic auth password provided by QRadar.
-- `sftp_action_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `sftp_action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `solar_winds_token_masked` (String) Applicable only for destination type: solar_winds. Authentication token provided by Solar Winds.
 - `splunk_token_masked` (String) Applicable only for destination type: splunk. Authentication token provided by Splunk.
-- `sync_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
-- `web_dav_action_records_sent_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `sync_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `web_dav_action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 
 ## Import
 
