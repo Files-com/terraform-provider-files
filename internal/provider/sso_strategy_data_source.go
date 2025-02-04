@@ -62,7 +62,7 @@ type ssoStrategyDataSourceModel struct {
 	ProvisionTimeZone              types.String `tfsdk:"provision_time_zone"`
 	ProvisionCompany               types.String `tfsdk:"provision_company"`
 	ProvisionRequire2fa            types.String `tfsdk:"provision_require_2fa"`
-	Identifier                     types.String `tfsdk:"identifier"`
+	ProviderIdentifier             types.String `tfsdk:"provider_identifier"`
 	LdapBaseDn                     types.String `tfsdk:"ldap_base_dn"`
 	LdapDomain                     types.String `tfsdk:"ldap_domain"`
 	Enabled                        types.Bool   `tfsdk:"enabled"`
@@ -245,7 +245,7 @@ func (r *ssoStrategyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Description: "2FA required setting for auto provisioned users.",
 				Computed:    true,
 			},
-			"identifier": schema.StringAttribute{
+			"provider_identifier": schema.StringAttribute{
 				Description: "URL-friendly, unique identifier for Azure SAML configuration",
 				Computed:    true,
 			},
@@ -360,7 +360,7 @@ func (r *ssoStrategyDataSource) populateDataSourceModel(ctx context.Context, sso
 	state.ProvisionTimeZone = types.StringValue(ssoStrategy.ProvisionTimeZone)
 	state.ProvisionCompany = types.StringValue(ssoStrategy.ProvisionCompany)
 	state.ProvisionRequire2fa = types.StringValue(ssoStrategy.ProvisionRequire2fa)
-	state.Identifier = types.StringValue(ssoStrategy.Identifier_)
+	state.ProviderIdentifier = types.StringValue(ssoStrategy.ProviderIdentifier)
 	state.LdapBaseDn = types.StringValue(ssoStrategy.LdapBaseDn)
 	state.LdapDomain = types.StringValue(ssoStrategy.LdapDomain)
 	state.Enabled = types.BoolPointerValue(ssoStrategy.Enabled)
