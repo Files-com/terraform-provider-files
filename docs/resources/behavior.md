@@ -129,7 +129,6 @@ resource "files_behavior" "example_remote_server_sync_behavior" {
     direction            = "two_way"
     disabled             = false
     keep_after_copy      = "keep"
-    manual               = false
     remote_path          = ""
     remote_sync_interval = 60
     remote_server_id     = 1
