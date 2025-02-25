@@ -77,10 +77,7 @@ resource "files_behavior" "example_auto_encrypt_behavior" {
   path     = "path"
   behavior = "auto_encrypt"
   value    = {
-    gpg_key_id     = 1
-    gpg_key_ids    = [1]
     signing_key_id = 1
-    algorithm      = "PGP/GPG"
     suffix         = ".gpg"
     armor          = false
   }
@@ -237,9 +234,6 @@ resource "files_behavior" "example_auto_decrypt_behavior" {
   path     = "path"
   behavior = "auto_decrypt"
   value    = {
-    gpg_key_id       = 1
-    gpg_key_ids      = [1]
-    algorithm        = "PGP/GPG"
     suffix           = ".gpg"
     ignore_mdc_error = true
   }
