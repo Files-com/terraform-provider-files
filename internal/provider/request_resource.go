@@ -8,6 +8,7 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	request "github.com/Files-com/files-sdk-go/v3/request"
+	"github.com/Files-com/terraform-provider-files/lib"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -33,14 +34,14 @@ type requestResource struct {
 }
 
 type requestResourceModel struct {
-	Path            types.String `tfsdk:"path"`
-	Destination     types.String `tfsdk:"destination"`
-	UserIds         types.String `tfsdk:"user_ids"`
-	GroupIds        types.String `tfsdk:"group_ids"`
-	Id              types.Int64  `tfsdk:"id"`
-	Source          types.String `tfsdk:"source"`
-	AutomationId    types.String `tfsdk:"automation_id"`
-	UserDisplayName types.String `tfsdk:"user_display_name"`
+	Path            types.String            `tfsdk:"path"`
+	Destination     types.String            `tfsdk:"destination"`
+	UserIds         lib.SortedElementString `tfsdk:"user_ids"`
+	GroupIds        lib.SortedElementString `tfsdk:"group_ids"`
+	Id              types.Int64             `tfsdk:"id"`
+	Source          types.String            `tfsdk:"source"`
+	AutomationId    types.String            `tfsdk:"automation_id"`
+	UserDisplayName types.String            `tfsdk:"user_display_name"`
 }
 
 func (r *requestResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -90,6 +91,7 @@ func (r *requestResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+				CustomType: lib.SortedElementStringType{},
 			},
 			"group_ids": schema.StringAttribute{
 				Description: "A list of group IDs to request the file from. If sent as a string, it should be comma-delimited.",
@@ -97,6 +99,7 @@ func (r *requestResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
+				CustomType: lib.SortedElementStringType{},
 			},
 			"id": schema.Int64Attribute{
 				Description: "Request ID",

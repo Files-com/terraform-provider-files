@@ -8,6 +8,7 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	group "github.com/Files-com/files-sdk-go/v3/group"
+	"github.com/Files-com/terraform-provider-files/lib"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -34,18 +35,18 @@ type groupResource struct {
 }
 
 type groupResourceModel struct {
-	Name              types.String `tfsdk:"name"`
-	AllowedIps        types.String `tfsdk:"allowed_ips"`
-	AdminIds          types.String `tfsdk:"admin_ids"`
-	Notes             types.String `tfsdk:"notes"`
-	UserIds           types.String `tfsdk:"user_ids"`
-	FtpPermission     types.Bool   `tfsdk:"ftp_permission"`
-	SftpPermission    types.Bool   `tfsdk:"sftp_permission"`
-	DavPermission     types.Bool   `tfsdk:"dav_permission"`
-	RestapiPermission types.Bool   `tfsdk:"restapi_permission"`
-	Id                types.Int64  `tfsdk:"id"`
-	Usernames         types.String `tfsdk:"usernames"`
-	SiteId            types.Int64  `tfsdk:"site_id"`
+	Name              types.String            `tfsdk:"name"`
+	AllowedIps        types.String            `tfsdk:"allowed_ips"`
+	AdminIds          lib.SortedElementString `tfsdk:"admin_ids"`
+	Notes             types.String            `tfsdk:"notes"`
+	UserIds           lib.SortedElementString `tfsdk:"user_ids"`
+	FtpPermission     types.Bool              `tfsdk:"ftp_permission"`
+	SftpPermission    types.Bool              `tfsdk:"sftp_permission"`
+	DavPermission     types.Bool              `tfsdk:"dav_permission"`
+	RestapiPermission types.Bool              `tfsdk:"restapi_permission"`
+	Id                types.Int64             `tfsdk:"id"`
+	Usernames         types.String            `tfsdk:"usernames"`
+	SiteId            types.Int64             `tfsdk:"site_id"`
 }
 
 func (r *groupResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -94,6 +95,7 @@ func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
+				CustomType: lib.SortedElementStringType{},
 			},
 			"notes": schema.StringAttribute{
 				Description: "Notes about this group",
@@ -110,6 +112,7 @@ func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
+				CustomType: lib.SortedElementStringType{},
 			},
 			"ftp_permission": schema.BoolAttribute{
 				Description: "If true, users in this group can use FTP to login.  This will override a false value of `ftp_permission` on the user level.",
@@ -345,9 +348,9 @@ func (r *groupResource) populateResourceModel(ctx context.Context, group files_s
 	state.Id = types.Int64Value(group.Id)
 	state.Name = types.StringValue(group.Name)
 	state.AllowedIps = types.StringValue(group.AllowedIps)
-	state.AdminIds = types.StringValue(group.AdminIds)
+	state.AdminIds = lib.SortedElementStringValue(group.AdminIds)
 	state.Notes = types.StringValue(group.Notes)
-	state.UserIds = types.StringValue(group.UserIds)
+	state.UserIds = lib.SortedElementStringValue(group.UserIds)
 	state.Usernames = types.StringValue(group.Usernames)
 	state.FtpPermission = types.BoolPointerValue(group.FtpPermission)
 	state.SftpPermission = types.BoolPointerValue(group.SftpPermission)
