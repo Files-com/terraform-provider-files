@@ -510,7 +510,7 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed:    true,
 			},
 			"folder_permissions_groups_only": schema.BoolAttribute{
-				Description: "If true, permissions for this site must be bound to a group (not a user). Otherwise, permissions must be bound to a user.",
+				Description: "If true, permissions for this site must be bound to a group (not a user).",
 				Computed:    true,
 			},
 			"hipaa": schema.BoolAttribute{

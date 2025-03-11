@@ -88,7 +88,7 @@ data "files_site" "example_site" {
 - `domain_hsts_header` (Boolean) Send HSTS (HTTP Strict Transport Security) header when visitors access the site via a custom domain?
 - `domain_letsencrypt_chain` (String) Letsencrypt chain to use when registering SSL Certificate for domain.
 - `email` (String) Main email for this site
-- `folder_permissions_groups_only` (Boolean) If true, permissions for this site must be bound to a group (not a user). Otherwise, permissions must be bound to a user.
+- `folder_permissions_groups_only` (Boolean) If true, permissions for this site must be bound to a group (not a user).
 - `ftp_enabled` (Boolean) Is FTP enabled?
 - `group_admins_can_set_user_password` (Boolean) Allow group admins set password authentication method
 - `hipaa` (Boolean) Is there a signed HIPAA BAA between Files.com and this site?

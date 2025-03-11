@@ -755,7 +755,7 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"folder_permissions_groups_only": schema.BoolAttribute{
-				Description: "If true, permissions for this site must be bound to a group (not a user). Otherwise, permissions must be bound to a user.",
+				Description: "If true, permissions for this site must be bound to a group (not a user).",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
