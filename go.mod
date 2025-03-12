@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.23.6
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.2.131
+	github.com/Files-com/files-sdk-go/v3 v3.2.132
 	github.com/hashicorp/terraform-plugin-docs v0.19.4
 	github.com/hashicorp/terraform-plugin-framework v1.9.0
 	github.com/hashicorp/terraform-plugin-testing v1.8.0
