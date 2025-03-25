@@ -42,8 +42,9 @@ resource "files_behavior" "example_serve_publicly_behavior" {
   path     = files_folder.example_folder.path
   behavior = "serve_publicly"
   value    = {
-    key        = "public-photos"
-    show_index = true
+    key            = "public-photos"
+    show_index     = true
+    force_download = true
   }
 }
 ```
