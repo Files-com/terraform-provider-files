@@ -99,7 +99,7 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Required:    true,
 			},
 			"always_overwrite_size_matching_files": schema.BoolAttribute{
-				Description: "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.",
+				Description: "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`.",
 				Computed:    true,
 			},
 			"automation": schema.StringAttribute{
@@ -169,7 +169,7 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Computed:    true,
 			},
 			"overwrite_files": schema.BoolAttribute{
-				Description: "If true, existing files will be overwritten with new files on Move/Copy automations.  Note: by default files will not be overwritten if they appear to be the same file size as the newly incoming file.  Use the `:always_overwrite_size_matching_files` option to override this.",
+				Description: "If true, existing files will be overwritten with new files on Move/Copy automations.  Note: by default files will not be overwritten if they appear to be the same file size as the newly incoming file.  Use the `always_overwrite_size_matching_files` option in conjunction with `overwrite_files` to override this behavior and overwrite files no matter what.",
 				Computed:    true,
 			},
 			"path": schema.StringAttribute{
