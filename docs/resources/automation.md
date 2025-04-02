@@ -137,7 +137,6 @@ description: |-
   Automations will automatically retry individual action steps up to 3 times, with pauses between retries that increase from 15 seconds to 1 minute. If individual action steps fail after our 3rd attempt, that action will fail. If every action step in an Automation Run fails, that automation run will move to a failure status. If at least one step succeeds and one step fails, that automation run will move to a partial_failure status.
   Automation Runs can be retried automatically when they enter a failure or partial_failure status as described above. A retry will re-run the automation from scratch, including the "planning" phase, which expands globs (wildcards) and identifies which files to transfer or skip.
   Retrying of entire Automation Runs must be explicitly enabled by setting the retry_on_failure_interval_in_minutes and retry_on_failure_number_of_attempts values on the Automation.
-  When retrying entire Automation Runs, we currently do not skip action steps which were skipped or successfully completed in a previous version of the Automation Run. We will soon be adding this functionality, which should enhance the usefulness of the retry apparatus for Automations in most situations.
 ---
 
 # files_automation (Resource)
@@ -529,10 +528,6 @@ Automation Runs can be retried automatically when they enter a `failure` or `par
 
 
 Retrying of entire Automation Runs must be explicitly enabled by setting the `retry_on_failure_interval_in_minutes` and `retry_on_failure_number_of_attempts` values on the Automation.
-
-
-
-When retrying entire Automation Runs, we currently do not skip action steps which were skipped or successfully completed in a previous version of the Automation Run. We will soon be adding this functionality, which should enhance the usefulness of the retry apparatus for Automations in most situations.
 
 ## Example Usage
 
