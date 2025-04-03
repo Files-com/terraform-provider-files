@@ -171,7 +171,12 @@ func (r *automationRunDataSource) populateDataSourceModel(ctx context.Context, a
 			"Could not convert state created_at to string: "+err.Error(),
 		)
 	}
-	state.RetryAt = types.StringValue(automationRun.RetryAt)
+	if err := lib.TimeToStringType(ctx, path.Root("retry_at"), automationRun.RetryAt, &state.RetryAt); err != nil {
+		diags.AddError(
+			"Error Creating Files AutomationRun",
+			"Could not convert state retry_at to string: "+err.Error(),
+		)
+	}
 	if err := lib.TimeToStringType(ctx, path.Root("retried_at"), automationRun.RetriedAt, &state.RetriedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files AutomationRun",

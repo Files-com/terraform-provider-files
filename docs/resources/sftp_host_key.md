@@ -19,7 +19,7 @@ Files.com allows you to provide custom SFTP Host Keys, which is particularly use
 
 ```terraform
 resource "files_sftp_host_key" "example_sftp_host_key" {
-  name = "example"
+  name = "My Key"
 }
 ```
 

@@ -30,7 +30,7 @@ type requestDataSourceModel struct {
 	Path            types.String `tfsdk:"path"`
 	Source          types.String `tfsdk:"source"`
 	Destination     types.String `tfsdk:"destination"`
-	AutomationId    types.String `tfsdk:"automation_id"`
+	AutomationId    types.Int64  `tfsdk:"automation_id"`
 	UserDisplayName types.String `tfsdk:"user_display_name"`
 }
 
@@ -77,7 +77,7 @@ func (r *requestDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Description: "Destination filename",
 				Computed:    true,
 			},
-			"automation_id": schema.StringAttribute{
+			"automation_id": schema.Int64Attribute{
 				Description: "ID of automation that created request",
 				Computed:    true,
 			},
@@ -147,7 +147,7 @@ func (r *requestDataSource) populateDataSourceModel(ctx context.Context, request
 	state.Path = types.StringValue(request.Path)
 	state.Source = types.StringValue(request.Source)
 	state.Destination = types.StringValue(request.Destination)
-	state.AutomationId = types.StringValue(request.AutomationId)
+	state.AutomationId = types.Int64Value(request.AutomationId)
 	state.UserDisplayName = types.StringValue(request.UserDisplayName)
 
 	return

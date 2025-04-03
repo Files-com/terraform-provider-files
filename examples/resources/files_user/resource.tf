@@ -1,6 +1,6 @@
 resource "files_user" "example_user" {
   avatar_delete                = false
-  email                        = "example"
+  email                        = "john.doe@files.com"
   group_id                     = 1
   group_ids                    = "example"
   announcements_read           = false

@@ -24,8 +24,8 @@ resource "files_site" "example_site" {
   domain                                        = "my-custom-domain.com"
   domain_hsts_header                            = false
   domain_letsencrypt_chain                      = "example"
-  email                                         = "example"
-  reply_to_email                                = "example"
+  email                                         = "john.doe@files.com"
+  reply_to_email                                = "jane.doe@files.com"
   allow_bundle_names                            = false
   bundle_expiration                             = 1
   welcome_email_enabled                         = false

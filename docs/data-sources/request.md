@@ -32,7 +32,7 @@ data "files_request" "example_request" {
 
 ### Read-Only
 
-- `automation_id` (String) ID of automation that created request
+- `automation_id` (Number) ID of automation that created request
 - `destination` (String) Destination filename
 - `path` (String) Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `source` (String) Source filename, if applicable

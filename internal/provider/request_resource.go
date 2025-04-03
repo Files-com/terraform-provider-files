@@ -40,7 +40,7 @@ type requestResourceModel struct {
 	GroupIds        lib.SortedElementString `tfsdk:"group_ids"`
 	Id              types.Int64             `tfsdk:"id"`
 	Source          types.String            `tfsdk:"source"`
-	AutomationId    types.String            `tfsdk:"automation_id"`
+	AutomationId    types.Int64             `tfsdk:"automation_id"`
 	UserDisplayName types.String            `tfsdk:"user_display_name"`
 }
 
@@ -112,7 +112,7 @@ func (r *requestResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Description: "Source filename, if applicable",
 				Computed:    true,
 			},
-			"automation_id": schema.StringAttribute{
+			"automation_id": schema.Int64Attribute{
 				Description: "ID of automation that created request",
 				Computed:    true,
 			},
@@ -276,7 +276,7 @@ func (r *requestResource) populateResourceModel(ctx context.Context, request fil
 	state.Path = types.StringValue(request.Path)
 	state.Source = types.StringValue(request.Source)
 	state.Destination = types.StringValue(request.Destination)
-	state.AutomationId = types.StringValue(request.AutomationId)
+	state.AutomationId = types.Int64Value(request.AutomationId)
 	state.UserDisplayName = types.StringValue(request.UserDisplayName)
 
 	return

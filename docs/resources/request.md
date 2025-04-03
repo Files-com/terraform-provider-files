@@ -39,7 +39,7 @@ resource "files_request" "example_request" {
 
 ### Read-Only
 
-- `automation_id` (String) ID of automation that created request
+- `automation_id` (Number) ID of automation that created request
 - `id` (Number) Request ID
 - `source` (String) Source filename, if applicable
 - `user_display_name` (String) User making the request (if applicable)
