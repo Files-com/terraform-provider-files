@@ -125,7 +125,7 @@ resource "files_user" "example_user" {
 - `disabled` (Boolean) Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date.
 - `email` (String) User email address
 - `ftp_permission` (Boolean) Can the user access with FTP/FTPS?
-- `grant_permission` (String) Permission to grant on the user root.  Can be blank or `full`, `read`, `write`, `list`, `read+write`, or `list+write`
+- `grant_permission` (String) Permission to grant on the User Root upon user creation. Can be blank or `full`, `read`, `write`, `list`, `read+write`, or `list+write`
 - `group_id` (Number) Group ID to associate this user with.
 - `group_ids` (String) Comma-separated list of group IDs of which this user is a member
 - `header_text` (String) Text to display to the user in the header of the UI

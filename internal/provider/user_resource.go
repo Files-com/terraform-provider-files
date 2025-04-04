@@ -457,7 +457,7 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 			},
 			"grant_permission": schema.StringAttribute{
-				Description: "Permission to grant on the user root.  Can be blank or `full`, `read`, `write`, `list`, `read+write`, or `list+write`",
+				Description: "Permission to grant on the User Root upon user creation. Can be blank or `full`, `read`, `write`, `list`, `read+write`, or `list+write`",
 				Optional:    true,
 			},
 			"group_id": schema.Int64Attribute{
