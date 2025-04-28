@@ -106,6 +106,7 @@ resource "files_site" "example_site" {
   non_sso_groups_allowed                        = false
   non_sso_users_allowed                         = false
   sharing_enabled                               = false
+  snapshot_sharing_enabled                      = false
   user_requests_enabled                         = false
   user_requests_notify_admins                   = false
   dav_enabled                                   = false
@@ -304,6 +305,7 @@ resource "files_site" "example_site" {
 - `smtp_from` (String) From address to use when mailing through custom SMTP
 - `smtp_port` (Number) SMTP server port
 - `smtp_username` (String) SMTP server username
+- `snapshot_sharing_enabled` (Boolean) Allow snapshot share links creation
 - `ssl_required` (Boolean) Is SSL required?  Disabling this is insecure.
 - `subdomain` (String) Site subdomain
 - `tls_disabled` (Boolean) DO NOT ENABLE. This setting allows TLSv1.0 and TLSv1.1 to be used on your site.  We intend to remove this capability entirely in early 2024.  If set, the `sftp_insecure_ciphers` flag will be automatically set to true.

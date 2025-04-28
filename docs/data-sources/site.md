@@ -172,6 +172,7 @@ data "files_site" "example_site" {
 - `smtp_from` (String) From address to use when mailing through custom SMTP
 - `smtp_port` (Number) SMTP server port
 - `smtp_username` (String) SMTP server username
+- `snapshot_sharing_enabled` (Boolean) Allow snapshot share links creation
 - `ssl_required` (Boolean) Is SSL required?  Disabling this is insecure.
 - `subdomain` (String) Site subdomain
 - `switch_to_plan_date` (String) If switching plans, when does the new plan take effect?

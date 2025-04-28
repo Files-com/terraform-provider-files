@@ -20,7 +20,7 @@ description: |-
   Box follow the auth_setup_link and login with Box.
   Dropbox specify if dropbox_teams then follow the auth_setup_link and login with Dropbox.
   Google Drive follow the auth_setup_link and login with Google.
-  Azure Blob Storage azure_blob_storage_account, azure_blob_storage_container, azure_blob_storage_access_key, azure_blob_storage_sas_token
+  Azure Blob Storage azure_blob_storage_account, azure_blob_storage_container, azure_blob_storage_access_key, azure_blob_storage_sas_token, azure_blob_storage_dns_suffix
   Azure File Storage azure_files_storage_account, azure_files_storage_access_key, azure_files_storage_share_name, azure_files_storage_dns_suffix
   Filebase requires filebase_bucket, filebase_access_key, and filebase_secret_key.
   Cloudflare requires cloudflare_bucket, cloudflare_access_key, cloudflare_secret_key and cloudflare_endpoint.
@@ -97,7 +97,7 @@ Google Drive follow the `auth_setup_link` and login with Google.
 
 
 
-Azure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`
+Azure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`, `azure_blob_storage_dns_suffix`
 
 
 
@@ -147,6 +147,7 @@ resource "files_remote_server" "example_remote_server" {
   azure_blob_storage_account                = "storage-account-name"
   azure_blob_storage_container              = "container-name"
   azure_blob_storage_hierarchical_namespace = true
+  azure_blob_storage_dns_suffix             = "usgovcloudapi.net"
   azure_files_storage_account               = "storage-account-name"
   azure_files_storage_share_name            = "share-name"
   azure_files_storage_dns_suffix            = "file.core.windows.net"
@@ -180,6 +181,7 @@ resource "files_remote_server" "example_remote_server" {
 - `azure_blob_storage_access_key` (String) Azure Blob Storage secret key.
 - `azure_blob_storage_account` (String) Azure Blob Storage Account name
 - `azure_blob_storage_container` (String) Azure Blob Storage Container name
+- `azure_blob_storage_dns_suffix` (String) Custom DNS suffix
 - `azure_blob_storage_hierarchical_namespace` (Boolean) Enable when storage account has hierarchical namespace feature enabled
 - `azure_blob_storage_sas_token` (String) Shared Access Signature (SAS) token
 - `azure_files_storage_access_key` (String) Azure File Storage access key.

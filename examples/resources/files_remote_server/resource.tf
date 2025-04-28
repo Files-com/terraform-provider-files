@@ -27,6 +27,7 @@ resource "files_remote_server" "example_remote_server" {
   azure_blob_storage_account                = "storage-account-name"
   azure_blob_storage_container              = "container-name"
   azure_blob_storage_hierarchical_namespace = true
+  azure_blob_storage_dns_suffix             = "usgovcloudapi.net"
   azure_files_storage_account               = "storage-account-name"
   azure_files_storage_share_name            = "share-name"
   azure_files_storage_dns_suffix            = "file.core.windows.net"

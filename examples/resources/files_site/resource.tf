@@ -86,6 +86,7 @@ resource "files_site" "example_site" {
   non_sso_groups_allowed                        = false
   non_sso_users_allowed                         = false
   sharing_enabled                               = false
+  snapshot_sharing_enabled                      = false
   user_requests_enabled                         = false
   user_requests_notify_admins                   = false
   dav_enabled                                   = false

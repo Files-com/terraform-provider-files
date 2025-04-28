@@ -173,6 +173,7 @@ type siteDataSourceModel struct {
 	SmtpUsername                             types.String  `tfsdk:"smtp_username"`
 	SessionExpiry                            types.String  `tfsdk:"session_expiry"`
 	SessionExpiryMinutes                     types.Int64   `tfsdk:"session_expiry_minutes"`
+	SnapshotSharingEnabled                   types.Bool    `tfsdk:"snapshot_sharing_enabled"`
 	SslRequired                              types.Bool    `tfsdk:"ssl_required"`
 	Subdomain                                types.String  `tfsdk:"subdomain"`
 	SwitchToPlanDate                         types.String  `tfsdk:"switch_to_plan_date"`
@@ -805,6 +806,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Session expiry in minutes",
 				Computed:    true,
 			},
+			"snapshot_sharing_enabled": schema.BoolAttribute{
+				Description: "Allow snapshot share links creation",
+				Computed:    true,
+			},
 			"ssl_required": schema.BoolAttribute{
 				Description: "Is SSL required?  Disabling this is insecure.",
 				Computed:    true,
@@ -1157,6 +1162,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.SmtpUsername = types.StringValue(site.SmtpUsername)
 	state.SessionExpiry = types.StringValue(site.SessionExpiry)
 	state.SessionExpiryMinutes = types.Int64Value(site.SessionExpiryMinutes)
+	state.SnapshotSharingEnabled = types.BoolPointerValue(site.SnapshotSharingEnabled)
 	state.SslRequired = types.BoolPointerValue(site.SslRequired)
 	state.Subdomain = types.StringValue(site.Subdomain)
 	if err := lib.TimeToStringType(ctx, path.Root("switch_to_plan_date"), site.SwitchToPlanDate, &state.SwitchToPlanDate); err != nil {

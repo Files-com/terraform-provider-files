@@ -160,6 +160,7 @@ type siteResourceModel struct {
 	SmtpUsername                             types.String  `tfsdk:"smtp_username"`
 	SessionExpiry                            types.String  `tfsdk:"session_expiry"`
 	SessionExpiryMinutes                     types.Int64   `tfsdk:"session_expiry_minutes"`
+	SnapshotSharingEnabled                   types.Bool    `tfsdk:"snapshot_sharing_enabled"`
 	SslRequired                              types.Bool    `tfsdk:"ssl_required"`
 	Subdomain                                types.String  `tfsdk:"subdomain"`
 	TlsDisabled                              types.Bool    `tfsdk:"tls_disabled"`
@@ -1235,6 +1236,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"snapshot_sharing_enabled": schema.BoolAttribute{
+				Description: "Allow snapshot share links creation",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"ssl_required": schema.BoolAttribute{
 				Description: "Is SSL required?  Disabling this is insecure.",
 				Computed:    true,
@@ -1756,6 +1765,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.SharingEnabled.IsNull() && !plan.SharingEnabled.IsUnknown() {
 		paramsSiteUpdate.SharingEnabled = plan.SharingEnabled.ValueBoolPointer()
 	}
+	if !plan.SnapshotSharingEnabled.IsNull() && !plan.SnapshotSharingEnabled.IsUnknown() {
+		paramsSiteUpdate.SnapshotSharingEnabled = plan.SnapshotSharingEnabled.ValueBoolPointer()
+	}
 	if !plan.UserRequestsEnabled.IsNull() && !plan.UserRequestsEnabled.IsUnknown() {
 		paramsSiteUpdate.UserRequestsEnabled = plan.UserRequestsEnabled.ValueBoolPointer()
 	}
@@ -2122,6 +2134,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.SmtpUsername = types.StringValue(site.SmtpUsername)
 	state.SessionExpiry = types.StringValue(site.SessionExpiry)
 	state.SessionExpiryMinutes = types.Int64Value(site.SessionExpiryMinutes)
+	state.SnapshotSharingEnabled = types.BoolPointerValue(site.SnapshotSharingEnabled)
 	state.SslRequired = types.BoolPointerValue(site.SslRequired)
 	state.Subdomain = types.StringValue(site.Subdomain)
 	if err := lib.TimeToStringType(ctx, path.Root("switch_to_plan_date"), site.SwitchToPlanDate, &state.SwitchToPlanDate); err != nil {
