@@ -114,6 +114,16 @@ filters and sort fields.
 | `filter_lt` | Range | Find resources that have a field value that is less than the passed in value.  (i.e., FIELD_VALUE < PASS_IN_VALUE). |
 | `filter_lteq` | Range | Find resources that have a field value that is less than or equal to the passed in value.  (i.e., FIELD_VALUE \<= PASS_IN_VALUE). |
 
+## Foreign Language Support
+
+The Files.com Terraform Provider will soon be updated to support localized responses by using a configuration
+method. When available, it can be used to guide the API in selecting a preferred language for applicable response content.
+
+Language support currently applies to select human-facing fields only, such as notification messages
+and error descriptions.
+
+If the specified language is not supported or the value is omitted, the API defaults to English.
+
 ## Errors
 
 ## Case Sensitivity
