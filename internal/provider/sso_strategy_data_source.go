@@ -26,53 +26,54 @@ type ssoStrategyDataSource struct {
 }
 
 type ssoStrategyDataSourceModel struct {
-	Id                             types.Int64  `tfsdk:"id"`
-	Protocol                       types.String `tfsdk:"protocol"`
-	Provider_                      types.String `tfsdk:"provider_"`
-	Label                          types.String `tfsdk:"label"`
-	LogoUrl                        types.String `tfsdk:"logo_url"`
-	UserCount                      types.Int64  `tfsdk:"user_count"`
-	SamlProviderCertFingerprint    types.String `tfsdk:"saml_provider_cert_fingerprint"`
-	SamlProviderIssuerUrl          types.String `tfsdk:"saml_provider_issuer_url"`
-	SamlProviderMetadataContent    types.String `tfsdk:"saml_provider_metadata_content"`
-	SamlProviderMetadataUrl        types.String `tfsdk:"saml_provider_metadata_url"`
-	SamlProviderSloTargetUrl       types.String `tfsdk:"saml_provider_slo_target_url"`
-	SamlProviderSsoTargetUrl       types.String `tfsdk:"saml_provider_sso_target_url"`
-	ScimAuthenticationMethod       types.String `tfsdk:"scim_authentication_method"`
-	ScimUsername                   types.String `tfsdk:"scim_username"`
-	ScimOauthAccessToken           types.String `tfsdk:"scim_oauth_access_token"`
-	ScimOauthAccessTokenExpiresAt  types.String `tfsdk:"scim_oauth_access_token_expires_at"`
-	Subdomain                      types.String `tfsdk:"subdomain"`
-	ProvisionUsers                 types.Bool   `tfsdk:"provision_users"`
-	ProvisionGroups                types.Bool   `tfsdk:"provision_groups"`
-	DeprovisionUsers               types.Bool   `tfsdk:"deprovision_users"`
-	DeprovisionGroups              types.Bool   `tfsdk:"deprovision_groups"`
-	DeprovisionBehavior            types.String `tfsdk:"deprovision_behavior"`
-	ProvisionGroupDefault          types.String `tfsdk:"provision_group_default"`
-	ProvisionGroupExclusion        types.String `tfsdk:"provision_group_exclusion"`
-	ProvisionGroupInclusion        types.String `tfsdk:"provision_group_inclusion"`
-	ProvisionGroupRequired         types.String `tfsdk:"provision_group_required"`
-	ProvisionEmailSignupGroups     types.String `tfsdk:"provision_email_signup_groups"`
-	ProvisionSiteAdminGroups       types.String `tfsdk:"provision_site_admin_groups"`
-	ProvisionGroupAdminGroups      types.String `tfsdk:"provision_group_admin_groups"`
-	ProvisionAttachmentsPermission types.Bool   `tfsdk:"provision_attachments_permission"`
-	ProvisionDavPermission         types.Bool   `tfsdk:"provision_dav_permission"`
-	ProvisionFtpPermission         types.Bool   `tfsdk:"provision_ftp_permission"`
-	ProvisionSftpPermission        types.Bool   `tfsdk:"provision_sftp_permission"`
-	ProvisionTimeZone              types.String `tfsdk:"provision_time_zone"`
-	ProvisionCompany               types.String `tfsdk:"provision_company"`
-	ProvisionRequire2fa            types.String `tfsdk:"provision_require_2fa"`
-	ProviderIdentifier             types.String `tfsdk:"provider_identifier"`
-	LdapBaseDn                     types.String `tfsdk:"ldap_base_dn"`
-	LdapDomain                     types.String `tfsdk:"ldap_domain"`
-	Enabled                        types.Bool   `tfsdk:"enabled"`
-	LdapHost                       types.String `tfsdk:"ldap_host"`
-	LdapHost2                      types.String `tfsdk:"ldap_host_2"`
-	LdapHost3                      types.String `tfsdk:"ldap_host_3"`
-	LdapPort                       types.Int64  `tfsdk:"ldap_port"`
-	LdapSecure                     types.Bool   `tfsdk:"ldap_secure"`
-	LdapUsername                   types.String `tfsdk:"ldap_username"`
-	LdapUsernameField              types.String `tfsdk:"ldap_username_field"`
+	Id                               types.Int64  `tfsdk:"id"`
+	Protocol                         types.String `tfsdk:"protocol"`
+	Provider_                        types.String `tfsdk:"provider_"`
+	Label                            types.String `tfsdk:"label"`
+	LogoUrl                          types.String `tfsdk:"logo_url"`
+	UserCount                        types.Int64  `tfsdk:"user_count"`
+	SamlProviderCertFingerprint      types.String `tfsdk:"saml_provider_cert_fingerprint"`
+	SamlProviderIssuerUrl            types.String `tfsdk:"saml_provider_issuer_url"`
+	SamlProviderMetadataContent      types.String `tfsdk:"saml_provider_metadata_content"`
+	SamlProviderMetadataUrl          types.String `tfsdk:"saml_provider_metadata_url"`
+	SamlProviderSloTargetUrl         types.String `tfsdk:"saml_provider_slo_target_url"`
+	SamlProviderSsoTargetUrl         types.String `tfsdk:"saml_provider_sso_target_url"`
+	ScimAuthenticationMethod         types.String `tfsdk:"scim_authentication_method"`
+	ScimUsername                     types.String `tfsdk:"scim_username"`
+	ScimOauthAccessToken             types.String `tfsdk:"scim_oauth_access_token"`
+	ScimOauthAccessTokenExpiresAt    types.String `tfsdk:"scim_oauth_access_token_expires_at"`
+	Subdomain                        types.String `tfsdk:"subdomain"`
+	ProvisionUsers                   types.Bool   `tfsdk:"provision_users"`
+	ProvisionGroups                  types.Bool   `tfsdk:"provision_groups"`
+	DeprovisionUsers                 types.Bool   `tfsdk:"deprovision_users"`
+	DeprovisionGroups                types.Bool   `tfsdk:"deprovision_groups"`
+	DeprovisionBehavior              types.String `tfsdk:"deprovision_behavior"`
+	ProvisionGroupDefault            types.String `tfsdk:"provision_group_default"`
+	ProvisionGroupExclusion          types.String `tfsdk:"provision_group_exclusion"`
+	ProvisionGroupInclusion          types.String `tfsdk:"provision_group_inclusion"`
+	ProvisionGroupRequired           types.String `tfsdk:"provision_group_required"`
+	ProvisionEmailSignupGroups       types.String `tfsdk:"provision_email_signup_groups"`
+	ProvisionReadonlySiteAdminGroups types.String `tfsdk:"provision_readonly_site_admin_groups"`
+	ProvisionSiteAdminGroups         types.String `tfsdk:"provision_site_admin_groups"`
+	ProvisionGroupAdminGroups        types.String `tfsdk:"provision_group_admin_groups"`
+	ProvisionAttachmentsPermission   types.Bool   `tfsdk:"provision_attachments_permission"`
+	ProvisionDavPermission           types.Bool   `tfsdk:"provision_dav_permission"`
+	ProvisionFtpPermission           types.Bool   `tfsdk:"provision_ftp_permission"`
+	ProvisionSftpPermission          types.Bool   `tfsdk:"provision_sftp_permission"`
+	ProvisionTimeZone                types.String `tfsdk:"provision_time_zone"`
+	ProvisionCompany                 types.String `tfsdk:"provision_company"`
+	ProvisionRequire2fa              types.String `tfsdk:"provision_require_2fa"`
+	ProviderIdentifier               types.String `tfsdk:"provider_identifier"`
+	LdapBaseDn                       types.String `tfsdk:"ldap_base_dn"`
+	LdapDomain                       types.String `tfsdk:"ldap_domain"`
+	Enabled                          types.Bool   `tfsdk:"enabled"`
+	LdapHost                         types.String `tfsdk:"ldap_host"`
+	LdapHost2                        types.String `tfsdk:"ldap_host_2"`
+	LdapHost3                        types.String `tfsdk:"ldap_host_3"`
+	LdapPort                         types.Int64  `tfsdk:"ldap_port"`
+	LdapSecure                       types.Bool   `tfsdk:"ldap_secure"`
+	LdapUsername                     types.String `tfsdk:"ldap_username"`
+	LdapUsernameField                types.String `tfsdk:"ldap_username_field"`
 }
 
 func (r *ssoStrategyDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -208,6 +209,10 @@ func (r *ssoStrategyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 			},
 			"provision_email_signup_groups": schema.StringAttribute{
 				Description: "Comma-separated list of group names whose members will be created with email_signup authentication.",
+				Computed:    true,
+			},
+			"provision_readonly_site_admin_groups": schema.StringAttribute{
+				Description: "Comma-separated list of group names whose members will be created as Read-Only Site Admins.",
 				Computed:    true,
 			},
 			"provision_site_admin_groups": schema.StringAttribute{
@@ -351,6 +356,7 @@ func (r *ssoStrategyDataSource) populateDataSourceModel(ctx context.Context, sso
 	state.ProvisionGroupInclusion = types.StringValue(ssoStrategy.ProvisionGroupInclusion)
 	state.ProvisionGroupRequired = types.StringValue(ssoStrategy.ProvisionGroupRequired)
 	state.ProvisionEmailSignupGroups = types.StringValue(ssoStrategy.ProvisionEmailSignupGroups)
+	state.ProvisionReadonlySiteAdminGroups = types.StringValue(ssoStrategy.ProvisionReadonlySiteAdminGroups)
 	state.ProvisionSiteAdminGroups = types.StringValue(ssoStrategy.ProvisionSiteAdminGroups)
 	state.ProvisionGroupAdminGroups = types.StringValue(ssoStrategy.ProvisionGroupAdminGroups)
 	state.ProvisionAttachmentsPermission = types.BoolPointerValue(ssoStrategy.ProvisionAttachmentsPermission)
