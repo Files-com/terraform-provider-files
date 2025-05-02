@@ -152,6 +152,7 @@ type siteDataSourceModel struct {
 	ProtocolAccessGroupsOnly                 types.Bool    `tfsdk:"protocol_access_groups_only"`
 	Require2fa                               types.Bool    `tfsdk:"require_2fa"`
 	Require2faStopTime                       types.String  `tfsdk:"require_2fa_stop_time"`
+	RevokeBundleAccessOnDisableOrDelete      types.Bool    `tfsdk:"revoke_bundle_access_on_disable_or_delete"`
 	Require2faUserType                       types.String  `tfsdk:"require_2fa_user_type"`
 	RequireLogoutFromBundlesAndInboxes       types.Bool    `tfsdk:"require_logout_from_bundles_and_inboxes"`
 	Session                                  types.String  `tfsdk:"session"`
@@ -722,6 +723,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "If set, requirement for two-factor authentication has been scheduled to end on this date-time.",
 				Computed:    true,
 			},
+			"revoke_bundle_access_on_disable_or_delete": schema.BoolAttribute{
+				Description: "Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period.",
+				Computed:    true,
+			},
 			"require_2fa_user_type": schema.StringAttribute{
 				Description: "What type of user is required to use two-factor authentication (when require_2fa is set to `true` for this site)?",
 				Computed:    true,
@@ -1134,6 +1139,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 			"Could not convert state require_2fa_stop_time to string: "+err.Error(),
 		)
 	}
+	state.RevokeBundleAccessOnDisableOrDelete = types.BoolPointerValue(site.RevokeBundleAccessOnDisableOrDelete)
 	state.Require2faUserType = types.StringValue(site.Require2faUserType)
 	state.RequireLogoutFromBundlesAndInboxes = types.BoolPointerValue(site.RequireLogoutFromBundlesAndInboxes)
 	respSession, err := json.Marshal(site.Session)

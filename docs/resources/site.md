@@ -118,6 +118,7 @@ resource "files_site" "example_site" {
   sftp_host_key_type                            = "default"
   active_sftp_host_key_id                       = 1
   protocol_access_groups_only                   = false
+  revoke_bundle_access_on_disable_or_delete     = false
   bundle_watermark_value                        = {
     key = "example value"
   }
@@ -288,6 +289,7 @@ resource "files_site" "example_site" {
 - `require_2fa` (Boolean) Require two-factor authentication for all users?
 - `require_2fa_user_type` (String) What type of user is required to use two-factor authentication (when require_2fa is set to `true` for this site)?
 - `require_logout_from_bundles_and_inboxes` (Boolean) If true, we will hide the 'Remember Me' box on Inbox and Bundle registration pages, requiring that the user logout and log back in every time they visit the page.
+- `revoke_bundle_access_on_disable_or_delete` (Boolean) Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period.
 - `session_expiry` (String) Session expiry in hours
 - `session_expiry_minutes` (Number) Session expiry in minutes
 - `sftp_enabled` (Boolean) Is SFTP enabled?

@@ -140,6 +140,7 @@ type siteResourceModel struct {
 	PreventRootPermissionsForNonSiteAdmins   types.Bool    `tfsdk:"prevent_root_permissions_for_non_site_admins"`
 	ProtocolAccessGroupsOnly                 types.Bool    `tfsdk:"protocol_access_groups_only"`
 	Require2fa                               types.Bool    `tfsdk:"require_2fa"`
+	RevokeBundleAccessOnDisableOrDelete      types.Bool    `tfsdk:"revoke_bundle_access_on_disable_or_delete"`
 	Require2faUserType                       types.String  `tfsdk:"require_2fa_user_type"`
 	RequireLogoutFromBundlesAndInboxes       types.Bool    `tfsdk:"require_logout_from_bundles_and_inboxes"`
 	SftpEnabled                              types.Bool    `tfsdk:"sftp_enabled"`
@@ -1070,6 +1071,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"revoke_bundle_access_on_disable_or_delete": schema.BoolAttribute{
+				Description: "Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"require_2fa_user_type": schema.StringAttribute{
 				Description: "What type of user is required to use two-factor authentication (when require_2fa is set to `true` for this site)?",
 				Computed:    true,
@@ -1797,6 +1806,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.ProtocolAccessGroupsOnly.IsNull() && !plan.ProtocolAccessGroupsOnly.IsUnknown() {
 		paramsSiteUpdate.ProtocolAccessGroupsOnly = plan.ProtocolAccessGroupsOnly.ValueBoolPointer()
 	}
+	if !plan.RevokeBundleAccessOnDisableOrDelete.IsNull() && !plan.RevokeBundleAccessOnDisableOrDelete.IsUnknown() {
+		paramsSiteUpdate.RevokeBundleAccessOnDisableOrDelete = plan.RevokeBundleAccessOnDisableOrDelete.ValueBoolPointer()
+	}
 	updateBundleWatermarkValue, diags := lib.DynamicToStringMap(ctx, path.Root("bundle_watermark_value"), plan.BundleWatermarkValue)
 	resp.Diagnostics.Append(diags...)
 	paramsSiteUpdate.BundleWatermarkValue = updateBundleWatermarkValue
@@ -2106,6 +2118,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 			"Could not convert state require_2fa_stop_time to string: "+err.Error(),
 		)
 	}
+	state.RevokeBundleAccessOnDisableOrDelete = types.BoolPointerValue(site.RevokeBundleAccessOnDisableOrDelete)
 	state.Require2faUserType = types.StringValue(site.Require2faUserType)
 	state.RequireLogoutFromBundlesAndInboxes = types.BoolPointerValue(site.RequireLogoutFromBundlesAndInboxes)
 	respSession, err := json.Marshal(site.Session)
