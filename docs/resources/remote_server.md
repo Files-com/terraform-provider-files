@@ -10,7 +10,10 @@ description: |-
   SFTP Servers require that you specify their hostname, port, username, password or private_key, and a value for ssl. Optionally, provide server_certificate, private_key_passphrase.
   S3 Buckets require that you specify their s3_bucket name, and s3_region. Optionally provide a aws_access_key, and aws_secret_key. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.
   S3-Compatible Buckets require that you specify s3_compatible_bucket, s3_compatible_endpoint, s3_compatible_access_key, and s3_compatible_secret_key.
-  Google Cloud Storage requires that you specify google_cloud_storage_bucket, google_cloud_storage_project_id, and google_cloud_storage_credentials_json.
+  Google Cloud Storage requires that you specify google_cloud_storage_bucket, and then one of the following sets of authentication credentials:
+  
+  for JSON authentcation: google_cloud_storage_project_id, and google_cloud_storage_credentials_json
+  for HMAC (S3-Compatible) authentication: google_cloud_storage_region and google_cloud_storage_s3_compatible_access_key, and google_cloud_storage_s3_compatible_secret_key
   Wasabi requires wasabi_bucket, wasabi_region, wasabi_access_key, and wasabi_secret_key.
   Backblaze B2 Cloud Storage backblaze_b2_bucket, backblaze_b2_s3_endpoint, backblaze_b2_application_key, and backblaze_b2_key_id. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453
   Rackspace Cloud Files requires rackspace_username, rackspace_api_key, rackspace_region, and rackspace_container.
@@ -57,7 +60,11 @@ S3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compa
 
 
 
-Google Cloud Storage requires that you specify `google_cloud_storage_bucket`, `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`.
+Google Cloud Storage requires that you specify `google_cloud_storage_bucket`, and then one of the following sets of authentication credentials:
+
+ - for JSON authentcation: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`
+
+ - for HMAC (S3-Compatible) authentication: `google_cloud_storage_region` and `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`
 
 
 
@@ -119,55 +126,57 @@ Linode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `l
 
 ```terraform
 resource "files_remote_server" "example_remote_server" {
-  aws_access_key                            = "example"
-  wasabi_access_key                         = "example"
-  reset_authentication                      = false
-  hostname                                  = "remote-server.com"
-  name                                      = "My Remote server"
-  max_connections                           = 1
-  pin_to_site_region                        = true
-  port                                      = 1
-  s3_bucket                                 = "my-bucket"
-  s3_region                                 = "us-east-1"
-  server_certificate                        = "require_match"
-  server_host_key                           = "[public key]"
-  server_type                               = "s3"
-  ssl                                       = "if_available"
-  username                                  = "user"
-  google_cloud_storage_bucket               = "my-bucket"
-  google_cloud_storage_project_id           = "my-project"
-  backblaze_b2_bucket                       = "my-bucket"
-  backblaze_b2_s3_endpoint                  = "s3.us-west-001.backblazeb2.com"
-  wasabi_bucket                             = "my-bucket"
-  wasabi_region                             = "us-west-1"
-  rackspace_username                        = "rackspaceuser"
-  rackspace_region                          = "dfw"
-  rackspace_container                       = "my-container"
-  one_drive_account_type                    = "personal"
-  azure_blob_storage_account                = "storage-account-name"
-  azure_blob_storage_container              = "container-name"
-  azure_blob_storage_hierarchical_namespace = true
-  azure_blob_storage_dns_suffix             = "usgovcloudapi.net"
-  azure_files_storage_account               = "storage-account-name"
-  azure_files_storage_share_name            = "share-name"
-  azure_files_storage_dns_suffix            = "file.core.windows.net"
-  s3_compatible_bucket                      = "my-bucket"
-  s3_compatible_endpoint                    = "mys3platform.com"
-  s3_compatible_region                      = "us-east-1"
-  enable_dedicated_ips                      = true
-  s3_compatible_access_key                  = "example"
-  files_agent_root                          = "example"
-  files_agent_permission_set                = "read_write"
-  files_agent_version                       = "example"
-  filebase_access_key                       = "example"
-  filebase_bucket                           = "my-bucket"
-  cloudflare_access_key                     = "example"
-  cloudflare_bucket                         = "my-bucket"
-  cloudflare_endpoint                       = "https://<ACCOUNT_ID>.r2.cloudflarestorage.com"
-  dropbox_teams                             = true
-  linode_access_key                         = "example"
-  linode_bucket                             = "my-bucket"
-  linode_region                             = "us-east-1"
+  reset_authentication                          = false
+  aws_access_key                                = "example"
+  azure_blob_storage_account                    = "storage-account-name"
+  azure_blob_storage_container                  = "container-name"
+  azure_blob_storage_dns_suffix                 = "usgovcloudapi.net"
+  azure_blob_storage_hierarchical_namespace     = true
+  azure_files_storage_account                   = "storage-account-name"
+  azure_files_storage_dns_suffix                = "file.core.windows.net"
+  azure_files_storage_share_name                = "share-name"
+  backblaze_b2_bucket                           = "my-bucket"
+  backblaze_b2_s3_endpoint                      = "s3.us-west-001.backblazeb2.com"
+  cloudflare_access_key                         = "example"
+  cloudflare_bucket                             = "my-bucket"
+  cloudflare_endpoint                           = "https://<ACCOUNT_ID>.r2.cloudflarestorage.com"
+  dropbox_teams                                 = true
+  enable_dedicated_ips                          = true
+  filebase_access_key                           = "example"
+  filebase_bucket                               = "my-bucket"
+  files_agent_permission_set                    = "read_write"
+  files_agent_root                              = "example"
+  files_agent_version                           = "example"
+  google_cloud_storage_bucket                   = "my-bucket"
+  google_cloud_storage_project_id               = "my-project"
+  google_cloud_storage_region                   = "us-east-1"
+  google_cloud_storage_s3_compatible_access_key = "example"
+  hostname                                      = "remote-server.com"
+  linode_access_key                             = "example"
+  linode_bucket                                 = "my-bucket"
+  linode_region                                 = "us-east-1"
+  max_connections                               = 1
+  name                                          = "My Remote server"
+  one_drive_account_type                        = "personal"
+  pin_to_site_region                            = true
+  port                                          = 1
+  rackspace_container                           = "my-container"
+  rackspace_region                              = "dfw"
+  rackspace_username                            = "rackspaceuser"
+  s3_bucket                                     = "my-bucket"
+  s3_compatible_access_key                      = "example"
+  s3_compatible_bucket                          = "my-bucket"
+  s3_compatible_endpoint                        = "mys3platform.com"
+  s3_compatible_region                          = "us-east-1"
+  s3_region                                     = "us-east-1"
+  server_certificate                            = "require_match"
+  server_host_key                               = "[public key]"
+  server_type                                   = "s3"
+  ssl                                           = "if_available"
+  username                                      = "user"
+  wasabi_access_key                             = "example"
+  wasabi_bucket                                 = "my-bucket"
+  wasabi_region                                 = "us-west-1"
 }
 ```
 
@@ -177,61 +186,64 @@ resource "files_remote_server" "example_remote_server" {
 ### Optional
 
 - `aws_access_key` (String) AWS Access Key.
-- `aws_secret_key` (String) AWS secret key.
-- `azure_blob_storage_access_key` (String) Azure Blob Storage secret key.
-- `azure_blob_storage_account` (String) Azure Blob Storage Account name
-- `azure_blob_storage_container` (String) Azure Blob Storage Container name
-- `azure_blob_storage_dns_suffix` (String) Custom DNS suffix
-- `azure_blob_storage_hierarchical_namespace` (Boolean) Enable when storage account has hierarchical namespace feature enabled
-- `azure_blob_storage_sas_token` (String) Shared Access Signature (SAS) token
-- `azure_files_storage_access_key` (String) Azure File Storage access key.
-- `azure_files_storage_account` (String) Azure File Storage Account name
-- `azure_files_storage_dns_suffix` (String) Custom DNS suffix
-- `azure_files_storage_sas_token` (String) Shared Access Signature (SAS) token
-- `azure_files_storage_share_name` (String) Azure File Storage Share name
-- `backblaze_b2_application_key` (String) Backblaze B2 Cloud Storage applicationKey.
-- `backblaze_b2_bucket` (String) Backblaze B2 Cloud Storage Bucket name
-- `backblaze_b2_key_id` (String) Backblaze B2 Cloud Storage keyID.
-- `backblaze_b2_s3_endpoint` (String) Backblaze B2 Cloud Storage S3 Endpoint
-- `cloudflare_access_key` (String) Cloudflare Access Key.
-- `cloudflare_bucket` (String) Cloudflare Bucket name
-- `cloudflare_endpoint` (String) Cloudflare endpoint
-- `cloudflare_secret_key` (String) Cloudflare secret key
-- `dropbox_teams` (Boolean) List Team folders in root
+- `aws_secret_key` (String) AWS: secret key.
+- `azure_blob_storage_access_key` (String) Azure Blob Storage: Access Key
+- `azure_blob_storage_account` (String) Azure Blob Storage: Account name
+- `azure_blob_storage_container` (String) Azure Blob Storage: Container name
+- `azure_blob_storage_dns_suffix` (String) Azure Blob Storage: Custom DNS suffix
+- `azure_blob_storage_hierarchical_namespace` (Boolean) Azure Blob Storage: Does the storage account has hierarchical namespace feature enabled?
+- `azure_blob_storage_sas_token` (String) Azure Blob Storage: Shared Access Signature (SAS) token
+- `azure_files_storage_access_key` (String) Azure File Storage: Access Key
+- `azure_files_storage_account` (String) Azure Files: Storage Account name
+- `azure_files_storage_dns_suffix` (String) Azure Files: Custom DNS suffix
+- `azure_files_storage_sas_token` (String) Azure File Storage: Shared Access Signature (SAS) token
+- `azure_files_storage_share_name` (String) Azure Files:  Storage Share name
+- `backblaze_b2_application_key` (String) Backblaze B2 Cloud Storage: applicationKey
+- `backblaze_b2_bucket` (String) Backblaze B2 Cloud Storage: Bucket name
+- `backblaze_b2_key_id` (String) Backblaze B2 Cloud Storage: keyID
+- `backblaze_b2_s3_endpoint` (String) Backblaze B2 Cloud Storage: S3 Endpoint
+- `cloudflare_access_key` (String) Cloudflare: Access Key.
+- `cloudflare_bucket` (String) Cloudflare: Bucket name
+- `cloudflare_endpoint` (String) Cloudflare: endpoint
+- `cloudflare_secret_key` (String) Cloudflare: Secret Key
+- `dropbox_teams` (Boolean) Dropbox: If true, list Team folders in root?
 - `enable_dedicated_ips` (Boolean) `true` if remote server only accepts connections from dedicated IPs
-- `filebase_access_key` (String) Filebase Access Key.
-- `filebase_bucket` (String) Filebase Bucket name
-- `filebase_secret_key` (String) Filebase secret key
+- `filebase_access_key` (String) Filebase: Access Key.
+- `filebase_bucket` (String) Filebase: Bucket name
+- `filebase_secret_key` (String) Filebase: Secret Key
 - `files_agent_permission_set` (String) Local permissions for files agent. read_only, write_only, or read_write
 - `files_agent_root` (String) Agent local root path
 - `files_agent_version` (String) Files Agent version
-- `google_cloud_storage_bucket` (String) Google Cloud Storage bucket name
-- `google_cloud_storage_credentials_json` (String) A JSON file that contains the private key. To generate see https://cloud.google.com/storage/docs/json_api/v1/how-tos/authorizing#APIKey
-- `google_cloud_storage_project_id` (String) Google Cloud Project ID
+- `google_cloud_storage_bucket` (String) Google Cloud Storage: Bucket Name
+- `google_cloud_storage_credentials_json` (String) Google Cloud Storage: JSON file that contains the private key. To generate see https://cloud.google.com/storage/docs/json_api/v1/how-tos/authorizing#APIKey
+- `google_cloud_storage_project_id` (String) Google Cloud Storage: Project ID
+- `google_cloud_storage_region` (String) Google Cloud Storage: Region
+- `google_cloud_storage_s3_compatible_access_key` (String) Google Cloud Storage: S3-compatible Access Key.
+- `google_cloud_storage_s3_compatible_secret_key` (String) Google Cloud Storage: S3-compatible secret key
 - `hostname` (String) Hostname or IP address
-- `linode_access_key` (String) Linode Access Key.
-- `linode_bucket` (String) Linode Bucket name
-- `linode_region` (String) Linode region
-- `linode_secret_key` (String) Linode secret key
+- `linode_access_key` (String) Linode: Access Key
+- `linode_bucket` (String) Linode: Bucket name
+- `linode_region` (String) Linode: region
+- `linode_secret_key` (String) Linode: Secret Key
 - `max_connections` (Number) Max number of parallel connections.  Ignored for S3 connections (we will parallelize these as much as possible).
 - `name` (String) Internal name for your reference
-- `one_drive_account_type` (String) Either personal or business_other account types
-- `password` (String) Password if needed.
+- `one_drive_account_type` (String) OneDrive: Either personal or business_other account types
+- `password` (String) Password, if needed.
 - `pin_to_site_region` (Boolean) If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.
 - `port` (Number) Port for remote server.  Not needed for S3.
-- `private_key` (String) Private key if needed.
+- `private_key` (String) Private key, if needed.
 - `private_key_passphrase` (String) Passphrase for private key if needed.
-- `rackspace_api_key` (String) Rackspace API key from the Rackspace Cloud Control Panel.
-- `rackspace_container` (String) The name of the container (top level directory) where files will sync.
-- `rackspace_region` (String) Three letter airport code for Rackspace region. See https://support.rackspace.com/how-to/about-regions/
-- `rackspace_username` (String) Rackspace username used to login to the Rackspace Cloud Control Panel.
-- `reset_authentication` (Boolean) Reset authenticated account
+- `rackspace_api_key` (String) Rackspace: API key from the Rackspace Cloud Control Panel
+- `rackspace_container` (String) Rackspace: The name of the container (top level directory) where files will sync.
+- `rackspace_region` (String) Rackspace: Three letter code for Rackspace region. See https://support.rackspace.com/how-to/about-regions/
+- `rackspace_username` (String) Rackspace: username used to login to the Rackspace Cloud Control Panel.
+- `reset_authentication` (Boolean) Reset authenticated account?
 - `s3_bucket` (String) S3 bucket name
-- `s3_compatible_access_key` (String) S3-compatible Access Key.
-- `s3_compatible_bucket` (String) S3-compatible Bucket name
-- `s3_compatible_endpoint` (String) S3-compatible endpoint
-- `s3_compatible_region` (String) S3-compatible endpoint
-- `s3_compatible_secret_key` (String) S3-compatible secret key
+- `s3_compatible_access_key` (String) S3-compatible: Access Key
+- `s3_compatible_bucket` (String) S3-compatible: Bucket name
+- `s3_compatible_endpoint` (String) S3-compatible: endpoint
+- `s3_compatible_region` (String) S3-compatible: region
+- `s3_compatible_secret_key` (String) S3-compatible: Secret Key
 - `s3_region` (String) S3 region
 - `server_certificate` (String) Remote server certificate
 - `server_host_key` (String) Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts
@@ -239,10 +251,10 @@ resource "files_remote_server" "example_remote_server" {
 - `ssl` (String) Should we require SSL?
 - `ssl_certificate` (String) SSL client certificate.
 - `username` (String) Remote server username.  Not needed for S3 buckets.
-- `wasabi_access_key` (String) Wasabi access key.
-- `wasabi_bucket` (String) Wasabi Bucket name
-- `wasabi_region` (String) Wasabi region
-- `wasabi_secret_key` (String) Wasabi secret key.
+- `wasabi_access_key` (String) Wasabi: Access Key.
+- `wasabi_bucket` (String) Wasabi: Bucket name
+- `wasabi_region` (String) Wasabi: Region
+- `wasabi_secret_key` (String) Wasabi: Secret Key
 
 ### Read-Only
 

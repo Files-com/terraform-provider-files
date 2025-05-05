@@ -65,6 +65,8 @@ data "files_siem_http_destination" "example_siem_http_destination" {
 - `qradar_password_masked` (String) Applicable only for destination type: qradar. Basic auth password provided by QRadar.
 - `qradar_username` (String) Applicable only for destination type: qradar. Basic auth username provided by QRadar.
 - `sending_active` (Boolean) Whether this SIEM HTTP Destination is currently being sent to or not
+- `settings_change_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `settings_change_send_enabled` (Boolean) Whether or not sending is enabled for settings_change logs.
 - `sftp_action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `sftp_action_send_enabled` (Boolean) Whether or not sending is enabled for sftp_action logs.
 - `solar_winds_token_masked` (String) Applicable only for destination type: solar_winds. Authentication token provided by Solar Winds.

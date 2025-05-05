@@ -59,6 +59,7 @@ type siemHttpDestinationResourceModel struct {
 	PublicHostingRequestSendEnabled               types.Bool    `tfsdk:"public_hosting_request_send_enabled"`
 	EmailSendEnabled                              types.Bool    `tfsdk:"email_send_enabled"`
 	ExavaultApiRequestSendEnabled                 types.Bool    `tfsdk:"exavault_api_request_send_enabled"`
+	SettingsChangeSendEnabled                     types.Bool    `tfsdk:"settings_change_send_enabled"`
 	SplunkToken                                   types.String  `tfsdk:"splunk_token"`
 	AzureOauthClientCredentialsClientSecret       types.String  `tfsdk:"azure_oauth_client_credentials_client_secret"`
 	QradarPassword                                types.String  `tfsdk:"qradar_password"`
@@ -82,6 +83,7 @@ type siemHttpDestinationResourceModel struct {
 	PublicHostingRequestEntriesSent               types.Int64   `tfsdk:"public_hosting_request_entries_sent"`
 	EmailEntriesSent                              types.Int64   `tfsdk:"email_entries_sent"`
 	ExavaultApiRequestEntriesSent                 types.Int64   `tfsdk:"exavault_api_request_entries_sent"`
+	SettingsChangeEntriesSent                     types.Int64   `tfsdk:"settings_change_entries_sent"`
 	LastHttpCallTargetType                        types.String  `tfsdk:"last_http_call_target_type"`
 	LastHttpCallSuccess                           types.Bool    `tfsdk:"last_http_call_success"`
 	LastHttpCallResponseCode                      types.Int64   `tfsdk:"last_http_call_response_code"`
@@ -286,6 +288,14 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"settings_change_send_enabled": schema.BoolAttribute{
+				Description: "Whether or not sending is enabled for settings_change logs.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"splunk_token": schema.StringAttribute{
 				Description: "Applicable only for destination type: splunk. Authentication token provided by Splunk.",
 				Optional:    true,
@@ -378,6 +388,10 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 				Computed:    true,
 			},
 			"exavault_api_request_entries_sent": schema.Int64Attribute{
+				Description: "Number of log entries sent for the lifetime of this destination.",
+				Computed:    true,
+			},
+			"settings_change_entries_sent": schema.Int64Attribute{
 				Description: "Number of log entries sent for the lifetime of this destination.",
 				Computed:    true,
 			},
@@ -481,6 +495,9 @@ func (r *siemHttpDestinationResource) Create(ctx context.Context, req resource.C
 	}
 	if !plan.ExavaultApiRequestSendEnabled.IsNull() && !plan.ExavaultApiRequestSendEnabled.IsUnknown() {
 		paramsSiemHttpDestinationCreate.ExavaultApiRequestSendEnabled = plan.ExavaultApiRequestSendEnabled.ValueBoolPointer()
+	}
+	if !plan.SettingsChangeSendEnabled.IsNull() && !plan.SettingsChangeSendEnabled.IsUnknown() {
+		paramsSiemHttpDestinationCreate.SettingsChangeSendEnabled = plan.SettingsChangeSendEnabled.ValueBoolPointer()
 	}
 	paramsSiemHttpDestinationCreate.DestinationType = paramsSiemHttpDestinationCreate.DestinationType.Enum()[plan.DestinationType.ValueString()]
 	paramsSiemHttpDestinationCreate.DestinationUrl = plan.DestinationUrl.ValueString()
@@ -602,6 +619,9 @@ func (r *siemHttpDestinationResource) Update(ctx context.Context, req resource.U
 	if !plan.ExavaultApiRequestSendEnabled.IsNull() && !plan.ExavaultApiRequestSendEnabled.IsUnknown() {
 		paramsSiemHttpDestinationUpdate.ExavaultApiRequestSendEnabled = plan.ExavaultApiRequestSendEnabled.ValueBoolPointer()
 	}
+	if !plan.SettingsChangeSendEnabled.IsNull() && !plan.SettingsChangeSendEnabled.IsUnknown() {
+		paramsSiemHttpDestinationUpdate.SettingsChangeSendEnabled = plan.SettingsChangeSendEnabled.ValueBoolPointer()
+	}
 	paramsSiemHttpDestinationUpdate.DestinationType = paramsSiemHttpDestinationUpdate.DestinationType.Enum()[plan.DestinationType.ValueString()]
 	paramsSiemHttpDestinationUpdate.DestinationUrl = plan.DestinationUrl.ValueString()
 
@@ -713,6 +733,8 @@ func (r *siemHttpDestinationResource) populateResourceModel(ctx context.Context,
 	state.EmailEntriesSent = types.Int64Value(siemHttpDestination.EmailEntriesSent)
 	state.ExavaultApiRequestSendEnabled = types.BoolPointerValue(siemHttpDestination.ExavaultApiRequestSendEnabled)
 	state.ExavaultApiRequestEntriesSent = types.Int64Value(siemHttpDestination.ExavaultApiRequestEntriesSent)
+	state.SettingsChangeSendEnabled = types.BoolPointerValue(siemHttpDestination.SettingsChangeSendEnabled)
+	state.SettingsChangeEntriesSent = types.Int64Value(siemHttpDestination.SettingsChangeEntriesSent)
 	state.LastHttpCallTargetType = types.StringValue(siemHttpDestination.LastHttpCallTargetType)
 	state.LastHttpCallSuccess = types.BoolPointerValue(siemHttpDestination.LastHttpCallSuccess)
 	state.LastHttpCallResponseCode = types.Int64Value(siemHttpDestination.LastHttpCallResponseCode)

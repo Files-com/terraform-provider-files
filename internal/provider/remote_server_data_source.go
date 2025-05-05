@@ -26,63 +26,65 @@ type remoteServerDataSource struct {
 }
 
 type remoteServerDataSourceModel struct {
-	Id                                    types.Int64  `tfsdk:"id"`
-	Disabled                              types.Bool   `tfsdk:"disabled"`
-	AuthenticationMethod                  types.String `tfsdk:"authentication_method"`
-	Hostname                              types.String `tfsdk:"hostname"`
-	RemoteHomePath                        types.String `tfsdk:"remote_home_path"`
-	Name                                  types.String `tfsdk:"name"`
-	Port                                  types.Int64  `tfsdk:"port"`
-	MaxConnections                        types.Int64  `tfsdk:"max_connections"`
-	PinToSiteRegion                       types.Bool   `tfsdk:"pin_to_site_region"`
-	PinnedRegion                          types.String `tfsdk:"pinned_region"`
-	S3Bucket                              types.String `tfsdk:"s3_bucket"`
-	S3Region                              types.String `tfsdk:"s3_region"`
-	AwsAccessKey                          types.String `tfsdk:"aws_access_key"`
-	ServerCertificate                     types.String `tfsdk:"server_certificate"`
-	ServerHostKey                         types.String `tfsdk:"server_host_key"`
-	ServerType                            types.String `tfsdk:"server_type"`
-	Ssl                                   types.String `tfsdk:"ssl"`
-	Username                              types.String `tfsdk:"username"`
-	GoogleCloudStorageBucket              types.String `tfsdk:"google_cloud_storage_bucket"`
-	GoogleCloudStorageProjectId           types.String `tfsdk:"google_cloud_storage_project_id"`
-	BackblazeB2S3Endpoint                 types.String `tfsdk:"backblaze_b2_s3_endpoint"`
-	BackblazeB2Bucket                     types.String `tfsdk:"backblaze_b2_bucket"`
-	WasabiBucket                          types.String `tfsdk:"wasabi_bucket"`
-	WasabiRegion                          types.String `tfsdk:"wasabi_region"`
-	WasabiAccessKey                       types.String `tfsdk:"wasabi_access_key"`
-	RackspaceUsername                     types.String `tfsdk:"rackspace_username"`
-	RackspaceRegion                       types.String `tfsdk:"rackspace_region"`
-	RackspaceContainer                    types.String `tfsdk:"rackspace_container"`
-	AuthStatus                            types.String `tfsdk:"auth_status"`
-	AuthAccountName                       types.String `tfsdk:"auth_account_name"`
-	OneDriveAccountType                   types.String `tfsdk:"one_drive_account_type"`
-	AzureBlobStorageAccount               types.String `tfsdk:"azure_blob_storage_account"`
-	AzureBlobStorageContainer             types.String `tfsdk:"azure_blob_storage_container"`
-	AzureBlobStorageHierarchicalNamespace types.Bool   `tfsdk:"azure_blob_storage_hierarchical_namespace"`
-	AzureBlobStorageDnsSuffix             types.String `tfsdk:"azure_blob_storage_dns_suffix"`
-	AzureFilesStorageAccount              types.String `tfsdk:"azure_files_storage_account"`
-	AzureFilesStorageShareName            types.String `tfsdk:"azure_files_storage_share_name"`
-	AzureFilesStorageDnsSuffix            types.String `tfsdk:"azure_files_storage_dns_suffix"`
-	S3CompatibleBucket                    types.String `tfsdk:"s3_compatible_bucket"`
-	S3CompatibleEndpoint                  types.String `tfsdk:"s3_compatible_endpoint"`
-	S3CompatibleRegion                    types.String `tfsdk:"s3_compatible_region"`
-	S3CompatibleAccessKey                 types.String `tfsdk:"s3_compatible_access_key"`
-	EnableDedicatedIps                    types.Bool   `tfsdk:"enable_dedicated_ips"`
-	FilesAgentPermissionSet               types.String `tfsdk:"files_agent_permission_set"`
-	FilesAgentRoot                        types.String `tfsdk:"files_agent_root"`
-	FilesAgentApiToken                    types.String `tfsdk:"files_agent_api_token"`
-	FilesAgentVersion                     types.String `tfsdk:"files_agent_version"`
-	FilebaseBucket                        types.String `tfsdk:"filebase_bucket"`
-	FilebaseAccessKey                     types.String `tfsdk:"filebase_access_key"`
-	CloudflareBucket                      types.String `tfsdk:"cloudflare_bucket"`
-	CloudflareAccessKey                   types.String `tfsdk:"cloudflare_access_key"`
-	CloudflareEndpoint                    types.String `tfsdk:"cloudflare_endpoint"`
-	DropboxTeams                          types.Bool   `tfsdk:"dropbox_teams"`
-	LinodeBucket                          types.String `tfsdk:"linode_bucket"`
-	LinodeAccessKey                       types.String `tfsdk:"linode_access_key"`
-	LinodeRegion                          types.String `tfsdk:"linode_region"`
-	SupportsVersioning                    types.Bool   `tfsdk:"supports_versioning"`
+	Id                                      types.Int64  `tfsdk:"id"`
+	Disabled                                types.Bool   `tfsdk:"disabled"`
+	AuthenticationMethod                    types.String `tfsdk:"authentication_method"`
+	Hostname                                types.String `tfsdk:"hostname"`
+	RemoteHomePath                          types.String `tfsdk:"remote_home_path"`
+	Name                                    types.String `tfsdk:"name"`
+	Port                                    types.Int64  `tfsdk:"port"`
+	MaxConnections                          types.Int64  `tfsdk:"max_connections"`
+	PinToSiteRegion                         types.Bool   `tfsdk:"pin_to_site_region"`
+	PinnedRegion                            types.String `tfsdk:"pinned_region"`
+	S3Bucket                                types.String `tfsdk:"s3_bucket"`
+	S3Region                                types.String `tfsdk:"s3_region"`
+	AwsAccessKey                            types.String `tfsdk:"aws_access_key"`
+	ServerCertificate                       types.String `tfsdk:"server_certificate"`
+	ServerHostKey                           types.String `tfsdk:"server_host_key"`
+	ServerType                              types.String `tfsdk:"server_type"`
+	Ssl                                     types.String `tfsdk:"ssl"`
+	Username                                types.String `tfsdk:"username"`
+	GoogleCloudStorageBucket                types.String `tfsdk:"google_cloud_storage_bucket"`
+	GoogleCloudStorageProjectId             types.String `tfsdk:"google_cloud_storage_project_id"`
+	GoogleCloudStorageRegion                types.String `tfsdk:"google_cloud_storage_region"`
+	GoogleCloudStorageS3CompatibleAccessKey types.String `tfsdk:"google_cloud_storage_s3_compatible_access_key"`
+	BackblazeB2S3Endpoint                   types.String `tfsdk:"backblaze_b2_s3_endpoint"`
+	BackblazeB2Bucket                       types.String `tfsdk:"backblaze_b2_bucket"`
+	WasabiBucket                            types.String `tfsdk:"wasabi_bucket"`
+	WasabiRegion                            types.String `tfsdk:"wasabi_region"`
+	WasabiAccessKey                         types.String `tfsdk:"wasabi_access_key"`
+	RackspaceUsername                       types.String `tfsdk:"rackspace_username"`
+	RackspaceRegion                         types.String `tfsdk:"rackspace_region"`
+	RackspaceContainer                      types.String `tfsdk:"rackspace_container"`
+	AuthStatus                              types.String `tfsdk:"auth_status"`
+	AuthAccountName                         types.String `tfsdk:"auth_account_name"`
+	OneDriveAccountType                     types.String `tfsdk:"one_drive_account_type"`
+	AzureBlobStorageAccount                 types.String `tfsdk:"azure_blob_storage_account"`
+	AzureBlobStorageContainer               types.String `tfsdk:"azure_blob_storage_container"`
+	AzureBlobStorageHierarchicalNamespace   types.Bool   `tfsdk:"azure_blob_storage_hierarchical_namespace"`
+	AzureBlobStorageDnsSuffix               types.String `tfsdk:"azure_blob_storage_dns_suffix"`
+	AzureFilesStorageAccount                types.String `tfsdk:"azure_files_storage_account"`
+	AzureFilesStorageShareName              types.String `tfsdk:"azure_files_storage_share_name"`
+	AzureFilesStorageDnsSuffix              types.String `tfsdk:"azure_files_storage_dns_suffix"`
+	S3CompatibleBucket                      types.String `tfsdk:"s3_compatible_bucket"`
+	S3CompatibleEndpoint                    types.String `tfsdk:"s3_compatible_endpoint"`
+	S3CompatibleRegion                      types.String `tfsdk:"s3_compatible_region"`
+	S3CompatibleAccessKey                   types.String `tfsdk:"s3_compatible_access_key"`
+	EnableDedicatedIps                      types.Bool   `tfsdk:"enable_dedicated_ips"`
+	FilesAgentPermissionSet                 types.String `tfsdk:"files_agent_permission_set"`
+	FilesAgentRoot                          types.String `tfsdk:"files_agent_root"`
+	FilesAgentApiToken                      types.String `tfsdk:"files_agent_api_token"`
+	FilesAgentVersion                       types.String `tfsdk:"files_agent_version"`
+	FilebaseBucket                          types.String `tfsdk:"filebase_bucket"`
+	FilebaseAccessKey                       types.String `tfsdk:"filebase_access_key"`
+	CloudflareBucket                        types.String `tfsdk:"cloudflare_bucket"`
+	CloudflareAccessKey                     types.String `tfsdk:"cloudflare_access_key"`
+	CloudflareEndpoint                      types.String `tfsdk:"cloudflare_endpoint"`
+	DropboxTeams                            types.Bool   `tfsdk:"dropbox_teams"`
+	LinodeBucket                            types.String `tfsdk:"linode_bucket"`
+	LinodeAccessKey                         types.String `tfsdk:"linode_access_key"`
+	LinodeRegion                            types.String `tfsdk:"linode_region"`
+	SupportsVersioning                      types.Bool   `tfsdk:"supports_versioning"`
 }
 
 func (r *remoteServerDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -110,7 +112,7 @@ func (r *remoteServerDataSource) Metadata(_ context.Context, req datasource.Meta
 
 func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A RemoteServer is a specific type of Behavior called `remote_server_sync`.\n\n\n\nRemote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.\n\n\n\nNot every attribute will apply to every remote server.\n\n\n\nFTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`. Optionally, provide `server_certificate`.\n\n\n\nSFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`. Optionally, provide `server_certificate`, `private_key_passphrase`.\n\n\n\nS3 Buckets require that you specify their `s3_bucket` name, and `s3_region`. Optionally provide a `aws_access_key`, and `aws_secret_key`. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.\n\n\n\nS3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`.\n\n\n\nGoogle Cloud Storage requires that you specify `google_cloud_storage_bucket`, `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`.\n\n\n\nWasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.\n\n\n\nBackblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453\n\n\n\nRackspace Cloud Files requires `rackspace_username`, `rackspace_api_key`, `rackspace_region`, and `rackspace_container`.\n\n\n\nWebDAV Servers require that you specify their `hostname`, `username`, and `password`.\n\n\n\nOneDrive follow the `auth_setup_link` and login with Microsoft.\n\n\n\nSharepoint follow the `auth_setup_link` and login with Microsoft.\n\n\n\nBox follow the `auth_setup_link` and login with Box.\n\n\n\nDropbox specify if `dropbox_teams` then follow the `auth_setup_link` and login with Dropbox.\n\n\n\nGoogle Drive follow the `auth_setup_link` and login with Google.\n\n\n\nAzure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`, `azure_blob_storage_dns_suffix`\n\n\n\nAzure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`, `azure_files_storage_dns_suffix`\n\n\n\nFilebase requires `filebase_bucket`, `filebase_access_key`, and `filebase_secret_key`.\n\n\n\nCloudflare requires `cloudflare_bucket`, `cloudflare_access_key`, `cloudflare_secret_key` and `cloudflare_endpoint`.\n\n\n\nLinode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `linode_region`.",
+		Description: "A RemoteServer is a specific type of Behavior called `remote_server_sync`.\n\n\n\nRemote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.\n\n\n\nNot every attribute will apply to every remote server.\n\n\n\nFTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`. Optionally, provide `server_certificate`.\n\n\n\nSFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`. Optionally, provide `server_certificate`, `private_key_passphrase`.\n\n\n\nS3 Buckets require that you specify their `s3_bucket` name, and `s3_region`. Optionally provide a `aws_access_key`, and `aws_secret_key`. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.\n\n\n\nS3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`.\n\n\n\nGoogle Cloud Storage requires that you specify `google_cloud_storage_bucket`, and then one of the following sets of authentication credentials:\n\n - for JSON authentcation: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`\n\n - for HMAC (S3-Compatible) authentication: `google_cloud_storage_region` and `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`\n\n\n\nWasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.\n\n\n\nBackblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453\n\n\n\nRackspace Cloud Files requires `rackspace_username`, `rackspace_api_key`, `rackspace_region`, and `rackspace_container`.\n\n\n\nWebDAV Servers require that you specify their `hostname`, `username`, and `password`.\n\n\n\nOneDrive follow the `auth_setup_link` and login with Microsoft.\n\n\n\nSharepoint follow the `auth_setup_link` and login with Microsoft.\n\n\n\nBox follow the `auth_setup_link` and login with Box.\n\n\n\nDropbox specify if `dropbox_teams` then follow the `auth_setup_link` and login with Dropbox.\n\n\n\nGoogle Drive follow the `auth_setup_link` and login with Google.\n\n\n\nAzure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`, `azure_blob_storage_dns_suffix`\n\n\n\nAzure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`, `azure_files_storage_dns_suffix`\n\n\n\nFilebase requires `filebase_bucket`, `filebase_access_key`, and `filebase_secret_key`.\n\n\n\nCloudflare requires `cloudflare_bucket`, `cloudflare_access_key`, `cloudflare_secret_key` and `cloudflare_endpoint`.\n\n\n\nLinode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `linode_region`.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Remote server ID",
@@ -185,43 +187,51 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Computed:    true,
 			},
 			"google_cloud_storage_bucket": schema.StringAttribute{
-				Description: "Google Cloud Storage bucket name",
+				Description: "Google Cloud Storage: Bucket Name",
 				Computed:    true,
 			},
 			"google_cloud_storage_project_id": schema.StringAttribute{
-				Description: "Google Cloud Project ID",
+				Description: "Google Cloud Storage: Project ID",
+				Computed:    true,
+			},
+			"google_cloud_storage_region": schema.StringAttribute{
+				Description: "Google Cloud Storage: Region",
+				Computed:    true,
+			},
+			"google_cloud_storage_s3_compatible_access_key": schema.StringAttribute{
+				Description: "Google Cloud Storage: S3-compatible Access Key.",
 				Computed:    true,
 			},
 			"backblaze_b2_s3_endpoint": schema.StringAttribute{
-				Description: "Backblaze B2 Cloud Storage S3 Endpoint",
+				Description: "Backblaze B2 Cloud Storage: S3 Endpoint",
 				Computed:    true,
 			},
 			"backblaze_b2_bucket": schema.StringAttribute{
-				Description: "Backblaze B2 Cloud Storage Bucket name",
+				Description: "Backblaze B2 Cloud Storage: Bucket name",
 				Computed:    true,
 			},
 			"wasabi_bucket": schema.StringAttribute{
-				Description: "Wasabi Bucket name",
+				Description: "Wasabi: Bucket name",
 				Computed:    true,
 			},
 			"wasabi_region": schema.StringAttribute{
-				Description: "Wasabi region",
+				Description: "Wasabi: Region",
 				Computed:    true,
 			},
 			"wasabi_access_key": schema.StringAttribute{
-				Description: "Wasabi access key.",
+				Description: "Wasabi: Access Key.",
 				Computed:    true,
 			},
 			"rackspace_username": schema.StringAttribute{
-				Description: "Rackspace username used to login to the Rackspace Cloud Control Panel.",
+				Description: "Rackspace: username used to login to the Rackspace Cloud Control Panel.",
 				Computed:    true,
 			},
 			"rackspace_region": schema.StringAttribute{
-				Description: "Three letter airport code for Rackspace region. See https://support.rackspace.com/how-to/about-regions/",
+				Description: "Rackspace: Three letter code for Rackspace region. See https://support.rackspace.com/how-to/about-regions/",
 				Computed:    true,
 			},
 			"rackspace_container": schema.StringAttribute{
-				Description: "The name of the container (top level directory) where files will sync.",
+				Description: "Rackspace: The name of the container (top level directory) where files will sync.",
 				Computed:    true,
 			},
 			"auth_status": schema.StringAttribute{
@@ -233,51 +243,51 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Computed:    true,
 			},
 			"one_drive_account_type": schema.StringAttribute{
-				Description: "Either personal or business_other account types",
+				Description: "OneDrive: Either personal or business_other account types",
 				Computed:    true,
 			},
 			"azure_blob_storage_account": schema.StringAttribute{
-				Description: "Azure Blob Storage Account name",
+				Description: "Azure Blob Storage: Account name",
 				Computed:    true,
 			},
 			"azure_blob_storage_container": schema.StringAttribute{
-				Description: "Azure Blob Storage Container name",
+				Description: "Azure Blob Storage: Container name",
 				Computed:    true,
 			},
 			"azure_blob_storage_hierarchical_namespace": schema.BoolAttribute{
-				Description: "Enable when storage account has hierarchical namespace feature enabled",
+				Description: "Azure Blob Storage: Does the storage account has hierarchical namespace feature enabled?",
 				Computed:    true,
 			},
 			"azure_blob_storage_dns_suffix": schema.StringAttribute{
-				Description: "Custom DNS suffix",
+				Description: "Azure Blob Storage: Custom DNS suffix",
 				Computed:    true,
 			},
 			"azure_files_storage_account": schema.StringAttribute{
-				Description: "Azure File Storage Account name",
+				Description: "Azure Files: Storage Account name",
 				Computed:    true,
 			},
 			"azure_files_storage_share_name": schema.StringAttribute{
-				Description: "Azure File Storage Share name",
+				Description: "Azure Files:  Storage Share name",
 				Computed:    true,
 			},
 			"azure_files_storage_dns_suffix": schema.StringAttribute{
-				Description: "Custom DNS suffix",
+				Description: "Azure Files: Custom DNS suffix",
 				Computed:    true,
 			},
 			"s3_compatible_bucket": schema.StringAttribute{
-				Description: "S3-compatible Bucket name",
+				Description: "S3-compatible: Bucket name",
 				Computed:    true,
 			},
 			"s3_compatible_endpoint": schema.StringAttribute{
-				Description: "S3-compatible endpoint",
+				Description: "S3-compatible: endpoint",
 				Computed:    true,
 			},
 			"s3_compatible_region": schema.StringAttribute{
-				Description: "S3-compatible endpoint",
+				Description: "S3-compatible: region",
 				Computed:    true,
 			},
 			"s3_compatible_access_key": schema.StringAttribute{
-				Description: "S3-compatible Access Key.",
+				Description: "S3-compatible: Access Key",
 				Computed:    true,
 			},
 			"enable_dedicated_ips": schema.BoolAttribute{
@@ -301,39 +311,39 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Computed:    true,
 			},
 			"filebase_bucket": schema.StringAttribute{
-				Description: "Filebase Bucket name",
+				Description: "Filebase: Bucket name",
 				Computed:    true,
 			},
 			"filebase_access_key": schema.StringAttribute{
-				Description: "Filebase Access Key.",
+				Description: "Filebase: Access Key.",
 				Computed:    true,
 			},
 			"cloudflare_bucket": schema.StringAttribute{
-				Description: "Cloudflare Bucket name",
+				Description: "Cloudflare: Bucket name",
 				Computed:    true,
 			},
 			"cloudflare_access_key": schema.StringAttribute{
-				Description: "Cloudflare Access Key.",
+				Description: "Cloudflare: Access Key.",
 				Computed:    true,
 			},
 			"cloudflare_endpoint": schema.StringAttribute{
-				Description: "Cloudflare endpoint",
+				Description: "Cloudflare: endpoint",
 				Computed:    true,
 			},
 			"dropbox_teams": schema.BoolAttribute{
-				Description: "List Team folders in root",
+				Description: "Dropbox: If true, list Team folders in root?",
 				Computed:    true,
 			},
 			"linode_bucket": schema.StringAttribute{
-				Description: "Linode Bucket name",
+				Description: "Linode: Bucket name",
 				Computed:    true,
 			},
 			"linode_access_key": schema.StringAttribute{
-				Description: "Linode Access Key.",
+				Description: "Linode: Access Key",
 				Computed:    true,
 			},
 			"linode_region": schema.StringAttribute{
-				Description: "Linode region",
+				Description: "Linode: region",
 				Computed:    true,
 			},
 			"supports_versioning": schema.BoolAttribute{
@@ -395,6 +405,8 @@ func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, re
 	state.Username = types.StringValue(remoteServer.Username)
 	state.GoogleCloudStorageBucket = types.StringValue(remoteServer.GoogleCloudStorageBucket)
 	state.GoogleCloudStorageProjectId = types.StringValue(remoteServer.GoogleCloudStorageProjectId)
+	state.GoogleCloudStorageRegion = types.StringValue(remoteServer.GoogleCloudStorageRegion)
+	state.GoogleCloudStorageS3CompatibleAccessKey = types.StringValue(remoteServer.GoogleCloudStorageS3CompatibleAccessKey)
 	state.BackblazeB2S3Endpoint = types.StringValue(remoteServer.BackblazeB2S3Endpoint)
 	state.BackblazeB2Bucket = types.StringValue(remoteServer.BackblazeB2Bucket)
 	state.WasabiBucket = types.StringValue(remoteServer.WasabiBucket)

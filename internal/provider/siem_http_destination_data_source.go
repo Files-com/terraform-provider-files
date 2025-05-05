@@ -66,6 +66,8 @@ type siemHttpDestinationDataSourceModel struct {
 	EmailEntriesSent                              types.Int64   `tfsdk:"email_entries_sent"`
 	ExavaultApiRequestSendEnabled                 types.Bool    `tfsdk:"exavault_api_request_send_enabled"`
 	ExavaultApiRequestEntriesSent                 types.Int64   `tfsdk:"exavault_api_request_entries_sent"`
+	SettingsChangeSendEnabled                     types.Bool    `tfsdk:"settings_change_send_enabled"`
+	SettingsChangeEntriesSent                     types.Int64   `tfsdk:"settings_change_entries_sent"`
 	LastHttpCallTargetType                        types.String  `tfsdk:"last_http_call_target_type"`
 	LastHttpCallSuccess                           types.Bool    `tfsdk:"last_http_call_success"`
 	LastHttpCallResponseCode                      types.Int64   `tfsdk:"last_http_call_response_code"`
@@ -256,6 +258,14 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 				Description: "Number of log entries sent for the lifetime of this destination.",
 				Computed:    true,
 			},
+			"settings_change_send_enabled": schema.BoolAttribute{
+				Description: "Whether or not sending is enabled for settings_change logs.",
+				Computed:    true,
+			},
+			"settings_change_entries_sent": schema.Int64Attribute{
+				Description: "Number of log entries sent for the lifetime of this destination.",
+				Computed:    true,
+			},
 			"last_http_call_target_type": schema.StringAttribute{
 				Description: "Type of URL that was last called. Can be `destination_url` or `azure_oauth_client_credentials_url`",
 				Computed:    true,
@@ -368,6 +378,8 @@ func (r *siemHttpDestinationDataSource) populateDataSourceModel(ctx context.Cont
 	state.EmailEntriesSent = types.Int64Value(siemHttpDestination.EmailEntriesSent)
 	state.ExavaultApiRequestSendEnabled = types.BoolPointerValue(siemHttpDestination.ExavaultApiRequestSendEnabled)
 	state.ExavaultApiRequestEntriesSent = types.Int64Value(siemHttpDestination.ExavaultApiRequestEntriesSent)
+	state.SettingsChangeSendEnabled = types.BoolPointerValue(siemHttpDestination.SettingsChangeSendEnabled)
+	state.SettingsChangeEntriesSent = types.Int64Value(siemHttpDestination.SettingsChangeEntriesSent)
 	state.LastHttpCallTargetType = types.StringValue(siemHttpDestination.LastHttpCallTargetType)
 	state.LastHttpCallSuccess = types.BoolPointerValue(siemHttpDestination.LastHttpCallSuccess)
 	state.LastHttpCallResponseCode = types.Int64Value(siemHttpDestination.LastHttpCallResponseCode)

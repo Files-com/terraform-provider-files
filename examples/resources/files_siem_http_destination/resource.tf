@@ -20,6 +20,7 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
   public_hosting_request_send_enabled      = true
   email_send_enabled                       = true
   exavault_api_request_send_enabled        = true
+  settings_change_send_enabled             = true
   destination_type                         = "example"
   destination_url                          = "example"
 }

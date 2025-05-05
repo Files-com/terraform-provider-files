@@ -36,82 +36,85 @@ type remoteServerResource struct {
 }
 
 type remoteServerResourceModel struct {
-	Hostname                              types.String `tfsdk:"hostname"`
-	Name                                  types.String `tfsdk:"name"`
-	Port                                  types.Int64  `tfsdk:"port"`
-	MaxConnections                        types.Int64  `tfsdk:"max_connections"`
-	PinToSiteRegion                       types.Bool   `tfsdk:"pin_to_site_region"`
-	S3Bucket                              types.String `tfsdk:"s3_bucket"`
-	S3Region                              types.String `tfsdk:"s3_region"`
-	AwsAccessKey                          types.String `tfsdk:"aws_access_key"`
-	ServerCertificate                     types.String `tfsdk:"server_certificate"`
-	ServerHostKey                         types.String `tfsdk:"server_host_key"`
-	ServerType                            types.String `tfsdk:"server_type"`
-	Ssl                                   types.String `tfsdk:"ssl"`
-	Username                              types.String `tfsdk:"username"`
-	GoogleCloudStorageBucket              types.String `tfsdk:"google_cloud_storage_bucket"`
-	GoogleCloudStorageProjectId           types.String `tfsdk:"google_cloud_storage_project_id"`
-	BackblazeB2S3Endpoint                 types.String `tfsdk:"backblaze_b2_s3_endpoint"`
-	BackblazeB2Bucket                     types.String `tfsdk:"backblaze_b2_bucket"`
-	WasabiBucket                          types.String `tfsdk:"wasabi_bucket"`
-	WasabiRegion                          types.String `tfsdk:"wasabi_region"`
-	WasabiAccessKey                       types.String `tfsdk:"wasabi_access_key"`
-	RackspaceUsername                     types.String `tfsdk:"rackspace_username"`
-	RackspaceRegion                       types.String `tfsdk:"rackspace_region"`
-	RackspaceContainer                    types.String `tfsdk:"rackspace_container"`
-	OneDriveAccountType                   types.String `tfsdk:"one_drive_account_type"`
-	AzureBlobStorageAccount               types.String `tfsdk:"azure_blob_storage_account"`
-	AzureBlobStorageContainer             types.String `tfsdk:"azure_blob_storage_container"`
-	AzureBlobStorageHierarchicalNamespace types.Bool   `tfsdk:"azure_blob_storage_hierarchical_namespace"`
-	AzureBlobStorageDnsSuffix             types.String `tfsdk:"azure_blob_storage_dns_suffix"`
-	AzureFilesStorageAccount              types.String `tfsdk:"azure_files_storage_account"`
-	AzureFilesStorageShareName            types.String `tfsdk:"azure_files_storage_share_name"`
-	AzureFilesStorageDnsSuffix            types.String `tfsdk:"azure_files_storage_dns_suffix"`
-	S3CompatibleBucket                    types.String `tfsdk:"s3_compatible_bucket"`
-	S3CompatibleEndpoint                  types.String `tfsdk:"s3_compatible_endpoint"`
-	S3CompatibleRegion                    types.String `tfsdk:"s3_compatible_region"`
-	S3CompatibleAccessKey                 types.String `tfsdk:"s3_compatible_access_key"`
-	EnableDedicatedIps                    types.Bool   `tfsdk:"enable_dedicated_ips"`
-	FilesAgentPermissionSet               types.String `tfsdk:"files_agent_permission_set"`
-	FilesAgentRoot                        types.String `tfsdk:"files_agent_root"`
-	FilesAgentVersion                     types.String `tfsdk:"files_agent_version"`
-	FilebaseBucket                        types.String `tfsdk:"filebase_bucket"`
-	FilebaseAccessKey                     types.String `tfsdk:"filebase_access_key"`
-	CloudflareBucket                      types.String `tfsdk:"cloudflare_bucket"`
-	CloudflareAccessKey                   types.String `tfsdk:"cloudflare_access_key"`
-	CloudflareEndpoint                    types.String `tfsdk:"cloudflare_endpoint"`
-	DropboxTeams                          types.Bool   `tfsdk:"dropbox_teams"`
-	LinodeBucket                          types.String `tfsdk:"linode_bucket"`
-	LinodeAccessKey                       types.String `tfsdk:"linode_access_key"`
-	LinodeRegion                          types.String `tfsdk:"linode_region"`
-	AwsSecretKey                          types.String `tfsdk:"aws_secret_key"`
-	Password                              types.String `tfsdk:"password"`
-	PrivateKey                            types.String `tfsdk:"private_key"`
-	PrivateKeyPassphrase                  types.String `tfsdk:"private_key_passphrase"`
-	SslCertificate                        types.String `tfsdk:"ssl_certificate"`
-	GoogleCloudStorageCredentialsJson     types.String `tfsdk:"google_cloud_storage_credentials_json"`
-	WasabiSecretKey                       types.String `tfsdk:"wasabi_secret_key"`
-	BackblazeB2KeyId                      types.String `tfsdk:"backblaze_b2_key_id"`
-	BackblazeB2ApplicationKey             types.String `tfsdk:"backblaze_b2_application_key"`
-	RackspaceApiKey                       types.String `tfsdk:"rackspace_api_key"`
-	ResetAuthentication                   types.Bool   `tfsdk:"reset_authentication"`
-	AzureBlobStorageAccessKey             types.String `tfsdk:"azure_blob_storage_access_key"`
-	AzureFilesStorageAccessKey            types.String `tfsdk:"azure_files_storage_access_key"`
-	AzureBlobStorageSasToken              types.String `tfsdk:"azure_blob_storage_sas_token"`
-	AzureFilesStorageSasToken             types.String `tfsdk:"azure_files_storage_sas_token"`
-	S3CompatibleSecretKey                 types.String `tfsdk:"s3_compatible_secret_key"`
-	FilebaseSecretKey                     types.String `tfsdk:"filebase_secret_key"`
-	CloudflareSecretKey                   types.String `tfsdk:"cloudflare_secret_key"`
-	LinodeSecretKey                       types.String `tfsdk:"linode_secret_key"`
-	Id                                    types.Int64  `tfsdk:"id"`
-	Disabled                              types.Bool   `tfsdk:"disabled"`
-	AuthenticationMethod                  types.String `tfsdk:"authentication_method"`
-	RemoteHomePath                        types.String `tfsdk:"remote_home_path"`
-	PinnedRegion                          types.String `tfsdk:"pinned_region"`
-	AuthStatus                            types.String `tfsdk:"auth_status"`
-	AuthAccountName                       types.String `tfsdk:"auth_account_name"`
-	FilesAgentApiToken                    types.String `tfsdk:"files_agent_api_token"`
-	SupportsVersioning                    types.Bool   `tfsdk:"supports_versioning"`
+	Hostname                                types.String `tfsdk:"hostname"`
+	Name                                    types.String `tfsdk:"name"`
+	Port                                    types.Int64  `tfsdk:"port"`
+	MaxConnections                          types.Int64  `tfsdk:"max_connections"`
+	PinToSiteRegion                         types.Bool   `tfsdk:"pin_to_site_region"`
+	S3Bucket                                types.String `tfsdk:"s3_bucket"`
+	S3Region                                types.String `tfsdk:"s3_region"`
+	AwsAccessKey                            types.String `tfsdk:"aws_access_key"`
+	ServerCertificate                       types.String `tfsdk:"server_certificate"`
+	ServerHostKey                           types.String `tfsdk:"server_host_key"`
+	ServerType                              types.String `tfsdk:"server_type"`
+	Ssl                                     types.String `tfsdk:"ssl"`
+	Username                                types.String `tfsdk:"username"`
+	GoogleCloudStorageBucket                types.String `tfsdk:"google_cloud_storage_bucket"`
+	GoogleCloudStorageProjectId             types.String `tfsdk:"google_cloud_storage_project_id"`
+	GoogleCloudStorageRegion                types.String `tfsdk:"google_cloud_storage_region"`
+	GoogleCloudStorageS3CompatibleAccessKey types.String `tfsdk:"google_cloud_storage_s3_compatible_access_key"`
+	BackblazeB2S3Endpoint                   types.String `tfsdk:"backblaze_b2_s3_endpoint"`
+	BackblazeB2Bucket                       types.String `tfsdk:"backblaze_b2_bucket"`
+	WasabiBucket                            types.String `tfsdk:"wasabi_bucket"`
+	WasabiRegion                            types.String `tfsdk:"wasabi_region"`
+	WasabiAccessKey                         types.String `tfsdk:"wasabi_access_key"`
+	RackspaceUsername                       types.String `tfsdk:"rackspace_username"`
+	RackspaceRegion                         types.String `tfsdk:"rackspace_region"`
+	RackspaceContainer                      types.String `tfsdk:"rackspace_container"`
+	OneDriveAccountType                     types.String `tfsdk:"one_drive_account_type"`
+	AzureBlobStorageAccount                 types.String `tfsdk:"azure_blob_storage_account"`
+	AzureBlobStorageContainer               types.String `tfsdk:"azure_blob_storage_container"`
+	AzureBlobStorageHierarchicalNamespace   types.Bool   `tfsdk:"azure_blob_storage_hierarchical_namespace"`
+	AzureBlobStorageDnsSuffix               types.String `tfsdk:"azure_blob_storage_dns_suffix"`
+	AzureFilesStorageAccount                types.String `tfsdk:"azure_files_storage_account"`
+	AzureFilesStorageShareName              types.String `tfsdk:"azure_files_storage_share_name"`
+	AzureFilesStorageDnsSuffix              types.String `tfsdk:"azure_files_storage_dns_suffix"`
+	S3CompatibleBucket                      types.String `tfsdk:"s3_compatible_bucket"`
+	S3CompatibleEndpoint                    types.String `tfsdk:"s3_compatible_endpoint"`
+	S3CompatibleRegion                      types.String `tfsdk:"s3_compatible_region"`
+	S3CompatibleAccessKey                   types.String `tfsdk:"s3_compatible_access_key"`
+	EnableDedicatedIps                      types.Bool   `tfsdk:"enable_dedicated_ips"`
+	FilesAgentPermissionSet                 types.String `tfsdk:"files_agent_permission_set"`
+	FilesAgentRoot                          types.String `tfsdk:"files_agent_root"`
+	FilesAgentVersion                       types.String `tfsdk:"files_agent_version"`
+	FilebaseBucket                          types.String `tfsdk:"filebase_bucket"`
+	FilebaseAccessKey                       types.String `tfsdk:"filebase_access_key"`
+	CloudflareBucket                        types.String `tfsdk:"cloudflare_bucket"`
+	CloudflareAccessKey                     types.String `tfsdk:"cloudflare_access_key"`
+	CloudflareEndpoint                      types.String `tfsdk:"cloudflare_endpoint"`
+	DropboxTeams                            types.Bool   `tfsdk:"dropbox_teams"`
+	LinodeBucket                            types.String `tfsdk:"linode_bucket"`
+	LinodeAccessKey                         types.String `tfsdk:"linode_access_key"`
+	LinodeRegion                            types.String `tfsdk:"linode_region"`
+	Password                                types.String `tfsdk:"password"`
+	PrivateKey                              types.String `tfsdk:"private_key"`
+	PrivateKeyPassphrase                    types.String `tfsdk:"private_key_passphrase"`
+	ResetAuthentication                     types.Bool   `tfsdk:"reset_authentication"`
+	SslCertificate                          types.String `tfsdk:"ssl_certificate"`
+	AwsSecretKey                            types.String `tfsdk:"aws_secret_key"`
+	AzureBlobStorageAccessKey               types.String `tfsdk:"azure_blob_storage_access_key"`
+	AzureBlobStorageSasToken                types.String `tfsdk:"azure_blob_storage_sas_token"`
+	AzureFilesStorageAccessKey              types.String `tfsdk:"azure_files_storage_access_key"`
+	AzureFilesStorageSasToken               types.String `tfsdk:"azure_files_storage_sas_token"`
+	BackblazeB2ApplicationKey               types.String `tfsdk:"backblaze_b2_application_key"`
+	BackblazeB2KeyId                        types.String `tfsdk:"backblaze_b2_key_id"`
+	CloudflareSecretKey                     types.String `tfsdk:"cloudflare_secret_key"`
+	FilebaseSecretKey                       types.String `tfsdk:"filebase_secret_key"`
+	GoogleCloudStorageCredentialsJson       types.String `tfsdk:"google_cloud_storage_credentials_json"`
+	GoogleCloudStorageS3CompatibleSecretKey types.String `tfsdk:"google_cloud_storage_s3_compatible_secret_key"`
+	LinodeSecretKey                         types.String `tfsdk:"linode_secret_key"`
+	RackspaceApiKey                         types.String `tfsdk:"rackspace_api_key"`
+	S3CompatibleSecretKey                   types.String `tfsdk:"s3_compatible_secret_key"`
+	WasabiSecretKey                         types.String `tfsdk:"wasabi_secret_key"`
+	Id                                      types.Int64  `tfsdk:"id"`
+	Disabled                                types.Bool   `tfsdk:"disabled"`
+	AuthenticationMethod                    types.String `tfsdk:"authentication_method"`
+	RemoteHomePath                          types.String `tfsdk:"remote_home_path"`
+	PinnedRegion                            types.String `tfsdk:"pinned_region"`
+	AuthStatus                              types.String `tfsdk:"auth_status"`
+	AuthAccountName                         types.String `tfsdk:"auth_account_name"`
+	FilesAgentApiToken                      types.String `tfsdk:"files_agent_api_token"`
+	SupportsVersioning                      types.Bool   `tfsdk:"supports_versioning"`
 }
 
 func (r *remoteServerResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -139,7 +142,7 @@ func (r *remoteServerResource) Metadata(_ context.Context, req resource.Metadata
 
 func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A RemoteServer is a specific type of Behavior called `remote_server_sync`.\n\n\n\nRemote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.\n\n\n\nNot every attribute will apply to every remote server.\n\n\n\nFTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`. Optionally, provide `server_certificate`.\n\n\n\nSFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`. Optionally, provide `server_certificate`, `private_key_passphrase`.\n\n\n\nS3 Buckets require that you specify their `s3_bucket` name, and `s3_region`. Optionally provide a `aws_access_key`, and `aws_secret_key`. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.\n\n\n\nS3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`.\n\n\n\nGoogle Cloud Storage requires that you specify `google_cloud_storage_bucket`, `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`.\n\n\n\nWasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.\n\n\n\nBackblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453\n\n\n\nRackspace Cloud Files requires `rackspace_username`, `rackspace_api_key`, `rackspace_region`, and `rackspace_container`.\n\n\n\nWebDAV Servers require that you specify their `hostname`, `username`, and `password`.\n\n\n\nOneDrive follow the `auth_setup_link` and login with Microsoft.\n\n\n\nSharepoint follow the `auth_setup_link` and login with Microsoft.\n\n\n\nBox follow the `auth_setup_link` and login with Box.\n\n\n\nDropbox specify if `dropbox_teams` then follow the `auth_setup_link` and login with Dropbox.\n\n\n\nGoogle Drive follow the `auth_setup_link` and login with Google.\n\n\n\nAzure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`, `azure_blob_storage_dns_suffix`\n\n\n\nAzure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`, `azure_files_storage_dns_suffix`\n\n\n\nFilebase requires `filebase_bucket`, `filebase_access_key`, and `filebase_secret_key`.\n\n\n\nCloudflare requires `cloudflare_bucket`, `cloudflare_access_key`, `cloudflare_secret_key` and `cloudflare_endpoint`.\n\n\n\nLinode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `linode_region`.",
+		Description: "A RemoteServer is a specific type of Behavior called `remote_server_sync`.\n\n\n\nRemote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.\n\n\n\nNot every attribute will apply to every remote server.\n\n\n\nFTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`. Optionally, provide `server_certificate`.\n\n\n\nSFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`. Optionally, provide `server_certificate`, `private_key_passphrase`.\n\n\n\nS3 Buckets require that you specify their `s3_bucket` name, and `s3_region`. Optionally provide a `aws_access_key`, and `aws_secret_key`. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.\n\n\n\nS3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`.\n\n\n\nGoogle Cloud Storage requires that you specify `google_cloud_storage_bucket`, and then one of the following sets of authentication credentials:\n\n - for JSON authentcation: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`\n\n - for HMAC (S3-Compatible) authentication: `google_cloud_storage_region` and `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`\n\n\n\nWasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.\n\n\n\nBackblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453\n\n\n\nRackspace Cloud Files requires `rackspace_username`, `rackspace_api_key`, `rackspace_region`, and `rackspace_container`.\n\n\n\nWebDAV Servers require that you specify their `hostname`, `username`, and `password`.\n\n\n\nOneDrive follow the `auth_setup_link` and login with Microsoft.\n\n\n\nSharepoint follow the `auth_setup_link` and login with Microsoft.\n\n\n\nBox follow the `auth_setup_link` and login with Box.\n\n\n\nDropbox specify if `dropbox_teams` then follow the `auth_setup_link` and login with Dropbox.\n\n\n\nGoogle Drive follow the `auth_setup_link` and login with Google.\n\n\n\nAzure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`, `azure_blob_storage_dns_suffix`\n\n\n\nAzure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`, `azure_files_storage_dns_suffix`\n\n\n\nFilebase requires `filebase_bucket`, `filebase_access_key`, and `filebase_secret_key`.\n\n\n\nCloudflare requires `cloudflare_bucket`, `cloudflare_access_key`, `cloudflare_secret_key` and `cloudflare_endpoint`.\n\n\n\nLinode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `linode_region`.",
 		Attributes: map[string]schema.Attribute{
 			"hostname": schema.StringAttribute{
 				Description: "Hostname or IP address",
@@ -255,7 +258,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"google_cloud_storage_bucket": schema.StringAttribute{
-				Description: "Google Cloud Storage bucket name",
+				Description: "Google Cloud Storage: Bucket Name",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -263,7 +266,23 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"google_cloud_storage_project_id": schema.StringAttribute{
-				Description: "Google Cloud Project ID",
+				Description: "Google Cloud Storage: Project ID",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"google_cloud_storage_region": schema.StringAttribute{
+				Description: "Google Cloud Storage: Region",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"google_cloud_storage_s3_compatible_access_key": schema.StringAttribute{
+				Description: "Google Cloud Storage: S3-compatible Access Key.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -271,7 +290,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"backblaze_b2_s3_endpoint": schema.StringAttribute{
-				Description: "Backblaze B2 Cloud Storage S3 Endpoint",
+				Description: "Backblaze B2 Cloud Storage: S3 Endpoint",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -279,7 +298,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"backblaze_b2_bucket": schema.StringAttribute{
-				Description: "Backblaze B2 Cloud Storage Bucket name",
+				Description: "Backblaze B2 Cloud Storage: Bucket name",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -287,7 +306,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"wasabi_bucket": schema.StringAttribute{
-				Description: "Wasabi Bucket name",
+				Description: "Wasabi: Bucket name",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -295,7 +314,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"wasabi_region": schema.StringAttribute{
-				Description: "Wasabi region",
+				Description: "Wasabi: Region",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -303,7 +322,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"wasabi_access_key": schema.StringAttribute{
-				Description: "Wasabi access key.",
+				Description: "Wasabi: Access Key.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -311,7 +330,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"rackspace_username": schema.StringAttribute{
-				Description: "Rackspace username used to login to the Rackspace Cloud Control Panel.",
+				Description: "Rackspace: username used to login to the Rackspace Cloud Control Panel.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -319,7 +338,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"rackspace_region": schema.StringAttribute{
-				Description: "Three letter airport code for Rackspace region. See https://support.rackspace.com/how-to/about-regions/",
+				Description: "Rackspace: Three letter code for Rackspace region. See https://support.rackspace.com/how-to/about-regions/",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -327,7 +346,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"rackspace_container": schema.StringAttribute{
-				Description: "The name of the container (top level directory) where files will sync.",
+				Description: "Rackspace: The name of the container (top level directory) where files will sync.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -335,7 +354,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"one_drive_account_type": schema.StringAttribute{
-				Description: "Either personal or business_other account types",
+				Description: "OneDrive: Either personal or business_other account types",
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
@@ -346,7 +365,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"azure_blob_storage_account": schema.StringAttribute{
-				Description: "Azure Blob Storage Account name",
+				Description: "Azure Blob Storage: Account name",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -354,7 +373,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"azure_blob_storage_container": schema.StringAttribute{
-				Description: "Azure Blob Storage Container name",
+				Description: "Azure Blob Storage: Container name",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -362,7 +381,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"azure_blob_storage_hierarchical_namespace": schema.BoolAttribute{
-				Description: "Enable when storage account has hierarchical namespace feature enabled",
+				Description: "Azure Blob Storage: Does the storage account has hierarchical namespace feature enabled?",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -370,7 +389,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"azure_blob_storage_dns_suffix": schema.StringAttribute{
-				Description: "Custom DNS suffix",
+				Description: "Azure Blob Storage: Custom DNS suffix",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -378,7 +397,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"azure_files_storage_account": schema.StringAttribute{
-				Description: "Azure File Storage Account name",
+				Description: "Azure Files: Storage Account name",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -386,7 +405,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"azure_files_storage_share_name": schema.StringAttribute{
-				Description: "Azure File Storage Share name",
+				Description: "Azure Files:  Storage Share name",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -394,7 +413,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"azure_files_storage_dns_suffix": schema.StringAttribute{
-				Description: "Custom DNS suffix",
+				Description: "Azure Files: Custom DNS suffix",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -402,7 +421,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"s3_compatible_bucket": schema.StringAttribute{
-				Description: "S3-compatible Bucket name",
+				Description: "S3-compatible: Bucket name",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -410,7 +429,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"s3_compatible_endpoint": schema.StringAttribute{
-				Description: "S3-compatible endpoint",
+				Description: "S3-compatible: endpoint",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -418,7 +437,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"s3_compatible_region": schema.StringAttribute{
-				Description: "S3-compatible endpoint",
+				Description: "S3-compatible: region",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -426,7 +445,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"s3_compatible_access_key": schema.StringAttribute{
-				Description: "S3-compatible Access Key.",
+				Description: "S3-compatible: Access Key",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -469,7 +488,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"filebase_bucket": schema.StringAttribute{
-				Description: "Filebase Bucket name",
+				Description: "Filebase: Bucket name",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -477,7 +496,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"filebase_access_key": schema.StringAttribute{
-				Description: "Filebase Access Key.",
+				Description: "Filebase: Access Key.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -485,7 +504,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"cloudflare_bucket": schema.StringAttribute{
-				Description: "Cloudflare Bucket name",
+				Description: "Cloudflare: Bucket name",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -493,7 +512,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"cloudflare_access_key": schema.StringAttribute{
-				Description: "Cloudflare Access Key.",
+				Description: "Cloudflare: Access Key.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -501,7 +520,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"cloudflare_endpoint": schema.StringAttribute{
-				Description: "Cloudflare endpoint",
+				Description: "Cloudflare: endpoint",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -509,7 +528,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"dropbox_teams": schema.BoolAttribute{
-				Description: "List Team folders in root",
+				Description: "Dropbox: If true, list Team folders in root?",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -517,7 +536,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"linode_bucket": schema.StringAttribute{
-				Description: "Linode Bucket name",
+				Description: "Linode: Bucket name",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -525,7 +544,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"linode_access_key": schema.StringAttribute{
-				Description: "Linode Access Key.",
+				Description: "Linode: Access Key",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -533,87 +552,91 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"linode_region": schema.StringAttribute{
-				Description: "Linode region",
+				Description: "Linode: region",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"aws_secret_key": schema.StringAttribute{
-				Description: "AWS secret key.",
-				Optional:    true,
-			},
 			"password": schema.StringAttribute{
-				Description: "Password if needed.",
+				Description: "Password, if needed.",
 				Optional:    true,
 			},
 			"private_key": schema.StringAttribute{
-				Description: "Private key if needed.",
+				Description: "Private key, if needed.",
 				Optional:    true,
 			},
 			"private_key_passphrase": schema.StringAttribute{
 				Description: "Passphrase for private key if needed.",
 				Optional:    true,
 			},
+			"reset_authentication": schema.BoolAttribute{
+				Description: "Reset authenticated account?",
+				Optional:    true,
+			},
 			"ssl_certificate": schema.StringAttribute{
 				Description: "SSL client certificate.",
 				Optional:    true,
 			},
-			"google_cloud_storage_credentials_json": schema.StringAttribute{
-				Description: "A JSON file that contains the private key. To generate see https://cloud.google.com/storage/docs/json_api/v1/how-tos/authorizing#APIKey",
-				Optional:    true,
-			},
-			"wasabi_secret_key": schema.StringAttribute{
-				Description: "Wasabi secret key.",
-				Optional:    true,
-			},
-			"backblaze_b2_key_id": schema.StringAttribute{
-				Description: "Backblaze B2 Cloud Storage keyID.",
-				Optional:    true,
-			},
-			"backblaze_b2_application_key": schema.StringAttribute{
-				Description: "Backblaze B2 Cloud Storage applicationKey.",
-				Optional:    true,
-			},
-			"rackspace_api_key": schema.StringAttribute{
-				Description: "Rackspace API key from the Rackspace Cloud Control Panel.",
-				Optional:    true,
-			},
-			"reset_authentication": schema.BoolAttribute{
-				Description: "Reset authenticated account",
+			"aws_secret_key": schema.StringAttribute{
+				Description: "AWS: secret key.",
 				Optional:    true,
 			},
 			"azure_blob_storage_access_key": schema.StringAttribute{
-				Description: "Azure Blob Storage secret key.",
-				Optional:    true,
-			},
-			"azure_files_storage_access_key": schema.StringAttribute{
-				Description: "Azure File Storage access key.",
+				Description: "Azure Blob Storage: Access Key",
 				Optional:    true,
 			},
 			"azure_blob_storage_sas_token": schema.StringAttribute{
-				Description: "Shared Access Signature (SAS) token",
+				Description: "Azure Blob Storage: Shared Access Signature (SAS) token",
+				Optional:    true,
+			},
+			"azure_files_storage_access_key": schema.StringAttribute{
+				Description: "Azure File Storage: Access Key",
 				Optional:    true,
 			},
 			"azure_files_storage_sas_token": schema.StringAttribute{
-				Description: "Shared Access Signature (SAS) token",
+				Description: "Azure File Storage: Shared Access Signature (SAS) token",
 				Optional:    true,
 			},
-			"s3_compatible_secret_key": schema.StringAttribute{
-				Description: "S3-compatible secret key",
+			"backblaze_b2_application_key": schema.StringAttribute{
+				Description: "Backblaze B2 Cloud Storage: applicationKey",
 				Optional:    true,
 			},
-			"filebase_secret_key": schema.StringAttribute{
-				Description: "Filebase secret key",
+			"backblaze_b2_key_id": schema.StringAttribute{
+				Description: "Backblaze B2 Cloud Storage: keyID",
 				Optional:    true,
 			},
 			"cloudflare_secret_key": schema.StringAttribute{
-				Description: "Cloudflare secret key",
+				Description: "Cloudflare: Secret Key",
+				Optional:    true,
+			},
+			"filebase_secret_key": schema.StringAttribute{
+				Description: "Filebase: Secret Key",
+				Optional:    true,
+			},
+			"google_cloud_storage_credentials_json": schema.StringAttribute{
+				Description: "Google Cloud Storage: JSON file that contains the private key. To generate see https://cloud.google.com/storage/docs/json_api/v1/how-tos/authorizing#APIKey",
+				Optional:    true,
+			},
+			"google_cloud_storage_s3_compatible_secret_key": schema.StringAttribute{
+				Description: "Google Cloud Storage: S3-compatible secret key",
 				Optional:    true,
 			},
 			"linode_secret_key": schema.StringAttribute{
-				Description: "Linode secret key",
+				Description: "Linode: Secret Key",
+				Optional:    true,
+			},
+			"rackspace_api_key": schema.StringAttribute{
+				Description: "Rackspace: API key from the Rackspace Cloud Control Panel",
+				Optional:    true,
+			},
+			"s3_compatible_secret_key": schema.StringAttribute{
+				Description: "S3-compatible: Secret Key",
+				Optional:    true,
+			},
+			"wasabi_secret_key": schema.StringAttribute{
+				Description: "Wasabi: Secret Key",
 				Optional:    true,
 			},
 			"id": schema.Int64Attribute{
@@ -671,83 +694,86 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
-	paramsRemoteServerCreate.AwsAccessKey = plan.AwsAccessKey.ValueString()
-	paramsRemoteServerCreate.AwsSecretKey = plan.AwsSecretKey.ValueString()
 	paramsRemoteServerCreate.Password = plan.Password.ValueString()
 	paramsRemoteServerCreate.PrivateKey = plan.PrivateKey.ValueString()
 	paramsRemoteServerCreate.PrivateKeyPassphrase = plan.PrivateKeyPassphrase.ValueString()
-	paramsRemoteServerCreate.SslCertificate = plan.SslCertificate.ValueString()
-	paramsRemoteServerCreate.GoogleCloudStorageCredentialsJson = plan.GoogleCloudStorageCredentialsJson.ValueString()
-	paramsRemoteServerCreate.WasabiAccessKey = plan.WasabiAccessKey.ValueString()
-	paramsRemoteServerCreate.WasabiSecretKey = plan.WasabiSecretKey.ValueString()
-	paramsRemoteServerCreate.BackblazeB2KeyId = plan.BackblazeB2KeyId.ValueString()
-	paramsRemoteServerCreate.BackblazeB2ApplicationKey = plan.BackblazeB2ApplicationKey.ValueString()
-	paramsRemoteServerCreate.RackspaceApiKey = plan.RackspaceApiKey.ValueString()
 	if !plan.ResetAuthentication.IsNull() && !plan.ResetAuthentication.IsUnknown() {
 		paramsRemoteServerCreate.ResetAuthentication = plan.ResetAuthentication.ValueBoolPointer()
 	}
+	paramsRemoteServerCreate.SslCertificate = plan.SslCertificate.ValueString()
+	paramsRemoteServerCreate.AwsSecretKey = plan.AwsSecretKey.ValueString()
 	paramsRemoteServerCreate.AzureBlobStorageAccessKey = plan.AzureBlobStorageAccessKey.ValueString()
+	paramsRemoteServerCreate.AzureBlobStorageSasToken = plan.AzureBlobStorageSasToken.ValueString()
 	paramsRemoteServerCreate.AzureFilesStorageAccessKey = plan.AzureFilesStorageAccessKey.ValueString()
+	paramsRemoteServerCreate.AzureFilesStorageSasToken = plan.AzureFilesStorageSasToken.ValueString()
+	paramsRemoteServerCreate.BackblazeB2ApplicationKey = plan.BackblazeB2ApplicationKey.ValueString()
+	paramsRemoteServerCreate.BackblazeB2KeyId = plan.BackblazeB2KeyId.ValueString()
+	paramsRemoteServerCreate.CloudflareSecretKey = plan.CloudflareSecretKey.ValueString()
+	paramsRemoteServerCreate.FilebaseSecretKey = plan.FilebaseSecretKey.ValueString()
+	paramsRemoteServerCreate.GoogleCloudStorageCredentialsJson = plan.GoogleCloudStorageCredentialsJson.ValueString()
+	paramsRemoteServerCreate.GoogleCloudStorageS3CompatibleSecretKey = plan.GoogleCloudStorageS3CompatibleSecretKey.ValueString()
+	paramsRemoteServerCreate.LinodeSecretKey = plan.LinodeSecretKey.ValueString()
+	paramsRemoteServerCreate.RackspaceApiKey = plan.RackspaceApiKey.ValueString()
+	paramsRemoteServerCreate.S3CompatibleSecretKey = plan.S3CompatibleSecretKey.ValueString()
+	paramsRemoteServerCreate.WasabiSecretKey = plan.WasabiSecretKey.ValueString()
+	paramsRemoteServerCreate.AwsAccessKey = plan.AwsAccessKey.ValueString()
+	paramsRemoteServerCreate.AzureBlobStorageAccount = plan.AzureBlobStorageAccount.ValueString()
+	paramsRemoteServerCreate.AzureBlobStorageContainer = plan.AzureBlobStorageContainer.ValueString()
+	paramsRemoteServerCreate.AzureBlobStorageDnsSuffix = plan.AzureBlobStorageDnsSuffix.ValueString()
+	if !plan.AzureBlobStorageHierarchicalNamespace.IsNull() && !plan.AzureBlobStorageHierarchicalNamespace.IsUnknown() {
+		paramsRemoteServerCreate.AzureBlobStorageHierarchicalNamespace = plan.AzureBlobStorageHierarchicalNamespace.ValueBoolPointer()
+	}
+	paramsRemoteServerCreate.AzureFilesStorageAccount = plan.AzureFilesStorageAccount.ValueString()
+	paramsRemoteServerCreate.AzureFilesStorageDnsSuffix = plan.AzureFilesStorageDnsSuffix.ValueString()
+	paramsRemoteServerCreate.AzureFilesStorageShareName = plan.AzureFilesStorageShareName.ValueString()
+	paramsRemoteServerCreate.BackblazeB2Bucket = plan.BackblazeB2Bucket.ValueString()
+	paramsRemoteServerCreate.BackblazeB2S3Endpoint = plan.BackblazeB2S3Endpoint.ValueString()
+	paramsRemoteServerCreate.CloudflareAccessKey = plan.CloudflareAccessKey.ValueString()
+	paramsRemoteServerCreate.CloudflareBucket = plan.CloudflareBucket.ValueString()
+	paramsRemoteServerCreate.CloudflareEndpoint = plan.CloudflareEndpoint.ValueString()
+	if !plan.DropboxTeams.IsNull() && !plan.DropboxTeams.IsUnknown() {
+		paramsRemoteServerCreate.DropboxTeams = plan.DropboxTeams.ValueBoolPointer()
+	}
+	if !plan.EnableDedicatedIps.IsNull() && !plan.EnableDedicatedIps.IsUnknown() {
+		paramsRemoteServerCreate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
+	}
+	paramsRemoteServerCreate.FilebaseAccessKey = plan.FilebaseAccessKey.ValueString()
+	paramsRemoteServerCreate.FilebaseBucket = plan.FilebaseBucket.ValueString()
+	paramsRemoteServerCreate.FilesAgentPermissionSet = paramsRemoteServerCreate.FilesAgentPermissionSet.Enum()[plan.FilesAgentPermissionSet.ValueString()]
+	paramsRemoteServerCreate.FilesAgentRoot = plan.FilesAgentRoot.ValueString()
+	paramsRemoteServerCreate.FilesAgentVersion = plan.FilesAgentVersion.ValueString()
+	paramsRemoteServerCreate.GoogleCloudStorageBucket = plan.GoogleCloudStorageBucket.ValueString()
+	paramsRemoteServerCreate.GoogleCloudStorageProjectId = plan.GoogleCloudStorageProjectId.ValueString()
+	paramsRemoteServerCreate.GoogleCloudStorageRegion = plan.GoogleCloudStorageRegion.ValueString()
+	paramsRemoteServerCreate.GoogleCloudStorageS3CompatibleAccessKey = plan.GoogleCloudStorageS3CompatibleAccessKey.ValueString()
 	paramsRemoteServerCreate.Hostname = plan.Hostname.ValueString()
-	paramsRemoteServerCreate.Name = plan.Name.ValueString()
+	paramsRemoteServerCreate.LinodeAccessKey = plan.LinodeAccessKey.ValueString()
+	paramsRemoteServerCreate.LinodeBucket = plan.LinodeBucket.ValueString()
+	paramsRemoteServerCreate.LinodeRegion = plan.LinodeRegion.ValueString()
 	paramsRemoteServerCreate.MaxConnections = plan.MaxConnections.ValueInt64()
+	paramsRemoteServerCreate.Name = plan.Name.ValueString()
+	paramsRemoteServerCreate.OneDriveAccountType = paramsRemoteServerCreate.OneDriveAccountType.Enum()[plan.OneDriveAccountType.ValueString()]
 	if !plan.PinToSiteRegion.IsNull() && !plan.PinToSiteRegion.IsUnknown() {
 		paramsRemoteServerCreate.PinToSiteRegion = plan.PinToSiteRegion.ValueBoolPointer()
 	}
 	paramsRemoteServerCreate.Port = plan.Port.ValueInt64()
+	paramsRemoteServerCreate.RackspaceContainer = plan.RackspaceContainer.ValueString()
+	paramsRemoteServerCreate.RackspaceRegion = plan.RackspaceRegion.ValueString()
+	paramsRemoteServerCreate.RackspaceUsername = plan.RackspaceUsername.ValueString()
 	paramsRemoteServerCreate.S3Bucket = plan.S3Bucket.ValueString()
+	paramsRemoteServerCreate.S3CompatibleAccessKey = plan.S3CompatibleAccessKey.ValueString()
+	paramsRemoteServerCreate.S3CompatibleBucket = plan.S3CompatibleBucket.ValueString()
+	paramsRemoteServerCreate.S3CompatibleEndpoint = plan.S3CompatibleEndpoint.ValueString()
+	paramsRemoteServerCreate.S3CompatibleRegion = plan.S3CompatibleRegion.ValueString()
 	paramsRemoteServerCreate.S3Region = plan.S3Region.ValueString()
 	paramsRemoteServerCreate.ServerCertificate = paramsRemoteServerCreate.ServerCertificate.Enum()[plan.ServerCertificate.ValueString()]
 	paramsRemoteServerCreate.ServerHostKey = plan.ServerHostKey.ValueString()
 	paramsRemoteServerCreate.ServerType = paramsRemoteServerCreate.ServerType.Enum()[plan.ServerType.ValueString()]
 	paramsRemoteServerCreate.Ssl = paramsRemoteServerCreate.Ssl.Enum()[plan.Ssl.ValueString()]
 	paramsRemoteServerCreate.Username = plan.Username.ValueString()
-	paramsRemoteServerCreate.GoogleCloudStorageBucket = plan.GoogleCloudStorageBucket.ValueString()
-	paramsRemoteServerCreate.GoogleCloudStorageProjectId = plan.GoogleCloudStorageProjectId.ValueString()
-	paramsRemoteServerCreate.BackblazeB2Bucket = plan.BackblazeB2Bucket.ValueString()
-	paramsRemoteServerCreate.BackblazeB2S3Endpoint = plan.BackblazeB2S3Endpoint.ValueString()
+	paramsRemoteServerCreate.WasabiAccessKey = plan.WasabiAccessKey.ValueString()
 	paramsRemoteServerCreate.WasabiBucket = plan.WasabiBucket.ValueString()
 	paramsRemoteServerCreate.WasabiRegion = plan.WasabiRegion.ValueString()
-	paramsRemoteServerCreate.RackspaceUsername = plan.RackspaceUsername.ValueString()
-	paramsRemoteServerCreate.RackspaceRegion = plan.RackspaceRegion.ValueString()
-	paramsRemoteServerCreate.RackspaceContainer = plan.RackspaceContainer.ValueString()
-	paramsRemoteServerCreate.OneDriveAccountType = paramsRemoteServerCreate.OneDriveAccountType.Enum()[plan.OneDriveAccountType.ValueString()]
-	paramsRemoteServerCreate.AzureBlobStorageAccount = plan.AzureBlobStorageAccount.ValueString()
-	paramsRemoteServerCreate.AzureBlobStorageContainer = plan.AzureBlobStorageContainer.ValueString()
-	if !plan.AzureBlobStorageHierarchicalNamespace.IsNull() && !plan.AzureBlobStorageHierarchicalNamespace.IsUnknown() {
-		paramsRemoteServerCreate.AzureBlobStorageHierarchicalNamespace = plan.AzureBlobStorageHierarchicalNamespace.ValueBoolPointer()
-	}
-	paramsRemoteServerCreate.AzureBlobStorageSasToken = plan.AzureBlobStorageSasToken.ValueString()
-	paramsRemoteServerCreate.AzureBlobStorageDnsSuffix = plan.AzureBlobStorageDnsSuffix.ValueString()
-	paramsRemoteServerCreate.AzureFilesStorageAccount = plan.AzureFilesStorageAccount.ValueString()
-	paramsRemoteServerCreate.AzureFilesStorageShareName = plan.AzureFilesStorageShareName.ValueString()
-	paramsRemoteServerCreate.AzureFilesStorageDnsSuffix = plan.AzureFilesStorageDnsSuffix.ValueString()
-	paramsRemoteServerCreate.AzureFilesStorageSasToken = plan.AzureFilesStorageSasToken.ValueString()
-	paramsRemoteServerCreate.S3CompatibleBucket = plan.S3CompatibleBucket.ValueString()
-	paramsRemoteServerCreate.S3CompatibleEndpoint = plan.S3CompatibleEndpoint.ValueString()
-	paramsRemoteServerCreate.S3CompatibleRegion = plan.S3CompatibleRegion.ValueString()
-	if !plan.EnableDedicatedIps.IsNull() && !plan.EnableDedicatedIps.IsUnknown() {
-		paramsRemoteServerCreate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
-	}
-	paramsRemoteServerCreate.S3CompatibleAccessKey = plan.S3CompatibleAccessKey.ValueString()
-	paramsRemoteServerCreate.S3CompatibleSecretKey = plan.S3CompatibleSecretKey.ValueString()
-	paramsRemoteServerCreate.FilesAgentRoot = plan.FilesAgentRoot.ValueString()
-	paramsRemoteServerCreate.FilesAgentPermissionSet = paramsRemoteServerCreate.FilesAgentPermissionSet.Enum()[plan.FilesAgentPermissionSet.ValueString()]
-	paramsRemoteServerCreate.FilesAgentVersion = plan.FilesAgentVersion.ValueString()
-	paramsRemoteServerCreate.FilebaseAccessKey = plan.FilebaseAccessKey.ValueString()
-	paramsRemoteServerCreate.FilebaseSecretKey = plan.FilebaseSecretKey.ValueString()
-	paramsRemoteServerCreate.FilebaseBucket = plan.FilebaseBucket.ValueString()
-	paramsRemoteServerCreate.CloudflareAccessKey = plan.CloudflareAccessKey.ValueString()
-	paramsRemoteServerCreate.CloudflareSecretKey = plan.CloudflareSecretKey.ValueString()
-	paramsRemoteServerCreate.CloudflareBucket = plan.CloudflareBucket.ValueString()
-	paramsRemoteServerCreate.CloudflareEndpoint = plan.CloudflareEndpoint.ValueString()
-	if !plan.DropboxTeams.IsNull() && !plan.DropboxTeams.IsUnknown() {
-		paramsRemoteServerCreate.DropboxTeams = plan.DropboxTeams.ValueBoolPointer()
-	}
-	paramsRemoteServerCreate.LinodeAccessKey = plan.LinodeAccessKey.ValueString()
-	paramsRemoteServerCreate.LinodeSecretKey = plan.LinodeSecretKey.ValueString()
-	paramsRemoteServerCreate.LinodeBucket = plan.LinodeBucket.ValueString()
-	paramsRemoteServerCreate.LinodeRegion = plan.LinodeRegion.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -817,83 +843,86 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 
 	paramsRemoteServerUpdate := files_sdk.RemoteServerUpdateParams{}
 	paramsRemoteServerUpdate.Id = plan.Id.ValueInt64()
-	paramsRemoteServerUpdate.AwsAccessKey = plan.AwsAccessKey.ValueString()
-	paramsRemoteServerUpdate.AwsSecretKey = plan.AwsSecretKey.ValueString()
 	paramsRemoteServerUpdate.Password = plan.Password.ValueString()
 	paramsRemoteServerUpdate.PrivateKey = plan.PrivateKey.ValueString()
 	paramsRemoteServerUpdate.PrivateKeyPassphrase = plan.PrivateKeyPassphrase.ValueString()
-	paramsRemoteServerUpdate.SslCertificate = plan.SslCertificate.ValueString()
-	paramsRemoteServerUpdate.GoogleCloudStorageCredentialsJson = plan.GoogleCloudStorageCredentialsJson.ValueString()
-	paramsRemoteServerUpdate.WasabiAccessKey = plan.WasabiAccessKey.ValueString()
-	paramsRemoteServerUpdate.WasabiSecretKey = plan.WasabiSecretKey.ValueString()
-	paramsRemoteServerUpdate.BackblazeB2KeyId = plan.BackblazeB2KeyId.ValueString()
-	paramsRemoteServerUpdate.BackblazeB2ApplicationKey = plan.BackblazeB2ApplicationKey.ValueString()
-	paramsRemoteServerUpdate.RackspaceApiKey = plan.RackspaceApiKey.ValueString()
 	if !plan.ResetAuthentication.IsNull() && !plan.ResetAuthentication.IsUnknown() {
 		paramsRemoteServerUpdate.ResetAuthentication = plan.ResetAuthentication.ValueBoolPointer()
 	}
+	paramsRemoteServerUpdate.SslCertificate = plan.SslCertificate.ValueString()
+	paramsRemoteServerUpdate.AwsSecretKey = plan.AwsSecretKey.ValueString()
 	paramsRemoteServerUpdate.AzureBlobStorageAccessKey = plan.AzureBlobStorageAccessKey.ValueString()
+	paramsRemoteServerUpdate.AzureBlobStorageSasToken = plan.AzureBlobStorageSasToken.ValueString()
 	paramsRemoteServerUpdate.AzureFilesStorageAccessKey = plan.AzureFilesStorageAccessKey.ValueString()
+	paramsRemoteServerUpdate.AzureFilesStorageSasToken = plan.AzureFilesStorageSasToken.ValueString()
+	paramsRemoteServerUpdate.BackblazeB2ApplicationKey = plan.BackblazeB2ApplicationKey.ValueString()
+	paramsRemoteServerUpdate.BackblazeB2KeyId = plan.BackblazeB2KeyId.ValueString()
+	paramsRemoteServerUpdate.CloudflareSecretKey = plan.CloudflareSecretKey.ValueString()
+	paramsRemoteServerUpdate.FilebaseSecretKey = plan.FilebaseSecretKey.ValueString()
+	paramsRemoteServerUpdate.GoogleCloudStorageCredentialsJson = plan.GoogleCloudStorageCredentialsJson.ValueString()
+	paramsRemoteServerUpdate.GoogleCloudStorageS3CompatibleSecretKey = plan.GoogleCloudStorageS3CompatibleSecretKey.ValueString()
+	paramsRemoteServerUpdate.LinodeSecretKey = plan.LinodeSecretKey.ValueString()
+	paramsRemoteServerUpdate.RackspaceApiKey = plan.RackspaceApiKey.ValueString()
+	paramsRemoteServerUpdate.S3CompatibleSecretKey = plan.S3CompatibleSecretKey.ValueString()
+	paramsRemoteServerUpdate.WasabiSecretKey = plan.WasabiSecretKey.ValueString()
+	paramsRemoteServerUpdate.AwsAccessKey = plan.AwsAccessKey.ValueString()
+	paramsRemoteServerUpdate.AzureBlobStorageAccount = plan.AzureBlobStorageAccount.ValueString()
+	paramsRemoteServerUpdate.AzureBlobStorageContainer = plan.AzureBlobStorageContainer.ValueString()
+	paramsRemoteServerUpdate.AzureBlobStorageDnsSuffix = plan.AzureBlobStorageDnsSuffix.ValueString()
+	if !plan.AzureBlobStorageHierarchicalNamespace.IsNull() && !plan.AzureBlobStorageHierarchicalNamespace.IsUnknown() {
+		paramsRemoteServerUpdate.AzureBlobStorageHierarchicalNamespace = plan.AzureBlobStorageHierarchicalNamespace.ValueBoolPointer()
+	}
+	paramsRemoteServerUpdate.AzureFilesStorageAccount = plan.AzureFilesStorageAccount.ValueString()
+	paramsRemoteServerUpdate.AzureFilesStorageDnsSuffix = plan.AzureFilesStorageDnsSuffix.ValueString()
+	paramsRemoteServerUpdate.AzureFilesStorageShareName = plan.AzureFilesStorageShareName.ValueString()
+	paramsRemoteServerUpdate.BackblazeB2Bucket = plan.BackblazeB2Bucket.ValueString()
+	paramsRemoteServerUpdate.BackblazeB2S3Endpoint = plan.BackblazeB2S3Endpoint.ValueString()
+	paramsRemoteServerUpdate.CloudflareAccessKey = plan.CloudflareAccessKey.ValueString()
+	paramsRemoteServerUpdate.CloudflareBucket = plan.CloudflareBucket.ValueString()
+	paramsRemoteServerUpdate.CloudflareEndpoint = plan.CloudflareEndpoint.ValueString()
+	if !plan.DropboxTeams.IsNull() && !plan.DropboxTeams.IsUnknown() {
+		paramsRemoteServerUpdate.DropboxTeams = plan.DropboxTeams.ValueBoolPointer()
+	}
+	if !plan.EnableDedicatedIps.IsNull() && !plan.EnableDedicatedIps.IsUnknown() {
+		paramsRemoteServerUpdate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
+	}
+	paramsRemoteServerUpdate.FilebaseAccessKey = plan.FilebaseAccessKey.ValueString()
+	paramsRemoteServerUpdate.FilebaseBucket = plan.FilebaseBucket.ValueString()
+	paramsRemoteServerUpdate.FilesAgentPermissionSet = paramsRemoteServerUpdate.FilesAgentPermissionSet.Enum()[plan.FilesAgentPermissionSet.ValueString()]
+	paramsRemoteServerUpdate.FilesAgentRoot = plan.FilesAgentRoot.ValueString()
+	paramsRemoteServerUpdate.FilesAgentVersion = plan.FilesAgentVersion.ValueString()
+	paramsRemoteServerUpdate.GoogleCloudStorageBucket = plan.GoogleCloudStorageBucket.ValueString()
+	paramsRemoteServerUpdate.GoogleCloudStorageProjectId = plan.GoogleCloudStorageProjectId.ValueString()
+	paramsRemoteServerUpdate.GoogleCloudStorageRegion = plan.GoogleCloudStorageRegion.ValueString()
+	paramsRemoteServerUpdate.GoogleCloudStorageS3CompatibleAccessKey = plan.GoogleCloudStorageS3CompatibleAccessKey.ValueString()
 	paramsRemoteServerUpdate.Hostname = plan.Hostname.ValueString()
-	paramsRemoteServerUpdate.Name = plan.Name.ValueString()
+	paramsRemoteServerUpdate.LinodeAccessKey = plan.LinodeAccessKey.ValueString()
+	paramsRemoteServerUpdate.LinodeBucket = plan.LinodeBucket.ValueString()
+	paramsRemoteServerUpdate.LinodeRegion = plan.LinodeRegion.ValueString()
 	paramsRemoteServerUpdate.MaxConnections = plan.MaxConnections.ValueInt64()
+	paramsRemoteServerUpdate.Name = plan.Name.ValueString()
+	paramsRemoteServerUpdate.OneDriveAccountType = paramsRemoteServerUpdate.OneDriveAccountType.Enum()[plan.OneDriveAccountType.ValueString()]
 	if !plan.PinToSiteRegion.IsNull() && !plan.PinToSiteRegion.IsUnknown() {
 		paramsRemoteServerUpdate.PinToSiteRegion = plan.PinToSiteRegion.ValueBoolPointer()
 	}
 	paramsRemoteServerUpdate.Port = plan.Port.ValueInt64()
+	paramsRemoteServerUpdate.RackspaceContainer = plan.RackspaceContainer.ValueString()
+	paramsRemoteServerUpdate.RackspaceRegion = plan.RackspaceRegion.ValueString()
+	paramsRemoteServerUpdate.RackspaceUsername = plan.RackspaceUsername.ValueString()
 	paramsRemoteServerUpdate.S3Bucket = plan.S3Bucket.ValueString()
+	paramsRemoteServerUpdate.S3CompatibleAccessKey = plan.S3CompatibleAccessKey.ValueString()
+	paramsRemoteServerUpdate.S3CompatibleBucket = plan.S3CompatibleBucket.ValueString()
+	paramsRemoteServerUpdate.S3CompatibleEndpoint = plan.S3CompatibleEndpoint.ValueString()
+	paramsRemoteServerUpdate.S3CompatibleRegion = plan.S3CompatibleRegion.ValueString()
 	paramsRemoteServerUpdate.S3Region = plan.S3Region.ValueString()
 	paramsRemoteServerUpdate.ServerCertificate = paramsRemoteServerUpdate.ServerCertificate.Enum()[plan.ServerCertificate.ValueString()]
 	paramsRemoteServerUpdate.ServerHostKey = plan.ServerHostKey.ValueString()
 	paramsRemoteServerUpdate.ServerType = paramsRemoteServerUpdate.ServerType.Enum()[plan.ServerType.ValueString()]
 	paramsRemoteServerUpdate.Ssl = paramsRemoteServerUpdate.Ssl.Enum()[plan.Ssl.ValueString()]
 	paramsRemoteServerUpdate.Username = plan.Username.ValueString()
-	paramsRemoteServerUpdate.GoogleCloudStorageBucket = plan.GoogleCloudStorageBucket.ValueString()
-	paramsRemoteServerUpdate.GoogleCloudStorageProjectId = plan.GoogleCloudStorageProjectId.ValueString()
-	paramsRemoteServerUpdate.BackblazeB2Bucket = plan.BackblazeB2Bucket.ValueString()
-	paramsRemoteServerUpdate.BackblazeB2S3Endpoint = plan.BackblazeB2S3Endpoint.ValueString()
+	paramsRemoteServerUpdate.WasabiAccessKey = plan.WasabiAccessKey.ValueString()
 	paramsRemoteServerUpdate.WasabiBucket = plan.WasabiBucket.ValueString()
 	paramsRemoteServerUpdate.WasabiRegion = plan.WasabiRegion.ValueString()
-	paramsRemoteServerUpdate.RackspaceUsername = plan.RackspaceUsername.ValueString()
-	paramsRemoteServerUpdate.RackspaceRegion = plan.RackspaceRegion.ValueString()
-	paramsRemoteServerUpdate.RackspaceContainer = plan.RackspaceContainer.ValueString()
-	paramsRemoteServerUpdate.OneDriveAccountType = paramsRemoteServerUpdate.OneDriveAccountType.Enum()[plan.OneDriveAccountType.ValueString()]
-	paramsRemoteServerUpdate.AzureBlobStorageAccount = plan.AzureBlobStorageAccount.ValueString()
-	paramsRemoteServerUpdate.AzureBlobStorageContainer = plan.AzureBlobStorageContainer.ValueString()
-	if !plan.AzureBlobStorageHierarchicalNamespace.IsNull() && !plan.AzureBlobStorageHierarchicalNamespace.IsUnknown() {
-		paramsRemoteServerUpdate.AzureBlobStorageHierarchicalNamespace = plan.AzureBlobStorageHierarchicalNamespace.ValueBoolPointer()
-	}
-	paramsRemoteServerUpdate.AzureBlobStorageSasToken = plan.AzureBlobStorageSasToken.ValueString()
-	paramsRemoteServerUpdate.AzureBlobStorageDnsSuffix = plan.AzureBlobStorageDnsSuffix.ValueString()
-	paramsRemoteServerUpdate.AzureFilesStorageAccount = plan.AzureFilesStorageAccount.ValueString()
-	paramsRemoteServerUpdate.AzureFilesStorageShareName = plan.AzureFilesStorageShareName.ValueString()
-	paramsRemoteServerUpdate.AzureFilesStorageDnsSuffix = plan.AzureFilesStorageDnsSuffix.ValueString()
-	paramsRemoteServerUpdate.AzureFilesStorageSasToken = plan.AzureFilesStorageSasToken.ValueString()
-	paramsRemoteServerUpdate.S3CompatibleBucket = plan.S3CompatibleBucket.ValueString()
-	paramsRemoteServerUpdate.S3CompatibleEndpoint = plan.S3CompatibleEndpoint.ValueString()
-	paramsRemoteServerUpdate.S3CompatibleRegion = plan.S3CompatibleRegion.ValueString()
-	if !plan.EnableDedicatedIps.IsNull() && !plan.EnableDedicatedIps.IsUnknown() {
-		paramsRemoteServerUpdate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
-	}
-	paramsRemoteServerUpdate.S3CompatibleAccessKey = plan.S3CompatibleAccessKey.ValueString()
-	paramsRemoteServerUpdate.S3CompatibleSecretKey = plan.S3CompatibleSecretKey.ValueString()
-	paramsRemoteServerUpdate.FilesAgentRoot = plan.FilesAgentRoot.ValueString()
-	paramsRemoteServerUpdate.FilesAgentPermissionSet = paramsRemoteServerUpdate.FilesAgentPermissionSet.Enum()[plan.FilesAgentPermissionSet.ValueString()]
-	paramsRemoteServerUpdate.FilesAgentVersion = plan.FilesAgentVersion.ValueString()
-	paramsRemoteServerUpdate.FilebaseAccessKey = plan.FilebaseAccessKey.ValueString()
-	paramsRemoteServerUpdate.FilebaseSecretKey = plan.FilebaseSecretKey.ValueString()
-	paramsRemoteServerUpdate.FilebaseBucket = plan.FilebaseBucket.ValueString()
-	paramsRemoteServerUpdate.CloudflareAccessKey = plan.CloudflareAccessKey.ValueString()
-	paramsRemoteServerUpdate.CloudflareSecretKey = plan.CloudflareSecretKey.ValueString()
-	paramsRemoteServerUpdate.CloudflareBucket = plan.CloudflareBucket.ValueString()
-	paramsRemoteServerUpdate.CloudflareEndpoint = plan.CloudflareEndpoint.ValueString()
-	if !plan.DropboxTeams.IsNull() && !plan.DropboxTeams.IsUnknown() {
-		paramsRemoteServerUpdate.DropboxTeams = plan.DropboxTeams.ValueBoolPointer()
-	}
-	paramsRemoteServerUpdate.LinodeAccessKey = plan.LinodeAccessKey.ValueString()
-	paramsRemoteServerUpdate.LinodeSecretKey = plan.LinodeSecretKey.ValueString()
-	paramsRemoteServerUpdate.LinodeBucket = plan.LinodeBucket.ValueString()
-	paramsRemoteServerUpdate.LinodeRegion = plan.LinodeRegion.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -982,6 +1011,8 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.Username = types.StringValue(remoteServer.Username)
 	state.GoogleCloudStorageBucket = types.StringValue(remoteServer.GoogleCloudStorageBucket)
 	state.GoogleCloudStorageProjectId = types.StringValue(remoteServer.GoogleCloudStorageProjectId)
+	state.GoogleCloudStorageRegion = types.StringValue(remoteServer.GoogleCloudStorageRegion)
+	state.GoogleCloudStorageS3CompatibleAccessKey = types.StringValue(remoteServer.GoogleCloudStorageS3CompatibleAccessKey)
 	state.BackblazeB2S3Endpoint = types.StringValue(remoteServer.BackblazeB2S3Endpoint)
 	state.BackblazeB2Bucket = types.StringValue(remoteServer.BackblazeB2Bucket)
 	state.WasabiBucket = types.StringValue(remoteServer.WasabiBucket)

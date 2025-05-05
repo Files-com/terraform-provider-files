@@ -35,6 +35,7 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
   public_hosting_request_send_enabled      = true
   email_send_enabled                       = true
   exavault_api_request_send_enabled        = true
+  settings_change_send_enabled             = true
   destination_type                         = "example"
   destination_url                          = "example"
 }
@@ -70,6 +71,7 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
 - `qradar_password` (String) Applicable only for destination type: qradar. Basic auth password provided by QRadar.
 - `qradar_username` (String) Applicable only for destination type: qradar. Basic auth username provided by QRadar.
 - `sending_active` (Boolean) Whether this SIEM HTTP Destination is currently being sent to or not
+- `settings_change_send_enabled` (Boolean) Whether or not sending is enabled for settings_change logs.
 - `sftp_action_send_enabled` (Boolean) Whether or not sending is enabled for sftp_action logs.
 - `solar_winds_token` (String) Applicable only for destination type: solar_winds. Authentication token provided by Solar Winds.
 - `splunk_token` (String) Applicable only for destination type: splunk. Authentication token provided by Splunk.
@@ -99,6 +101,7 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
 - `outbound_connection_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `public_hosting_request_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `qradar_password_masked` (String) Applicable only for destination type: qradar. Basic auth password provided by QRadar.
+- `settings_change_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `sftp_action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `solar_winds_token_masked` (String) Applicable only for destination type: solar_winds. Authentication token provided by Solar Winds.
 - `splunk_token_masked` (String) Applicable only for destination type: splunk. Authentication token provided by Splunk.
