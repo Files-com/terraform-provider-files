@@ -13,7 +13,7 @@ description: |-
   Google Cloud Storage requires that you specify google_cloud_storage_bucket, and then one of the following sets of authentication credentials:
   
   for JSON authentcation: google_cloud_storage_project_id, and google_cloud_storage_credentials_json
-  for HMAC (S3-Compatible) authentication: google_cloud_storage_region and google_cloud_storage_s3_compatible_access_key, and google_cloud_storage_s3_compatible_secret_key
+  for HMAC (S3-Compatible) authentication: google_cloud_storage_s3_compatible_access_key, and google_cloud_storage_s3_compatible_secret_key
   Wasabi requires wasabi_bucket, wasabi_region, wasabi_access_key, and wasabi_secret_key.
   Backblaze B2 Cloud Storage backblaze_b2_bucket, backblaze_b2_s3_endpoint, backblaze_b2_application_key, and backblaze_b2_key_id. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453
   Rackspace Cloud Files requires rackspace_username, rackspace_api_key, rackspace_region, and rackspace_container.
@@ -64,7 +64,7 @@ Google Cloud Storage requires that you specify `google_cloud_storage_bucket`, an
 
  - for JSON authentcation: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`
 
- - for HMAC (S3-Compatible) authentication: `google_cloud_storage_region` and `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`
+ - for HMAC (S3-Compatible) authentication: `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`
 
 
 
@@ -166,7 +166,6 @@ data "files_remote_server" "example_remote_server" {
 - `files_agent_version` (String) Files Agent version
 - `google_cloud_storage_bucket` (String) Google Cloud Storage: Bucket Name
 - `google_cloud_storage_project_id` (String) Google Cloud Storage: Project ID
-- `google_cloud_storage_region` (String) Google Cloud Storage: Region
 - `google_cloud_storage_s3_compatible_access_key` (String) Google Cloud Storage: S3-compatible Access Key.
 - `hostname` (String) Hostname or IP address
 - `linode_access_key` (String) Linode: Access Key

@@ -22,7 +22,6 @@ resource "files_remote_server" "example_remote_server" {
   files_agent_version                           = "example"
   google_cloud_storage_bucket                   = "my-bucket"
   google_cloud_storage_project_id               = "my-project"
-  google_cloud_storage_region                   = "us-east-1"
   google_cloud_storage_s3_compatible_access_key = "example"
   hostname                                      = "remote-server.com"
   linode_access_key                             = "example"
