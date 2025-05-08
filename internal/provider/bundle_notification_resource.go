@@ -36,7 +36,7 @@ type bundleNotificationResourceModel struct {
 	BundleId             types.Int64 `tfsdk:"bundle_id"`
 	NotifyOnRegistration types.Bool  `tfsdk:"notify_on_registration"`
 	NotifyOnUpload       types.Bool  `tfsdk:"notify_on_upload"`
-	UserId               types.Int64 `tfsdk:"user_id"`
+	NotifyUserId         types.Int64 `tfsdk:"notify_user_id"`
 	Id                   types.Int64 `tfsdk:"id"`
 }
 
@@ -90,7 +90,7 @@ func (r *bundleNotificationResource) Schema(_ context.Context, _ resource.Schema
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"user_id": schema.Int64Attribute{
+			"notify_user_id": schema.Int64Attribute{
 				Description: "The id of the user to notify.",
 				Computed:    true,
 				Optional:    true,
@@ -120,7 +120,7 @@ func (r *bundleNotificationResource) Create(ctx context.Context, req resource.Cr
 
 	paramsBundleNotificationCreate := files_sdk.BundleNotificationCreateParams{}
 	paramsBundleNotificationCreate.BundleId = plan.BundleId.ValueInt64()
-	paramsBundleNotificationCreate.UserId = plan.UserId.ValueInt64()
+	paramsBundleNotificationCreate.NotifyUserId = plan.NotifyUserId.ValueInt64()
 	if !plan.NotifyOnRegistration.IsNull() && !plan.NotifyOnRegistration.IsUnknown() {
 		paramsBundleNotificationCreate.NotifyOnRegistration = plan.NotifyOnRegistration.ValueBoolPointer()
 	}
@@ -274,7 +274,7 @@ func (r *bundleNotificationResource) populateResourceModel(ctx context.Context, 
 	state.Id = types.Int64Value(bundleNotification.Id)
 	state.NotifyOnRegistration = types.BoolPointerValue(bundleNotification.NotifyOnRegistration)
 	state.NotifyOnUpload = types.BoolPointerValue(bundleNotification.NotifyOnUpload)
-	state.UserId = types.Int64Value(bundleNotification.UserId)
+	state.NotifyUserId = types.Int64Value(bundleNotification.NotifyUserId)
 
 	return
 }

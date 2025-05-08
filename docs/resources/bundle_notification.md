@@ -15,7 +15,7 @@ A BundleNotification is an E-Mail sent out to users when certain actions are per
 ```terraform
 resource "files_bundle_notification" "example_bundle_notification" {
   bundle_id              = 1
-  user_id                = 1
+  notify_user_id         = 1
   notify_on_registration = true
   notify_on_upload       = true
 }
@@ -32,7 +32,7 @@ resource "files_bundle_notification" "example_bundle_notification" {
 
 - `notify_on_registration` (Boolean) Triggers bundle notification when a registration action occurs for it.
 - `notify_on_upload` (Boolean) Triggers bundle notification when a upload action occurs for it.
-- `user_id` (Number) The id of the user to notify.
+- `notify_user_id` (Number) The id of the user to notify.
 
 ### Read-Only
 
