@@ -37,6 +37,7 @@ type bundleNotificationResourceModel struct {
 	NotifyOnRegistration types.Bool  `tfsdk:"notify_on_registration"`
 	NotifyOnUpload       types.Bool  `tfsdk:"notify_on_upload"`
 	NotifyUserId         types.Int64 `tfsdk:"notify_user_id"`
+	UserId               types.Int64 `tfsdk:"user_id"`
 	Id                   types.Int64 `tfsdk:"id"`
 }
 
@@ -99,6 +100,13 @@ func (r *bundleNotificationResource) Schema(_ context.Context, _ resource.Schema
 					int64planmodifier.RequiresReplace(),
 				},
 			},
+			"user_id": schema.Int64Attribute{
+				Description: "User ID.  Provide a value of `0` to operate the current session's user.",
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.RequiresReplace(),
+				},
+			},
 			"id": schema.Int64Attribute{
 				Description: "Bundle Notification ID",
 				Computed:    true,
@@ -119,6 +127,7 @@ func (r *bundleNotificationResource) Create(ctx context.Context, req resource.Cr
 	}
 
 	paramsBundleNotificationCreate := files_sdk.BundleNotificationCreateParams{}
+	paramsBundleNotificationCreate.UserId = plan.UserId.ValueInt64()
 	paramsBundleNotificationCreate.BundleId = plan.BundleId.ValueInt64()
 	paramsBundleNotificationCreate.NotifyUserId = plan.NotifyUserId.ValueInt64()
 	if !plan.NotifyOnRegistration.IsNull() && !plan.NotifyOnRegistration.IsUnknown() {
