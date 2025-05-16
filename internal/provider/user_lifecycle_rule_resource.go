@@ -16,7 +16,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -78,25 +77,16 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 				Validators: []validator.String{
 					stringvalidator.OneOf("all", "password", "sso", "none", "email_signup", "password_with_imported_hash", "password_and_ssh_key"),
 				},
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
-				},
 			},
 			"inactivity_days": schema.Int64Attribute{
 				Description: "Number of days of inactivity before the rule applies",
 				Required:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.RequiresReplace(),
-				},
 			},
 			"action": schema.StringAttribute{
 				Description: "Action to take on inactive users (disable or delete)",
 				Required:    true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("disable", "delete"),
-				},
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"include_folder_admins": schema.BoolAttribute{
@@ -105,7 +95,6 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
-					boolplanmodifier.RequiresReplace(),
 				},
 			},
 			"include_site_admins": schema.BoolAttribute{
@@ -114,7 +103,6 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
-					boolplanmodifier.RequiresReplace(),
 				},
 			},
 			"id": schema.Int64Attribute{
@@ -210,10 +198,46 @@ func (r *userLifecycleRuleResource) Read(ctx context.Context, req resource.ReadR
 }
 
 func (r *userLifecycleRuleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	resp.Diagnostics.AddError(
-		"Resource Update Not Implemented",
-		"This resource does not support updates.",
-	)
+	var plan userLifecycleRuleResourceModel
+	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	paramsUserLifecycleRuleUpdate := files_sdk.UserLifecycleRuleUpdateParams{}
+	paramsUserLifecycleRuleUpdate.Id = plan.Id.ValueInt64()
+	paramsUserLifecycleRuleUpdate.Action = paramsUserLifecycleRuleUpdate.Action.Enum()[plan.Action.ValueString()]
+	paramsUserLifecycleRuleUpdate.AuthenticationMethod = paramsUserLifecycleRuleUpdate.AuthenticationMethod.Enum()[plan.AuthenticationMethod.ValueString()]
+	paramsUserLifecycleRuleUpdate.InactivityDays = plan.InactivityDays.ValueInt64()
+	if !plan.IncludeSiteAdmins.IsNull() && !plan.IncludeSiteAdmins.IsUnknown() {
+		paramsUserLifecycleRuleUpdate.IncludeSiteAdmins = plan.IncludeSiteAdmins.ValueBoolPointer()
+	}
+	if !plan.IncludeFolderAdmins.IsNull() && !plan.IncludeFolderAdmins.IsUnknown() {
+		paramsUserLifecycleRuleUpdate.IncludeFolderAdmins = plan.IncludeFolderAdmins.ValueBoolPointer()
+	}
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	userLifecycleRule, err := r.client.Update(paramsUserLifecycleRuleUpdate, files_sdk.WithContext(ctx))
+	if err != nil {
+		resp.Diagnostics.AddError(
+			"Error Updating Files UserLifecycleRule",
+			"Could not update user_lifecycle_rule, unexpected error: "+err.Error(),
+		)
+		return
+	}
+
+	diags = r.populateResourceModel(ctx, userLifecycleRule, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	diags = resp.State.Set(ctx, plan)
+	resp.Diagnostics.Append(diags...)
 }
 
 func (r *userLifecycleRuleResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
