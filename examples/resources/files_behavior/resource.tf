@@ -109,6 +109,7 @@ resource "files_behavior" "example_remote_server_sync_behavior" {
     delete_empty_folders = false
     include_patterns     = ["Incoming/**", "AnotherIncoming/*.jpg", "**/*.png"]
     exclude_patterns     = ["bin/", "**/*.bak"]
+    trigger_file         = "trigger-file.txt"
   }
 }
 
@@ -246,5 +247,14 @@ resource "files_behavior" "example_organize_files_into_subfolders_behavior" {
     strftime_format     = "%Y-%m-%d"
     time_zone           = "Eastern Time (US & Canada)"
     apply_behavior      = true
+  }
+}
+
+resource "files_behavior" "example_teams_webhook_behavior" {
+  path     = "path"
+  behavior = "teams_webhook"
+  value    = {
+    url      = "https://mysite.com/url..."
+    triggers = ["create", "read", "update", "destroy", "move", "copy"]
   }
 }
