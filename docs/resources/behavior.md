@@ -53,6 +53,7 @@ resource "files_behavior" "example_webhook_behavior" {
     method               = "POST"
     triggers             = ["create", "read", "update", "destroy", "move", "copy"]
     triggering_filenames = ["*.pdf", "*so*.jpg"]
+    exclude_filenames    = ["*.txt", "*wo*.png"]
     encoding             = "RAW"
     headers              = {
       MY-HEADER = "foo"
