@@ -59,6 +59,7 @@ resource "files_form_field_set" "example_form_field_set" {
 
 - `form_layout` (List of Number) Layout of the form
 - `id` (Number) Form field set id
+- `in_use` (Boolean) Form Field Set is in use by an active Inbox / Bundle / Inbox Registration / Bundle Registration
 
 ## Import
 

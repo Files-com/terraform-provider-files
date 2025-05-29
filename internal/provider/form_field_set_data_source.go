@@ -35,6 +35,7 @@ type formFieldSetDataSourceModel struct {
 	SkipName    types.Bool    `tfsdk:"skip_name"`
 	SkipEmail   types.Bool    `tfsdk:"skip_email"`
 	SkipCompany types.Bool    `tfsdk:"skip_company"`
+	InUse       types.Bool    `tfsdk:"in_use"`
 }
 
 func (r *formFieldSetDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -93,6 +94,10 @@ func (r *formFieldSetDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Description: "Any associated InboxRegistrations or BundleRegistrations can be saved without providing company",
 				Computed:    true,
 			},
+			"in_use": schema.BoolAttribute{
+				Description: "Form Field Set is in use by an active Inbox / Bundle / Inbox Registration / Bundle Registration",
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -139,6 +144,7 @@ func (r *formFieldSetDataSource) populateDataSourceModel(ctx context.Context, fo
 	state.SkipName = types.BoolPointerValue(formFieldSet.SkipName)
 	state.SkipEmail = types.BoolPointerValue(formFieldSet.SkipEmail)
 	state.SkipCompany = types.BoolPointerValue(formFieldSet.SkipCompany)
+	state.InUse = types.BoolPointerValue(formFieldSet.InUse)
 
 	return
 }

@@ -44,6 +44,7 @@ type formFieldSetResourceModel struct {
 	UserId      types.Int64   `tfsdk:"user_id"`
 	Id          types.Int64   `tfsdk:"id"`
 	FormLayout  types.List    `tfsdk:"form_layout"`
+	InUse       types.Bool    `tfsdk:"in_use"`
 }
 
 func (r *formFieldSetResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -131,6 +132,10 @@ func (r *formFieldSetResource) Schema(_ context.Context, _ resource.SchemaReques
 				Description: "Layout of the form",
 				Computed:    true,
 				ElementType: types.Int64Type,
+			},
+			"in_use": schema.BoolAttribute{
+				Description: "Form Field Set is in use by an active Inbox / Bundle / Inbox Registration / Bundle Registration",
+				Computed:    true,
 			},
 		},
 	}
@@ -318,6 +323,7 @@ func (r *formFieldSetResource) populateResourceModel(ctx context.Context, formFi
 	state.SkipName = types.BoolPointerValue(formFieldSet.SkipName)
 	state.SkipEmail = types.BoolPointerValue(formFieldSet.SkipEmail)
 	state.SkipCompany = types.BoolPointerValue(formFieldSet.SkipCompany)
+	state.InUse = types.BoolPointerValue(formFieldSet.InUse)
 
 	return
 }

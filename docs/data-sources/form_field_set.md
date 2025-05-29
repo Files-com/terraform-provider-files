@@ -39,6 +39,7 @@ data "files_form_field_set" "example_form_field_set" {
 
 - `form_fields` (Dynamic) Associated form fields
 - `form_layout` (List of Number) Layout of the form
+- `in_use` (Boolean) Form Field Set is in use by an active Inbox / Bundle / Inbox Registration / Bundle Registration
 - `skip_company` (Boolean) Any associated InboxRegistrations or BundleRegistrations can be saved without providing company
 - `skip_email` (Boolean) Any associated InboxRegistrations or BundleRegistrations can be saved without providing email
 - `skip_name` (Boolean) Any associated InboxRegistrations or BundleRegistrations can be saved without providing name
