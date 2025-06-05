@@ -21,6 +21,7 @@ resource "files_automation" "example_automation" {
   schedule_times_of_day                = ["7:30", "11:30"]
   schedule_time_zone                   = "Eastern Time (US & Canada)"
   always_overwrite_size_matching_files = true
+  always_serialize_jobs                = true
   description                          = "example"
   disabled                             = true
   exclude_pattern                      = "path/to/exclude/*"

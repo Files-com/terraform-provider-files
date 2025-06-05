@@ -29,6 +29,7 @@ type automationDataSource struct {
 
 type automationDataSourceModel struct {
 	Id                               types.Int64   `tfsdk:"id"`
+	AlwaysSerializeJobs              types.Bool    `tfsdk:"always_serialize_jobs"`
 	AlwaysOverwriteSizeMatchingFiles types.Bool    `tfsdk:"always_overwrite_size_matching_files"`
 	Automation                       types.String  `tfsdk:"automation"`
 	Deleted                          types.Bool    `tfsdk:"deleted"`
@@ -97,6 +98,10 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			"id": schema.Int64Attribute{
 				Description: "Automation ID",
 				Required:    true,
+			},
+			"always_serialize_jobs": schema.BoolAttribute{
+				Description: "Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance.",
+				Computed:    true,
 			},
 			"always_overwrite_size_matching_files": schema.BoolAttribute{
 				Description: "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`.",
@@ -287,6 +292,7 @@ func (r *automationDataSource) populateDataSourceModel(ctx context.Context, auto
 	var propDiags diag.Diagnostics
 
 	state.Id = types.Int64Value(automation.Id)
+	state.AlwaysSerializeJobs = types.BoolPointerValue(automation.AlwaysSerializeJobs)
 	state.AlwaysOverwriteSizeMatchingFiles = types.BoolPointerValue(automation.AlwaysOverwriteSizeMatchingFiles)
 	state.Automation = types.StringValue(automation.Automation)
 	state.Deleted = types.BoolPointerValue(automation.Deleted)

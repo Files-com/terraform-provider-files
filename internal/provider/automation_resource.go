@@ -40,6 +40,7 @@ type automationResource struct {
 
 type automationResourceModel struct {
 	Automation                       types.String  `tfsdk:"automation"`
+	AlwaysSerializeJobs              types.Bool    `tfsdk:"always_serialize_jobs"`
 	AlwaysOverwriteSizeMatchingFiles types.Bool    `tfsdk:"always_overwrite_size_matching_files"`
 	Description                      types.String  `tfsdk:"description"`
 	DestinationReplaceFrom           types.String  `tfsdk:"destination_replace_from"`
@@ -110,6 +111,14 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Required:    true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("create_folder", "delete_file", "copy_file", "move_file", "as2_send", "run_sync", "import_file"),
+				},
+			},
+			"always_serialize_jobs": schema.BoolAttribute{
+				Description: "Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"always_overwrite_size_matching_files": schema.BoolAttribute{
@@ -425,6 +434,9 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 	if !plan.AlwaysOverwriteSizeMatchingFiles.IsNull() && !plan.AlwaysOverwriteSizeMatchingFiles.IsUnknown() {
 		paramsAutomationCreate.AlwaysOverwriteSizeMatchingFiles = plan.AlwaysOverwriteSizeMatchingFiles.ValueBoolPointer()
 	}
+	if !plan.AlwaysSerializeJobs.IsNull() && !plan.AlwaysSerializeJobs.IsUnknown() {
+		paramsAutomationCreate.AlwaysSerializeJobs = plan.AlwaysSerializeJobs.ValueBoolPointer()
+	}
 	paramsAutomationCreate.Description = plan.Description.ValueString()
 	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
 		paramsAutomationCreate.Disabled = plan.Disabled.ValueBoolPointer()
@@ -554,6 +566,9 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 	if !plan.AlwaysOverwriteSizeMatchingFiles.IsNull() && !plan.AlwaysOverwriteSizeMatchingFiles.IsUnknown() {
 		paramsAutomationUpdate.AlwaysOverwriteSizeMatchingFiles = plan.AlwaysOverwriteSizeMatchingFiles.ValueBoolPointer()
 	}
+	if !plan.AlwaysSerializeJobs.IsNull() && !plan.AlwaysSerializeJobs.IsUnknown() {
+		paramsAutomationUpdate.AlwaysSerializeJobs = plan.AlwaysSerializeJobs.ValueBoolPointer()
+	}
 	paramsAutomationUpdate.Description = plan.Description.ValueString()
 	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
 		paramsAutomationUpdate.Disabled = plan.Disabled.ValueBoolPointer()
@@ -658,6 +673,7 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	var propDiags diag.Diagnostics
 
 	state.Id = types.Int64Value(automation.Id)
+	state.AlwaysSerializeJobs = types.BoolPointerValue(automation.AlwaysSerializeJobs)
 	state.AlwaysOverwriteSizeMatchingFiles = types.BoolPointerValue(automation.AlwaysOverwriteSizeMatchingFiles)
 	state.Automation = types.StringValue(automation.Automation)
 	state.Deleted = types.BoolPointerValue(automation.Deleted)
