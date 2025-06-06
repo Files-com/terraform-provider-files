@@ -9,7 +9,7 @@ resource "files_user" "example_user" {
   authenticate_until           = "2000-01-01T01:00:00Z"
   authentication_method        = "password"
   billing_permission           = false
-  bypass_inactive_disable      = false
+  bypass_user_lifecycle_rules  = false
   bypass_site_allowed_ips      = false
   dav_permission               = true
   disabled                     = true

@@ -198,7 +198,6 @@ type siteDataSourceModel struct {
 	WelcomeEmailEnabled                      types.Bool    `tfsdk:"welcome_email_enabled"`
 	WelcomeScreen                            types.String  `tfsdk:"welcome_screen"`
 	WindowsModeFtp                           types.Bool    `tfsdk:"windows_mode_ftp"`
-	DisableUsersFromInactivityPeriodDays     types.Int64   `tfsdk:"disable_users_from_inactivity_period_days"`
 	GroupAdminsCanSetUserPassword            types.Bool    `tfsdk:"group_admins_can_set_user_password"`
 }
 
@@ -907,10 +906,6 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Does FTP user Windows emulation mode?",
 				Computed:    true,
 			},
-			"disable_users_from_inactivity_period_days": schema.Int64Attribute{
-				Description: "If greater than zero, users will unable to login if they do not show activity within this number of days.",
-				Computed:    true,
-			},
 			"group_admins_can_set_user_password": schema.BoolAttribute{
 				Description: "Allow group admins set password authentication method",
 				Computed:    true,
@@ -1209,7 +1204,6 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.WelcomeEmailEnabled = types.BoolPointerValue(site.WelcomeEmailEnabled)
 	state.WelcomeScreen = types.StringValue(site.WelcomeScreen)
 	state.WindowsModeFtp = types.BoolPointerValue(site.WindowsModeFtp)
-	state.DisableUsersFromInactivityPeriodDays = types.Int64Value(site.DisableUsersFromInactivityPeriodDays)
 	state.GroupAdminsCanSetUserPassword = types.BoolPointerValue(site.GroupAdminsCanSetUserPassword)
 
 	return

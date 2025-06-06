@@ -40,7 +40,7 @@ type userDataSourceModel struct {
 	Billable                         types.Bool   `tfsdk:"billable"`
 	BillingPermission                types.Bool   `tfsdk:"billing_permission"`
 	BypassSiteAllowedIps             types.Bool   `tfsdk:"bypass_site_allowed_ips"`
-	BypassInactiveDisable            types.Bool   `tfsdk:"bypass_inactive_disable"`
+	BypassUserLifecycleRules         types.Bool   `tfsdk:"bypass_user_lifecycle_rules"`
 	CreatedAt                        types.String `tfsdk:"created_at"`
 	DavPermission                    types.Bool   `tfsdk:"dav_permission"`
 	Disabled                         types.Bool   `tfsdk:"disabled"`
@@ -172,8 +172,8 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Allow this user to skip site-wide IP blacklists?",
 				Computed:    true,
 			},
-			"bypass_inactive_disable": schema.BoolAttribute{
-				Description: "Exempt this user from being disabled based on inactivity?",
+			"bypass_user_lifecycle_rules": schema.BoolAttribute{
+				Description: "Exempt this user from user lifecycle rules?",
 				Computed:    true,
 			},
 			"created_at": schema.StringAttribute{
@@ -443,7 +443,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.Billable = types.BoolPointerValue(user.Billable)
 	state.BillingPermission = types.BoolPointerValue(user.BillingPermission)
 	state.BypassSiteAllowedIps = types.BoolPointerValue(user.BypassSiteAllowedIps)
-	state.BypassInactiveDisable = types.BoolPointerValue(user.BypassInactiveDisable)
+	state.BypassUserLifecycleRules = types.BoolPointerValue(user.BypassUserLifecycleRules)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), user.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files User",

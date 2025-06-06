@@ -80,8 +80,8 @@ data "files_user" "example_user" {
 - `avatar_url` (String) URL holding the user's avatar
 - `billable` (Boolean) Is this a billable user record?
 - `billing_permission` (Boolean) Allow this user to perform operations on the account, payments, and invoices?
-- `bypass_inactive_disable` (Boolean) Exempt this user from being disabled based on inactivity?
 - `bypass_site_allowed_ips` (Boolean) Allow this user to skip site-wide IP blacklists?
+- `bypass_user_lifecycle_rules` (Boolean) Exempt this user from user lifecycle rules?
 - `company` (String) User's company
 - `created_at` (String) When this user was created
 - `dav_permission` (Boolean) Can the user connect with WebDAV?

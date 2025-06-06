@@ -181,7 +181,6 @@ type siteResourceModel struct {
 	WelcomeEmailEnabled                      types.Bool    `tfsdk:"welcome_email_enabled"`
 	WelcomeScreen                            types.String  `tfsdk:"welcome_screen"`
 	WindowsModeFtp                           types.Bool    `tfsdk:"windows_mode_ftp"`
-	DisableUsersFromInactivityPeriodDays     types.Int64   `tfsdk:"disable_users_from_inactivity_period_days"`
 	GroupAdminsCanSetUserPassword            types.Bool    `tfsdk:"group_admins_can_set_user_password"`
 	Id                                       types.Int64   `tfsdk:"id"`
 	AdminUserId                              types.Int64   `tfsdk:"admin_user_id"`
@@ -1408,14 +1407,6 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"disable_users_from_inactivity_period_days": schema.Int64Attribute{
-				Description: "If greater than zero, users will unable to login if they do not show activity within this number of days.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
 			"group_admins_can_set_user_password": schema.BoolAttribute{
 				Description: "Allow group admins set password authentication method",
 				Computed:    true,
@@ -1764,7 +1755,6 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.CustomNamespace.IsNull() && !plan.CustomNamespace.IsUnknown() {
 		paramsSiteUpdate.CustomNamespace = plan.CustomNamespace.ValueBoolPointer()
 	}
-	paramsSiteUpdate.DisableUsersFromInactivityPeriodDays = plan.DisableUsersFromInactivityPeriodDays.ValueInt64()
 	if !plan.NonSsoGroupsAllowed.IsNull() && !plan.NonSsoGroupsAllowed.IsUnknown() {
 		paramsSiteUpdate.NonSsoGroupsAllowed = plan.NonSsoGroupsAllowed.ValueBoolPointer()
 	}
@@ -2188,7 +2178,6 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.WelcomeEmailEnabled = types.BoolPointerValue(site.WelcomeEmailEnabled)
 	state.WelcomeScreen = types.StringValue(site.WelcomeScreen)
 	state.WindowsModeFtp = types.BoolPointerValue(site.WindowsModeFtp)
-	state.DisableUsersFromInactivityPeriodDays = types.Int64Value(site.DisableUsersFromInactivityPeriodDays)
 	state.GroupAdminsCanSetUserPassword = types.BoolPointerValue(site.GroupAdminsCanSetUserPassword)
 
 	return

@@ -45,7 +45,7 @@ type userResourceModel struct {
 	AuthenticationMethod             types.String            `tfsdk:"authentication_method"`
 	BillingPermission                types.Bool              `tfsdk:"billing_permission"`
 	BypassSiteAllowedIps             types.Bool              `tfsdk:"bypass_site_allowed_ips"`
-	BypassInactiveDisable            types.Bool              `tfsdk:"bypass_inactive_disable"`
+	BypassUserLifecycleRules         types.Bool              `tfsdk:"bypass_user_lifecycle_rules"`
 	DavPermission                    types.Bool              `tfsdk:"dav_permission"`
 	Disabled                         types.Bool              `tfsdk:"disabled"`
 	Email                            types.String            `tfsdk:"email"`
@@ -197,8 +197,8 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"bypass_inactive_disable": schema.BoolAttribute{
-				Description: "Exempt this user from being disabled based on inactivity?",
+			"bypass_user_lifecycle_rules": schema.BoolAttribute{
+				Description: "Exempt this user from user lifecycle rules?",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -652,8 +652,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !plan.BillingPermission.IsNull() && !plan.BillingPermission.IsUnknown() {
 		paramsUserCreate.BillingPermission = plan.BillingPermission.ValueBoolPointer()
 	}
-	if !plan.BypassInactiveDisable.IsNull() && !plan.BypassInactiveDisable.IsUnknown() {
-		paramsUserCreate.BypassInactiveDisable = plan.BypassInactiveDisable.ValueBoolPointer()
+	if !plan.BypassUserLifecycleRules.IsNull() && !plan.BypassUserLifecycleRules.IsUnknown() {
+		paramsUserCreate.BypassUserLifecycleRules = plan.BypassUserLifecycleRules.ValueBoolPointer()
 	}
 	if !plan.BypassSiteAllowedIps.IsNull() && !plan.BypassSiteAllowedIps.IsUnknown() {
 		paramsUserCreate.BypassSiteAllowedIps = plan.BypassSiteAllowedIps.ValueBoolPointer()
@@ -835,8 +835,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.BillingPermission.IsNull() && !plan.BillingPermission.IsUnknown() {
 		paramsUserUpdate.BillingPermission = plan.BillingPermission.ValueBoolPointer()
 	}
-	if !plan.BypassInactiveDisable.IsNull() && !plan.BypassInactiveDisable.IsUnknown() {
-		paramsUserUpdate.BypassInactiveDisable = plan.BypassInactiveDisable.ValueBoolPointer()
+	if !plan.BypassUserLifecycleRules.IsNull() && !plan.BypassUserLifecycleRules.IsUnknown() {
+		paramsUserUpdate.BypassUserLifecycleRules = plan.BypassUserLifecycleRules.ValueBoolPointer()
 	}
 	if !plan.BypassSiteAllowedIps.IsNull() && !plan.BypassSiteAllowedIps.IsUnknown() {
 		paramsUserUpdate.BypassSiteAllowedIps = plan.BypassSiteAllowedIps.ValueBoolPointer()
@@ -998,7 +998,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.Billable = types.BoolPointerValue(user.Billable)
 	state.BillingPermission = types.BoolPointerValue(user.BillingPermission)
 	state.BypassSiteAllowedIps = types.BoolPointerValue(user.BypassSiteAllowedIps)
-	state.BypassInactiveDisable = types.BoolPointerValue(user.BypassInactiveDisable)
+	state.BypassUserLifecycleRules = types.BoolPointerValue(user.BypassUserLifecycleRules)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), user.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files User",

@@ -82,7 +82,6 @@ resource "files_site" "example_site" {
   opt_out_global                                = false
   use_provided_modified_at                      = false
   custom_namespace                              = false
-  disable_users_from_inactivity_period_days     = 1
   non_sso_groups_allowed                        = false
   non_sso_users_allowed                         = false
   sharing_enabled                               = false

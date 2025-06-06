@@ -67,7 +67,7 @@ resource "files_user" "example_user" {
   authenticate_until           = "2000-01-01T01:00:00Z"
   authentication_method        = "password"
   billing_permission           = false
-  bypass_inactive_disable      = false
+  bypass_user_lifecycle_rules  = false
   bypass_site_allowed_ips      = false
   dav_permission               = true
   disabled                     = true
@@ -116,8 +116,8 @@ resource "files_user" "example_user" {
 - `authentication_method` (String) How is this user authenticated?
 - `avatar_delete` (Boolean) If true, the avatar will be deleted.
 - `billing_permission` (Boolean) Allow this user to perform operations on the account, payments, and invoices?
-- `bypass_inactive_disable` (Boolean) Exempt this user from being disabled based on inactivity?
 - `bypass_site_allowed_ips` (Boolean) Allow this user to skip site-wide IP blacklists?
+- `bypass_user_lifecycle_rules` (Boolean) Exempt this user from user lifecycle rules?
 - `change_password` (String) Used for changing a password on an existing user.
 - `change_password_confirmation` (String) Optional, but if provided, we will ensure that it matches the value sent in `change_password`.
 - `company` (String) User's company

@@ -102,7 +102,6 @@ resource "files_site" "example_site" {
   opt_out_global                                = false
   use_provided_modified_at                      = false
   custom_namespace                              = false
-  disable_users_from_inactivity_period_days     = 1
   non_sso_groups_allowed                        = false
   non_sso_users_allowed                         = false
   sharing_enabled                               = false
@@ -231,7 +230,6 @@ resource "files_site" "example_site" {
 - `desktop_app_session_lifetime` (Number) Desktop app session lifetime (in hours)
 - `disable_files_certificate_generation` (Boolean) If set, Files.com will not set the CAA records required to generate future SSL certificates for this domain.
 - `disable_password_reset` (Boolean) Is password reset disabled?
-- `disable_users_from_inactivity_period_days` (Number) If greater than zero, users will unable to login if they do not show activity within this number of days.
 - `disallowed_countries` (String) Comma separated list of disallowed Country codes
 - `document_edits_in_bundle_allowed` (Boolean) If true, allow public viewers of Bundles with full permissions to use document editing integrations.
 - `domain` (String) Custom domain
