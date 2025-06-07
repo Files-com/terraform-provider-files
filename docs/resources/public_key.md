@@ -48,6 +48,7 @@ resource "files_public_key" "example_public_key" {
 - `fingerprint` (String) Public key fingerprint (MD5)
 - `fingerprint_sha256` (String) Public key fingerprint (SHA256)
 - `id` (Number) Public key ID
+- `last_login_at` (String) Key's most recent login time via SFTP
 - `username` (String) Username of the user this public key is associated with
 
 ## Import

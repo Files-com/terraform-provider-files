@@ -33,6 +33,7 @@ type publicKeyDataSourceModel struct {
 	CreatedAt         types.String `tfsdk:"created_at"`
 	Fingerprint       types.String `tfsdk:"fingerprint"`
 	FingerprintSha256 types.String `tfsdk:"fingerprint_sha256"`
+	LastLoginAt       types.String `tfsdk:"last_login_at"`
 	Username          types.String `tfsdk:"username"`
 	UserId            types.Int64  `tfsdk:"user_id"`
 }
@@ -82,6 +83,10 @@ func (r *publicKeyDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 			},
 			"fingerprint_sha256": schema.StringAttribute{
 				Description: "Public key fingerprint (SHA256)",
+				Computed:    true,
+			},
+			"last_login_at": schema.StringAttribute{
+				Description: "Key's most recent login time via SFTP",
 				Computed:    true,
 			},
 			"username": schema.StringAttribute{
@@ -137,6 +142,12 @@ func (r *publicKeyDataSource) populateDataSourceModel(ctx context.Context, publi
 	}
 	state.Fingerprint = types.StringValue(publicKey.Fingerprint)
 	state.FingerprintSha256 = types.StringValue(publicKey.FingerprintSha256)
+	if err := lib.TimeToStringType(ctx, path.Root("last_login_at"), publicKey.LastLoginAt, &state.LastLoginAt); err != nil {
+		diags.AddError(
+			"Error Creating Files PublicKey",
+			"Could not convert state last_login_at to string: "+err.Error(),
+		)
+	}
 	state.Username = types.StringValue(publicKey.Username)
 	state.UserId = types.Int64Value(publicKey.UserId)
 

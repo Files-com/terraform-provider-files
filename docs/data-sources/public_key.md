@@ -40,6 +40,7 @@ data "files_public_key" "example_public_key" {
 - `created_at` (String) Public key created at date/time
 - `fingerprint` (String) Public key fingerprint (MD5)
 - `fingerprint_sha256` (String) Public key fingerprint (SHA256)
+- `last_login_at` (String) Key's most recent login time via SFTP
 - `title` (String) Public key title
 - `user_id` (Number) User ID this public key is associated with
 - `username` (String) Username of the user this public key is associated with
