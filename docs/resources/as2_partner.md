@@ -47,7 +47,7 @@ resource "files_as2_partner" "example_as2_partner" {
 - `http_auth_password` (String) Password to send to server for HTTP Authentication.
 - `http_auth_username` (String) Username to send to server for HTTP Authentication.
 - `mdn_validation_level` (String) How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates.
-- `server_certificate` (String) Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS?
+- `server_certificate` (String) Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? (This only applies to Outgoing AS2 message from Files.com to a Partner.)
 
 ### Read-Only
 

@@ -91,7 +91,7 @@ func (r *as2PartnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Computed:    true,
 			},
 			"server_certificate": schema.StringAttribute{
-				Description: "Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS?",
+				Description: "Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? (This only applies to Outgoing AS2 message from Files.com to a Partner.)",
 				Computed:    true,
 			},
 			"http_auth_username": schema.StringAttribute{

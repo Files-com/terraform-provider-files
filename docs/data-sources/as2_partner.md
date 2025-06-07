@@ -41,5 +41,5 @@ data "files_as2_partner" "example_as2_partner" {
 - `public_certificate_not_before` (String) Not before value of public certificate used for message security.
 - `public_certificate_serial` (String) Serial of public certificate used for message security.
 - `public_certificate_subject` (String) Subject of public certificate used for message security.
-- `server_certificate` (String) Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS?
+- `server_certificate` (String) Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? (This only applies to Outgoing AS2 message from Files.com to a Partner.)
 - `uri` (String) Public URI where we will send the AS2 messages (via HTTP/HTTPS).
