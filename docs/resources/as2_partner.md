@@ -14,18 +14,19 @@ An AS2Partner is a counterparty of the Files.com site's AS2 connectivity. Genera
 
 ```terraform
 resource "files_as2_partner" "example_as2_partner" {
-  enable_dedicated_ips    = true
-  http_auth_username      = "username"
-  mdn_validation_level    = "none"
-  server_certificate      = "require_match"
-  default_mime_type       = "application/octet-stream"
-  additional_http_headers = {
+  enable_dedicated_ips       = true
+  http_auth_username         = "username"
+  mdn_validation_level       = "none"
+  signature_validation_level = "normal"
+  server_certificate         = "require_match"
+  default_mime_type          = "application/octet-stream"
+  additional_http_headers    = {
     key = "example value"
   }
-  as2_station_id          = 1
-  name                    = "AS2 Partner Name"
-  uri                     = "example"
-  public_certificate      = "public_certificate"
+  as2_station_id             = 1
+  name                       = "AS2 Partner Name"
+  uri                        = "example"
+  public_certificate         = "public_certificate"
 }
 ```
 
@@ -36,7 +37,7 @@ resource "files_as2_partner" "example_as2_partner" {
 
 - `as2_station_id` (Number) ID of the AS2 Station associated with this partner.
 - `name` (String) The partner's formal AS2 name.
-- `public_certificate` (String) Public certificate for AS2 Partner.  Note: This is the certificate for AS2 message security, not a certificate used for HTTPS authentication.
+- `public_certificate` (String) Public certificate used for message security.
 - `uri` (String) Public URI where we will send the AS2 messages (via HTTP/HTTPS).
 
 ### Optional
@@ -46,8 +47,9 @@ resource "files_as2_partner" "example_as2_partner" {
 - `enable_dedicated_ips` (Boolean) If `true`, we will use your site's dedicated IPs for all outbound connections to this AS2 Partner.
 - `http_auth_password` (String) Password to send to server for HTTP Authentication.
 - `http_auth_username` (String) Username to send to server for HTTP Authentication.
-- `mdn_validation_level` (String) How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates.
+- `mdn_validation_level` (String) How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates. `auto`: Automatically set the correct value for this setting based on next mdn received.
 - `server_certificate` (String) Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? (This only applies to Outgoing AS2 message from Files.com to a Partner.)
+- `signature_validation_level` (String) Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: Automatically set the correct value for this setting based on next message received.
 
 ### Read-Only
 

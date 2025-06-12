@@ -37,8 +37,10 @@ type as2PartnerDataSourceModel struct {
 	AdditionalHttpHeaders      types.Dynamic `tfsdk:"additional_http_headers"`
 	DefaultMimeType            types.String  `tfsdk:"default_mime_type"`
 	MdnValidationLevel         types.String  `tfsdk:"mdn_validation_level"`
+	SignatureValidationLevel   types.String  `tfsdk:"signature_validation_level"`
 	EnableDedicatedIps         types.Bool    `tfsdk:"enable_dedicated_ips"`
 	HexPublicCertificateSerial types.String  `tfsdk:"hex_public_certificate_serial"`
+	PublicCertificate          types.String  `tfsdk:"public_certificate"`
 	PublicCertificateMd5       types.String  `tfsdk:"public_certificate_md5"`
 	PublicCertificateSubject   types.String  `tfsdk:"public_certificate_subject"`
 	PublicCertificateIssuer    types.String  `tfsdk:"public_certificate_issuer"`
@@ -107,7 +109,11 @@ func (r *as2PartnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Computed:    true,
 			},
 			"mdn_validation_level": schema.StringAttribute{
-				Description: "How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates.",
+				Description: "How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates. `auto`: Automatically set the correct value for this setting based on next mdn received.",
+				Computed:    true,
+			},
+			"signature_validation_level": schema.StringAttribute{
+				Description: "Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: Automatically set the correct value for this setting based on next message received.",
 				Computed:    true,
 			},
 			"enable_dedicated_ips": schema.BoolAttribute{
@@ -116,6 +122,10 @@ func (r *as2PartnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			},
 			"hex_public_certificate_serial": schema.StringAttribute{
 				Description: "Serial of public certificate used for message security in hex format.",
+				Computed:    true,
+			},
+			"public_certificate": schema.StringAttribute{
+				Description: "Public certificate used for message security.",
 				Computed:    true,
 			},
 			"public_certificate_md5": schema.StringAttribute{
@@ -189,8 +199,10 @@ func (r *as2PartnerDataSource) populateDataSourceModel(ctx context.Context, as2P
 	diags.Append(propDiags...)
 	state.DefaultMimeType = types.StringValue(as2Partner.DefaultMimeType)
 	state.MdnValidationLevel = types.StringValue(as2Partner.MdnValidationLevel)
+	state.SignatureValidationLevel = types.StringValue(as2Partner.SignatureValidationLevel)
 	state.EnableDedicatedIps = types.BoolPointerValue(as2Partner.EnableDedicatedIps)
 	state.HexPublicCertificateSerial = types.StringValue(as2Partner.HexPublicCertificateSerial)
+	state.PublicCertificate = types.StringValue(as2Partner.PublicCertificate)
 	state.PublicCertificateMd5 = types.StringValue(as2Partner.PublicCertificateMd5)
 	state.PublicCertificateSubject = types.StringValue(as2Partner.PublicCertificateSubject)
 	state.PublicCertificateIssuer = types.StringValue(as2Partner.PublicCertificateIssuer)

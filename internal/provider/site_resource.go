@@ -87,6 +87,7 @@ type siteResourceModel struct {
 	DesktopAppSessionIpPinning               types.Bool    `tfsdk:"desktop_app_session_ip_pinning"`
 	DesktopAppSessionLifetime                types.Int64   `tfsdk:"desktop_app_session_lifetime"`
 	LegacyChecksumsMode                      types.Bool    `tfsdk:"legacy_checksums_mode"`
+	MigrateRemoteServerSyncToSync            types.Bool    `tfsdk:"migrate_remote_server_sync_to_sync"`
 	MobileApp                                types.Bool    `tfsdk:"mobile_app"`
 	MobileAppSessionIpPinning                types.Bool    `tfsdk:"mobile_app_session_ip_pinning"`
 	MobileAppSessionLifetime                 types.Int64   `tfsdk:"mobile_app_session_lifetime"`
@@ -634,6 +635,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"legacy_checksums_mode": schema.BoolAttribute{
 				Description: "Use legacy checksums mode?",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"migrate_remote_server_sync_to_sync": schema.BoolAttribute{
+				Description: "If true, we will migrate all remote server syncs to the new Sync model.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -1664,6 +1673,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.LegacyChecksumsMode.IsNull() && !plan.LegacyChecksumsMode.IsUnknown() {
 		paramsSiteUpdate.LegacyChecksumsMode = plan.LegacyChecksumsMode.ValueBoolPointer()
 	}
+	if !plan.MigrateRemoteServerSyncToSync.IsNull() && !plan.MigrateRemoteServerSyncToSync.IsUnknown() {
+		paramsSiteUpdate.MigrateRemoteServerSyncToSync = plan.MigrateRemoteServerSyncToSync.ValueBoolPointer()
+	}
 	paramsSiteUpdate.SessionExpiry = plan.SessionExpiry.ValueString()
 	if !plan.SslRequired.IsNull() && !plan.SslRequired.IsUnknown() {
 		paramsSiteUpdate.SslRequired = plan.SslRequired.ValueBoolPointer()
@@ -1988,6 +2000,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.DesktopAppSessionIpPinning = types.BoolPointerValue(site.DesktopAppSessionIpPinning)
 	state.DesktopAppSessionLifetime = types.Int64Value(site.DesktopAppSessionLifetime)
 	state.LegacyChecksumsMode = types.BoolPointerValue(site.LegacyChecksumsMode)
+	state.MigrateRemoteServerSyncToSync = types.BoolPointerValue(site.MigrateRemoteServerSyncToSync)
 	state.MobileApp = types.BoolPointerValue(site.MobileApp)
 	state.MobileAppSessionIpPinning = types.BoolPointerValue(site.MobileAppSessionIpPinning)
 	state.MobileAppSessionLifetime = types.Int64Value(site.MobileAppSessionLifetime)

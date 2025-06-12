@@ -32,6 +32,7 @@ type as2StationDataSourceModel struct {
 	Domain                     types.String `tfsdk:"domain"`
 	HexPublicCertificateSerial types.String `tfsdk:"hex_public_certificate_serial"`
 	PublicCertificateMd5       types.String `tfsdk:"public_certificate_md5"`
+	PublicCertificate          types.String `tfsdk:"public_certificate"`
 	PrivateKeyMd5              types.String `tfsdk:"private_key_md5"`
 	PublicCertificateSubject   types.String `tfsdk:"public_certificate_subject"`
 	PublicCertificateIssuer    types.String `tfsdk:"public_certificate_issuer"`
@@ -90,6 +91,10 @@ func (r *as2StationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			},
 			"public_certificate_md5": schema.StringAttribute{
 				Description: "MD5 hash of public certificate used for message security.",
+				Computed:    true,
+			},
+			"public_certificate": schema.StringAttribute{
+				Description: "Public certificate used for message security.",
 				Computed:    true,
 			},
 			"private_key_md5": schema.StringAttribute{
@@ -161,6 +166,7 @@ func (r *as2StationDataSource) populateDataSourceModel(ctx context.Context, as2S
 	state.Domain = types.StringValue(as2Station.Domain)
 	state.HexPublicCertificateSerial = types.StringValue(as2Station.HexPublicCertificateSerial)
 	state.PublicCertificateMd5 = types.StringValue(as2Station.PublicCertificateMd5)
+	state.PublicCertificate = types.StringValue(as2Station.PublicCertificate)
 	state.PrivateKeyMd5 = types.StringValue(as2Station.PrivateKeyMd5)
 	state.PublicCertificateSubject = types.StringValue(as2Station.PublicCertificateSubject)
 	state.PublicCertificateIssuer = types.StringValue(as2Station.PublicCertificateIssuer)

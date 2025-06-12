@@ -60,6 +60,7 @@ resource "files_site" "example_site" {
   calculate_file_checksums_sha1                 = false
   calculate_file_checksums_sha256               = false
   legacy_checksums_mode                         = false
+  migrate_remote_server_sync_to_sync            = false
   session_expiry                                = 1.0
   ssl_required                                  = false
   tls_disabled                                  = false
@@ -260,6 +261,7 @@ resource "files_site" "example_site" {
 - `legacy_checksums_mode` (Boolean) Use legacy checksums mode?
 - `login_help_text` (String) Login help text
 - `max_prior_passwords` (Number) Number of prior passwords to disallow
+- `migrate_remote_server_sync_to_sync` (Boolean) If true, we will migrate all remote server syncs to the new Sync model.
 - `mobile_app` (Boolean) Is the mobile app enabled?
 - `mobile_app_session_ip_pinning` (Boolean) Is mobile app session IP pinning enabled?
 - `mobile_app_session_lifetime` (Number) Mobile app session lifetime (in hours)

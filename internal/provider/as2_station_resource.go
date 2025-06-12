@@ -82,7 +82,8 @@ func (r *as2StationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Required:    true,
 			},
 			"public_certificate": schema.StringAttribute{
-				Required: true,
+				Description: "Public certificate used for message security.",
+				Required:    true,
 			},
 			"private_key": schema.StringAttribute{
 				Required: true,
@@ -305,6 +306,7 @@ func (r *as2StationResource) populateResourceModel(ctx context.Context, as2Stati
 	state.Domain = types.StringValue(as2Station.Domain)
 	state.HexPublicCertificateSerial = types.StringValue(as2Station.HexPublicCertificateSerial)
 	state.PublicCertificateMd5 = types.StringValue(as2Station.PublicCertificateMd5)
+	state.PublicCertificate = types.StringValue(as2Station.PublicCertificate)
 	state.PrivateKeyMd5 = types.StringValue(as2Station.PrivateKeyMd5)
 	state.PublicCertificateSubject = types.StringValue(as2Station.PublicCertificateSubject)
 	state.PublicCertificateIssuer = types.StringValue(as2Station.PublicCertificateIssuer)

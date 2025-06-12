@@ -84,6 +84,7 @@ type siteDataSourceModel struct {
 	DesktopAppSessionIpPinning               types.Bool    `tfsdk:"desktop_app_session_ip_pinning"`
 	DesktopAppSessionLifetime                types.Int64   `tfsdk:"desktop_app_session_lifetime"`
 	LegacyChecksumsMode                      types.Bool    `tfsdk:"legacy_checksums_mode"`
+	MigrateRemoteServerSyncToSync            types.Bool    `tfsdk:"migrate_remote_server_sync_to_sync"`
 	MobileApp                                types.Bool    `tfsdk:"mobile_app"`
 	MobileAppSessionIpPinning                types.Bool    `tfsdk:"mobile_app_session_ip_pinning"`
 	MobileAppSessionLifetime                 types.Int64   `tfsdk:"mobile_app_session_lifetime"`
@@ -448,6 +449,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"legacy_checksums_mode": schema.BoolAttribute{
 				Description: "Use legacy checksums mode?",
+				Computed:    true,
+			},
+			"migrate_remote_server_sync_to_sync": schema.BoolAttribute{
+				Description: "If true, we will migrate all remote server syncs to the new Sync model.",
 				Computed:    true,
 			},
 			"mobile_app": schema.BoolAttribute{
@@ -1014,6 +1019,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.DesktopAppSessionIpPinning = types.BoolPointerValue(site.DesktopAppSessionIpPinning)
 	state.DesktopAppSessionLifetime = types.Int64Value(site.DesktopAppSessionLifetime)
 	state.LegacyChecksumsMode = types.BoolPointerValue(site.LegacyChecksumsMode)
+	state.MigrateRemoteServerSyncToSync = types.BoolPointerValue(site.MigrateRemoteServerSyncToSync)
 	state.MobileApp = types.BoolPointerValue(site.MobileApp)
 	state.MobileAppSessionIpPinning = types.BoolPointerValue(site.MobileAppSessionIpPinning)
 	state.MobileAppSessionLifetime = types.Int64Value(site.MobileAppSessionLifetime)

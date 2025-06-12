@@ -33,8 +33,9 @@ data "files_as2_partner" "example_as2_partner" {
 - `enable_dedicated_ips` (Boolean) If `true`, we will use your site's dedicated IPs for all outbound connections to this AS2 Partner.
 - `hex_public_certificate_serial` (String) Serial of public certificate used for message security in hex format.
 - `http_auth_username` (String) Username to send to server for HTTP Authentication.
-- `mdn_validation_level` (String) How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates.
+- `mdn_validation_level` (String) How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates. `auto`: Automatically set the correct value for this setting based on next mdn received.
 - `name` (String) The partner's formal AS2 name.
+- `public_certificate` (String) Public certificate used for message security.
 - `public_certificate_issuer` (String) Issuer of public certificate used for message security.
 - `public_certificate_md5` (String) MD5 hash of public certificate used for message security.
 - `public_certificate_not_after` (String) Not after value of public certificate used for message security.
@@ -42,4 +43,5 @@ data "files_as2_partner" "example_as2_partner" {
 - `public_certificate_serial` (String) Serial of public certificate used for message security.
 - `public_certificate_subject` (String) Subject of public certificate used for message security.
 - `server_certificate` (String) Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? (This only applies to Outgoing AS2 message from Files.com to a Partner.)
+- `signature_validation_level` (String) Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: Automatically set the correct value for this setting based on next message received.
 - `uri` (String) Public URI where we will send the AS2 messages (via HTTP/HTTPS).

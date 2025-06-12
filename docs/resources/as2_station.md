@@ -27,7 +27,7 @@ resource "files_as2_station" "example_as2_station" {
 
 - `name` (String) The station's formal AS2 name.
 - `private_key` (String)
-- `public_certificate` (String)
+- `public_certificate` (String) Public certificate used for message security.
 
 ### Optional
 

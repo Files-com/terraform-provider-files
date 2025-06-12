@@ -40,6 +40,7 @@ resource "files_site" "example_site" {
   calculate_file_checksums_sha1                 = false
   calculate_file_checksums_sha256               = false
   legacy_checksums_mode                         = false
+  migrate_remote_server_sync_to_sync            = false
   session_expiry                                = 1.0
   ssl_required                                  = false
   tls_disabled                                  = false

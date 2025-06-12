@@ -47,6 +47,7 @@ type as2PartnerResourceModel struct {
 	AdditionalHttpHeaders      types.Dynamic `tfsdk:"additional_http_headers"`
 	DefaultMimeType            types.String  `tfsdk:"default_mime_type"`
 	MdnValidationLevel         types.String  `tfsdk:"mdn_validation_level"`
+	SignatureValidationLevel   types.String  `tfsdk:"signature_validation_level"`
 	EnableDedicatedIps         types.Bool    `tfsdk:"enable_dedicated_ips"`
 	HttpAuthPassword           types.String  `tfsdk:"http_auth_password"`
 	Id                         types.Int64   `tfsdk:"id"`
@@ -102,7 +103,7 @@ func (r *as2PartnerResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Required:    true,
 			},
 			"public_certificate": schema.StringAttribute{
-				Description: "Public certificate for AS2 Partner.  Note: This is the certificate for AS2 message security, not a certificate used for HTTPS authentication.",
+				Description: "Public certificate used for message security.",
 				Required:    true,
 			},
 			"server_certificate": schema.StringAttribute{
@@ -141,11 +142,22 @@ func (r *as2PartnerResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				},
 			},
 			"mdn_validation_level": schema.StringAttribute{
-				Description: "How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates.",
+				Description: "How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates. `auto`: Automatically set the correct value for this setting based on next mdn received.",
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("none", "weak", "normal", "strict"),
+					stringvalidator.OneOf("none", "weak", "normal", "strict", "auto"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"signature_validation_level": schema.StringAttribute{
+				Description: "Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: Automatically set the correct value for this setting based on next message received.",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("normal", "none", "auto"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
@@ -217,6 +229,7 @@ func (r *as2PartnerResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsAs2PartnerCreate.HttpAuthUsername = plan.HttpAuthUsername.ValueString()
 	paramsAs2PartnerCreate.HttpAuthPassword = plan.HttpAuthPassword.ValueString()
 	paramsAs2PartnerCreate.MdnValidationLevel = paramsAs2PartnerCreate.MdnValidationLevel.Enum()[plan.MdnValidationLevel.ValueString()]
+	paramsAs2PartnerCreate.SignatureValidationLevel = paramsAs2PartnerCreate.SignatureValidationLevel.Enum()[plan.SignatureValidationLevel.ValueString()]
 	paramsAs2PartnerCreate.ServerCertificate = paramsAs2PartnerCreate.ServerCertificate.Enum()[plan.ServerCertificate.ValueString()]
 	paramsAs2PartnerCreate.DefaultMimeType = plan.DefaultMimeType.ValueString()
 	createAdditionalHttpHeaders, diags := lib.DynamicToStringMap(ctx, path.Root("additional_http_headers"), plan.AdditionalHttpHeaders)
@@ -301,6 +314,7 @@ func (r *as2PartnerResource) Update(ctx context.Context, req resource.UpdateRequ
 	paramsAs2PartnerUpdate.HttpAuthUsername = plan.HttpAuthUsername.ValueString()
 	paramsAs2PartnerUpdate.HttpAuthPassword = plan.HttpAuthPassword.ValueString()
 	paramsAs2PartnerUpdate.MdnValidationLevel = paramsAs2PartnerUpdate.MdnValidationLevel.Enum()[plan.MdnValidationLevel.ValueString()]
+	paramsAs2PartnerUpdate.SignatureValidationLevel = paramsAs2PartnerUpdate.SignatureValidationLevel.Enum()[plan.SignatureValidationLevel.ValueString()]
 	paramsAs2PartnerUpdate.ServerCertificate = paramsAs2PartnerUpdate.ServerCertificate.Enum()[plan.ServerCertificate.ValueString()]
 	paramsAs2PartnerUpdate.DefaultMimeType = plan.DefaultMimeType.ValueString()
 	updateAdditionalHttpHeaders, diags := lib.DynamicToStringMap(ctx, path.Root("additional_http_headers"), plan.AdditionalHttpHeaders)
@@ -389,8 +403,10 @@ func (r *as2PartnerResource) populateResourceModel(ctx context.Context, as2Partn
 	diags.Append(propDiags...)
 	state.DefaultMimeType = types.StringValue(as2Partner.DefaultMimeType)
 	state.MdnValidationLevel = types.StringValue(as2Partner.MdnValidationLevel)
+	state.SignatureValidationLevel = types.StringValue(as2Partner.SignatureValidationLevel)
 	state.EnableDedicatedIps = types.BoolPointerValue(as2Partner.EnableDedicatedIps)
 	state.HexPublicCertificateSerial = types.StringValue(as2Partner.HexPublicCertificateSerial)
+	state.PublicCertificate = types.StringValue(as2Partner.PublicCertificate)
 	state.PublicCertificateMd5 = types.StringValue(as2Partner.PublicCertificateMd5)
 	state.PublicCertificateSubject = types.StringValue(as2Partner.PublicCertificateSubject)
 	state.PublicCertificateIssuer = types.StringValue(as2Partner.PublicCertificateIssuer)
