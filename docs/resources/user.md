@@ -167,6 +167,7 @@ resource "files_user" "example_user" {
 - `disabled_expired_or_inactive` (Boolean) Computed property that returns true if user disabled or expired or inactive.
 - `externally_managed` (Boolean) Is this user managed by a SsoStrategy?
 - `first_login_at` (String) User's first login time
+- `has_reassignable_associations` (Boolean) Does this user have any associations that can be reassigned on delete?
 - `id` (Number) User ID
 - `last_active_at` (String) User's most recent activity time, which is the latest of most recent login, most recent API use, enablement, or creation
 - `last_api_use_at` (String) User's most recent API use time

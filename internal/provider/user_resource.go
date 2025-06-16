@@ -113,6 +113,7 @@ type userResourceModel struct {
 	TypeOf2faForDisplay              types.String            `tfsdk:"type_of_2fa_for_display"`
 	DaysRemainingUntilPasswordExpire types.Int64             `tfsdk:"days_remaining_until_password_expire"`
 	PasswordExpireAt                 types.String            `tfsdk:"password_expire_at"`
+	HasReassignableAssociations      types.Bool              `tfsdk:"has_reassignable_associations"`
 }
 
 func (r *userResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -598,6 +599,10 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"password_expire_at": schema.StringAttribute{
 				Description: "Password expiration datetime",
+				Computed:    true,
+			},
+			"has_reassignable_associations": schema.BoolAttribute{
+				Description: "Does this user have any associations that can be reassigned on delete?",
 				Computed:    true,
 			},
 		},
@@ -1127,6 +1132,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 			"Could not convert state password_expire_at to string: "+err.Error(),
 		)
 	}
+	state.HasReassignableAssociations = types.BoolPointerValue(user.HasReassignableAssociations)
 
 	return
 }

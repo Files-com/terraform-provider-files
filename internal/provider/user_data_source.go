@@ -94,6 +94,7 @@ type userDataSourceModel struct {
 	UserHome                         types.String `tfsdk:"user_home"`
 	DaysRemainingUntilPasswordExpire types.Int64  `tfsdk:"days_remaining_until_password_expire"`
 	PasswordExpireAt                 types.String `tfsdk:"password_expire_at"`
+	HasReassignableAssociations      types.Bool   `tfsdk:"has_reassignable_associations"`
 }
 
 func (r *userDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -388,6 +389,10 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Password expiration datetime",
 				Computed:    true,
 			},
+			"has_reassignable_associations": schema.BoolAttribute{
+				Description: "Does this user have any associations that can be reassigned on delete?",
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -572,6 +577,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 			"Could not convert state password_expire_at to string: "+err.Error(),
 		)
 	}
+	state.HasReassignableAssociations = types.BoolPointerValue(user.HasReassignableAssociations)
 
 	return
 }
