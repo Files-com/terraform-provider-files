@@ -28,25 +28,24 @@ type syncRunDataSource struct {
 }
 
 type syncRunDataSourceModel struct {
-	Id                 types.Int64  `tfsdk:"id"`
-	SyncId             types.Int64  `tfsdk:"sync_id"`
-	SiteId             types.Int64  `tfsdk:"site_id"`
-	Status             types.String `tfsdk:"status"`
-	RemoteServerType   types.String `tfsdk:"remote_server_type"`
-	Body               types.String `tfsdk:"body"`
-	EventErrors        types.List   `tfsdk:"event_errors"`
-	BytesSynced        types.Int64  `tfsdk:"bytes_synced"`
-	ComparedFiles      types.Int64  `tfsdk:"compared_files"`
-	ComparedFolders    types.Int64  `tfsdk:"compared_folders"`
-	ErroredFiles       types.Int64  `tfsdk:"errored_files"`
-	SuccessfulFiles    types.Int64  `tfsdk:"successful_files"`
-	Runtime            types.String `tfsdk:"runtime"`
-	S3BodyPath         types.String `tfsdk:"s3_body_path"`
-	S3InternalBodyPath types.String `tfsdk:"s3_internal_body_path"`
-	CompletedAt        types.String `tfsdk:"completed_at"`
-	Notified           types.Bool   `tfsdk:"notified"`
-	CreatedAt          types.String `tfsdk:"created_at"`
-	UpdatedAt          types.String `tfsdk:"updated_at"`
+	Id               types.Int64  `tfsdk:"id"`
+	SyncId           types.Int64  `tfsdk:"sync_id"`
+	SiteId           types.Int64  `tfsdk:"site_id"`
+	Status           types.String `tfsdk:"status"`
+	RemoteServerType types.String `tfsdk:"remote_server_type"`
+	Body             types.String `tfsdk:"body"`
+	EventErrors      types.List   `tfsdk:"event_errors"`
+	BytesSynced      types.Int64  `tfsdk:"bytes_synced"`
+	ComparedFiles    types.Int64  `tfsdk:"compared_files"`
+	ComparedFolders  types.Int64  `tfsdk:"compared_folders"`
+	ErroredFiles     types.Int64  `tfsdk:"errored_files"`
+	SuccessfulFiles  types.Int64  `tfsdk:"successful_files"`
+	Runtime          types.String `tfsdk:"runtime"`
+	LogUrl           types.String `tfsdk:"log_url"`
+	CompletedAt      types.String `tfsdk:"completed_at"`
+	Notified         types.Bool   `tfsdk:"notified"`
+	CreatedAt        types.String `tfsdk:"created_at"`
+	UpdatedAt        types.String `tfsdk:"updated_at"`
 }
 
 func (r *syncRunDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -129,12 +128,8 @@ func (r *syncRunDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Description: "Total runtime in seconds",
 				Computed:    true,
 			},
-			"s3_body_path": schema.StringAttribute{
-				Description: "S3 path to the main log file",
-				Computed:    true,
-			},
-			"s3_internal_body_path": schema.StringAttribute{
-				Description: "S3 path to the internal log file",
+			"log_url": schema.StringAttribute{
+				Description: "Link to external log file.",
 				Computed:    true,
 			},
 			"completed_at": schema.StringAttribute{
@@ -204,8 +199,7 @@ func (r *syncRunDataSource) populateDataSourceModel(ctx context.Context, syncRun
 	state.ErroredFiles = types.Int64Value(syncRun.ErroredFiles)
 	state.SuccessfulFiles = types.Int64Value(syncRun.SuccessfulFiles)
 	state.Runtime = types.StringValue(syncRun.Runtime)
-	state.S3BodyPath = types.StringValue(syncRun.S3BodyPath)
-	state.S3InternalBodyPath = types.StringValue(syncRun.S3InternalBodyPath)
+	state.LogUrl = types.StringValue(syncRun.LogUrl)
 	if err := lib.TimeToStringType(ctx, path.Root("completed_at"), syncRun.CompletedAt, &state.CompletedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files SyncRun",
