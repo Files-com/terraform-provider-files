@@ -93,7 +93,6 @@ data "files_user" "example_user" {
 - `first_login_at` (String) User's first login time
 - `ftp_permission` (Boolean) Can the user access with FTP/FTPS?
 - `group_ids` (String) Comma-separated list of group IDs of which this user is a member
-- `has_reassignable_associations` (Boolean) Does this user have any associations that can be reassigned on delete?
 - `header_text` (String) Text to display to the user in the header of the UI
 - `language` (String) Preferred language
 - `last_active_at` (String) User's most recent activity time, which is the latest of most recent login, most recent API use, enablement, or creation
