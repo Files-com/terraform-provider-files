@@ -122,7 +122,7 @@ func (r *remoteMountBackendResource) Schema(_ context.Context, _ resource.Schema
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("active"),
+					stringvalidator.OneOf("active", "passive"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
