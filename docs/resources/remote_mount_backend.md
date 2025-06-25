@@ -54,7 +54,7 @@ resource "files_remote_mount_backend" "example_remote_mount_backend" {
 
 ### Read-Only
 
-- `id` (Number) Remote Mount Backend ID.
+- `id` (Number) Unique identifier for this backend.
 - `status` (String) Status of this backend.
 - `undergoing_maintenance` (Boolean) True if this backend is undergoing maintenance.
 

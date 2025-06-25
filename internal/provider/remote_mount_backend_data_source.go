@@ -72,7 +72,7 @@ func (r *remoteMountBackendDataSource) Schema(_ context.Context, _ datasource.Sc
 		Description: "A Remote Mount Backend is used to provide high availability for a Remote Server Mount Folder Behavior.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
-				Description: "Remote Mount Backend ID.",
+				Description: "Unique identifier for this backend.",
 				Required:    true,
 			},
 			"canary_file_path": schema.StringAttribute{
@@ -175,6 +175,7 @@ func (r *remoteMountBackendDataSource) populateDataSourceModel(ctx context.Conte
 	state.Fall = types.Int64Value(remoteMountBackend.Fall)
 	state.HealthCheckEnabled = types.BoolPointerValue(remoteMountBackend.HealthCheckEnabled)
 	state.HealthCheckType = types.StringValue(remoteMountBackend.HealthCheckType)
+	state.Id = types.Int64Value(remoteMountBackend.Id)
 	state.Interval = types.Int64Value(remoteMountBackend.Interval)
 	state.MinFreeCpu = types.StringValue(remoteMountBackend.MinFreeCpu)
 	state.MinFreeMem = types.StringValue(remoteMountBackend.MinFreeMem)

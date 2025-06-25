@@ -49,9 +49,9 @@ type remoteMountBackendResourceModel struct {
 	Priority              types.Int64  `tfsdk:"priority"`
 	RemotePath            types.String `tfsdk:"remote_path"`
 	Rise                  types.Int64  `tfsdk:"rise"`
+	Id                    types.Int64  `tfsdk:"id"`
 	Status                types.String `tfsdk:"status"`
 	UndergoingMaintenance types.Bool   `tfsdk:"undergoing_maintenance"`
-	Id                    types.Int64  `tfsdk:"id"`
 }
 
 func (r *remoteMountBackendResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -176,6 +176,13 @@ func (r *remoteMountBackendResource) Schema(_ context.Context, _ resource.Schema
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"id": schema.Int64Attribute{
+				Description: "Unique identifier for this backend.",
+				Computed:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"status": schema.StringAttribute{
 				Description: "Status of this backend.",
 				Computed:    true,
@@ -186,13 +193,6 @@ func (r *remoteMountBackendResource) Schema(_ context.Context, _ resource.Schema
 			"undergoing_maintenance": schema.BoolAttribute{
 				Description: "True if this backend is undergoing maintenance.",
 				Computed:    true,
-			},
-			"id": schema.Int64Attribute{
-				Description: "Remote Mount Backend ID.",
-				Computed:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
 			},
 		},
 	}
@@ -383,6 +383,7 @@ func (r *remoteMountBackendResource) populateResourceModel(ctx context.Context, 
 	state.Fall = types.Int64Value(remoteMountBackend.Fall)
 	state.HealthCheckEnabled = types.BoolPointerValue(remoteMountBackend.HealthCheckEnabled)
 	state.HealthCheckType = types.StringValue(remoteMountBackend.HealthCheckType)
+	state.Id = types.Int64Value(remoteMountBackend.Id)
 	state.Interval = types.Int64Value(remoteMountBackend.Interval)
 	state.MinFreeCpu = types.StringValue(remoteMountBackend.MinFreeCpu)
 	state.MinFreeMem = types.StringValue(remoteMountBackend.MinFreeMem)

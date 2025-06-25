@@ -23,7 +23,7 @@ data "files_remote_mount_backend" "example_remote_mount_backend" {
 
 ### Required
 
-- `id` (Number) Remote Mount Backend ID.
+- `id` (Number) Unique identifier for this backend.
 
 ### Read-Only
 

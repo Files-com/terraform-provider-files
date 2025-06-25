@@ -29,6 +29,10 @@ resource "files_gpg_key" "example_gpg_key" {
   private_key          = "ab236cfe4a195f0226bc2e674afdd6b0"
   private_key_password = "[your GPG private key password]"
   name                 = "key name"
+  generate_expires_at  = "2025-06-19 12:00:00"
+  generate_keypair     = false
+  generate_full_name   = "John Doe"
+  generate_email       = "jdoe@example.com"
 }
 ```
 
@@ -41,6 +45,10 @@ resource "files_gpg_key" "example_gpg_key" {
 
 ### Optional
 
+- `generate_email` (String) Email address of the key owner. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
+- `generate_expires_at` (String) Expiration date of the key. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
+- `generate_full_name` (String) Full name of the key owner. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
+- `generate_keypair` (Boolean) If true, generate a new GPG key pair. Can not be used with `public_key`/`private_key`
 - `private_key` (String) Your GPG private key.
 - `private_key_password` (String) Your GPG private key password. Only required for password protected keys.
 - `public_key` (String) Your GPG public key

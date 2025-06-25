@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	gpg_key "github.com/Files-com/files-sdk-go/v3/gpgkey"
@@ -13,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -42,6 +44,10 @@ type gpgKeyResourceModel struct {
 	PrivateKeyHash         types.String `tfsdk:"private_key_hash"`
 	PrivateKeyPassword     types.String `tfsdk:"private_key_password"`
 	PrivateKeyPasswordHash types.String `tfsdk:"private_key_password_hash"`
+	GenerateExpiresAt      types.String `tfsdk:"generate_expires_at"`
+	GenerateKeypair        types.Bool   `tfsdk:"generate_keypair"`
+	GenerateFullName       types.String `tfsdk:"generate_full_name"`
+	GenerateEmail          types.String `tfsdk:"generate_email"`
 	Id                     types.Int64  `tfsdk:"id"`
 	ExpiresAt              types.String `tfsdk:"expires_at"`
 }
@@ -119,6 +125,34 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			"private_key_password_hash": schema.StringAttribute{
 				Computed: true,
 			},
+			"generate_expires_at": schema.StringAttribute{
+				Description: "Expiration date of the key. Used for the generation of the key. Will be ignored if `generate_keypair` is false.",
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
+			"generate_keypair": schema.BoolAttribute{
+				Description: "If true, generate a new GPG key pair. Can not be used with `public_key`/`private_key`",
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.RequiresReplace(),
+				},
+			},
+			"generate_full_name": schema.StringAttribute{
+				Description: "Full name of the key owner. Used for the generation of the key. Will be ignored if `generate_keypair` is false.",
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
+			"generate_email": schema.StringAttribute{
+				Description: "Email address of the key owner. Used for the generation of the key. Will be ignored if `generate_keypair` is false.",
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
 			"id": schema.Int64Attribute{
 				Description: "Your GPG key ID.",
 				Computed:    true,
@@ -148,6 +182,27 @@ func (r *gpgKeyResource) Create(ctx context.Context, req resource.CreateRequest,
 	paramsGpgKeyCreate.PrivateKey = plan.PrivateKey.ValueString()
 	paramsGpgKeyCreate.PrivateKeyPassword = plan.PrivateKeyPassword.ValueString()
 	paramsGpgKeyCreate.Name = plan.Name.ValueString()
+	if !plan.GenerateExpiresAt.IsNull() {
+		if plan.GenerateExpiresAt.ValueString() == "" {
+			paramsGpgKeyCreate.GenerateExpiresAt = new(time.Time)
+		} else {
+			createGenerateExpiresAt, err := time.Parse(time.RFC3339, plan.GenerateExpiresAt.ValueString())
+			if err != nil {
+				resp.Diagnostics.AddAttributeError(
+					path.Root("generate_expires_at"),
+					"Error Parsing generate_expires_at Time",
+					"Could not parse generate_expires_at time: "+err.Error(),
+				)
+			} else {
+				paramsGpgKeyCreate.GenerateExpiresAt = &createGenerateExpiresAt
+			}
+		}
+	}
+	if !plan.GenerateKeypair.IsNull() && !plan.GenerateKeypair.IsUnknown() {
+		paramsGpgKeyCreate.GenerateKeypair = plan.GenerateKeypair.ValueBoolPointer()
+	}
+	paramsGpgKeyCreate.GenerateFullName = plan.GenerateFullName.ValueString()
+	paramsGpgKeyCreate.GenerateEmail = plan.GenerateEmail.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return

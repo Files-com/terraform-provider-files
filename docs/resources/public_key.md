@@ -24,9 +24,13 @@ Note that Files.com’s SSH support is limited to file operations only. While us
 
 ```terraform
 resource "files_public_key" "example_public_key" {
-  user_id    = 1
-  title      = "My Main Key"
-  public_key = "public_key"
+  user_id                       = 1
+  title                         = "My Main Key"
+  public_key                    = "example"
+  generate_keypair              = false
+  generate_private_key_password = "[your private key password]"
+  generate_algorithm            = "rsa"
+  generate_length               = 4096
 }
 ```
 
@@ -35,11 +39,15 @@ resource "files_public_key" "example_public_key" {
 
 ### Required
 
-- `public_key` (String) Actual contents of SSH key.
 - `title` (String) Public key title
 
 ### Optional
 
+- `generate_algorithm` (String) Type of key to generate.  One of rsa, dsa, ecdsa, ed25519. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
+- `generate_keypair` (Boolean) If true, generate a new SSH key pair. Can not be used with `public_key`
+- `generate_length` (Number) Length of key to generate. If algorithm is ecdsa, this is the signature size. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
+- `generate_private_key_password` (String) Password for the private key. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
+- `public_key` (String) Public key generated for the user.
 - `user_id` (Number) User ID this public key is associated with
 
 ### Read-Only
@@ -49,6 +57,8 @@ resource "files_public_key" "example_public_key" {
 - `fingerprint_sha256` (String) Public key fingerprint (SHA256)
 - `id` (Number) Public key ID
 - `last_login_at` (String) Key's most recent login time via SFTP
+- `private_key` (String) Private key generated for the user.
+- `status` (String) Can be invalid, not_generated, generating, complete
 - `username` (String) Username of the user this public key is associated with
 
 ## Import
