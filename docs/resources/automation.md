@@ -633,6 +633,7 @@ resource "files_automation" "example_automation" {
 ### Read-Only
 
 - `deleted` (Boolean) Indicates if the automation has been deleted.
+- `holiday_region` (String) If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.
 - `human_readable_schedule` (String) If trigger is `custom_schedule`, Human readable Custom schedule description for when the automation should be run.
 - `id` (Number) Automation ID
 - `last_modified_at` (String) Time when automation was last modified. Does not change for name or description updates.

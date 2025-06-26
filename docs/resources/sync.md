@@ -67,6 +67,7 @@ resource "files_sync" "example_sync" {
 
 - `created_at` (String) When this sync was created
 - `exclude_patterns` (List of String) Array of glob patterns to exclude
+- `holiday_region` (String) If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.
 - `id` (Number) Sync ID
 - `include_patterns` (List of String) Array of glob patterns to include
 - `site_id` (Number) Site ID this sync belongs to

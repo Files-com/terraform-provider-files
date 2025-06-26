@@ -77,6 +77,7 @@ type automationResourceModel struct {
 	HumanReadableSchedule            types.String  `tfsdk:"human_readable_schedule"`
 	UserId                           types.Int64   `tfsdk:"user_id"`
 	WebhookUrl                       types.String  `tfsdk:"webhook_url"`
+	HolidayRegion                    types.String  `tfsdk:"holiday_region"`
 }
 
 func (r *automationResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -392,6 +393,10 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			},
 			"webhook_url": schema.StringAttribute{
 				Description: "If trigger is `webhook`, this is the URL of the webhook to trigger the Automation.",
+				Computed:    true,
+			},
+			"holiday_region": schema.StringAttribute{
+				Description: "If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.",
 				Computed:    true,
 			},
 		},
@@ -725,6 +730,7 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	state.Value, propDiags = lib.ToDynamic(ctx, path.Root("value"), automation.Value, state.Value.UnderlyingValue())
 	diags.Append(propDiags...)
 	state.WebhookUrl = types.StringValue(automation.WebhookUrl)
+	state.HolidayRegion = types.StringValue(automation.HolidayRegion)
 
 	return
 }

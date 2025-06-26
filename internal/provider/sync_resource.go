@@ -63,6 +63,7 @@ type syncResourceModel struct {
 	CreatedAt           types.String `tfsdk:"created_at"`
 	UpdatedAt           types.String `tfsdk:"updated_at"`
 	SyncIntervalMinutes types.Int64  `tfsdk:"sync_interval_minutes"`
+	HolidayRegion       types.String `tfsdk:"holiday_region"`
 }
 
 func (r *syncResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -268,6 +269,10 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"sync_interval_minutes": schema.Int64Attribute{
 				Description: "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.",
+				Computed:    true,
+			},
+			"holiday_region": schema.StringAttribute{
+				Description: "If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.",
 				Computed:    true,
 			},
 		},
@@ -523,6 +528,7 @@ func (r *syncResource) populateResourceModel(ctx context.Context, sync files_sdk
 	state.ScheduleTimesOfDay, propDiags = types.ListValueFrom(ctx, types.StringType, sync.ScheduleTimesOfDay)
 	diags.Append(propDiags...)
 	state.ScheduleTimeZone = types.StringValue(sync.ScheduleTimeZone)
+	state.HolidayRegion = types.StringValue(sync.HolidayRegion)
 
 	return
 }

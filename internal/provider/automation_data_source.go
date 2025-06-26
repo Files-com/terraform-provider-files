@@ -66,6 +66,7 @@ type automationDataSourceModel struct {
 	UserIds                          types.List    `tfsdk:"user_ids"`
 	Value                            types.Dynamic `tfsdk:"value"`
 	WebhookUrl                       types.String  `tfsdk:"webhook_url"`
+	HolidayRegion                    types.String  `tfsdk:"holiday_region"`
 }
 
 func (r *automationDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -254,6 +255,10 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Description: "If trigger is `webhook`, this is the URL of the webhook to trigger the Automation.",
 				Computed:    true,
 			},
+			"holiday_region": schema.StringAttribute{
+				Description: "If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.",
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -344,6 +349,7 @@ func (r *automationDataSource) populateDataSourceModel(ctx context.Context, auto
 	state.Value, propDiags = lib.ToDynamic(ctx, path.Root("value"), automation.Value, state.Value.UnderlyingValue())
 	diags.Append(propDiags...)
 	state.WebhookUrl = types.StringValue(automation.WebhookUrl)
+	state.HolidayRegion = types.StringValue(automation.HolidayRegion)
 
 	return
 }

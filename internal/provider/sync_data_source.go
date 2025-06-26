@@ -53,6 +53,7 @@ type syncDataSourceModel struct {
 	ScheduleDaysOfWeek  types.List   `tfsdk:"schedule_days_of_week"`
 	ScheduleTimesOfDay  types.List   `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone    types.String `tfsdk:"schedule_time_zone"`
+	HolidayRegion       types.String `tfsdk:"holiday_region"`
 }
 
 func (r *syncDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -186,6 +187,10 @@ func (r *syncDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "If trigger is `custom_schedule`, Custom schedule Time Zone for when the sync should be run.",
 				Computed:    true,
 			},
+			"holiday_region": schema.StringAttribute{
+				Description: "If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.",
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -262,6 +267,7 @@ func (r *syncDataSource) populateDataSourceModel(ctx context.Context, sync files
 	state.ScheduleTimesOfDay, propDiags = types.ListValueFrom(ctx, types.StringType, sync.ScheduleTimesOfDay)
 	diags.Append(propDiags...)
 	state.ScheduleTimeZone = types.StringValue(sync.ScheduleTimeZone)
+	state.HolidayRegion = types.StringValue(sync.HolidayRegion)
 
 	return
 }

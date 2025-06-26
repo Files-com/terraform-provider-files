@@ -558,6 +558,7 @@ data "files_automation" "example_automation" {
 - `exclude_pattern` (String) If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.
 - `flatten_destination_structure` (Boolean) Normally copy and move automations that use globs will implicitly preserve the source folder structure in the destination.  If this flag is `true`, the source folder structure will be flattened in the destination.  This is useful for copying or moving files from multiple folders into a single destination folder.
 - `group_ids` (List of Number) IDs of Groups for the Automation (i.e. who to Request File from)
+- `holiday_region` (String) If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.
 - `human_readable_schedule` (String) If trigger is `custom_schedule`, Human readable Custom schedule description for when the automation should be run.
 - `ignore_locked_folders` (Boolean) If true, the Lock Folders behavior will be disregarded for automated actions.
 - `import_urls` (Dynamic) List of URLs to be imported and names to be used.
