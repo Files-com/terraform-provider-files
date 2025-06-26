@@ -76,7 +76,6 @@ type siteDataSourceModel struct {
 	CustomNamespace                          types.Bool    `tfsdk:"custom_namespace"`
 	DavEnabled                               types.Bool    `tfsdk:"dav_enabled"`
 	DavUserRootEnabled                       types.Bool    `tfsdk:"dav_user_root_enabled"`
-	DaysBeforeDeletingDisabledUsers          types.Int64   `tfsdk:"days_before_deleting_disabled_users"`
 	DaysToRetainBackups                      types.Int64   `tfsdk:"days_to_retain_backups"`
 	DocumentEditsInBundleAllowed             types.Bool    `tfsdk:"document_edits_in_bundle_allowed"`
 	DefaultTimeZone                          types.String  `tfsdk:"default_time_zone"`
@@ -417,10 +416,6 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"dav_user_root_enabled": schema.BoolAttribute{
 				Description: "Use user FTP roots also for WebDAV?",
-				Computed:    true,
-			},
-			"days_before_deleting_disabled_users": schema.Int64Attribute{
-				Description: "Number of days to keep disabled users before deleting them. If set to 0, disabled users will not be deleted.",
 				Computed:    true,
 			},
 			"days_to_retain_backups": schema.Int64Attribute{
@@ -1011,7 +1006,6 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.CustomNamespace = types.BoolPointerValue(site.CustomNamespace)
 	state.DavEnabled = types.BoolPointerValue(site.DavEnabled)
 	state.DavUserRootEnabled = types.BoolPointerValue(site.DavUserRootEnabled)
-	state.DaysBeforeDeletingDisabledUsers = types.Int64Value(site.DaysBeforeDeletingDisabledUsers)
 	state.DaysToRetainBackups = types.Int64Value(site.DaysToRetainBackups)
 	state.DocumentEditsInBundleAllowed = types.BoolPointerValue(site.DocumentEditsInBundleAllowed)
 	state.DefaultTimeZone = types.StringValue(site.DefaultTimeZone)

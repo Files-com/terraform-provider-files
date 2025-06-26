@@ -3,19 +3,19 @@
 page_title: "files_user_lifecycle_rule Resource - files"
 subcategory: ""
 description: |-
-  A UserLifecycleRule represents a rule that applies to users based on their inactivity and authentication method.
-  The rule either disable or delete users who have been inactive for a specified number of days.
+  A UserLifecycleRule represents a rule that applies to users based on their inactivity, state and authentication method.
+  The rule either disable or delete users who have been inactive or disabled for a specified number of days.
   The authentication_method property specifies the authentication method for the rule, which can be set to "all" or other specific methods.
   The rule can also include or exclude site and folder admins from the action.
 ---
 
 # files_user_lifecycle_rule (Resource)
 
-A UserLifecycleRule represents a rule that applies to users based on their inactivity and authentication method.
+A UserLifecycleRule represents a rule that applies to users based on their inactivity, state and authentication method.
 
 
 
-The rule either disable or delete users who have been inactive for a specified number of days.
+The rule either disable or delete users who have been inactive or disabled for a specified number of days.
 
 
 
@@ -33,6 +33,7 @@ resource "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
   inactivity_days       = 12
   include_site_admins   = true
   include_folder_admins = true
+  user_state            = "inactive"
 }
 ```
 
@@ -49,6 +50,7 @@ resource "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
 
 - `include_folder_admins` (Boolean) Include folder admins in the rule
 - `include_site_admins` (Boolean) Include site admins in the rule
+- `user_state` (String) State of the users to apply the rule to (inactive or disabled)
 
 ### Read-Only
 

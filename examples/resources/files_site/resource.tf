@@ -55,7 +55,6 @@ resource "files_site" "example_site" {
   allowed_countries                             = "US,DE"
   allowed_ips                                   = "example"
   disallowed_countries                          = "US,DE"
-  days_before_deleting_disabled_users           = 1
   days_to_retain_backups                        = 1
   max_prior_passwords                           = 1
   password_validity_days                        = 1

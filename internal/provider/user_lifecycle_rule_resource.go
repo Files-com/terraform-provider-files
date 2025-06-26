@@ -16,6 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -40,6 +41,7 @@ type userLifecycleRuleResourceModel struct {
 	Action               types.String `tfsdk:"action"`
 	IncludeFolderAdmins  types.Bool   `tfsdk:"include_folder_admins"`
 	IncludeSiteAdmins    types.Bool   `tfsdk:"include_site_admins"`
+	UserState            types.String `tfsdk:"user_state"`
 	Id                   types.Int64  `tfsdk:"id"`
 	SiteId               types.Int64  `tfsdk:"site_id"`
 }
@@ -69,7 +71,7 @@ func (r *userLifecycleRuleResource) Metadata(_ context.Context, req resource.Met
 
 func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A UserLifecycleRule represents a rule that applies to users based on their inactivity and authentication method.\n\n\n\nThe rule either disable or delete users who have been inactive for a specified number of days.\n\n\n\nThe authentication_method property specifies the authentication method for the rule, which can be set to \"all\" or other specific methods.\n\n\n\nThe rule can also include or exclude site and folder admins from the action.",
+		Description: "A UserLifecycleRule represents a rule that applies to users based on their inactivity, state and authentication method.\n\n\n\nThe rule either disable or delete users who have been inactive or disabled for a specified number of days.\n\n\n\nThe authentication_method property specifies the authentication method for the rule, which can be set to \"all\" or other specific methods.\n\n\n\nThe rule can also include or exclude site and folder admins from the action.",
 		Attributes: map[string]schema.Attribute{
 			"authentication_method": schema.StringAttribute{
 				Description: "User authentication method for the rule",
@@ -105,6 +107,17 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"user_state": schema.StringAttribute{
+				Description: "State of the users to apply the rule to (inactive or disabled)",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("inactive", "disabled"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"id": schema.Int64Attribute{
 				Description: "User Lifecycle Rule ID",
 				Computed:    true,
@@ -138,6 +151,7 @@ func (r *userLifecycleRuleResource) Create(ctx context.Context, req resource.Cre
 	if !plan.IncludeFolderAdmins.IsNull() && !plan.IncludeFolderAdmins.IsUnknown() {
 		paramsUserLifecycleRuleCreate.IncludeFolderAdmins = plan.IncludeFolderAdmins.ValueBoolPointer()
 	}
+	paramsUserLifecycleRuleCreate.UserState = paramsUserLifecycleRuleCreate.UserState.Enum()[plan.UserState.ValueString()]
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -216,6 +230,7 @@ func (r *userLifecycleRuleResource) Update(ctx context.Context, req resource.Upd
 	if !plan.IncludeFolderAdmins.IsNull() && !plan.IncludeFolderAdmins.IsUnknown() {
 		paramsUserLifecycleRuleUpdate.IncludeFolderAdmins = plan.IncludeFolderAdmins.ValueBoolPointer()
 	}
+	paramsUserLifecycleRuleUpdate.UserState = paramsUserLifecycleRuleUpdate.UserState.Enum()[plan.UserState.ValueString()]
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -290,6 +305,7 @@ func (r *userLifecycleRuleResource) populateResourceModel(ctx context.Context, u
 	state.IncludeFolderAdmins = types.BoolPointerValue(userLifecycleRule.IncludeFolderAdmins)
 	state.IncludeSiteAdmins = types.BoolPointerValue(userLifecycleRule.IncludeSiteAdmins)
 	state.Action = types.StringValue(userLifecycleRule.Action)
+	state.UserState = types.StringValue(userLifecycleRule.UserState)
 	state.SiteId = types.Int64Value(userLifecycleRule.SiteId)
 
 	return

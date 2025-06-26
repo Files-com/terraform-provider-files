@@ -32,6 +32,7 @@ type userLifecycleRuleDataSourceModel struct {
 	IncludeFolderAdmins  types.Bool   `tfsdk:"include_folder_admins"`
 	IncludeSiteAdmins    types.Bool   `tfsdk:"include_site_admins"`
 	Action               types.String `tfsdk:"action"`
+	UserState            types.String `tfsdk:"user_state"`
 	SiteId               types.Int64  `tfsdk:"site_id"`
 }
 
@@ -60,7 +61,7 @@ func (r *userLifecycleRuleDataSource) Metadata(_ context.Context, req datasource
 
 func (r *userLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A UserLifecycleRule represents a rule that applies to users based on their inactivity and authentication method.\n\n\n\nThe rule either disable or delete users who have been inactive for a specified number of days.\n\n\n\nThe authentication_method property specifies the authentication method for the rule, which can be set to \"all\" or other specific methods.\n\n\n\nThe rule can also include or exclude site and folder admins from the action.",
+		Description: "A UserLifecycleRule represents a rule that applies to users based on their inactivity, state and authentication method.\n\n\n\nThe rule either disable or delete users who have been inactive or disabled for a specified number of days.\n\n\n\nThe authentication_method property specifies the authentication method for the rule, which can be set to \"all\" or other specific methods.\n\n\n\nThe rule can also include or exclude site and folder admins from the action.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "User Lifecycle Rule ID",
@@ -84,6 +85,10 @@ func (r *userLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.Sch
 			},
 			"action": schema.StringAttribute{
 				Description: "Action to take on inactive users (disable or delete)",
+				Computed:    true,
+			},
+			"user_state": schema.StringAttribute{
+				Description: "State of the users to apply the rule to (inactive or disabled)",
 				Computed:    true,
 			},
 			"site_id": schema.Int64Attribute{
@@ -131,6 +136,7 @@ func (r *userLifecycleRuleDataSource) populateDataSourceModel(ctx context.Contex
 	state.IncludeFolderAdmins = types.BoolPointerValue(userLifecycleRule.IncludeFolderAdmins)
 	state.IncludeSiteAdmins = types.BoolPointerValue(userLifecycleRule.IncludeSiteAdmins)
 	state.Action = types.StringValue(userLifecycleRule.Action)
+	state.UserState = types.StringValue(userLifecycleRule.UserState)
 	state.SiteId = types.Int64Value(userLifecycleRule.SiteId)
 
 	return
