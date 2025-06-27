@@ -92,6 +92,9 @@ func (r *remoteMountBackendResource) Schema(_ context.Context, _ resource.Schema
 			"remote_server_mount_id": schema.Int64Attribute{
 				Description: "The mount ID of the Remote Server Mount that this backend is associated with.",
 				Required:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.RequiresReplace(),
+				},
 			},
 			"enabled": schema.BoolAttribute{
 				Description: "True if this backend is enabled.",
@@ -207,9 +210,6 @@ func (r *remoteMountBackendResource) Create(ctx context.Context, req resource.Cr
 	}
 
 	paramsRemoteMountBackendCreate := files_sdk.RemoteMountBackendCreateParams{}
-	paramsRemoteMountBackendCreate.CanaryFilePath = plan.CanaryFilePath.ValueString()
-	paramsRemoteMountBackendCreate.RemoteServerMountId = plan.RemoteServerMountId.ValueInt64()
-	paramsRemoteMountBackendCreate.RemoteServerId = plan.RemoteServerId.ValueInt64()
 	if !plan.Enabled.IsNull() && !plan.Enabled.IsUnknown() {
 		paramsRemoteMountBackendCreate.Enabled = plan.Enabled.ValueBoolPointer()
 	}
@@ -224,6 +224,9 @@ func (r *remoteMountBackendResource) Create(ctx context.Context, req resource.Cr
 	paramsRemoteMountBackendCreate.Priority = plan.Priority.ValueInt64()
 	paramsRemoteMountBackendCreate.RemotePath = plan.RemotePath.ValueString()
 	paramsRemoteMountBackendCreate.Rise = plan.Rise.ValueInt64()
+	paramsRemoteMountBackendCreate.CanaryFilePath = plan.CanaryFilePath.ValueString()
+	paramsRemoteMountBackendCreate.RemoteServerMountId = plan.RemoteServerMountId.ValueInt64()
+	paramsRemoteMountBackendCreate.RemoteServerId = plan.RemoteServerId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -293,9 +296,6 @@ func (r *remoteMountBackendResource) Update(ctx context.Context, req resource.Up
 
 	paramsRemoteMountBackendUpdate := files_sdk.RemoteMountBackendUpdateParams{}
 	paramsRemoteMountBackendUpdate.Id = plan.Id.ValueInt64()
-	paramsRemoteMountBackendUpdate.CanaryFilePath = plan.CanaryFilePath.ValueString()
-	paramsRemoteMountBackendUpdate.RemoteServerMountId = plan.RemoteServerMountId.ValueInt64()
-	paramsRemoteMountBackendUpdate.RemoteServerId = plan.RemoteServerId.ValueInt64()
 	if !plan.Enabled.IsNull() && !plan.Enabled.IsUnknown() {
 		paramsRemoteMountBackendUpdate.Enabled = plan.Enabled.ValueBoolPointer()
 	}
@@ -310,6 +310,8 @@ func (r *remoteMountBackendResource) Update(ctx context.Context, req resource.Up
 	paramsRemoteMountBackendUpdate.Priority = plan.Priority.ValueInt64()
 	paramsRemoteMountBackendUpdate.RemotePath = plan.RemotePath.ValueString()
 	paramsRemoteMountBackendUpdate.Rise = plan.Rise.ValueInt64()
+	paramsRemoteMountBackendUpdate.CanaryFilePath = plan.CanaryFilePath.ValueString()
+	paramsRemoteMountBackendUpdate.RemoteServerId = plan.RemoteServerId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return

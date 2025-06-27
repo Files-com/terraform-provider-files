@@ -14,9 +14,6 @@ A Remote Mount Backend is used to provide high availability for a Remote Server 
 
 ```terraform
 resource "files_remote_mount_backend" "example_remote_mount_backend" {
-  canary_file_path       = "backend1.txt"
-  remote_server_mount_id = 1
-  remote_server_id       = 1
   enabled                = true
   fall                   = 1
   health_check_enabled   = true
@@ -27,6 +24,9 @@ resource "files_remote_mount_backend" "example_remote_mount_backend" {
   priority               = 1
   remote_path            = "/path/on/remote"
   rise                   = 1
+  canary_file_path       = "backend1.txt"
+  remote_server_mount_id = 1
+  remote_server_id       = 1
 }
 ```
 
