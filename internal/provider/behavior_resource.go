@@ -10,6 +10,7 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	behavior "github.com/Files-com/files-sdk-go/v3/behavior"
 	"github.com/Files-com/terraform-provider-files/lib"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -19,6 +20,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -85,6 +87,9 @@ func (r *behaviorResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 			"behavior": schema.StringAttribute{
 				Description: "Behavior type.",
 				Required:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("webhook", "file_expiration", "auto_encrypt", "lock_subfolders", "storage_region", "serve_publicly", "create_user_folders", "remote_server_sync", "inbox", "limit_file_extensions", "limit_file_regex", "amazon_sns", "watermark", "remote_server_mount", "slack_webhook", "auto_decrypt", "override_upload_filename", "permission_fence", "limit_filename_length", "organize_files_into_subfolders", "teams_webhook"),
+				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
