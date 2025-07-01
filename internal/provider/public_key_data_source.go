@@ -89,7 +89,7 @@ func (r *publicKeyDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 				Computed:    true,
 			},
 			"status": schema.StringAttribute{
-				Description: "Can be invalid, not_generated, generating, complete",
+				Description: "Only returned when generating keys. Can be invalid, not_generated, generating, complete",
 				Computed:    true,
 			},
 			"last_login_at": schema.StringAttribute{
@@ -97,11 +97,11 @@ func (r *publicKeyDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 				Computed:    true,
 			},
 			"private_key": schema.StringAttribute{
-				Description: "Private key generated for the user.",
+				Description: "Only returned when generating keys. Private key generated for the user.",
 				Computed:    true,
 			},
 			"public_key": schema.StringAttribute{
-				Description: "Public key generated for the user.",
+				Description: "Only returned when generating keys. Public key generated for the user.",
 				Computed:    true,
 			},
 			"username": schema.StringAttribute{

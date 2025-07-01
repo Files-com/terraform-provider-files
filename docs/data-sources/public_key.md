@@ -51,9 +51,9 @@ data "files_public_key" "example_public_key" {
 - `fingerprint` (String) Public key fingerprint (MD5)
 - `fingerprint_sha256` (String) Public key fingerprint (SHA256)
 - `last_login_at` (String) Key's most recent login time via SFTP
-- `private_key` (String) Private key generated for the user.
-- `public_key` (String) Public key generated for the user.
-- `status` (String) Can be invalid, not_generated, generating, complete
+- `private_key` (String) Only returned when generating keys. Private key generated for the user.
+- `public_key` (String) Only returned when generating keys. Public key generated for the user.
+- `status` (String) Only returned when generating keys. Can be invalid, not_generated, generating, complete
 - `title` (String) Public key title
 - `user_id` (Number) User ID this public key is associated with
 - `username` (String) Username of the user this public key is associated with

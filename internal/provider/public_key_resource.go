@@ -86,7 +86,7 @@ func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Required:    true,
 			},
 			"public_key": schema.StringAttribute{
-				Description: "Public key generated for the user.",
+				Description: "Only returned when generating keys. Public key generated for the user.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -151,7 +151,7 @@ func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Computed:    true,
 			},
 			"status": schema.StringAttribute{
-				Description: "Can be invalid, not_generated, generating, complete",
+				Description: "Only returned when generating keys. Can be invalid, not_generated, generating, complete",
 				Computed:    true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("error", "not_set", "to_be_generated", "generating", "complete"),
@@ -162,7 +162,7 @@ func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Computed:    true,
 			},
 			"private_key": schema.StringAttribute{
-				Description: "Private key generated for the user.",
+				Description: "Only returned when generating keys. Private key generated for the user.",
 				Computed:    true,
 			},
 			"username": schema.StringAttribute{
