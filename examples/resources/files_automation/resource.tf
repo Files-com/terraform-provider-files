@@ -20,6 +20,7 @@ resource "files_automation" "example_automation" {
   schedule_days_of_week                = [0, 1, 3]
   schedule_times_of_day                = ["7:30", "11:30"]
   schedule_time_zone                   = "Eastern Time (US & Canada)"
+  holiday_region                       = "us_dc"
   always_overwrite_size_matching_files = true
   always_serialize_jobs                = true
   description                          = "example"

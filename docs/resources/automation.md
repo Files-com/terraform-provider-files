@@ -554,6 +554,7 @@ resource "files_automation" "example_automation" {
   schedule_days_of_week                = [0, 1, 3]
   schedule_times_of_day                = ["7:30", "11:30"]
   schedule_time_zone                   = "Eastern Time (US & Canada)"
+  holiday_region                       = "us_dc"
   always_overwrite_size_matching_files = true
   always_serialize_jobs                = true
   description                          = "example"
@@ -609,6 +610,7 @@ resource "files_automation" "example_automation" {
 - `exclude_pattern` (String) If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.
 - `flatten_destination_structure` (Boolean) Normally copy and move automations that use globs will implicitly preserve the source folder structure in the destination.  If this flag is `true`, the source folder structure will be flattened in the destination.  This is useful for copying or moving files from multiple folders into a single destination folder.
 - `group_ids` (List of Number) IDs of Groups for the Automation (i.e. who to Request File from)
+- `holiday_region` (String) If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.
 - `ignore_locked_folders` (Boolean) If true, the Lock Folders behavior will be disregarded for automated actions.
 - `import_urls` (Dynamic) List of URLs to be imported and names to be used.
 - `interval` (String) If trigger is `daily`, this specifies how often to run this automation.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`
@@ -633,7 +635,6 @@ resource "files_automation" "example_automation" {
 ### Read-Only
 
 - `deleted` (Boolean) Indicates if the automation has been deleted.
-- `holiday_region` (String) If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.
 - `human_readable_schedule` (String) If trigger is `custom_schedule`, Human readable Custom schedule description for when the automation should be run.
 - `id` (Number) Automation ID
 - `last_modified_at` (String) Time when automation was last modified. Does not change for name or description updates.

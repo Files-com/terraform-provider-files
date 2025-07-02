@@ -188,7 +188,7 @@ func (r *syncDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed:    true,
 			},
 			"holiday_region": schema.StringAttribute{
-				Description: "If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.",
+				Description: "If trigger is `custom_schedule`, the sync will check if there is a formal, observed holiday for the region, and if so, it will not run.",
 				Computed:    true,
 			},
 		},

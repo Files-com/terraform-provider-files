@@ -40,7 +40,7 @@ data "files_sync" "example_sync" {
 - `dest_remote_server_id` (Number) Remote server ID for the destination (if remote)
 - `disabled` (Boolean) Is this sync disabled?
 - `exclude_patterns` (List of String) Array of glob patterns to exclude
-- `holiday_region` (String) If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.
+- `holiday_region` (String) If trigger is `custom_schedule`, the sync will check if there is a formal, observed holiday for the region, and if so, it will not run.
 - `include_patterns` (List of String) Array of glob patterns to include
 - `interval` (String) If trigger is `daily`, this specifies how often to run this sync.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`
 - `keep_after_copy` (Boolean) Keep files after copying?

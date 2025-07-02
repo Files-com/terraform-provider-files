@@ -12,6 +12,8 @@ resource "files_sync" "example_sync" {
   interval              = "week"
   trigger               = "example"
   trigger_file          = "example"
+  holiday_region        = "us_dc"
+  sync_interval_minutes = 1
   recurring_day         = 25
   schedule_time_zone    = "Eastern Time (US & Canada)"
   schedule_days_of_week = [0, 2, 4]

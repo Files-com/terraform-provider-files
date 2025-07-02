@@ -33,6 +33,8 @@ resource "files_sync" "example_sync" {
   interval              = "week"
   trigger               = "example"
   trigger_file          = "example"
+  holiday_region        = "us_dc"
+  sync_interval_minutes = 1
   recurring_day         = 25
   schedule_time_zone    = "Eastern Time (US & Canada)"
   schedule_days_of_week = [0, 2, 4]
@@ -50,6 +52,7 @@ resource "files_sync" "example_sync" {
 - `dest_path` (String) Absolute destination path for the sync
 - `dest_remote_server_id` (Number) Remote server ID for the destination (if remote)
 - `disabled` (Boolean) Is this sync disabled?
+- `holiday_region` (String) If trigger is `custom_schedule`, the sync will check if there is a formal, observed holiday for the region, and if so, it will not run.
 - `interval` (String) If trigger is `daily`, this specifies how often to run this sync.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`
 - `keep_after_copy` (Boolean) Keep files after copying?
 - `name` (String) Name for this sync job
@@ -59,6 +62,7 @@ resource "files_sync" "example_sync" {
 - `schedule_times_of_day` (List of String) If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. Times of day in HH:MM format.
 - `src_path` (String) Absolute source path for the sync
 - `src_remote_server_id` (Number) Remote server ID for the source (if remote)
+- `sync_interval_minutes` (Number) Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.
 - `trigger` (String) Trigger type: daily, custom_schedule, or manual
 - `trigger_file` (String) Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.
 - `two_way` (Boolean) Is this a two-way sync?
@@ -67,11 +71,9 @@ resource "files_sync" "example_sync" {
 
 - `created_at` (String) When this sync was created
 - `exclude_patterns` (List of String) Array of glob patterns to exclude
-- `holiday_region` (String) If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.
 - `id` (Number) Sync ID
 - `include_patterns` (List of String) Array of glob patterns to include
 - `site_id` (Number) Site ID this sync belongs to
-- `sync_interval_minutes` (Number) Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.
 - `updated_at` (String) When this sync was last updated
 - `user_id` (Number) User who created or owns this sync
 

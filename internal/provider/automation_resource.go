@@ -70,6 +70,7 @@ type automationResourceModel struct {
 	Trigger                          types.String  `tfsdk:"trigger"`
 	UserIds                          types.List    `tfsdk:"user_ids"`
 	Value                            types.Dynamic `tfsdk:"value"`
+	HolidayRegion                    types.String  `tfsdk:"holiday_region"`
 	Id                               types.Int64   `tfsdk:"id"`
 	Deleted                          types.Bool    `tfsdk:"deleted"`
 	LastModifiedAt                   types.String  `tfsdk:"last_modified_at"`
@@ -77,7 +78,6 @@ type automationResourceModel struct {
 	HumanReadableSchedule            types.String  `tfsdk:"human_readable_schedule"`
 	UserId                           types.Int64   `tfsdk:"user_id"`
 	WebhookUrl                       types.String  `tfsdk:"webhook_url"`
-	HolidayRegion                    types.String  `tfsdk:"holiday_region"`
 }
 
 func (r *automationResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -364,6 +364,14 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					dynamicplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"holiday_region": schema.StringAttribute{
+				Description: "If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"id": schema.Int64Attribute{
 				Description: "Automation ID",
 				Computed:    true,
@@ -393,10 +401,6 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			},
 			"webhook_url": schema.StringAttribute{
 				Description: "If trigger is `webhook`, this is the URL of the webhook to trigger the Automation.",
-				Computed:    true,
-			},
-			"holiday_region": schema.StringAttribute{
-				Description: "If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.",
 				Computed:    true,
 			},
 		},
@@ -436,6 +440,7 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 		resp.Diagnostics.Append(diags...)
 	}
 	paramsAutomationCreate.ScheduleTimeZone = plan.ScheduleTimeZone.ValueString()
+	paramsAutomationCreate.HolidayRegion = plan.HolidayRegion.ValueString()
 	if !plan.AlwaysOverwriteSizeMatchingFiles.IsNull() && !plan.AlwaysOverwriteSizeMatchingFiles.IsUnknown() {
 		paramsAutomationCreate.AlwaysOverwriteSizeMatchingFiles = plan.AlwaysOverwriteSizeMatchingFiles.ValueBoolPointer()
 	}
@@ -568,6 +573,7 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.Append(diags...)
 	}
 	paramsAutomationUpdate.ScheduleTimeZone = plan.ScheduleTimeZone.ValueString()
+	paramsAutomationUpdate.HolidayRegion = plan.HolidayRegion.ValueString()
 	if !plan.AlwaysOverwriteSizeMatchingFiles.IsNull() && !plan.AlwaysOverwriteSizeMatchingFiles.IsUnknown() {
 		paramsAutomationUpdate.AlwaysOverwriteSizeMatchingFiles = plan.AlwaysOverwriteSizeMatchingFiles.ValueBoolPointer()
 	}

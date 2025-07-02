@@ -50,11 +50,13 @@ type syncResourceModel struct {
 	Disabled            types.Bool   `tfsdk:"disabled"`
 	Trigger             types.String `tfsdk:"trigger"`
 	TriggerFile         types.String `tfsdk:"trigger_file"`
+	SyncIntervalMinutes types.Int64  `tfsdk:"sync_interval_minutes"`
 	Interval            types.String `tfsdk:"interval"`
 	RecurringDay        types.Int64  `tfsdk:"recurring_day"`
 	ScheduleDaysOfWeek  types.List   `tfsdk:"schedule_days_of_week"`
 	ScheduleTimesOfDay  types.List   `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone    types.String `tfsdk:"schedule_time_zone"`
+	HolidayRegion       types.String `tfsdk:"holiday_region"`
 	Id                  types.Int64  `tfsdk:"id"`
 	SiteId              types.Int64  `tfsdk:"site_id"`
 	UserId              types.Int64  `tfsdk:"user_id"`
@@ -62,8 +64,6 @@ type syncResourceModel struct {
 	ExcludePatterns     types.List   `tfsdk:"exclude_patterns"`
 	CreatedAt           types.String `tfsdk:"created_at"`
 	UpdatedAt           types.String `tfsdk:"updated_at"`
-	SyncIntervalMinutes types.Int64  `tfsdk:"sync_interval_minutes"`
-	HolidayRegion       types.String `tfsdk:"holiday_region"`
 }
 
 func (r *syncResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -192,6 +192,14 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"sync_interval_minutes": schema.Int64Attribute{
+				Description: "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"interval": schema.StringAttribute{
 				Description: "If trigger is `daily`, this specifies how often to run this sync.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`",
 				Computed:    true,
@@ -234,6 +242,14 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"holiday_region": schema.StringAttribute{
+				Description: "If trigger is `custom_schedule`, the sync will check if there is a formal, observed holiday for the region, and if so, it will not run.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"id": schema.Int64Attribute{
 				Description: "Sync ID",
 				Computed:    true,
@@ -265,14 +281,6 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"updated_at": schema.StringAttribute{
 				Description: "When this sync was last updated",
-				Computed:    true,
-			},
-			"sync_interval_minutes": schema.Int64Attribute{
-				Description: "Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.",
-				Computed:    true,
-			},
-			"holiday_region": schema.StringAttribute{
-				Description: "If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.",
 				Computed:    true,
 			},
 		},
@@ -309,6 +317,8 @@ func (r *syncResource) Create(ctx context.Context, req resource.CreateRequest, r
 	paramsSyncCreate.Interval = plan.Interval.ValueString()
 	paramsSyncCreate.Trigger = plan.Trigger.ValueString()
 	paramsSyncCreate.TriggerFile = plan.TriggerFile.ValueString()
+	paramsSyncCreate.HolidayRegion = plan.HolidayRegion.ValueString()
+	paramsSyncCreate.SyncIntervalMinutes = plan.SyncIntervalMinutes.ValueInt64()
 	paramsSyncCreate.RecurringDay = plan.RecurringDay.ValueInt64()
 	paramsSyncCreate.ScheduleTimeZone = plan.ScheduleTimeZone.ValueString()
 	if !plan.ScheduleDaysOfWeek.IsNull() && !plan.ScheduleDaysOfWeek.IsUnknown() {
@@ -409,6 +419,8 @@ func (r *syncResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	paramsSyncUpdate.Interval = plan.Interval.ValueString()
 	paramsSyncUpdate.Trigger = plan.Trigger.ValueString()
 	paramsSyncUpdate.TriggerFile = plan.TriggerFile.ValueString()
+	paramsSyncUpdate.HolidayRegion = plan.HolidayRegion.ValueString()
+	paramsSyncUpdate.SyncIntervalMinutes = plan.SyncIntervalMinutes.ValueInt64()
 	paramsSyncUpdate.RecurringDay = plan.RecurringDay.ValueInt64()
 	paramsSyncUpdate.ScheduleTimeZone = plan.ScheduleTimeZone.ValueString()
 	if !plan.ScheduleDaysOfWeek.IsNull() && !plan.ScheduleDaysOfWeek.IsUnknown() {
