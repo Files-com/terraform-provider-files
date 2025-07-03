@@ -34,6 +34,7 @@ resource "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
   include_site_admins   = true
   include_folder_admins = true
   user_state            = "inactive"
+  name                  = "password specific rules"
 }
 ```
 
@@ -47,6 +48,7 @@ resource "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
 - `inactivity_days` (Number) Number of days of inactivity before the rule applies
 - `include_folder_admins` (Boolean) Include folder admins in the rule
 - `include_site_admins` (Boolean) Include site admins in the rule
+- `name` (String) User Lifecycle Rule name
 - `user_state` (String) State of the users to apply the rule to (inactive or disabled)
 
 ### Read-Only

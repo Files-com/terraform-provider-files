@@ -33,6 +33,7 @@ type userLifecycleRuleDataSourceModel struct {
 	IncludeSiteAdmins    types.Bool   `tfsdk:"include_site_admins"`
 	Action               types.String `tfsdk:"action"`
 	UserState            types.String `tfsdk:"user_state"`
+	Name                 types.String `tfsdk:"name"`
 	SiteId               types.Int64  `tfsdk:"site_id"`
 }
 
@@ -91,6 +92,10 @@ func (r *userLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.Sch
 				Description: "State of the users to apply the rule to (inactive or disabled)",
 				Computed:    true,
 			},
+			"name": schema.StringAttribute{
+				Description: "User Lifecycle Rule name",
+				Computed:    true,
+			},
 			"site_id": schema.Int64Attribute{
 				Description: "Site ID",
 				Computed:    true,
@@ -137,6 +142,7 @@ func (r *userLifecycleRuleDataSource) populateDataSourceModel(ctx context.Contex
 	state.IncludeSiteAdmins = types.BoolPointerValue(userLifecycleRule.IncludeSiteAdmins)
 	state.Action = types.StringValue(userLifecycleRule.Action)
 	state.UserState = types.StringValue(userLifecycleRule.UserState)
+	state.Name = types.StringValue(userLifecycleRule.Name)
 	state.SiteId = types.Int64Value(userLifecycleRule.SiteId)
 
 	return

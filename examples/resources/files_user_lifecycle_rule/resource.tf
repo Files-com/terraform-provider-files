@@ -4,5 +4,6 @@ resource "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
   include_site_admins   = true
   include_folder_admins = true
   user_state            = "inactive"
+  name                  = "password specific rules"
 }
 

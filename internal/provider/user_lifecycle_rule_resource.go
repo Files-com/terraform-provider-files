@@ -42,6 +42,7 @@ type userLifecycleRuleResourceModel struct {
 	IncludeSiteAdmins    types.Bool   `tfsdk:"include_site_admins"`
 	Action               types.String `tfsdk:"action"`
 	UserState            types.String `tfsdk:"user_state"`
+	Name                 types.String `tfsdk:"name"`
 	Id                   types.Int64  `tfsdk:"id"`
 	SiteId               types.Int64  `tfsdk:"site_id"`
 }
@@ -130,6 +131,14 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"name": schema.StringAttribute{
+				Description: "User Lifecycle Rule name",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"id": schema.Int64Attribute{
 				Description: "User Lifecycle Rule ID",
 				Computed:    true,
@@ -164,6 +173,7 @@ func (r *userLifecycleRuleResource) Create(ctx context.Context, req resource.Cre
 		paramsUserLifecycleRuleCreate.IncludeFolderAdmins = plan.IncludeFolderAdmins.ValueBoolPointer()
 	}
 	paramsUserLifecycleRuleCreate.UserState = paramsUserLifecycleRuleCreate.UserState.Enum()[plan.UserState.ValueString()]
+	paramsUserLifecycleRuleCreate.Name = plan.Name.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -243,6 +253,7 @@ func (r *userLifecycleRuleResource) Update(ctx context.Context, req resource.Upd
 		paramsUserLifecycleRuleUpdate.IncludeFolderAdmins = plan.IncludeFolderAdmins.ValueBoolPointer()
 	}
 	paramsUserLifecycleRuleUpdate.UserState = paramsUserLifecycleRuleUpdate.UserState.Enum()[plan.UserState.ValueString()]
+	paramsUserLifecycleRuleUpdate.Name = plan.Name.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -318,6 +329,7 @@ func (r *userLifecycleRuleResource) populateResourceModel(ctx context.Context, u
 	state.IncludeSiteAdmins = types.BoolPointerValue(userLifecycleRule.IncludeSiteAdmins)
 	state.Action = types.StringValue(userLifecycleRule.Action)
 	state.UserState = types.StringValue(userLifecycleRule.UserState)
+	state.Name = types.StringValue(userLifecycleRule.Name)
 	state.SiteId = types.Int64Value(userLifecycleRule.SiteId)
 
 	return
