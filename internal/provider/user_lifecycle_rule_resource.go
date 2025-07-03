@@ -38,9 +38,9 @@ type userLifecycleRuleResource struct {
 type userLifecycleRuleResourceModel struct {
 	AuthenticationMethod types.String `tfsdk:"authentication_method"`
 	InactivityDays       types.Int64  `tfsdk:"inactivity_days"`
-	Action               types.String `tfsdk:"action"`
 	IncludeFolderAdmins  types.Bool   `tfsdk:"include_folder_admins"`
 	IncludeSiteAdmins    types.Bool   `tfsdk:"include_site_admins"`
+	Action               types.String `tfsdk:"action"`
 	UserState            types.String `tfsdk:"user_state"`
 	Id                   types.Int64  `tfsdk:"id"`
 	SiteId               types.Int64  `tfsdk:"site_id"`
@@ -75,20 +75,21 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 		Attributes: map[string]schema.Attribute{
 			"authentication_method": schema.StringAttribute{
 				Description: "User authentication method for the rule",
-				Required:    true,
+				Computed:    true,
+				Optional:    true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("all", "password", "sso", "none", "email_signup", "password_with_imported_hash", "password_and_ssh_key"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"inactivity_days": schema.Int64Attribute{
 				Description: "Number of days of inactivity before the rule applies",
-				Required:    true,
-			},
-			"action": schema.StringAttribute{
-				Description: "Action to take on inactive users (disable or delete)",
-				Required:    true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("disable", "delete"),
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"include_folder_admins": schema.BoolAttribute{
@@ -105,6 +106,17 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"action": schema.StringAttribute{
+				Description: "Action to take on inactive users (disable or delete)",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("disable", "delete"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"user_state": schema.StringAttribute{
