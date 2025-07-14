@@ -308,7 +308,7 @@ resource "files_site" "example_site" {
 - `snapshot_sharing_enabled` (Boolean) Allow snapshot share links creation
 - `ssl_required` (Boolean) Is SSL required?  Disabling this is insecure.
 - `subdomain` (String) Site subdomain
-- `tls_disabled` (Boolean) DO NOT ENABLE. This setting allows TLSv1.0 and TLSv1.1 to be used on your site.  We intend to remove this capability entirely in early 2024.  If set, the `sftp_insecure_ciphers` flag will be automatically set to true.
+- `tls_disabled` (Boolean) This setting enables Legacy Support for Insecure Ciphers across SFTP and FTP.  See our documentation for more information.  Contrary to its name, this setting does not disable TLS (it used to do that a long time ago), but rather enables certain ciphers which are known to be insecure but required for broad MFT compatibility.
 - `uploads_via_email_authentication` (Boolean) Do incoming emails in the Inboxes require checking for SPF/DKIM/DMARC?
 - `use_dedicated_ips_for_smtp` (Boolean) If using custom SMTP, should we use dedicated IPs to deliver emails?
 - `use_provided_modified_at` (Boolean) Allow uploaders to set `provided_modified_at` for uploaded files?
