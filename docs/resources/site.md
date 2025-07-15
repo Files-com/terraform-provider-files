@@ -141,6 +141,8 @@ resource "files_site" "example_site" {
   color2_top_text                               = "#ffffff"
   site_header                                   = "example"
   site_footer                                   = "example"
+  site_public_header                            = "example"
+  site_public_footer                            = "example"
   login_help_text                               = "Login page help text."
   use_dedicated_ips_for_smtp                    = false
   smtp_address                                  = "smtp.my-mail-server.com"
@@ -298,8 +300,10 @@ resource "files_site" "example_site" {
 - `sharing_enabled` (Boolean) Allow bundle creation
 - `show_request_access_link` (Boolean) Show request access link for users without access?  Currently unused.
 - `show_user_notifications_log_in_link` (Boolean) Show log in link in user notifications?
-- `site_footer` (String) Custom site footer text
-- `site_header` (String) Custom site header text
+- `site_footer` (String) Custom site footer text for authenticated pages
+- `site_header` (String) Custom site header text for authenticated pages
+- `site_public_footer` (String) Custom site footer text for public pages
+- `site_public_header` (String) Custom site header text for public pages
 - `smtp_address` (String) SMTP server hostname or IP
 - `smtp_authentication` (String) SMTP server authentication type
 - `smtp_from` (String) From address to use when mailing through custom SMTP

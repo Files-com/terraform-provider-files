@@ -154,6 +154,8 @@ type siteResourceModel struct {
 	ShowRequestAccessLink                    types.Bool    `tfsdk:"show_request_access_link"`
 	SiteFooter                               types.String  `tfsdk:"site_footer"`
 	SiteHeader                               types.String  `tfsdk:"site_header"`
+	SitePublicFooter                         types.String  `tfsdk:"site_public_footer"`
+	SitePublicHeader                         types.String  `tfsdk:"site_public_header"`
 	SmtpAddress                              types.String  `tfsdk:"smtp_address"`
 	SmtpAuthentication                       types.String  `tfsdk:"smtp_authentication"`
 	SmtpFrom                                 types.String  `tfsdk:"smtp_from"`
@@ -1173,7 +1175,7 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"site_footer": schema.StringAttribute{
-				Description: "Custom site footer text",
+				Description: "Custom site footer text for authenticated pages",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -1181,7 +1183,23 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"site_header": schema.StringAttribute{
-				Description: "Custom site header text",
+				Description: "Custom site header text for authenticated pages",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"site_public_footer": schema.StringAttribute{
+				Description: "Custom site footer text for public pages",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"site_public_header": schema.StringAttribute{
+				Description: "Custom site header text for public pages",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -1849,6 +1867,8 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	paramsSiteUpdate.Color2TopText = plan.Color2TopText.ValueString()
 	paramsSiteUpdate.SiteHeader = plan.SiteHeader.ValueString()
 	paramsSiteUpdate.SiteFooter = plan.SiteFooter.ValueString()
+	paramsSiteUpdate.SitePublicHeader = plan.SitePublicHeader.ValueString()
+	paramsSiteUpdate.SitePublicFooter = plan.SitePublicFooter.ValueString()
 	paramsSiteUpdate.LoginHelpText = plan.LoginHelpText.ValueString()
 	if !plan.UseDedicatedIpsForSmtp.IsNull() && !plan.UseDedicatedIpsForSmtp.IsUnknown() {
 		paramsSiteUpdate.UseDedicatedIpsForSmtp = plan.UseDedicatedIpsForSmtp.ValueBoolPointer()
@@ -2132,6 +2152,8 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.ShowRequestAccessLink = types.BoolPointerValue(site.ShowRequestAccessLink)
 	state.SiteFooter = types.StringValue(site.SiteFooter)
 	state.SiteHeader = types.StringValue(site.SiteHeader)
+	state.SitePublicFooter = types.StringValue(site.SitePublicFooter)
+	state.SitePublicHeader = types.StringValue(site.SitePublicHeader)
 	state.SmtpAddress = types.StringValue(site.SmtpAddress)
 	state.SmtpAuthentication = types.StringValue(site.SmtpAuthentication)
 	state.SmtpFrom = types.StringValue(site.SmtpFrom)
