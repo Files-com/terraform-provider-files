@@ -28,24 +28,25 @@ type syncRunDataSource struct {
 }
 
 type syncRunDataSourceModel struct {
-	Id               types.Int64  `tfsdk:"id"`
-	SyncId           types.Int64  `tfsdk:"sync_id"`
-	SiteId           types.Int64  `tfsdk:"site_id"`
-	Status           types.String `tfsdk:"status"`
-	RemoteServerType types.String `tfsdk:"remote_server_type"`
-	Body             types.String `tfsdk:"body"`
-	EventErrors      types.List   `tfsdk:"event_errors"`
-	BytesSynced      types.Int64  `tfsdk:"bytes_synced"`
-	ComparedFiles    types.Int64  `tfsdk:"compared_files"`
-	ComparedFolders  types.Int64  `tfsdk:"compared_folders"`
-	ErroredFiles     types.Int64  `tfsdk:"errored_files"`
-	SuccessfulFiles  types.Int64  `tfsdk:"successful_files"`
-	Runtime          types.String `tfsdk:"runtime"`
-	LogUrl           types.String `tfsdk:"log_url"`
-	CompletedAt      types.String `tfsdk:"completed_at"`
-	Notified         types.Bool   `tfsdk:"notified"`
-	CreatedAt        types.String `tfsdk:"created_at"`
-	UpdatedAt        types.String `tfsdk:"updated_at"`
+	Id                   types.Int64  `tfsdk:"id"`
+	SyncId               types.Int64  `tfsdk:"sync_id"`
+	SiteId               types.Int64  `tfsdk:"site_id"`
+	Status               types.String `tfsdk:"status"`
+	SrcRemoteServerType  types.String `tfsdk:"src_remote_server_type"`
+	DestRemoteServerType types.String `tfsdk:"dest_remote_server_type"`
+	Body                 types.String `tfsdk:"body"`
+	EventErrors          types.List   `tfsdk:"event_errors"`
+	BytesSynced          types.Int64  `tfsdk:"bytes_synced"`
+	ComparedFiles        types.Int64  `tfsdk:"compared_files"`
+	ComparedFolders      types.Int64  `tfsdk:"compared_folders"`
+	ErroredFiles         types.Int64  `tfsdk:"errored_files"`
+	SuccessfulFiles      types.Int64  `tfsdk:"successful_files"`
+	Runtime              types.String `tfsdk:"runtime"`
+	LogUrl               types.String `tfsdk:"log_url"`
+	CompletedAt          types.String `tfsdk:"completed_at"`
+	Notified             types.Bool   `tfsdk:"notified"`
+	CreatedAt            types.String `tfsdk:"created_at"`
+	UpdatedAt            types.String `tfsdk:"updated_at"`
 }
 
 func (r *syncRunDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -91,8 +92,12 @@ func (r *syncRunDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Description: "Status of the sync run (success, failure, partial_failure, in_progress, skipped)",
 				Computed:    true,
 			},
-			"remote_server_type": schema.StringAttribute{
-				Description: "Type of remote server used, if any",
+			"src_remote_server_type": schema.StringAttribute{
+				Description: "Source remote server type, if any",
+				Computed:    true,
+			},
+			"dest_remote_server_type": schema.StringAttribute{
+				Description: "Destination remote server type, if any",
 				Computed:    true,
 			},
 			"body": schema.StringAttribute{
@@ -189,7 +194,8 @@ func (r *syncRunDataSource) populateDataSourceModel(ctx context.Context, syncRun
 	state.SyncId = types.Int64Value(syncRun.SyncId)
 	state.SiteId = types.Int64Value(syncRun.SiteId)
 	state.Status = types.StringValue(syncRun.Status)
-	state.RemoteServerType = types.StringValue(syncRun.RemoteServerType)
+	state.SrcRemoteServerType = types.StringValue(syncRun.SrcRemoteServerType)
+	state.DestRemoteServerType = types.StringValue(syncRun.DestRemoteServerType)
 	state.Body = types.StringValue(syncRun.Body)
 	state.EventErrors, propDiags = types.ListValueFrom(ctx, types.StringType, syncRun.EventErrors)
 	diags.Append(propDiags...)

@@ -36,13 +36,14 @@ data "files_sync_run" "example_sync_run" {
 - `compared_folders` (Number) Number of folders compared
 - `completed_at` (String) When this run was completed
 - `created_at` (String) When this run was created
+- `dest_remote_server_type` (String) Destination remote server type, if any
 - `errored_files` (Number) Number of files that errored
 - `event_errors` (List of String) Array of errors encountered during the run
 - `log_url` (String) Link to external log file.
 - `notified` (Boolean) Whether notifications were sent for this run
-- `remote_server_type` (String) Type of remote server used, if any
 - `runtime` (String) Total runtime in seconds
 - `site_id` (Number) Site ID
+- `src_remote_server_type` (String) Source remote server type, if any
 - `status` (String) Status of the sync run (success, failure, partial_failure, in_progress, skipped)
 - `successful_files` (Number) Number of files successfully synced
 - `sync_id` (Number) ID of the Sync this run belongs to
