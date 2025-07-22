@@ -14,6 +14,7 @@ resource "files_automation" "example_automation" {
   destination_replace_to               = "example"
   interval                             = "year"
   path                                 = "example"
+  legacy_sync_ids                      = [1, 2]
   sync_ids                             = [1, 2]
   user_ids                             = [1, 2]
   group_ids                            = [1, 2]

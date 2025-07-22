@@ -65,6 +65,7 @@ type automationResourceModel struct {
 	ScheduleTimesOfDay               types.List    `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone                 types.String  `tfsdk:"schedule_time_zone"`
 	Source                           types.String  `tfsdk:"source"`
+	LegacySyncIds                    types.List    `tfsdk:"legacy_sync_ids"`
 	SyncIds                          types.List    `tfsdk:"sync_ids"`
 	TriggerActions                   types.List    `tfsdk:"trigger_actions"`
 	Trigger                          types.String  `tfsdk:"trigger"`
@@ -318,8 +319,17 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"sync_ids": schema.ListAttribute{
+			"legacy_sync_ids": schema.ListAttribute{
 				Description: "IDs of remote sync folder behaviors to run by this Automation",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.Int64Type,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"sync_ids": schema.ListAttribute{
+				Description: "IDs of syncs to run by this Automation. This is the new way to specify syncs, and it is recommended to use this instead of `legacy_sync_ids`.",
 				Computed:    true,
 				Optional:    true,
 				ElementType: types.Int64Type,
@@ -425,6 +435,8 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsAutomationCreate.DestinationReplaceTo = plan.DestinationReplaceTo.ValueString()
 	paramsAutomationCreate.Interval = plan.Interval.ValueString()
 	paramsAutomationCreate.Path = plan.Path.ValueString()
+	paramsAutomationCreate.LegacySyncIds, diags = lib.ListValueToString(ctx, path.Root("legacy_sync_ids"), plan.LegacySyncIds, ",")
+	resp.Diagnostics.Append(diags...)
 	paramsAutomationCreate.SyncIds, diags = lib.ListValueToString(ctx, path.Root("sync_ids"), plan.SyncIds, ",")
 	resp.Diagnostics.Append(diags...)
 	paramsAutomationCreate.UserIds, diags = lib.ListValueToString(ctx, path.Root("user_ids"), plan.UserIds, ",")
@@ -558,6 +570,8 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 	paramsAutomationUpdate.DestinationReplaceTo = plan.DestinationReplaceTo.ValueString()
 	paramsAutomationUpdate.Interval = plan.Interval.ValueString()
 	paramsAutomationUpdate.Path = plan.Path.ValueString()
+	paramsAutomationUpdate.LegacySyncIds, diags = lib.ListValueToString(ctx, path.Root("legacy_sync_ids"), plan.LegacySyncIds, ",")
+	resp.Diagnostics.Append(diags...)
 	paramsAutomationUpdate.SyncIds, diags = lib.ListValueToString(ctx, path.Root("sync_ids"), plan.SyncIds, ",")
 	resp.Diagnostics.Append(diags...)
 	paramsAutomationUpdate.UserIds, diags = lib.ListValueToString(ctx, path.Root("user_ids"), plan.UserIds, ",")
@@ -725,6 +739,8 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	diags.Append(propDiags...)
 	state.ScheduleTimeZone = types.StringValue(automation.ScheduleTimeZone)
 	state.Source = types.StringValue(automation.Source)
+	state.LegacySyncIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, automation.LegacySyncIds)
+	diags.Append(propDiags...)
 	state.SyncIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, automation.SyncIds)
 	diags.Append(propDiags...)
 	state.TriggerActions, propDiags = types.ListValueFrom(ctx, types.StringType, automation.TriggerActions)

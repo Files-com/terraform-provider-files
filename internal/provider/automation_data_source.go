@@ -59,6 +59,7 @@ type automationDataSourceModel struct {
 	ScheduleTimesOfDay               types.List    `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone                 types.String  `tfsdk:"schedule_time_zone"`
 	Source                           types.String  `tfsdk:"source"`
+	LegacySyncIds                    types.List    `tfsdk:"legacy_sync_ids"`
 	SyncIds                          types.List    `tfsdk:"sync_ids"`
 	TriggerActions                   types.List    `tfsdk:"trigger_actions"`
 	Trigger                          types.String  `tfsdk:"trigger"`
@@ -224,8 +225,13 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Description: "Source path/glob.  See Automation docs for exact description, but this is used to filter for files in the `path` to find files to operate on. Supports globs, except on remote mounts.",
 				Computed:    true,
 			},
-			"sync_ids": schema.ListAttribute{
+			"legacy_sync_ids": schema.ListAttribute{
 				Description: "IDs of remote sync folder behaviors to run by this Automation",
+				Computed:    true,
+				ElementType: types.Int64Type,
+			},
+			"sync_ids": schema.ListAttribute{
+				Description: "IDs of syncs to run by this Automation. This is the new way to specify syncs, and it is recommended to use this instead of `legacy_sync_ids`.",
 				Computed:    true,
 				ElementType: types.Int64Type,
 			},
@@ -338,6 +344,8 @@ func (r *automationDataSource) populateDataSourceModel(ctx context.Context, auto
 	diags.Append(propDiags...)
 	state.ScheduleTimeZone = types.StringValue(automation.ScheduleTimeZone)
 	state.Source = types.StringValue(automation.Source)
+	state.LegacySyncIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, automation.LegacySyncIds)
+	diags.Append(propDiags...)
 	state.SyncIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, automation.SyncIds)
 	diags.Append(propDiags...)
 	state.TriggerActions, propDiags = types.ListValueFrom(ctx, types.StringType, automation.TriggerActions)
