@@ -59,8 +59,10 @@ resource "files_gpg_key" "example_gpg_key" {
 - `expires_at` (String) Your GPG key expiration date.
 - `id` (Number) Your GPG key ID.
 - `private_key_hash` (String)
+- `private_key_md5` (String) MD5 hash of your GPG private key.
 - `private_key_password_hash` (String)
 - `public_key_hash` (String)
+- `public_key_md5` (String) MD5 hash of your GPG public key
 
 ## Import
 

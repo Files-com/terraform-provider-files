@@ -50,6 +50,8 @@ type gpgKeyResourceModel struct {
 	GenerateEmail          types.String `tfsdk:"generate_email"`
 	Id                     types.Int64  `tfsdk:"id"`
 	ExpiresAt              types.String `tfsdk:"expires_at"`
+	PublicKeyMd5           types.String `tfsdk:"public_key_md5"`
+	PrivateKeyMd5          types.String `tfsdk:"private_key_md5"`
 }
 
 func (r *gpgKeyResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -162,6 +164,14 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			},
 			"expires_at": schema.StringAttribute{
 				Description: "Your GPG key expiration date.",
+				Computed:    true,
+			},
+			"public_key_md5": schema.StringAttribute{
+				Description: "MD5 hash of your GPG public key",
+				Computed:    true,
+			},
+			"private_key_md5": schema.StringAttribute{
+				Description: "MD5 hash of your GPG private key.",
 				Computed:    true,
 			},
 		},
@@ -353,6 +363,8 @@ func (r *gpgKeyResource) populateResourceModel(ctx context.Context, gpgKey files
 	}
 	state.Name = types.StringValue(gpgKey.Name)
 	state.UserId = types.Int64Value(gpgKey.UserId)
+	state.PublicKeyMd5 = types.StringValue(gpgKey.PublicKeyMd5)
+	state.PrivateKeyMd5 = types.StringValue(gpgKey.PrivateKeyMd5)
 	state.PublicKeyHash = types.StringValue(gpgKey.PublicKey)
 	state.PrivateKeyHash = types.StringValue(gpgKey.PrivateKey)
 	state.PrivateKeyPasswordHash = types.StringValue(gpgKey.PrivateKeyPassword)
