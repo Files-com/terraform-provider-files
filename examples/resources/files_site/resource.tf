@@ -43,7 +43,6 @@ resource "files_site" "example_site" {
   migrate_remote_server_sync_to_sync            = false
   session_expiry                                = 1.0
   ssl_required                                  = false
-  tls_disabled                                  = false
   sftp_insecure_ciphers                         = false
   sftp_insecure_diffie_hellman                  = false
   disable_files_certificate_generation          = false

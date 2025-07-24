@@ -178,7 +178,6 @@ data "files_site" "example_site" {
 - `ssl_required` (Boolean) Is SSL required?  Disabling this is insecure.
 - `subdomain` (String) Site subdomain
 - `switch_to_plan_date` (String) If switching plans, when does the new plan take effect?
-- `tls_disabled` (Boolean) This setting enables Legacy Support for Insecure Ciphers across SFTP and FTP.  See our documentation for more information.  Contrary to its name, this setting does not disable TLS (it used to do that a long time ago), but rather enables certain ciphers which are known to be insecure but required for broad MFT compatibility.
 - `trial_days_left` (Number) Number of days left in trial
 - `trial_until` (String) When does this Site trial expire?
 - `uploads_via_email_authentication` (Boolean) Do incoming emails in the Inboxes require checking for SPF/DKIM/DMARC?

@@ -166,7 +166,6 @@ type siteResourceModel struct {
 	SnapshotSharingEnabled                   types.Bool    `tfsdk:"snapshot_sharing_enabled"`
 	SslRequired                              types.Bool    `tfsdk:"ssl_required"`
 	Subdomain                                types.String  `tfsdk:"subdomain"`
-	TlsDisabled                              types.Bool    `tfsdk:"tls_disabled"`
 	UseDedicatedIpsForSmtp                   types.Bool    `tfsdk:"use_dedicated_ips_for_smtp"`
 	UseProvidedModifiedAt                    types.Bool    `tfsdk:"use_provided_modified_at"`
 	UserLockout                              types.Bool    `tfsdk:"user_lockout"`
@@ -1286,14 +1285,6 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"tls_disabled": schema.BoolAttribute{
-				Description: "This setting enables Legacy Support for Insecure Ciphers across SFTP and FTP.  See our documentation for more information.  Contrary to its name, this setting does not disable TLS (it used to do that a long time ago), but rather enables certain ciphers which are known to be insecure but required for broad MFT compatibility.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
-				},
-			},
 			"use_dedicated_ips_for_smtp": schema.BoolAttribute{
 				Description: "If using custom SMTP, should we use dedicated IPs to deliver emails?",
 				Computed:    true,
@@ -1688,9 +1679,6 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	paramsSiteUpdate.SessionExpiry = plan.SessionExpiry.ValueString()
 	if !plan.SslRequired.IsNull() && !plan.SslRequired.IsUnknown() {
 		paramsSiteUpdate.SslRequired = plan.SslRequired.ValueBoolPointer()
-	}
-	if !plan.TlsDisabled.IsNull() && !plan.TlsDisabled.IsUnknown() {
-		paramsSiteUpdate.TlsDisabled = plan.TlsDisabled.ValueBoolPointer()
 	}
 	if !plan.SftpInsecureCiphers.IsNull() && !plan.SftpInsecureCiphers.IsUnknown() {
 		paramsSiteUpdate.SftpInsecureCiphers = plan.SftpInsecureCiphers.ValueBoolPointer()
@@ -2170,7 +2158,6 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 			"Could not convert state switch_to_plan_date to string: "+err.Error(),
 		)
 	}
-	state.TlsDisabled = types.BoolPointerValue(site.TlsDisabled)
 	state.TrialDaysLeft = types.Int64Value(site.TrialDaysLeft)
 	if err := lib.TimeToStringType(ctx, path.Root("trial_until"), site.TrialUntil, &state.TrialUntil); err != nil {
 		diags.AddError(

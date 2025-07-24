@@ -180,7 +180,6 @@ type siteDataSourceModel struct {
 	SslRequired                              types.Bool    `tfsdk:"ssl_required"`
 	Subdomain                                types.String  `tfsdk:"subdomain"`
 	SwitchToPlanDate                         types.String  `tfsdk:"switch_to_plan_date"`
-	TlsDisabled                              types.Bool    `tfsdk:"tls_disabled"`
 	TrialDaysLeft                            types.Int64   `tfsdk:"trial_days_left"`
 	TrialUntil                               types.String  `tfsdk:"trial_until"`
 	UseDedicatedIpsForSmtp                   types.Bool    `tfsdk:"use_dedicated_ips_for_smtp"`
@@ -836,10 +835,6 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "If switching plans, when does the new plan take effect?",
 				Computed:    true,
 			},
-			"tls_disabled": schema.BoolAttribute{
-				Description: "This setting enables Legacy Support for Insecure Ciphers across SFTP and FTP.  See our documentation for more information.  Contrary to its name, this setting does not disable TLS (it used to do that a long time ago), but rather enables certain ciphers which are known to be insecure but required for broad MFT compatibility.",
-				Computed:    true,
-			},
 			"trial_days_left": schema.Int64Attribute{
 				Description: "Number of days left in trial",
 				Computed:    true,
@@ -1184,7 +1179,6 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 			"Could not convert state switch_to_plan_date to string: "+err.Error(),
 		)
 	}
-	state.TlsDisabled = types.BoolPointerValue(site.TlsDisabled)
 	state.TrialDaysLeft = types.Int64Value(site.TrialDaysLeft)
 	if err := lib.TimeToStringType(ctx, path.Root("trial_until"), site.TrialUntil, &state.TrialUntil); err != nil {
 		diags.AddError(
