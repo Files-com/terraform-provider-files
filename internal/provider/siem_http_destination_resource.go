@@ -126,7 +126,7 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 				Description: "Destination Type",
 				Required:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("generic", "splunk", "azure", "qradar", "sumo", "rapid7", "solar_winds", "new_relic", "datadog"),
+					stringvalidator.OneOf("generic", "splunk", "azure_legacy", "qradar", "sumo", "rapid7", "solar_winds", "new_relic", "datadog", "azure"),
 				},
 			},
 			"destination_url": schema.StringAttribute{
@@ -169,7 +169,7 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 				},
 			},
 			"azure_dcr_immutable_id": schema.StringAttribute{
-				Description: "Applicable only for destination type: azure. Immutable ID of the Data Collection Rule.",
+				Description: "Applicable only for destination types: azure, azure_legacy. Immutable ID of the Data Collection Rule.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -185,7 +185,7 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 				},
 			},
 			"azure_oauth_client_credentials_tenant_id": schema.StringAttribute{
-				Description: "Applicable only for destination type: azure. Client Credentials OAuth Tenant ID.",
+				Description: "Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Tenant ID.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -193,7 +193,7 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 				},
 			},
 			"azure_oauth_client_credentials_client_id": schema.StringAttribute{
-				Description: "Applicable only for destination type: azure. Client Credentials OAuth Client ID.",
+				Description: "Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Client ID.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -332,7 +332,7 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 				Computed:    true,
 			},
 			"azure_oauth_client_credentials_client_secret_masked": schema.StringAttribute{
-				Description: "Applicable only for destination type: azure. Client Credentials OAuth Client Secret.",
+				Description: "Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Client Secret.",
 				Computed:    true,
 			},
 			"qradar_password_masked": schema.StringAttribute{

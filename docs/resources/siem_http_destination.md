@@ -54,10 +54,10 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
 - `additional_headers` (Dynamic) Additional HTTP Headers included in calls to the destination URL
 - `api_request_send_enabled` (Boolean) Whether or not sending is enabled for api_request logs.
 - `automation_send_enabled` (Boolean) Whether or not sending is enabled for automation logs.
-- `azure_dcr_immutable_id` (String) Applicable only for destination type: azure. Immutable ID of the Data Collection Rule.
-- `azure_oauth_client_credentials_client_id` (String) Applicable only for destination type: azure. Client Credentials OAuth Client ID.
+- `azure_dcr_immutable_id` (String) Applicable only for destination types: azure, azure_legacy. Immutable ID of the Data Collection Rule.
+- `azure_oauth_client_credentials_client_id` (String) Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Client ID.
 - `azure_oauth_client_credentials_client_secret` (String) Applicable only for destination type: azure. Client Credentials OAuth Client Secret.
-- `azure_oauth_client_credentials_tenant_id` (String) Applicable only for destination type: azure. Client Credentials OAuth Tenant ID.
+- `azure_oauth_client_credentials_tenant_id` (String) Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Tenant ID.
 - `azure_stream_name` (String) Applicable only for destination type: azure. Name of the stream in the DCR that represents the destination table.
 - `datadog_api_key` (String) Applicable only for destination type: datadog. API key provided by Datadog.
 - `email_send_enabled` (Boolean) Whether or not sending is enabled for email logs.
@@ -82,7 +82,7 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
 
 - `api_request_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `automation_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
-- `azure_oauth_client_credentials_client_secret_masked` (String) Applicable only for destination type: azure. Client Credentials OAuth Client Secret.
+- `azure_oauth_client_credentials_client_secret_masked` (String) Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Client Secret.
 - `connection_test_entry` (String) Connection Test Entry
 - `datadog_api_key_masked` (String) Applicable only for destination type: datadog. API key provided by Datadog.
 - `email_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.

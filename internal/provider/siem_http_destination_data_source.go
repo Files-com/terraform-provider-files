@@ -139,7 +139,7 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 				Computed:    true,
 			},
 			"azure_dcr_immutable_id": schema.StringAttribute{
-				Description: "Applicable only for destination type: azure. Immutable ID of the Data Collection Rule.",
+				Description: "Applicable only for destination types: azure, azure_legacy. Immutable ID of the Data Collection Rule.",
 				Computed:    true,
 			},
 			"azure_stream_name": schema.StringAttribute{
@@ -147,15 +147,15 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 				Computed:    true,
 			},
 			"azure_oauth_client_credentials_tenant_id": schema.StringAttribute{
-				Description: "Applicable only for destination type: azure. Client Credentials OAuth Tenant ID.",
+				Description: "Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Tenant ID.",
 				Computed:    true,
 			},
 			"azure_oauth_client_credentials_client_id": schema.StringAttribute{
-				Description: "Applicable only for destination type: azure. Client Credentials OAuth Client ID.",
+				Description: "Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Client ID.",
 				Computed:    true,
 			},
 			"azure_oauth_client_credentials_client_secret_masked": schema.StringAttribute{
-				Description: "Applicable only for destination type: azure. Client Credentials OAuth Client Secret.",
+				Description: "Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Client Secret.",
 				Computed:    true,
 			},
 			"qradar_username": schema.StringAttribute{
