@@ -57,9 +57,6 @@ type remoteServerResourceModel struct {
 	WasabiBucket                            types.String `tfsdk:"wasabi_bucket"`
 	WasabiRegion                            types.String `tfsdk:"wasabi_region"`
 	WasabiAccessKey                         types.String `tfsdk:"wasabi_access_key"`
-	RackspaceUsername                       types.String `tfsdk:"rackspace_username"`
-	RackspaceRegion                         types.String `tfsdk:"rackspace_region"`
-	RackspaceContainer                      types.String `tfsdk:"rackspace_container"`
 	OneDriveAccountType                     types.String `tfsdk:"one_drive_account_type"`
 	AzureBlobStorageAccount                 types.String `tfsdk:"azure_blob_storage_account"`
 	AzureBlobStorageContainer               types.String `tfsdk:"azure_blob_storage_container"`
@@ -102,7 +99,6 @@ type remoteServerResourceModel struct {
 	GoogleCloudStorageCredentialsJson       types.String `tfsdk:"google_cloud_storage_credentials_json"`
 	GoogleCloudStorageS3CompatibleSecretKey types.String `tfsdk:"google_cloud_storage_s3_compatible_secret_key"`
 	LinodeSecretKey                         types.String `tfsdk:"linode_secret_key"`
-	RackspaceApiKey                         types.String `tfsdk:"rackspace_api_key"`
 	S3CompatibleSecretKey                   types.String `tfsdk:"s3_compatible_secret_key"`
 	WasabiSecretKey                         types.String `tfsdk:"wasabi_secret_key"`
 	Id                                      types.Int64  `tfsdk:"id"`
@@ -141,7 +137,7 @@ func (r *remoteServerResource) Metadata(_ context.Context, req resource.Metadata
 
 func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A RemoteServer is a specific type of Behavior called `remote_server_sync`.\n\n\n\nRemote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.\n\n\n\nNot every attribute will apply to every remote server.\n\n\n\nFTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`. Optionally, provide `server_certificate`.\n\n\n\nSFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`. Optionally, provide `server_certificate`, `private_key_passphrase`.\n\n\n\nS3 Buckets require that you specify their `s3_bucket` name, and `s3_region`. Optionally provide a `aws_access_key`, and `aws_secret_key`. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.\n\n\n\nS3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`.\n\n\n\nGoogle Cloud Storage requires that you specify `google_cloud_storage_bucket`, and then one of the following sets of authentication credentials:\n\n - for JSON authentcation: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`\n\n - for HMAC (S3-Compatible) authentication: `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`\n\n\n\nWasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.\n\n\n\nBackblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453\n\n\n\nRackspace Cloud Files requires `rackspace_username`, `rackspace_api_key`, `rackspace_region`, and `rackspace_container`.\n\n\n\nWebDAV Servers require that you specify their `hostname`, `username`, and `password`.\n\n\n\nOneDrive follow the `auth_setup_link` and login with Microsoft.\n\n\n\nSharepoint follow the `auth_setup_link` and login with Microsoft.\n\n\n\nBox follow the `auth_setup_link` and login with Box.\n\n\n\nDropbox specify if `dropbox_teams` then follow the `auth_setup_link` and login with Dropbox.\n\n\n\nGoogle Drive follow the `auth_setup_link` and login with Google.\n\n\n\nAzure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`, `azure_blob_storage_dns_suffix`\n\n\n\nAzure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`, `azure_files_storage_dns_suffix`\n\n\n\nFilebase requires `filebase_bucket`, `filebase_access_key`, and `filebase_secret_key`.\n\n\n\nCloudflare requires `cloudflare_bucket`, `cloudflare_access_key`, `cloudflare_secret_key` and `cloudflare_endpoint`.\n\n\n\nLinode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `linode_region`.",
+		Description: "A RemoteServer is a specific type of Behavior called `remote_server_sync`.\n\n\n\nRemote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.\n\n\n\nNot every attribute will apply to every remote server.\n\n\n\nFTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`. Optionally, provide `server_certificate`.\n\n\n\nSFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`. Optionally, provide `server_certificate`, `private_key_passphrase`.\n\n\n\nS3 Buckets require that you specify their `s3_bucket` name, and `s3_region`. Optionally provide a `aws_access_key`, and `aws_secret_key`. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.\n\n\n\nS3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`.\n\n\n\nGoogle Cloud Storage requires that you specify `google_cloud_storage_bucket`, and then one of the following sets of authentication credentials:\n\n - for JSON authentcation: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`\n\n - for HMAC (S3-Compatible) authentication: `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`\n\n\n\nWasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.\n\n\n\nBackblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453\n\n\n\nWebDAV Servers require that you specify their `hostname`, `username`, and `password`.\n\n\n\nOneDrive follow the `auth_setup_link` and login with Microsoft.\n\n\n\nSharepoint follow the `auth_setup_link` and login with Microsoft.\n\n\n\nBox follow the `auth_setup_link` and login with Box.\n\n\n\nDropbox specify if `dropbox_teams` then follow the `auth_setup_link` and login with Dropbox.\n\n\n\nGoogle Drive follow the `auth_setup_link` and login with Google.\n\n\n\nAzure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`, `azure_blob_storage_dns_suffix`\n\n\n\nAzure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`, `azure_files_storage_dns_suffix`\n\n\n\nFilebase requires `filebase_bucket`, `filebase_access_key`, and `filebase_secret_key`.\n\n\n\nCloudflare requires `cloudflare_bucket`, `cloudflare_access_key`, `cloudflare_secret_key` and `cloudflare_endpoint`.\n\n\n\nLinode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `linode_region`.",
 		Attributes: map[string]schema.Attribute{
 			"hostname": schema.StringAttribute{
 				Description: "Hostname or IP address",
@@ -231,7 +227,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("ftp", "sftp", "s3", "google_cloud_storage", "webdav", "wasabi", "backblaze_b2", "one_drive", "rackspace", "box", "dropbox", "google_drive", "azure", "sharepoint", "s3_compatible", "azure_files", "files_agent", "filebase", "cloudflare", "linode"),
+					stringvalidator.OneOf("ftp", "sftp", "s3", "google_cloud_storage", "webdav", "wasabi", "backblaze_b2", "one_drive", "box", "dropbox", "google_drive", "azure", "sharepoint", "s3_compatible", "azure_files", "files_agent", "filebase", "cloudflare", "linode"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
@@ -314,30 +310,6 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 			},
 			"wasabi_access_key": schema.StringAttribute{
 				Description: "Wasabi: Access Key.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"rackspace_username": schema.StringAttribute{
-				Description: "Rackspace: username used to login to the Rackspace Cloud Control Panel.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"rackspace_region": schema.StringAttribute{
-				Description: "Rackspace: Three letter code for Rackspace region. See https://support.rackspace.com/how-to/about-regions/",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"rackspace_container": schema.StringAttribute{
-				Description: "Rackspace: The name of the container (top level directory) where files will sync.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -618,10 +590,6 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				Description: "Linode: Secret Key",
 				Optional:    true,
 			},
-			"rackspace_api_key": schema.StringAttribute{
-				Description: "Rackspace: API key from the Rackspace Cloud Control Panel",
-				Optional:    true,
-			},
 			"s3_compatible_secret_key": schema.StringAttribute{
 				Description: "S3-compatible: Secret Key",
 				Optional:    true,
@@ -704,7 +672,6 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.GoogleCloudStorageCredentialsJson = plan.GoogleCloudStorageCredentialsJson.ValueString()
 	paramsRemoteServerCreate.GoogleCloudStorageS3CompatibleSecretKey = plan.GoogleCloudStorageS3CompatibleSecretKey.ValueString()
 	paramsRemoteServerCreate.LinodeSecretKey = plan.LinodeSecretKey.ValueString()
-	paramsRemoteServerCreate.RackspaceApiKey = plan.RackspaceApiKey.ValueString()
 	paramsRemoteServerCreate.S3CompatibleSecretKey = plan.S3CompatibleSecretKey.ValueString()
 	paramsRemoteServerCreate.WasabiSecretKey = plan.WasabiSecretKey.ValueString()
 	paramsRemoteServerCreate.AwsAccessKey = plan.AwsAccessKey.ValueString()
@@ -747,9 +714,6 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 		paramsRemoteServerCreate.PinToSiteRegion = plan.PinToSiteRegion.ValueBoolPointer()
 	}
 	paramsRemoteServerCreate.Port = plan.Port.ValueInt64()
-	paramsRemoteServerCreate.RackspaceContainer = plan.RackspaceContainer.ValueString()
-	paramsRemoteServerCreate.RackspaceRegion = plan.RackspaceRegion.ValueString()
-	paramsRemoteServerCreate.RackspaceUsername = plan.RackspaceUsername.ValueString()
 	paramsRemoteServerCreate.S3Bucket = plan.S3Bucket.ValueString()
 	paramsRemoteServerCreate.S3CompatibleAccessKey = plan.S3CompatibleAccessKey.ValueString()
 	paramsRemoteServerCreate.S3CompatibleBucket = plan.S3CompatibleBucket.ValueString()
@@ -852,7 +816,6 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	paramsRemoteServerUpdate.GoogleCloudStorageCredentialsJson = plan.GoogleCloudStorageCredentialsJson.ValueString()
 	paramsRemoteServerUpdate.GoogleCloudStorageS3CompatibleSecretKey = plan.GoogleCloudStorageS3CompatibleSecretKey.ValueString()
 	paramsRemoteServerUpdate.LinodeSecretKey = plan.LinodeSecretKey.ValueString()
-	paramsRemoteServerUpdate.RackspaceApiKey = plan.RackspaceApiKey.ValueString()
 	paramsRemoteServerUpdate.S3CompatibleSecretKey = plan.S3CompatibleSecretKey.ValueString()
 	paramsRemoteServerUpdate.WasabiSecretKey = plan.WasabiSecretKey.ValueString()
 	paramsRemoteServerUpdate.AwsAccessKey = plan.AwsAccessKey.ValueString()
@@ -895,9 +858,6 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 		paramsRemoteServerUpdate.PinToSiteRegion = plan.PinToSiteRegion.ValueBoolPointer()
 	}
 	paramsRemoteServerUpdate.Port = plan.Port.ValueInt64()
-	paramsRemoteServerUpdate.RackspaceContainer = plan.RackspaceContainer.ValueString()
-	paramsRemoteServerUpdate.RackspaceRegion = plan.RackspaceRegion.ValueString()
-	paramsRemoteServerUpdate.RackspaceUsername = plan.RackspaceUsername.ValueString()
 	paramsRemoteServerUpdate.S3Bucket = plan.S3Bucket.ValueString()
 	paramsRemoteServerUpdate.S3CompatibleAccessKey = plan.S3CompatibleAccessKey.ValueString()
 	paramsRemoteServerUpdate.S3CompatibleBucket = plan.S3CompatibleBucket.ValueString()
@@ -1006,9 +966,6 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.WasabiBucket = types.StringValue(remoteServer.WasabiBucket)
 	state.WasabiRegion = types.StringValue(remoteServer.WasabiRegion)
 	state.WasabiAccessKey = types.StringValue(remoteServer.WasabiAccessKey)
-	state.RackspaceUsername = types.StringValue(remoteServer.RackspaceUsername)
-	state.RackspaceRegion = types.StringValue(remoteServer.RackspaceRegion)
-	state.RackspaceContainer = types.StringValue(remoteServer.RackspaceContainer)
 	state.AuthStatus = types.StringValue(remoteServer.AuthStatus)
 	state.AuthAccountName = types.StringValue(remoteServer.AuthAccountName)
 	state.OneDriveAccountType = types.StringValue(remoteServer.OneDriveAccountType)

@@ -32,9 +32,6 @@ resource "files_remote_server" "example_remote_server" {
   one_drive_account_type                        = "personal"
   pin_to_site_region                            = true
   port                                          = 1
-  rackspace_container                           = "my-container"
-  rackspace_region                              = "dfw"
-  rackspace_username                            = "rackspaceuser"
   s3_bucket                                     = "my-bucket"
   s3_compatible_access_key                      = "example"
   s3_compatible_bucket                          = "my-bucket"

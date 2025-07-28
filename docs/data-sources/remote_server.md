@@ -16,7 +16,6 @@ description: |-
   for HMAC (S3-Compatible) authentication: google_cloud_storage_s3_compatible_access_key, and google_cloud_storage_s3_compatible_secret_key
   Wasabi requires wasabi_bucket, wasabi_region, wasabi_access_key, and wasabi_secret_key.
   Backblaze B2 Cloud Storage backblaze_b2_bucket, backblaze_b2_s3_endpoint, backblaze_b2_application_key, and backblaze_b2_key_id. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453
-  Rackspace Cloud Files requires rackspace_username, rackspace_api_key, rackspace_region, and rackspace_container.
   WebDAV Servers require that you specify their hostname, username, and password.
   OneDrive follow the auth_setup_link and login with Microsoft.
   Sharepoint follow the auth_setup_link and login with Microsoft.
@@ -73,10 +72,6 @@ Wasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasa
 
 
 Backblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453
-
-
-
-Rackspace Cloud Files requires `rackspace_username`, `rackspace_api_key`, `rackspace_region`, and `rackspace_container`.
 
 
 
@@ -177,9 +172,6 @@ data "files_remote_server" "example_remote_server" {
 - `pin_to_site_region` (Boolean) If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.
 - `pinned_region` (String) If set, all communications with this remote server are made through the provided region.
 - `port` (Number) Port for remote server.  Not needed for S3.
-- `rackspace_container` (String) Rackspace: The name of the container (top level directory) where files will sync.
-- `rackspace_region` (String) Rackspace: Three letter code for Rackspace region. See https://support.rackspace.com/how-to/about-regions/
-- `rackspace_username` (String) Rackspace: username used to login to the Rackspace Cloud Control Panel.
 - `remote_home_path` (String) Initial home folder on remote server
 - `s3_bucket` (String) S3 bucket name
 - `s3_compatible_access_key` (String) S3-compatible: Access Key
