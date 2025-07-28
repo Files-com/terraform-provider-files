@@ -209,6 +209,7 @@ type siteResourceModel struct {
 	TrialDaysLeft                            types.Int64   `tfsdk:"trial_days_left"`
 	TrialUntil                               types.String  `tfsdk:"trial_until"`
 	User                                     types.String  `tfsdk:"user"`
+	ManagedSiteSettings                      types.List    `tfsdk:"managed_site_settings"`
 }
 
 func (r *siteResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -1531,6 +1532,11 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "User of current session",
 				Computed:    true,
 			},
+			"managed_site_settings": schema.ListAttribute{
+				Description: "List of site settings managed by the parent site",
+				Computed:    true,
+				ElementType: types.StringType,
+			},
 		},
 	}
 }
@@ -2190,6 +2196,8 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.WelcomeScreen = types.StringValue(site.WelcomeScreen)
 	state.WindowsModeFtp = types.BoolPointerValue(site.WindowsModeFtp)
 	state.GroupAdminsCanSetUserPassword = types.BoolPointerValue(site.GroupAdminsCanSetUserPassword)
+	state.ManagedSiteSettings, propDiags = types.ListValueFrom(ctx, types.StringType, site.ManagedSiteSettings)
+	diags.Append(propDiags...)
 
 	return
 }

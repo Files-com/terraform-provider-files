@@ -118,6 +118,7 @@ data "files_site" "example_site" {
 - `login_help_text` (String) Login help text
 - `login_page_background_image` (String) Branded login page background
 - `logo` (String) Branded logo
+- `managed_site_settings` (List of String) List of site settings managed by the parent site
 - `max_prior_passwords` (Number) Number of prior passwords to disallow
 - `migrate_remote_server_sync_to_sync` (Boolean) If true, we will migrate all remote server syncs to the new Sync model.
 - `mobile_app` (Boolean) Is the mobile app enabled?

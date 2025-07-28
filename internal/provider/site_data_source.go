@@ -200,6 +200,7 @@ type siteDataSourceModel struct {
 	WelcomeScreen                            types.String  `tfsdk:"welcome_screen"`
 	WindowsModeFtp                           types.Bool    `tfsdk:"windows_mode_ftp"`
 	GroupAdminsCanSetUserPassword            types.Bool    `tfsdk:"group_admins_can_set_user_password"`
+	ManagedSiteSettings                      types.List    `tfsdk:"managed_site_settings"`
 }
 
 func (r *siteDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -915,6 +916,11 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Allow group admins set password authentication method",
 				Computed:    true,
 			},
+			"managed_site_settings": schema.ListAttribute{
+				Description: "List of site settings managed by the parent site",
+				Computed:    true,
+				ElementType: types.StringType,
+			},
 		},
 	}
 }
@@ -1211,6 +1217,8 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.WelcomeScreen = types.StringValue(site.WelcomeScreen)
 	state.WindowsModeFtp = types.BoolPointerValue(site.WindowsModeFtp)
 	state.GroupAdminsCanSetUserPassword = types.BoolPointerValue(site.GroupAdminsCanSetUserPassword)
+	state.ManagedSiteSettings, propDiags = types.ListValueFrom(ctx, types.StringType, site.ManagedSiteSettings)
+	diags.Append(propDiags...)
 
 	return
 }
