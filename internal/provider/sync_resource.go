@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -64,6 +65,7 @@ type syncResourceModel struct {
 	ExcludePatterns     types.List   `tfsdk:"exclude_patterns"`
 	CreatedAt           types.String `tfsdk:"created_at"`
 	UpdatedAt           types.String `tfsdk:"updated_at"`
+	LatestSyncRun       types.String `tfsdk:"latest_sync_run"`
 }
 
 func (r *syncResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -281,6 +283,10 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"updated_at": schema.StringAttribute{
 				Description: "When this sync was last updated",
+				Computed:    true,
+			},
+			"latest_sync_run": schema.StringAttribute{
+				Description: "The latest run of this sync",
 				Computed:    true,
 			},
 		},
@@ -541,6 +547,14 @@ func (r *syncResource) populateResourceModel(ctx context.Context, sync files_sdk
 	diags.Append(propDiags...)
 	state.ScheduleTimeZone = types.StringValue(sync.ScheduleTimeZone)
 	state.HolidayRegion = types.StringValue(sync.HolidayRegion)
+	respLatestSyncRun, err := json.Marshal(sync.LatestSyncRun)
+	if err != nil {
+		diags.AddError(
+			"Error Creating Files Sync",
+			"Could not marshal latest_sync_run to JSON: "+err.Error(),
+		)
+	}
+	state.LatestSyncRun = types.StringValue(string(respLatestSyncRun))
 
 	return
 }

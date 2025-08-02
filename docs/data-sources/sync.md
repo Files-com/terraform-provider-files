@@ -44,6 +44,7 @@ data "files_sync" "example_sync" {
 - `include_patterns` (List of String) Array of glob patterns to include
 - `interval` (String) If trigger is `daily`, this specifies how often to run this sync.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`
 - `keep_after_copy` (Boolean) Keep files after copying?
+- `latest_sync_run` (String) The latest run of this sync
 - `name` (String) Name for this sync job
 - `recurring_day` (Number) If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.

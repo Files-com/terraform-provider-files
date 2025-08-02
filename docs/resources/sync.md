@@ -73,6 +73,7 @@ resource "files_sync" "example_sync" {
 - `exclude_patterns` (List of String) Array of glob patterns to exclude
 - `id` (Number) Sync ID
 - `include_patterns` (List of String) Array of glob patterns to include
+- `latest_sync_run` (String) The latest run of this sync
 - `site_id` (Number) Site ID this sync belongs to
 - `updated_at` (String) When this sync was last updated
 - `user_id` (Number) User who created or owns this sync

@@ -37,7 +37,9 @@ data "files_sync_run" "example_sync_run" {
 - `completed_at` (String) When this run was completed
 - `created_at` (String) When this run was created
 - `dest_remote_server_type` (String) Destination remote server type, if any
+- `dry_run` (Boolean) Whether this run was a dry run (no actual changes made)
 - `errored_files` (Number) Number of files that errored
+- `estimated_bytes_count` (Number) Estimated bytes count for this run
 - `event_errors` (List of String) Array of errors encountered during the run
 - `log_url` (String) Link to external log file.
 - `notified` (Boolean) Whether notifications were sent for this run

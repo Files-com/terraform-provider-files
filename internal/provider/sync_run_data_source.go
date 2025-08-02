@@ -36,7 +36,6 @@ type syncRunDataSourceModel struct {
 	DestRemoteServerType types.String `tfsdk:"dest_remote_server_type"`
 	Body                 types.String `tfsdk:"body"`
 	EventErrors          types.List   `tfsdk:"event_errors"`
-	BytesSynced          types.Int64  `tfsdk:"bytes_synced"`
 	ComparedFiles        types.Int64  `tfsdk:"compared_files"`
 	ComparedFolders      types.Int64  `tfsdk:"compared_folders"`
 	ErroredFiles         types.Int64  `tfsdk:"errored_files"`
@@ -45,6 +44,9 @@ type syncRunDataSourceModel struct {
 	LogUrl               types.String `tfsdk:"log_url"`
 	CompletedAt          types.String `tfsdk:"completed_at"`
 	Notified             types.Bool   `tfsdk:"notified"`
+	DryRun               types.Bool   `tfsdk:"dry_run"`
+	BytesSynced          types.Int64  `tfsdk:"bytes_synced"`
+	EstimatedBytesCount  types.Int64  `tfsdk:"estimated_bytes_count"`
 	CreatedAt            types.String `tfsdk:"created_at"`
 	UpdatedAt            types.String `tfsdk:"updated_at"`
 }
@@ -109,10 +111,6 @@ func (r *syncRunDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Computed:    true,
 				ElementType: types.StringType,
 			},
-			"bytes_synced": schema.Int64Attribute{
-				Description: "Total bytes synced in this run",
-				Computed:    true,
-			},
 			"compared_files": schema.Int64Attribute{
 				Description: "Number of files compared",
 				Computed:    true,
@@ -143,6 +141,18 @@ func (r *syncRunDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 			},
 			"notified": schema.BoolAttribute{
 				Description: "Whether notifications were sent for this run",
+				Computed:    true,
+			},
+			"dry_run": schema.BoolAttribute{
+				Description: "Whether this run was a dry run (no actual changes made)",
+				Computed:    true,
+			},
+			"bytes_synced": schema.Int64Attribute{
+				Description: "Total bytes synced in this run",
+				Computed:    true,
+			},
+			"estimated_bytes_count": schema.Int64Attribute{
+				Description: "Estimated bytes count for this run",
 				Computed:    true,
 			},
 			"created_at": schema.StringAttribute{
@@ -199,7 +209,6 @@ func (r *syncRunDataSource) populateDataSourceModel(ctx context.Context, syncRun
 	state.Body = types.StringValue(syncRun.Body)
 	state.EventErrors, propDiags = types.ListValueFrom(ctx, types.StringType, syncRun.EventErrors)
 	diags.Append(propDiags...)
-	state.BytesSynced = types.Int64Value(syncRun.BytesSynced)
 	state.ComparedFiles = types.Int64Value(syncRun.ComparedFiles)
 	state.ComparedFolders = types.Int64Value(syncRun.ComparedFolders)
 	state.ErroredFiles = types.Int64Value(syncRun.ErroredFiles)
@@ -213,6 +222,9 @@ func (r *syncRunDataSource) populateDataSourceModel(ctx context.Context, syncRun
 		)
 	}
 	state.Notified = types.BoolPointerValue(syncRun.Notified)
+	state.DryRun = types.BoolPointerValue(syncRun.DryRun)
+	state.BytesSynced = types.Int64Value(syncRun.BytesSynced)
+	state.EstimatedBytesCount = types.Int64Value(syncRun.EstimatedBytesCount)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), syncRun.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files SyncRun",

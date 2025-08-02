@@ -2,6 +2,7 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
@@ -54,6 +55,7 @@ type syncDataSourceModel struct {
 	ScheduleTimesOfDay  types.List   `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone    types.String `tfsdk:"schedule_time_zone"`
 	HolidayRegion       types.String `tfsdk:"holiday_region"`
+	LatestSyncRun       types.String `tfsdk:"latest_sync_run"`
 }
 
 func (r *syncDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -191,6 +193,10 @@ func (r *syncDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "If trigger is `custom_schedule`, the sync will check if there is a formal, observed holiday for the region, and if so, it will not run.",
 				Computed:    true,
 			},
+			"latest_sync_run": schema.StringAttribute{
+				Description: "The latest run of this sync",
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -268,6 +274,14 @@ func (r *syncDataSource) populateDataSourceModel(ctx context.Context, sync files
 	diags.Append(propDiags...)
 	state.ScheduleTimeZone = types.StringValue(sync.ScheduleTimeZone)
 	state.HolidayRegion = types.StringValue(sync.HolidayRegion)
+	respLatestSyncRun, err := json.Marshal(sync.LatestSyncRun)
+	if err != nil {
+		diags.AddError(
+			"Error Creating Files Sync",
+			"Could not marshal latest_sync_run to JSON: "+err.Error(),
+		)
+	}
+	state.LatestSyncRun = types.StringValue(string(respLatestSyncRun))
 
 	return
 }
