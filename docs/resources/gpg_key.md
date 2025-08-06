@@ -49,18 +49,21 @@ resource "files_gpg_key" "example_gpg_key" {
 - `generate_expires_at` (String) Expiration date of the key. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
 - `generate_full_name` (String) Full name of the key owner. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
 - `generate_keypair` (Boolean) If true, generate a new GPG key pair. Can not be used with `public_key`/`private_key`
-- `private_key` (String) Your GPG private key.
+- `private_key` (String) MD5 hash of your GPG private key.
 - `private_key_password` (String) Your GPG private key password. Only required for password protected keys.
-- `public_key` (String) Your GPG public key
+- `public_key` (String) MD5 hash of your GPG public key
 - `user_id` (Number) GPG owner's user id
 
 ### Read-Only
 
 - `expires_at` (String) Your GPG key expiration date.
+- `generated_private_key` (String) Your GPG private key.
+- `generated_public_key` (String) Your GPG public key
 - `id` (Number) Your GPG key ID.
 - `private_key_hash` (String)
 - `private_key_md5` (String) MD5 hash of your GPG private key.
 - `private_key_password_hash` (String)
+- `private_key_password_md5` (String) Your GPG private key password. Only required for password protected keys.
 - `public_key_hash` (String)
 - `public_key_md5` (String) MD5 hash of your GPG public key
 

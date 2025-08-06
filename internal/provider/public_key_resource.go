@@ -38,8 +38,8 @@ type publicKeyResource struct {
 
 type publicKeyResourceModel struct {
 	Title                      types.String `tfsdk:"title"`
-	PublicKey                  types.String `tfsdk:"public_key"`
 	UserId                     types.Int64  `tfsdk:"user_id"`
+	PublicKey                  types.String `tfsdk:"public_key"`
 	GenerateKeypair            types.Bool   `tfsdk:"generate_keypair"`
 	GeneratePrivateKeyPassword types.String `tfsdk:"generate_private_key_password"`
 	GenerateAlgorithm          types.String `tfsdk:"generate_algorithm"`
@@ -50,7 +50,8 @@ type publicKeyResourceModel struct {
 	FingerprintSha256          types.String `tfsdk:"fingerprint_sha256"`
 	Status                     types.String `tfsdk:"status"`
 	LastLoginAt                types.String `tfsdk:"last_login_at"`
-	PrivateKey                 types.String `tfsdk:"private_key"`
+	GeneratedPrivateKey        types.String `tfsdk:"generated_private_key"`
+	GeneratedPublicKey         types.String `tfsdk:"generated_public_key"`
 	Username                   types.String `tfsdk:"username"`
 }
 
@@ -85,15 +86,6 @@ func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Description: "Public key title",
 				Required:    true,
 			},
-			"public_key": schema.StringAttribute{
-				Description: "Only returned when generating keys. Public key generated for the user.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-					stringplanmodifier.RequiresReplace(),
-				},
-			},
 			"user_id": schema.Int64Attribute{
 				Description: "User ID this public key is associated with",
 				Computed:    true,
@@ -101,6 +93,13 @@ func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 					int64planmodifier.RequiresReplace(),
+				},
+			},
+			"public_key": schema.StringAttribute{
+				Description: "Actual contents of SSH key.",
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"generate_keypair": schema.BoolAttribute{
@@ -161,8 +160,12 @@ func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Description: "Key's most recent login time via SFTP",
 				Computed:    true,
 			},
-			"private_key": schema.StringAttribute{
+			"generated_private_key": schema.StringAttribute{
 				Description: "Only returned when generating keys. Private key generated for the user.",
+				Computed:    true,
+			},
+			"generated_public_key": schema.StringAttribute{
+				Description: "Only returned when generating keys. Public key generated for the user.",
 				Computed:    true,
 			},
 			"username": schema.StringAttribute{
@@ -346,8 +349,8 @@ func (r *publicKeyResource) populateResourceModel(ctx context.Context, publicKey
 			"Could not convert state last_login_at to string: "+err.Error(),
 		)
 	}
-	state.PrivateKey = types.StringValue(publicKey.PrivateKey)
-	state.PublicKey = types.StringValue(publicKey.PublicKey)
+	state.GeneratedPrivateKey = types.StringValue(publicKey.GeneratedPrivateKey)
+	state.GeneratedPublicKey = types.StringValue(publicKey.GeneratedPublicKey)
 	state.Username = types.StringValue(publicKey.Username)
 	state.UserId = types.Int64Value(publicKey.UserId)
 

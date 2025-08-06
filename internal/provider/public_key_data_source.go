@@ -28,17 +28,17 @@ type publicKeyDataSource struct {
 }
 
 type publicKeyDataSourceModel struct {
-	Id                types.Int64  `tfsdk:"id"`
-	Title             types.String `tfsdk:"title"`
-	CreatedAt         types.String `tfsdk:"created_at"`
-	Fingerprint       types.String `tfsdk:"fingerprint"`
-	FingerprintSha256 types.String `tfsdk:"fingerprint_sha256"`
-	Status            types.String `tfsdk:"status"`
-	LastLoginAt       types.String `tfsdk:"last_login_at"`
-	PrivateKey        types.String `tfsdk:"private_key"`
-	PublicKey         types.String `tfsdk:"public_key"`
-	Username          types.String `tfsdk:"username"`
-	UserId            types.Int64  `tfsdk:"user_id"`
+	Id                  types.Int64  `tfsdk:"id"`
+	Title               types.String `tfsdk:"title"`
+	CreatedAt           types.String `tfsdk:"created_at"`
+	Fingerprint         types.String `tfsdk:"fingerprint"`
+	FingerprintSha256   types.String `tfsdk:"fingerprint_sha256"`
+	Status              types.String `tfsdk:"status"`
+	LastLoginAt         types.String `tfsdk:"last_login_at"`
+	GeneratedPrivateKey types.String `tfsdk:"generated_private_key"`
+	GeneratedPublicKey  types.String `tfsdk:"generated_public_key"`
+	Username            types.String `tfsdk:"username"`
+	UserId              types.Int64  `tfsdk:"user_id"`
 }
 
 func (r *publicKeyDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -96,11 +96,11 @@ func (r *publicKeyDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 				Description: "Key's most recent login time via SFTP",
 				Computed:    true,
 			},
-			"private_key": schema.StringAttribute{
+			"generated_private_key": schema.StringAttribute{
 				Description: "Only returned when generating keys. Private key generated for the user.",
 				Computed:    true,
 			},
-			"public_key": schema.StringAttribute{
+			"generated_public_key": schema.StringAttribute{
 				Description: "Only returned when generating keys. Public key generated for the user.",
 				Computed:    true,
 			},
@@ -164,8 +164,8 @@ func (r *publicKeyDataSource) populateDataSourceModel(ctx context.Context, publi
 			"Could not convert state last_login_at to string: "+err.Error(),
 		)
 	}
-	state.PrivateKey = types.StringValue(publicKey.PrivateKey)
-	state.PublicKey = types.StringValue(publicKey.PublicKey)
+	state.GeneratedPrivateKey = types.StringValue(publicKey.GeneratedPrivateKey)
+	state.GeneratedPublicKey = types.StringValue(publicKey.GeneratedPublicKey)
 	state.Username = types.StringValue(publicKey.Username)
 	state.UserId = types.Int64Value(publicKey.UserId)
 

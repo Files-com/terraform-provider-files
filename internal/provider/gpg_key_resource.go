@@ -52,6 +52,9 @@ type gpgKeyResourceModel struct {
 	ExpiresAt              types.String `tfsdk:"expires_at"`
 	PublicKeyMd5           types.String `tfsdk:"public_key_md5"`
 	PrivateKeyMd5          types.String `tfsdk:"private_key_md5"`
+	GeneratedPublicKey     types.String `tfsdk:"generated_public_key"`
+	GeneratedPrivateKey    types.String `tfsdk:"generated_private_key"`
+	PrivateKeyPasswordMd5  types.String `tfsdk:"private_key_password_md5"`
 }
 
 func (r *gpgKeyResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -95,34 +98,22 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				},
 			},
 			"public_key": schema.StringAttribute{
-				Description: "Your GPG public key",
-				Computed:    true,
+				Description: "MD5 hash of your GPG public key",
 				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"public_key_hash": schema.StringAttribute{
 				Computed: true,
 			},
 			"private_key": schema.StringAttribute{
-				Description: "Your GPG private key.",
-				Computed:    true,
+				Description: "MD5 hash of your GPG private key.",
 				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"private_key_hash": schema.StringAttribute{
 				Computed: true,
 			},
 			"private_key_password": schema.StringAttribute{
 				Description: "Your GPG private key password. Only required for password protected keys.",
-				Computed:    true,
 				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"private_key_password_hash": schema.StringAttribute{
 				Computed: true,
@@ -172,6 +163,18 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			},
 			"private_key_md5": schema.StringAttribute{
 				Description: "MD5 hash of your GPG private key.",
+				Computed:    true,
+			},
+			"generated_public_key": schema.StringAttribute{
+				Description: "Your GPG public key",
+				Computed:    true,
+			},
+			"generated_private_key": schema.StringAttribute{
+				Description: "Your GPG private key.",
+				Computed:    true,
+			},
+			"private_key_password_md5": schema.StringAttribute{
+				Description: "Your GPG private key password. Only required for password protected keys.",
 				Computed:    true,
 			},
 		},
@@ -365,9 +368,9 @@ func (r *gpgKeyResource) populateResourceModel(ctx context.Context, gpgKey files
 	state.UserId = types.Int64Value(gpgKey.UserId)
 	state.PublicKeyMd5 = types.StringValue(gpgKey.PublicKeyMd5)
 	state.PrivateKeyMd5 = types.StringValue(gpgKey.PrivateKeyMd5)
-	state.PublicKeyHash = types.StringValue(gpgKey.PublicKey)
-	state.PrivateKeyHash = types.StringValue(gpgKey.PrivateKey)
-	state.PrivateKeyPasswordHash = types.StringValue(gpgKey.PrivateKeyPassword)
+	state.GeneratedPublicKey = types.StringValue(gpgKey.GeneratedPublicKey)
+	state.GeneratedPrivateKey = types.StringValue(gpgKey.GeneratedPrivateKey)
+	state.PrivateKeyPasswordMd5 = types.StringValue(gpgKey.PrivateKeyPasswordMd5)
 
 	return
 }
