@@ -137,6 +137,12 @@ func (r *clickwrapResource) Create(ctx context.Context, req resource.CreateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config clickwrapResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsClickwrapCreate := files_sdk.ClickwrapCreateParams{}
 	paramsClickwrapCreate.Name = plan.Name.ValueString()
@@ -206,6 +212,12 @@ func (r *clickwrapResource) Read(ctx context.Context, req resource.ReadRequest, 
 func (r *clickwrapResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan clickwrapResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var config clickwrapResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

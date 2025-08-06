@@ -97,6 +97,12 @@ func (r *messageReactionResource) Create(ctx context.Context, req resource.Creat
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config messageReactionResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsMessageReactionCreate := files_sdk.MessageReactionCreateParams{}
 	paramsMessageReactionCreate.UserId = plan.UserId.ValueInt64()

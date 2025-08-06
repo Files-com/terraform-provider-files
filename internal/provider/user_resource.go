@@ -447,38 +447,47 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"avatar_delete": schema.BoolAttribute{
 				Description: "If true, the avatar will be deleted.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"change_password": schema.StringAttribute{
 				Description: "Used for changing a password on an existing user.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"change_password_confirmation": schema.StringAttribute{
 				Description: "Optional, but if provided, we will ensure that it matches the value sent in `change_password`.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"grant_permission": schema.StringAttribute{
 				Description: "Permission to grant on the User Root upon user creation. Can be blank or `full`, `read`, `write`, `list`, `read+write`, or `list+write`",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"group_id": schema.Int64Attribute{
 				Description: "Group ID to associate this user with.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"imported_password_hash": schema.StringAttribute{
 				Description: "Pre-calculated hash of the user's password. If supplied, this will be used to authenticate the user on first login. Supported hash methods are MD5, SHA1, and SHA256.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"password": schema.StringAttribute{
 				Description: "User password.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"password_confirmation": schema.StringAttribute{
 				Description: "Optional, but if provided, we will ensure that it matches the value sent in `password`.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"announcements_read": schema.BoolAttribute{
 				Description: "Signifies that the user has read all the announcements in the UI.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"id": schema.Int64Attribute{
 				Description: "User ID",
@@ -611,22 +620,28 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config userResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsUserCreate := files_sdk.UserCreateParams{}
-	if !plan.AvatarDelete.IsNull() && !plan.AvatarDelete.IsUnknown() {
-		paramsUserCreate.AvatarDelete = plan.AvatarDelete.ValueBoolPointer()
+	if !config.AvatarDelete.IsNull() && !config.AvatarDelete.IsUnknown() {
+		paramsUserCreate.AvatarDelete = config.AvatarDelete.ValueBoolPointer()
 	}
-	paramsUserCreate.ChangePassword = plan.ChangePassword.ValueString()
-	paramsUserCreate.ChangePasswordConfirmation = plan.ChangePasswordConfirmation.ValueString()
+	paramsUserCreate.ChangePassword = config.ChangePassword.ValueString()
+	paramsUserCreate.ChangePasswordConfirmation = config.ChangePasswordConfirmation.ValueString()
 	paramsUserCreate.Email = plan.Email.ValueString()
-	paramsUserCreate.GrantPermission = plan.GrantPermission.ValueString()
-	paramsUserCreate.GroupId = plan.GroupId.ValueInt64()
+	paramsUserCreate.GrantPermission = config.GrantPermission.ValueString()
+	paramsUserCreate.GroupId = config.GroupId.ValueInt64()
 	paramsUserCreate.GroupIds = plan.GroupIds.ValueString()
-	paramsUserCreate.ImportedPasswordHash = plan.ImportedPasswordHash.ValueString()
-	paramsUserCreate.Password = plan.Password.ValueString()
-	paramsUserCreate.PasswordConfirmation = plan.PasswordConfirmation.ValueString()
-	if !plan.AnnouncementsRead.IsNull() && !plan.AnnouncementsRead.IsUnknown() {
-		paramsUserCreate.AnnouncementsRead = plan.AnnouncementsRead.ValueBoolPointer()
+	paramsUserCreate.ImportedPasswordHash = config.ImportedPasswordHash.ValueString()
+	paramsUserCreate.Password = config.Password.ValueString()
+	paramsUserCreate.PasswordConfirmation = config.PasswordConfirmation.ValueString()
+	if !config.AnnouncementsRead.IsNull() && !config.AnnouncementsRead.IsUnknown() {
+		paramsUserCreate.AnnouncementsRead = config.AnnouncementsRead.ValueBoolPointer()
 	}
 	paramsUserCreate.AllowedIps = plan.AllowedIps.ValueString()
 	if !plan.AttachmentsPermission.IsNull() && !plan.AttachmentsPermission.IsUnknown() {
@@ -793,23 +808,29 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config userResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsUserUpdate := files_sdk.UserUpdateParams{}
 	paramsUserUpdate.Id = plan.Id.ValueInt64()
-	if !plan.AvatarDelete.IsNull() && !plan.AvatarDelete.IsUnknown() {
-		paramsUserUpdate.AvatarDelete = plan.AvatarDelete.ValueBoolPointer()
+	if !config.AvatarDelete.IsNull() && !config.AvatarDelete.IsUnknown() {
+		paramsUserUpdate.AvatarDelete = config.AvatarDelete.ValueBoolPointer()
 	}
-	paramsUserUpdate.ChangePassword = plan.ChangePassword.ValueString()
-	paramsUserUpdate.ChangePasswordConfirmation = plan.ChangePasswordConfirmation.ValueString()
+	paramsUserUpdate.ChangePassword = config.ChangePassword.ValueString()
+	paramsUserUpdate.ChangePasswordConfirmation = config.ChangePasswordConfirmation.ValueString()
 	paramsUserUpdate.Email = plan.Email.ValueString()
-	paramsUserUpdate.GrantPermission = plan.GrantPermission.ValueString()
-	paramsUserUpdate.GroupId = plan.GroupId.ValueInt64()
+	paramsUserUpdate.GrantPermission = config.GrantPermission.ValueString()
+	paramsUserUpdate.GroupId = config.GroupId.ValueInt64()
 	paramsUserUpdate.GroupIds = plan.GroupIds.ValueString()
-	paramsUserUpdate.ImportedPasswordHash = plan.ImportedPasswordHash.ValueString()
-	paramsUserUpdate.Password = plan.Password.ValueString()
-	paramsUserUpdate.PasswordConfirmation = plan.PasswordConfirmation.ValueString()
-	if !plan.AnnouncementsRead.IsNull() && !plan.AnnouncementsRead.IsUnknown() {
-		paramsUserUpdate.AnnouncementsRead = plan.AnnouncementsRead.ValueBoolPointer()
+	paramsUserUpdate.ImportedPasswordHash = config.ImportedPasswordHash.ValueString()
+	paramsUserUpdate.Password = config.Password.ValueString()
+	paramsUserUpdate.PasswordConfirmation = config.PasswordConfirmation.ValueString()
+	if !config.AnnouncementsRead.IsNull() && !config.AnnouncementsRead.IsUnknown() {
+		paramsUserUpdate.AnnouncementsRead = config.AnnouncementsRead.ValueBoolPointer()
 	}
 	paramsUserUpdate.AllowedIps = plan.AllowedIps.ValueString()
 	if !plan.AttachmentsPermission.IsNull() && !plan.AttachmentsPermission.IsUnknown() {

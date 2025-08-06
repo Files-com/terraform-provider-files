@@ -1587,6 +1587,12 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config siteResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsSiteUpdate := files_sdk.SiteUpdateParams{}
 	paramsSiteUpdate.Name = plan.Name.ValueString()

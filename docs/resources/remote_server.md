@@ -176,71 +176,73 @@ resource "files_remote_server" "example_remote_server" {
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `aws_access_key` (String) AWS Access Key.
-- `aws_secret_key` (String) AWS: secret key.
-- `azure_blob_storage_access_key` (String) Azure Blob Storage: Access Key
+- `aws_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) AWS: secret key.
+- `azure_blob_storage_access_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Azure Blob Storage: Access Key
 - `azure_blob_storage_account` (String) Azure Blob Storage: Account name
 - `azure_blob_storage_container` (String) Azure Blob Storage: Container name
 - `azure_blob_storage_dns_suffix` (String) Azure Blob Storage: Custom DNS suffix
 - `azure_blob_storage_hierarchical_namespace` (Boolean) Azure Blob Storage: Does the storage account has hierarchical namespace feature enabled?
-- `azure_blob_storage_sas_token` (String) Azure Blob Storage: Shared Access Signature (SAS) token
-- `azure_files_storage_access_key` (String) Azure File Storage: Access Key
+- `azure_blob_storage_sas_token` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Azure Blob Storage: Shared Access Signature (SAS) token
+- `azure_files_storage_access_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Azure File Storage: Access Key
 - `azure_files_storage_account` (String) Azure Files: Storage Account name
 - `azure_files_storage_dns_suffix` (String) Azure Files: Custom DNS suffix
-- `azure_files_storage_sas_token` (String) Azure File Storage: Shared Access Signature (SAS) token
+- `azure_files_storage_sas_token` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Azure File Storage: Shared Access Signature (SAS) token
 - `azure_files_storage_share_name` (String) Azure Files:  Storage Share name
-- `backblaze_b2_application_key` (String) Backblaze B2 Cloud Storage: applicationKey
+- `backblaze_b2_application_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Backblaze B2 Cloud Storage: applicationKey
 - `backblaze_b2_bucket` (String) Backblaze B2 Cloud Storage: Bucket name
-- `backblaze_b2_key_id` (String) Backblaze B2 Cloud Storage: keyID
+- `backblaze_b2_key_id` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Backblaze B2 Cloud Storage: keyID
 - `backblaze_b2_s3_endpoint` (String) Backblaze B2 Cloud Storage: S3 Endpoint
 - `cloudflare_access_key` (String) Cloudflare: Access Key.
 - `cloudflare_bucket` (String) Cloudflare: Bucket name
 - `cloudflare_endpoint` (String) Cloudflare: endpoint
-- `cloudflare_secret_key` (String) Cloudflare: Secret Key
+- `cloudflare_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Cloudflare: Secret Key
 - `dropbox_teams` (Boolean) Dropbox: If true, list Team folders in root?
 - `enable_dedicated_ips` (Boolean) `true` if remote server only accepts connections from dedicated IPs
 - `filebase_access_key` (String) Filebase: Access Key.
 - `filebase_bucket` (String) Filebase: Bucket name
-- `filebase_secret_key` (String) Filebase: Secret Key
+- `filebase_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Filebase: Secret Key
 - `files_agent_permission_set` (String) Local permissions for files agent. read_only, write_only, or read_write
 - `files_agent_root` (String) Agent local root path
 - `files_agent_version` (String) Files Agent version
 - `google_cloud_storage_bucket` (String) Google Cloud Storage: Bucket Name
-- `google_cloud_storage_credentials_json` (String) Google Cloud Storage: JSON file that contains the private key. To generate see https://cloud.google.com/storage/docs/json_api/v1/how-tos/authorizing#APIKey
+- `google_cloud_storage_credentials_json` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Google Cloud Storage: JSON file that contains the private key. To generate see https://cloud.google.com/storage/docs/json_api/v1/how-tos/authorizing#APIKey
 - `google_cloud_storage_project_id` (String) Google Cloud Storage: Project ID
 - `google_cloud_storage_s3_compatible_access_key` (String) Google Cloud Storage: S3-compatible Access Key.
-- `google_cloud_storage_s3_compatible_secret_key` (String) Google Cloud Storage: S3-compatible secret key
+- `google_cloud_storage_s3_compatible_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Google Cloud Storage: S3-compatible secret key
 - `hostname` (String) Hostname or IP address
 - `linode_access_key` (String) Linode: Access Key
 - `linode_bucket` (String) Linode: Bucket name
 - `linode_region` (String) Linode: region
-- `linode_secret_key` (String) Linode: Secret Key
+- `linode_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Linode: Secret Key
 - `max_connections` (Number) Max number of parallel connections.  Ignored for S3 connections (we will parallelize these as much as possible).
 - `name` (String) Internal name for your reference
 - `one_drive_account_type` (String) OneDrive: Either personal or business_other account types
-- `password` (String) Password, if needed.
+- `password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password, if needed.
 - `pin_to_site_region` (Boolean) If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.
 - `port` (Number) Port for remote server.  Not needed for S3.
-- `private_key` (String) Private key, if needed.
-- `private_key_passphrase` (String) Passphrase for private key if needed.
-- `reset_authentication` (Boolean) Reset authenticated account?
+- `private_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Private key, if needed.
+- `private_key_passphrase` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Passphrase for private key if needed.
+- `reset_authentication` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Reset authenticated account?
 - `s3_bucket` (String) S3 bucket name
 - `s3_compatible_access_key` (String) S3-compatible: Access Key
 - `s3_compatible_bucket` (String) S3-compatible: Bucket name
 - `s3_compatible_endpoint` (String) S3-compatible: endpoint
 - `s3_compatible_region` (String) S3-compatible: region
-- `s3_compatible_secret_key` (String) S3-compatible: Secret Key
+- `s3_compatible_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) S3-compatible: Secret Key
 - `s3_region` (String) S3 region
 - `server_certificate` (String) Remote server certificate
 - `server_host_key` (String) Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts
 - `server_type` (String) Remote server type.
 - `ssl` (String) Should we require SSL?
-- `ssl_certificate` (String) SSL client certificate.
+- `ssl_certificate` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) SSL client certificate.
 - `username` (String) Remote server username.  Not needed for S3 buckets.
 - `wasabi_access_key` (String) Wasabi: Access Key.
 - `wasabi_bucket` (String) Wasabi: Bucket name
 - `wasabi_region` (String) Wasabi: Region
-- `wasabi_secret_key` (String) Wasabi: Secret Key
+- `wasabi_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Wasabi: Secret Key
 
 ### Read-Only
 

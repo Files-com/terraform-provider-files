@@ -161,6 +161,12 @@ func (r *userLifecycleRuleResource) Create(ctx context.Context, req resource.Cre
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config userLifecycleRuleResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsUserLifecycleRuleCreate := files_sdk.UserLifecycleRuleCreateParams{}
 	paramsUserLifecycleRuleCreate.Action = paramsUserLifecycleRuleCreate.Action.Enum()[plan.Action.ValueString()]
@@ -236,6 +242,12 @@ func (r *userLifecycleRuleResource) Read(ctx context.Context, req resource.ReadR
 func (r *userLifecycleRuleResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan userLifecycleRuleResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var config userLifecycleRuleResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

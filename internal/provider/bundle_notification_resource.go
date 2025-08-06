@@ -103,6 +103,7 @@ func (r *bundleNotificationResource) Schema(_ context.Context, _ resource.Schema
 			"user_id": schema.Int64Attribute{
 				Description: "User ID.  Provide a value of `0` to operate the current session's user.",
 				Optional:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.RequiresReplace(),
 				},
@@ -125,9 +126,15 @@ func (r *bundleNotificationResource) Create(ctx context.Context, req resource.Cr
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config bundleNotificationResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsBundleNotificationCreate := files_sdk.BundleNotificationCreateParams{}
-	paramsBundleNotificationCreate.UserId = plan.UserId.ValueInt64()
+	paramsBundleNotificationCreate.UserId = config.UserId.ValueInt64()
 	paramsBundleNotificationCreate.BundleId = plan.BundleId.ValueInt64()
 	paramsBundleNotificationCreate.NotifyUserId = plan.NotifyUserId.ValueInt64()
 	if !plan.NotifyOnRegistration.IsNull() && !plan.NotifyOnRegistration.IsUnknown() {
@@ -198,6 +205,12 @@ func (r *bundleNotificationResource) Read(ctx context.Context, req resource.Read
 func (r *bundleNotificationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan bundleNotificationResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var config bundleNotificationResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

@@ -51,30 +51,32 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `additional_headers` (Dynamic) Additional HTTP Headers included in calls to the destination URL
 - `api_request_send_enabled` (Boolean) Whether or not sending is enabled for api_request logs.
 - `automation_send_enabled` (Boolean) Whether or not sending is enabled for automation logs.
 - `azure_dcr_immutable_id` (String) Applicable only for destination types: azure, azure_legacy. Immutable ID of the Data Collection Rule.
 - `azure_oauth_client_credentials_client_id` (String) Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Client ID.
-- `azure_oauth_client_credentials_client_secret` (String) Applicable only for destination type: azure. Client Credentials OAuth Client Secret.
+- `azure_oauth_client_credentials_client_secret` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Applicable only for destination type: azure. Client Credentials OAuth Client Secret.
 - `azure_oauth_client_credentials_tenant_id` (String) Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Tenant ID.
 - `azure_stream_name` (String) Applicable only for destination type: azure. Name of the stream in the DCR that represents the destination table.
-- `datadog_api_key` (String) Applicable only for destination type: datadog. API key provided by Datadog.
+- `datadog_api_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Applicable only for destination type: datadog. API key provided by Datadog.
 - `email_send_enabled` (Boolean) Whether or not sending is enabled for email logs.
 - `exavault_api_request_send_enabled` (Boolean) Whether or not sending is enabled for exavault_api_request logs.
 - `ftp_action_send_enabled` (Boolean) Whether or not sending is enabled for ftp_action logs.
 - `generic_payload_type` (String) Applicable only for destination type: generic. Indicates the type of HTTP body. Can be json_newline or json_array. json_newline is multiple log entries as JSON separated by newlines. json_array is a single JSON array containing multiple log entries as JSON.
 - `name` (String) Name for this Destination
-- `new_relic_api_key` (String) Applicable only for destination type: new_relic. API key provided by New Relic.
+- `new_relic_api_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Applicable only for destination type: new_relic. API key provided by New Relic.
 - `outbound_connection_send_enabled` (Boolean) Whether or not sending is enabled for outbound_connection logs.
 - `public_hosting_request_send_enabled` (Boolean) Whether or not sending is enabled for public_hosting_request logs.
-- `qradar_password` (String) Applicable only for destination type: qradar. Basic auth password provided by QRadar.
+- `qradar_password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Applicable only for destination type: qradar. Basic auth password provided by QRadar.
 - `qradar_username` (String) Applicable only for destination type: qradar. Basic auth username provided by QRadar.
 - `sending_active` (Boolean) Whether this SIEM HTTP Destination is currently being sent to or not
 - `settings_change_send_enabled` (Boolean) Whether or not sending is enabled for settings_change logs.
 - `sftp_action_send_enabled` (Boolean) Whether or not sending is enabled for sftp_action logs.
-- `solar_winds_token` (String) Applicable only for destination type: solar_winds. Authentication token provided by Solar Winds.
-- `splunk_token` (String) Applicable only for destination type: splunk. Authentication token provided by Splunk.
+- `solar_winds_token` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Applicable only for destination type: solar_winds. Authentication token provided by Solar Winds.
+- `splunk_token` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Applicable only for destination type: splunk. Authentication token provided by Splunk.
 - `sync_send_enabled` (Boolean) Whether or not sending is enabled for sync logs.
 - `web_dav_action_send_enabled` (Boolean) Whether or not sending is enabled for web_dav_action logs.
 

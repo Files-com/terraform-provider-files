@@ -122,6 +122,7 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			"path": schema.StringAttribute{
 				Description: "Folder path restriction for `office_integration` permission set API keys.",
 				Optional:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -168,6 +169,12 @@ func (r *apiKeyResource) Create(ctx context.Context, req resource.CreateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config apiKeyResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsApiKeyCreate := files_sdk.ApiKeyCreateParams{}
 	paramsApiKeyCreate.UserId = plan.UserId.ValueInt64()
@@ -190,7 +197,7 @@ func (r *apiKeyResource) Create(ctx context.Context, req resource.CreateRequest,
 	}
 	paramsApiKeyCreate.PermissionSet = paramsApiKeyCreate.PermissionSet.Enum()[plan.PermissionSet.ValueString()]
 	paramsApiKeyCreate.Name = plan.Name.ValueString()
-	paramsApiKeyCreate.Path = plan.Path.ValueString()
+	paramsApiKeyCreate.Path = config.Path.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -253,6 +260,12 @@ func (r *apiKeyResource) Read(ctx context.Context, req resource.ReadRequest, res
 func (r *apiKeyResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan apiKeyResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var config apiKeyResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

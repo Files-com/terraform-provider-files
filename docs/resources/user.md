@@ -109,34 +109,36 @@ resource "files_user" "example_user" {
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `allowed_ips` (String) A list of allowed IPs if applicable.  Newline delimited
-- `announcements_read` (Boolean) Signifies that the user has read all the announcements in the UI.
+- `announcements_read` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Signifies that the user has read all the announcements in the UI.
 - `attachments_permission` (Boolean) If `true`, the user can user create Bundles (aka Share Links). Use the bundle permission instead.
 - `authenticate_until` (String) Scheduled Date/Time at which user will be deactivated
 - `authentication_method` (String) How is this user authenticated?
-- `avatar_delete` (Boolean) If true, the avatar will be deleted.
+- `avatar_delete` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) If true, the avatar will be deleted.
 - `billing_permission` (Boolean) Allow this user to perform operations on the account, payments, and invoices?
 - `bypass_site_allowed_ips` (Boolean) Allow this user to skip site-wide IP blacklists?
 - `bypass_user_lifecycle_rules` (Boolean) Exempt this user from user lifecycle rules?
-- `change_password` (String) Used for changing a password on an existing user.
-- `change_password_confirmation` (String) Optional, but if provided, we will ensure that it matches the value sent in `change_password`.
+- `change_password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Used for changing a password on an existing user.
+- `change_password_confirmation` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Optional, but if provided, we will ensure that it matches the value sent in `change_password`.
 - `company` (String) User's company
 - `dav_permission` (Boolean) Can the user connect with WebDAV?
 - `disabled` (Boolean) Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date.
 - `email` (String) User email address
 - `ftp_permission` (Boolean) Can the user access with FTP/FTPS?
-- `grant_permission` (String) Permission to grant on the User Root upon user creation. Can be blank or `full`, `read`, `write`, `list`, `read+write`, or `list+write`
-- `group_id` (Number) Group ID to associate this user with.
+- `grant_permission` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Permission to grant on the User Root upon user creation. Can be blank or `full`, `read`, `write`, `list`, `read+write`, or `list+write`
+- `group_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Group ID to associate this user with.
 - `group_ids` (String) Comma-separated list of group IDs of which this user is a member
 - `header_text` (String) Text to display to the user in the header of the UI
-- `imported_password_hash` (String) Pre-calculated hash of the user's password. If supplied, this will be used to authenticate the user on first login. Supported hash methods are MD5, SHA1, and SHA256.
+- `imported_password_hash` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Pre-calculated hash of the user's password. If supplied, this will be used to authenticate the user on first login. Supported hash methods are MD5, SHA1, and SHA256.
 - `language` (String) Preferred language
 - `name` (String) User's full name
 - `notes` (String) Any internal notes on the user
 - `notification_daily_send_time` (Number) Hour of the day at which daily notifications should be sent. Can be in range 0 to 23
 - `office_integration_enabled` (Boolean) Enable integration with Office for the web?
-- `password` (String) User password.
-- `password_confirmation` (String) Optional, but if provided, we will ensure that it matches the value sent in `password`.
+- `password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) User password.
+- `password_confirmation` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Optional, but if provided, we will ensure that it matches the value sent in `password`.
 - `password_validity_days` (Number) Number of days to allow user to use the same password
 - `readonly_site_admin` (Boolean) Is the user an allowed to view all (non-billing) site configuration for this site?
 - `receive_admin_alerts` (Boolean) Should the user receive admin alerts such a certificate expiration notifications and overages?

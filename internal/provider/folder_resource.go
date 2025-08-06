@@ -138,6 +138,7 @@ func (r *folderResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			"mkdir_parents": schema.BoolAttribute{
 				Description: "Create parent directories if they do not exist?",
 				Optional:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
 				},
@@ -277,11 +278,17 @@ func (r *folderResource) Create(ctx context.Context, req resource.CreateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config folderResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsFolderCreate := files_sdk.FolderCreateParams{}
 	paramsFolderCreate.Path = plan.Path.ValueString()
-	if !plan.MkdirParents.IsNull() && !plan.MkdirParents.IsUnknown() {
-		paramsFolderCreate.MkdirParents = plan.MkdirParents.ValueBoolPointer()
+	if !config.MkdirParents.IsNull() && !config.MkdirParents.IsUnknown() {
+		paramsFolderCreate.MkdirParents = config.MkdirParents.ValueBoolPointer()
 	}
 	if !plan.ProvidedMtime.IsNull() {
 		if plan.ProvidedMtime.ValueString() == "" {

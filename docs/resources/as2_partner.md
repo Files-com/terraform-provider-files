@@ -42,10 +42,12 @@ resource "files_as2_partner" "example_as2_partner" {
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `additional_http_headers` (Dynamic) Additional HTTP Headers for outgoing message sent to this partner.
 - `default_mime_type` (String) Default mime type of the file attached to the encrypted message
 - `enable_dedicated_ips` (Boolean) If `true`, we will use your site's dedicated IPs for all outbound connections to this AS2 Partner.
-- `http_auth_password` (String) Password to send to server for HTTP Authentication.
+- `http_auth_password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password to send to server for HTTP Authentication.
 - `http_auth_username` (String) Username to send to server for HTTP Authentication.
 - `mdn_validation_level` (String) How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates. `auto`: Automatically set the correct value for this setting based on next mdn received.
 - `server_certificate` (String) Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? (This only applies to Outgoing AS2 message from Files.com to a Partner.)

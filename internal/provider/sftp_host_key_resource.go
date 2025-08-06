@@ -78,6 +78,7 @@ func (r *sftpHostKeyResource) Schema(_ context.Context, _ resource.SchemaRequest
 			"private_key": schema.StringAttribute{
 				Description: "The private key data.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"id": schema.Int64Attribute{
 				Description: "SFTP Host Key ID",
@@ -105,10 +106,16 @@ func (r *sftpHostKeyResource) Create(ctx context.Context, req resource.CreateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config sftpHostKeyResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsSftpHostKeyCreate := files_sdk.SftpHostKeyCreateParams{}
 	paramsSftpHostKeyCreate.Name = plan.Name.ValueString()
-	paramsSftpHostKeyCreate.PrivateKey = plan.PrivateKey.ValueString()
+	paramsSftpHostKeyCreate.PrivateKey = config.PrivateKey.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -175,11 +182,17 @@ func (r *sftpHostKeyResource) Update(ctx context.Context, req resource.UpdateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config sftpHostKeyResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsSftpHostKeyUpdate := files_sdk.SftpHostKeyUpdateParams{}
 	paramsSftpHostKeyUpdate.Id = plan.Id.ValueInt64()
 	paramsSftpHostKeyUpdate.Name = plan.Name.ValueString()
-	paramsSftpHostKeyUpdate.PrivateKey = plan.PrivateKey.ValueString()
+	paramsSftpHostKeyUpdate.PrivateKey = config.PrivateKey.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return

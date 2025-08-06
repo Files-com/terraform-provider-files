@@ -98,6 +98,7 @@ func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"public_key": schema.StringAttribute{
 				Description: "Actual contents of SSH key.",
 				Optional:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -105,6 +106,7 @@ func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"generate_keypair": schema.BoolAttribute{
 				Description: "If true, generate a new SSH key pair. Can not be used with `public_key`",
 				Optional:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
 				},
@@ -112,6 +114,7 @@ func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"generate_private_key_password": schema.StringAttribute{
 				Description: "Password for the private key. Used for the generation of the key. Will be ignored if `generate_keypair` is false.",
 				Optional:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -119,6 +122,7 @@ func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"generate_algorithm": schema.StringAttribute{
 				Description: "Type of key to generate.  One of rsa, dsa, ecdsa, ed25519. Used for the generation of the key. Will be ignored if `generate_keypair` is false.",
 				Optional:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -126,6 +130,7 @@ func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			"generate_length": schema.Int64Attribute{
 				Description: "Length of key to generate. If algorithm is ecdsa, this is the signature size. Used for the generation of the key. Will be ignored if `generate_keypair` is false.",
 				Optional:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.RequiresReplace(),
 				},
@@ -183,17 +188,23 @@ func (r *publicKeyResource) Create(ctx context.Context, req resource.CreateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config publicKeyResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsPublicKeyCreate := files_sdk.PublicKeyCreateParams{}
 	paramsPublicKeyCreate.UserId = plan.UserId.ValueInt64()
 	paramsPublicKeyCreate.Title = plan.Title.ValueString()
-	paramsPublicKeyCreate.PublicKey = plan.PublicKey.ValueString()
-	if !plan.GenerateKeypair.IsNull() && !plan.GenerateKeypair.IsUnknown() {
-		paramsPublicKeyCreate.GenerateKeypair = plan.GenerateKeypair.ValueBoolPointer()
+	paramsPublicKeyCreate.PublicKey = config.PublicKey.ValueString()
+	if !config.GenerateKeypair.IsNull() && !config.GenerateKeypair.IsUnknown() {
+		paramsPublicKeyCreate.GenerateKeypair = config.GenerateKeypair.ValueBoolPointer()
 	}
-	paramsPublicKeyCreate.GeneratePrivateKeyPassword = plan.GeneratePrivateKeyPassword.ValueString()
-	paramsPublicKeyCreate.GenerateAlgorithm = plan.GenerateAlgorithm.ValueString()
-	paramsPublicKeyCreate.GenerateLength = plan.GenerateLength.ValueInt64()
+	paramsPublicKeyCreate.GeneratePrivateKeyPassword = config.GeneratePrivateKeyPassword.ValueString()
+	paramsPublicKeyCreate.GenerateAlgorithm = config.GenerateAlgorithm.ValueString()
+	paramsPublicKeyCreate.GenerateLength = config.GenerateLength.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -256,6 +267,12 @@ func (r *publicKeyResource) Read(ctx context.Context, req resource.ReadRequest, 
 func (r *publicKeyResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan publicKeyResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var config publicKeyResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

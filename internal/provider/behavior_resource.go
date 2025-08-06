@@ -156,6 +156,12 @@ func (r *behaviorResource) Create(ctx context.Context, req resource.CreateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config behaviorResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsBehaviorCreate := files_sdk.BehaviorCreateParams{}
 	createValue, diags := lib.DynamicToStringMap(ctx, path.Root("value"), plan.Value)
@@ -242,6 +248,12 @@ func (r *behaviorResource) Read(ctx context.Context, req resource.ReadRequest, r
 func (r *behaviorResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan behaviorResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var config behaviorResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

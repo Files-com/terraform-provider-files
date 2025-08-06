@@ -59,18 +59,20 @@ resource "files_bundle" "example_bundle" {
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `clickwrap_id` (Number) ID of the clickwrap to use with this bundle.
 - `code` (String) Bundle code.  This code forms the end part of the Public URL.
-- `create_snapshot` (Boolean) If true, create a snapshot of this bundle's contents.
+- `create_snapshot` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) If true, create a snapshot of this bundle's contents.
 - `description` (String) Public description
 - `dont_separate_submissions_by_folder` (Boolean) Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.
 - `expires_at` (String) Bundle expiration date/time
-- `finalize_snapshot` (Boolean) If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.
-- `form_field_set_id` (Number) Id of Form Field Set to use with this bundle
+- `finalize_snapshot` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.
+- `form_field_set_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Id of Form Field Set to use with this bundle
 - `inbox_id` (Number) ID of the associated inbox, if available.
 - `max_uses` (Number) Maximum number of times bundle can be accessed
 - `note` (String) Bundle internal note
-- `password` (String) Password for this bundle.
+- `password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password for this bundle.
 - `path_template` (String) Template for creating submission subfolders. Can use the uploader's name, email address, ip, company, `strftime` directives, and any custom form data.
 - `path_template_time_zone` (String) Timezone to use when rendering timestamps in path templates.
 - `permissions` (String) Permissions that apply to Folders in this Share Link.

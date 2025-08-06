@@ -117,6 +117,7 @@ func (r *formFieldSetResource) Schema(_ context.Context, _ resource.SchemaReques
 			"user_id": schema.Int64Attribute{
 				Description: "User ID.  Provide a value of `0` to operate the current session's user.",
 				Optional:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.RequiresReplace(),
 				},
@@ -148,9 +149,15 @@ func (r *formFieldSetResource) Create(ctx context.Context, req resource.CreateRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config formFieldSetResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsFormFieldSetCreate := files_sdk.FormFieldSetCreateParams{}
-	paramsFormFieldSetCreate.UserId = plan.UserId.ValueInt64()
+	paramsFormFieldSetCreate.UserId = config.UserId.ValueInt64()
 	paramsFormFieldSetCreate.Title = plan.Title.ValueString()
 	if !plan.SkipEmail.IsNull() && !plan.SkipEmail.IsUnknown() {
 		paramsFormFieldSetCreate.SkipEmail = plan.SkipEmail.ValueBoolPointer()
@@ -225,6 +232,12 @@ func (r *formFieldSetResource) Read(ctx context.Context, req resource.ReadReques
 func (r *formFieldSetResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan formFieldSetResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var config formFieldSetResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

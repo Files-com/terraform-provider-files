@@ -106,6 +106,12 @@ func (r *childSiteManagementPolicyResource) Create(ctx context.Context, req reso
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config childSiteManagementPolicyResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsChildSiteManagementPolicyCreate := files_sdk.ChildSiteManagementPolicyCreateParams{}
 	paramsChildSiteManagementPolicyCreate.SiteSettingName = plan.SiteSettingName.ValueString()
@@ -176,6 +182,12 @@ func (r *childSiteManagementPolicyResource) Read(ctx context.Context, req resour
 func (r *childSiteManagementPolicyResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan childSiteManagementPolicyResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var config childSiteManagementPolicyResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

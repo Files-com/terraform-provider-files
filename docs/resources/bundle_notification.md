@@ -31,10 +31,12 @@ resource "files_bundle_notification" "example_bundle_notification" {
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `notify_on_registration` (Boolean) Triggers bundle notification when a registration action occurs for it.
 - `notify_on_upload` (Boolean) Triggers bundle notification when a upload action occurs for it.
 - `notify_user_id` (Number) The id of the user to notify.
-- `user_id` (Number) User ID.  Provide a value of `0` to operate the current session's user.
+- `user_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) User ID.  Provide a value of `0` to operate the current session's user.
 
 ### Read-Only
 

@@ -165,6 +165,12 @@ func (r *permissionResource) Create(ctx context.Context, req resource.CreateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config permissionResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsPermissionCreate := files_sdk.PermissionCreateParams{}
 	paramsPermissionCreate.Path = plan.Path.ValueString()

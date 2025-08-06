@@ -115,6 +115,12 @@ func (r *userRequestResource) Create(ctx context.Context, req resource.CreateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config userRequestResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsUserRequestCreate := files_sdk.UserRequestCreateParams{}
 	paramsUserRequestCreate.Name = plan.Name.ValueString()

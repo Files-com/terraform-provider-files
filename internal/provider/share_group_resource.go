@@ -111,6 +111,12 @@ func (r *shareGroupResource) Create(ctx context.Context, req resource.CreateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config shareGroupResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsShareGroupCreate := files_sdk.ShareGroupCreateParams{}
 	paramsShareGroupCreate.UserId = plan.UserId.ValueInt64()
@@ -180,6 +186,12 @@ func (r *shareGroupResource) Read(ctx context.Context, req resource.ReadRequest,
 func (r *shareGroupResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan shareGroupResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var config shareGroupResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

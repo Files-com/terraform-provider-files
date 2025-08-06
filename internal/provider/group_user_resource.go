@@ -109,6 +109,12 @@ func (r *groupUserResource) Create(ctx context.Context, req resource.CreateReque
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config groupUserResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsGroupUserCreate := files_sdk.GroupUserCreateParams{}
 	paramsGroupUserCreate.GroupId = plan.GroupId.ValueInt64()

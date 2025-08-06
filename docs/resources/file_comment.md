@@ -24,8 +24,10 @@ resource "files_file_comment" "example_file_comment" {
 
 ### Required
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `body` (String) Comment body.
-- `path` (String) File path.
+- `path` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) File path.
 
 ### Read-Only
 

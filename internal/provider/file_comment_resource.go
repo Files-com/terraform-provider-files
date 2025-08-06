@@ -74,6 +74,7 @@ func (r *fileCommentResource) Schema(_ context.Context, _ resource.SchemaRequest
 			"path": schema.StringAttribute{
 				Description: "File path.",
 				Required:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -100,10 +101,16 @@ func (r *fileCommentResource) Create(ctx context.Context, req resource.CreateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config fileCommentResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsFileCommentCreate := files_sdk.FileCommentCreateParams{}
 	paramsFileCommentCreate.Body = plan.Body.ValueString()
-	paramsFileCommentCreate.Path = plan.Path.ValueString()
+	paramsFileCommentCreate.Path = config.Path.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -192,6 +199,12 @@ func (r *fileCommentResource) Read(ctx context.Context, req resource.ReadRequest
 func (r *fileCommentResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan fileCommentResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var config fileCommentResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

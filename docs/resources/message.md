@@ -26,13 +26,17 @@ resource "files_message" "example_message" {
 
 ### Required
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `body` (String) Message body.
-- `project_id` (Number) Project to which the message should be attached.
+- `project_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Project to which the message should be attached.
 - `subject` (String) Message subject.
 
 ### Optional
 
-- `user_id` (Number) User ID.  Provide a value of `0` to operate the current session's user.
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
+- `user_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) User ID.  Provide a value of `0` to operate the current session's user.
 
 ### Read-Only
 

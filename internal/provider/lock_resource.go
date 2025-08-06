@@ -154,6 +154,12 @@ func (r *lockResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config lockResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsLockCreate := files_sdk.LockCreateParams{}
 	paramsLockCreate.Path = plan.Path.ValueString()

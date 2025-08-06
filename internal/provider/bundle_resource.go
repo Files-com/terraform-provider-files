@@ -285,18 +285,22 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			"password": schema.StringAttribute{
 				Description: "Password for this bundle.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"form_field_set_id": schema.Int64Attribute{
 				Description: "Id of Form Field Set to use with this bundle",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"create_snapshot": schema.BoolAttribute{
 				Description: "If true, create a snapshot of this bundle's contents.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"finalize_snapshot": schema.BoolAttribute{
 				Description: "If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"color_left": schema.StringAttribute{
 				Description: "Page link and button color",
@@ -387,6 +391,12 @@ func (r *bundleResource) Create(ctx context.Context, req resource.CreateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config bundleResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsBundleCreate := files_sdk.BundleCreateParams{}
 	paramsBundleCreate.UserId = plan.UserId.ValueInt64()
@@ -394,10 +404,10 @@ func (r *bundleResource) Create(ctx context.Context, req resource.CreateRequest,
 		diags = plan.Paths.ElementsAs(ctx, &paramsBundleCreate.Paths, false)
 		resp.Diagnostics.Append(diags...)
 	}
-	paramsBundleCreate.Password = plan.Password.ValueString()
-	paramsBundleCreate.FormFieldSetId = plan.FormFieldSetId.ValueInt64()
-	if !plan.CreateSnapshot.IsNull() && !plan.CreateSnapshot.IsUnknown() {
-		paramsBundleCreate.CreateSnapshot = plan.CreateSnapshot.ValueBoolPointer()
+	paramsBundleCreate.Password = config.Password.ValueString()
+	paramsBundleCreate.FormFieldSetId = config.FormFieldSetId.ValueInt64()
+	if !config.CreateSnapshot.IsNull() && !config.CreateSnapshot.IsUnknown() {
+		paramsBundleCreate.CreateSnapshot = config.CreateSnapshot.ValueBoolPointer()
 	}
 	if !plan.DontSeparateSubmissionsByFolder.IsNull() && !plan.DontSeparateSubmissionsByFolder.IsUnknown() {
 		paramsBundleCreate.DontSeparateSubmissionsByFolder = plan.DontSeparateSubmissionsByFolder.ValueBoolPointer()
@@ -418,8 +428,8 @@ func (r *bundleResource) Create(ctx context.Context, req resource.CreateRequest,
 			}
 		}
 	}
-	if !plan.FinalizeSnapshot.IsNull() && !plan.FinalizeSnapshot.IsUnknown() {
-		paramsBundleCreate.FinalizeSnapshot = plan.FinalizeSnapshot.ValueBoolPointer()
+	if !config.FinalizeSnapshot.IsNull() && !config.FinalizeSnapshot.IsUnknown() {
+		paramsBundleCreate.FinalizeSnapshot = config.FinalizeSnapshot.ValueBoolPointer()
 	}
 	paramsBundleCreate.MaxUses = plan.MaxUses.ValueInt64()
 	paramsBundleCreate.Description = plan.Description.ValueString()
@@ -531,6 +541,12 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config bundleResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsBundleUpdate := files_sdk.BundleUpdateParams{}
 	paramsBundleUpdate.Id = plan.Id.ValueInt64()
@@ -538,12 +554,12 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 		diags = plan.Paths.ElementsAs(ctx, &paramsBundleUpdate.Paths, false)
 		resp.Diagnostics.Append(diags...)
 	}
-	paramsBundleUpdate.Password = plan.Password.ValueString()
-	paramsBundleUpdate.FormFieldSetId = plan.FormFieldSetId.ValueInt64()
+	paramsBundleUpdate.Password = config.Password.ValueString()
+	paramsBundleUpdate.FormFieldSetId = config.FormFieldSetId.ValueInt64()
 	paramsBundleUpdate.ClickwrapId = plan.ClickwrapId.ValueInt64()
 	paramsBundleUpdate.Code = plan.Code.ValueString()
-	if !plan.CreateSnapshot.IsNull() && !plan.CreateSnapshot.IsUnknown() {
-		paramsBundleUpdate.CreateSnapshot = plan.CreateSnapshot.ValueBoolPointer()
+	if !config.CreateSnapshot.IsNull() && !config.CreateSnapshot.IsUnknown() {
+		paramsBundleUpdate.CreateSnapshot = config.CreateSnapshot.ValueBoolPointer()
 	}
 	paramsBundleUpdate.Description = plan.Description.ValueString()
 	if !plan.DontSeparateSubmissionsByFolder.IsNull() && !plan.DontSeparateSubmissionsByFolder.IsUnknown() {
@@ -565,8 +581,8 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 			}
 		}
 	}
-	if !plan.FinalizeSnapshot.IsNull() && !plan.FinalizeSnapshot.IsUnknown() {
-		paramsBundleUpdate.FinalizeSnapshot = plan.FinalizeSnapshot.ValueBoolPointer()
+	if !config.FinalizeSnapshot.IsNull() && !config.FinalizeSnapshot.IsUnknown() {
+		paramsBundleUpdate.FinalizeSnapshot = config.FinalizeSnapshot.ValueBoolPointer()
 	}
 	paramsBundleUpdate.InboxId = plan.InboxId.ValueInt64()
 	paramsBundleUpdate.MaxUses = plan.MaxUses.ValueInt64()

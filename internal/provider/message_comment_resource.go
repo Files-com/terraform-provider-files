@@ -73,6 +73,7 @@ func (r *messageCommentResource) Schema(_ context.Context, _ resource.SchemaRequ
 			"user_id": schema.Int64Attribute{
 				Description: "User ID.  Provide a value of `0` to operate the current session's user.",
 				Optional:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.RequiresReplace(),
 				},
@@ -99,9 +100,15 @@ func (r *messageCommentResource) Create(ctx context.Context, req resource.Create
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config messageCommentResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsMessageCommentCreate := files_sdk.MessageCommentCreateParams{}
-	paramsMessageCommentCreate.UserId = plan.UserId.ValueInt64()
+	paramsMessageCommentCreate.UserId = config.UserId.ValueInt64()
 	paramsMessageCommentCreate.Body = plan.Body.ValueString()
 
 	if resp.Diagnostics.HasError() {
@@ -165,6 +172,12 @@ func (r *messageCommentResource) Read(ctx context.Context, req resource.ReadRequ
 func (r *messageCommentResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan messageCommentResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var config messageCommentResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

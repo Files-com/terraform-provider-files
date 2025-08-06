@@ -90,6 +90,7 @@ func (r *snapshotResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 			"paths": schema.ListAttribute{
 				Description: "An array of paths to add to the snapshot.",
 				Optional:    true,
+				WriteOnly:   true,
 				ElementType: types.StringType,
 			},
 			"id": schema.Int64Attribute{
@@ -122,6 +123,12 @@ func (r *snapshotResource) Create(ctx context.Context, req resource.CreateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config snapshotResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsSnapshotCreate := files_sdk.SnapshotCreateParams{}
 	if !plan.ExpiresAt.IsNull() {
@@ -141,8 +148,8 @@ func (r *snapshotResource) Create(ctx context.Context, req resource.CreateReques
 		}
 	}
 	paramsSnapshotCreate.Name = plan.Name.ValueString()
-	if !plan.Paths.IsNull() && !plan.Paths.IsUnknown() {
-		diags = plan.Paths.ElementsAs(ctx, &paramsSnapshotCreate.Paths, false)
+	if !config.Paths.IsNull() && !config.Paths.IsUnknown() {
+		diags = config.Paths.ElementsAs(ctx, &paramsSnapshotCreate.Paths, false)
 		resp.Diagnostics.Append(diags...)
 	}
 
@@ -211,6 +218,12 @@ func (r *snapshotResource) Update(ctx context.Context, req resource.UpdateReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config snapshotResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsSnapshotUpdate := files_sdk.SnapshotUpdateParams{}
 	paramsSnapshotUpdate.Id = plan.Id.ValueInt64()
@@ -231,8 +244,8 @@ func (r *snapshotResource) Update(ctx context.Context, req resource.UpdateReques
 		}
 	}
 	paramsSnapshotUpdate.Name = plan.Name.ValueString()
-	if !plan.Paths.IsNull() && !plan.Paths.IsUnknown() {
-		diags = plan.Paths.ElementsAs(ctx, &paramsSnapshotUpdate.Paths, false)
+	if !config.Paths.IsNull() && !config.Paths.IsUnknown() {
+		diags = config.Paths.ElementsAs(ctx, &paramsSnapshotUpdate.Paths, false)
 		resp.Diagnostics.Append(diags...)
 	}
 

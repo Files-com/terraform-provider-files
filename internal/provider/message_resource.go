@@ -79,10 +79,12 @@ func (r *messageResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			"project_id": schema.Int64Attribute{
 				Description: "Project to which the message should be attached.",
 				Required:    true,
+				WriteOnly:   true,
 			},
 			"user_id": schema.Int64Attribute{
 				Description: "User ID.  Provide a value of `0` to operate the current session's user.",
 				Optional:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.RequiresReplace(),
 				},
@@ -109,10 +111,16 @@ func (r *messageResource) Create(ctx context.Context, req resource.CreateRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config messageResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsMessageCreate := files_sdk.MessageCreateParams{}
-	paramsMessageCreate.UserId = plan.UserId.ValueInt64()
-	paramsMessageCreate.ProjectId = plan.ProjectId.ValueInt64()
+	paramsMessageCreate.UserId = config.UserId.ValueInt64()
+	paramsMessageCreate.ProjectId = config.ProjectId.ValueInt64()
 	paramsMessageCreate.Subject = plan.Subject.ValueString()
 	paramsMessageCreate.Body = plan.Body.ValueString()
 
@@ -181,10 +189,16 @@ func (r *messageResource) Update(ctx context.Context, req resource.UpdateRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config messageResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsMessageUpdate := files_sdk.MessageUpdateParams{}
 	paramsMessageUpdate.Id = plan.Id.ValueInt64()
-	paramsMessageUpdate.ProjectId = plan.ProjectId.ValueInt64()
+	paramsMessageUpdate.ProjectId = config.ProjectId.ValueInt64()
 	paramsMessageUpdate.Subject = plan.Subject.ValueString()
 	paramsMessageUpdate.Body = plan.Body.ValueString()
 

@@ -33,8 +33,10 @@ resource "files_folder" "example_folder" {
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `custom_metadata` (Dynamic) Custom metadata map of keys and values. Limited to 32 keys, 256 characters per key and 1024 characters per value.
-- `mkdir_parents` (Boolean) Create parent directories if they do not exist?
+- `mkdir_parents` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Create parent directories if they do not exist?
 - `priority_color` (String) Bookmark/priority color of file/folder
 - `provided_mtime` (String) File last modified date/time, according to the client who set it.  Files.com allows desktop, FTP, SFTP, and WebDAV clients to set modified at times.  This allows Desktop<->Cloud syncing to preserve modified at times.
 

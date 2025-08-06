@@ -28,8 +28,10 @@ resource "files_sftp_host_key" "example_sftp_host_key" {
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `name` (String) The friendly name of this SFTP Host Key.
-- `private_key` (String) The private key data.
+- `private_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) The private key data.
 
 ### Read-Only
 

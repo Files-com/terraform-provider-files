@@ -52,11 +52,13 @@ resource "files_public_key" "example_public_key" {
 
 ### Optional
 
-- `generate_algorithm` (String) Type of key to generate.  One of rsa, dsa, ecdsa, ed25519. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
-- `generate_keypair` (Boolean) If true, generate a new SSH key pair. Can not be used with `public_key`
-- `generate_length` (Number) Length of key to generate. If algorithm is ecdsa, this is the signature size. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
-- `generate_private_key_password` (String) Password for the private key. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
-- `public_key` (String) Actual contents of SSH key.
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
+- `generate_algorithm` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Type of key to generate.  One of rsa, dsa, ecdsa, ed25519. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
+- `generate_keypair` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) If true, generate a new SSH key pair. Can not be used with `public_key`
+- `generate_length` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Length of key to generate. If algorithm is ecdsa, this is the signature size. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
+- `generate_private_key_password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password for the private key. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
+- `public_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Actual contents of SSH key.
 - `user_id` (Number) User ID this public key is associated with
 
 ### Read-Only

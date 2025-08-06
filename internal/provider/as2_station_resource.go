@@ -86,10 +86,12 @@ func (r *as2StationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Required:    true,
 			},
 			"private_key": schema.StringAttribute{
-				Required: true,
+				Required:  true,
+				WriteOnly: true,
 			},
 			"private_key_password": schema.StringAttribute{
-				Optional: true,
+				Optional:  true,
+				WriteOnly: true,
 			},
 			"id": schema.Int64Attribute{
 				Description: "Id of the AS2 Station.",
@@ -153,12 +155,18 @@ func (r *as2StationResource) Create(ctx context.Context, req resource.CreateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config as2StationResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsAs2StationCreate := files_sdk.As2StationCreateParams{}
 	paramsAs2StationCreate.Name = plan.Name.ValueString()
 	paramsAs2StationCreate.PublicCertificate = plan.PublicCertificate.ValueString()
-	paramsAs2StationCreate.PrivateKey = plan.PrivateKey.ValueString()
-	paramsAs2StationCreate.PrivateKeyPassword = plan.PrivateKeyPassword.ValueString()
+	paramsAs2StationCreate.PrivateKey = config.PrivateKey.ValueString()
+	paramsAs2StationCreate.PrivateKeyPassword = config.PrivateKeyPassword.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -225,13 +233,19 @@ func (r *as2StationResource) Update(ctx context.Context, req resource.UpdateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config as2StationResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsAs2StationUpdate := files_sdk.As2StationUpdateParams{}
 	paramsAs2StationUpdate.Id = plan.Id.ValueInt64()
 	paramsAs2StationUpdate.Name = plan.Name.ValueString()
 	paramsAs2StationUpdate.PublicCertificate = plan.PublicCertificate.ValueString()
-	paramsAs2StationUpdate.PrivateKey = plan.PrivateKey.ValueString()
-	paramsAs2StationUpdate.PrivateKeyPassword = plan.PrivateKeyPassword.ValueString()
+	paramsAs2StationUpdate.PrivateKey = config.PrivateKey.ValueString()
+	paramsAs2StationUpdate.PrivateKeyPassword = config.PrivateKeyPassword.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return

@@ -131,6 +131,12 @@ func (r *requestResource) Create(ctx context.Context, req resource.CreateRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config requestResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsRequestCreate := files_sdk.RequestCreateParams{}
 	paramsRequestCreate.Path = plan.Path.ValueString()

@@ -48,12 +48,14 @@ resource "files_form_field_set" "example_form_field_set" {
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `form_fields` (Dynamic) Associated form fields
 - `skip_company` (Boolean) Any associated InboxRegistrations or BundleRegistrations can be saved without providing company
 - `skip_email` (Boolean) Any associated InboxRegistrations or BundleRegistrations can be saved without providing email
 - `skip_name` (Boolean) Any associated InboxRegistrations or BundleRegistrations can be saved without providing name
 - `title` (String) Title to be displayed
-- `user_id` (Number) User ID.  Provide a value of `0` to operate the current session's user.
+- `user_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) User ID.  Provide a value of `0` to operate the current session's user.
 
 ### Read-Only
 

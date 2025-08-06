@@ -29,9 +29,11 @@ resource "files_snapshot" "example_snapshot" {
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
 - `expires_at` (String) When the snapshot expires.
 - `name` (String) A name for the snapshot.
-- `paths` (List of String) An array of paths to add to the snapshot.
+- `paths` (List of String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) An array of paths to add to the snapshot.
 
 ### Read-Only
 

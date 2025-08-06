@@ -525,78 +525,97 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 			"password": schema.StringAttribute{
 				Description: "Password, if needed.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"private_key": schema.StringAttribute{
 				Description: "Private key, if needed.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"private_key_passphrase": schema.StringAttribute{
 				Description: "Passphrase for private key if needed.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"reset_authentication": schema.BoolAttribute{
 				Description: "Reset authenticated account?",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"ssl_certificate": schema.StringAttribute{
 				Description: "SSL client certificate.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"aws_secret_key": schema.StringAttribute{
 				Description: "AWS: secret key.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"azure_blob_storage_access_key": schema.StringAttribute{
 				Description: "Azure Blob Storage: Access Key",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"azure_blob_storage_sas_token": schema.StringAttribute{
 				Description: "Azure Blob Storage: Shared Access Signature (SAS) token",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"azure_files_storage_access_key": schema.StringAttribute{
 				Description: "Azure File Storage: Access Key",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"azure_files_storage_sas_token": schema.StringAttribute{
 				Description: "Azure File Storage: Shared Access Signature (SAS) token",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"backblaze_b2_application_key": schema.StringAttribute{
 				Description: "Backblaze B2 Cloud Storage: applicationKey",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"backblaze_b2_key_id": schema.StringAttribute{
 				Description: "Backblaze B2 Cloud Storage: keyID",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"cloudflare_secret_key": schema.StringAttribute{
 				Description: "Cloudflare: Secret Key",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"filebase_secret_key": schema.StringAttribute{
 				Description: "Filebase: Secret Key",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"google_cloud_storage_credentials_json": schema.StringAttribute{
 				Description: "Google Cloud Storage: JSON file that contains the private key. To generate see https://cloud.google.com/storage/docs/json_api/v1/how-tos/authorizing#APIKey",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"google_cloud_storage_s3_compatible_secret_key": schema.StringAttribute{
 				Description: "Google Cloud Storage: S3-compatible secret key",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"linode_secret_key": schema.StringAttribute{
 				Description: "Linode: Secret Key",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"s3_compatible_secret_key": schema.StringAttribute{
 				Description: "S3-compatible: Secret Key",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"wasabi_secret_key": schema.StringAttribute{
 				Description: "Wasabi: Secret Key",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"id": schema.Int64Attribute{
 				Description: "Remote server ID",
@@ -651,29 +670,35 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config remoteServerResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
-	paramsRemoteServerCreate.Password = plan.Password.ValueString()
-	paramsRemoteServerCreate.PrivateKey = plan.PrivateKey.ValueString()
-	paramsRemoteServerCreate.PrivateKeyPassphrase = plan.PrivateKeyPassphrase.ValueString()
-	if !plan.ResetAuthentication.IsNull() && !plan.ResetAuthentication.IsUnknown() {
-		paramsRemoteServerCreate.ResetAuthentication = plan.ResetAuthentication.ValueBoolPointer()
+	paramsRemoteServerCreate.Password = config.Password.ValueString()
+	paramsRemoteServerCreate.PrivateKey = config.PrivateKey.ValueString()
+	paramsRemoteServerCreate.PrivateKeyPassphrase = config.PrivateKeyPassphrase.ValueString()
+	if !config.ResetAuthentication.IsNull() && !config.ResetAuthentication.IsUnknown() {
+		paramsRemoteServerCreate.ResetAuthentication = config.ResetAuthentication.ValueBoolPointer()
 	}
-	paramsRemoteServerCreate.SslCertificate = plan.SslCertificate.ValueString()
-	paramsRemoteServerCreate.AwsSecretKey = plan.AwsSecretKey.ValueString()
-	paramsRemoteServerCreate.AzureBlobStorageAccessKey = plan.AzureBlobStorageAccessKey.ValueString()
-	paramsRemoteServerCreate.AzureBlobStorageSasToken = plan.AzureBlobStorageSasToken.ValueString()
-	paramsRemoteServerCreate.AzureFilesStorageAccessKey = plan.AzureFilesStorageAccessKey.ValueString()
-	paramsRemoteServerCreate.AzureFilesStorageSasToken = plan.AzureFilesStorageSasToken.ValueString()
-	paramsRemoteServerCreate.BackblazeB2ApplicationKey = plan.BackblazeB2ApplicationKey.ValueString()
-	paramsRemoteServerCreate.BackblazeB2KeyId = plan.BackblazeB2KeyId.ValueString()
-	paramsRemoteServerCreate.CloudflareSecretKey = plan.CloudflareSecretKey.ValueString()
-	paramsRemoteServerCreate.FilebaseSecretKey = plan.FilebaseSecretKey.ValueString()
-	paramsRemoteServerCreate.GoogleCloudStorageCredentialsJson = plan.GoogleCloudStorageCredentialsJson.ValueString()
-	paramsRemoteServerCreate.GoogleCloudStorageS3CompatibleSecretKey = plan.GoogleCloudStorageS3CompatibleSecretKey.ValueString()
-	paramsRemoteServerCreate.LinodeSecretKey = plan.LinodeSecretKey.ValueString()
-	paramsRemoteServerCreate.S3CompatibleSecretKey = plan.S3CompatibleSecretKey.ValueString()
-	paramsRemoteServerCreate.WasabiSecretKey = plan.WasabiSecretKey.ValueString()
+	paramsRemoteServerCreate.SslCertificate = config.SslCertificate.ValueString()
+	paramsRemoteServerCreate.AwsSecretKey = config.AwsSecretKey.ValueString()
+	paramsRemoteServerCreate.AzureBlobStorageAccessKey = config.AzureBlobStorageAccessKey.ValueString()
+	paramsRemoteServerCreate.AzureBlobStorageSasToken = config.AzureBlobStorageSasToken.ValueString()
+	paramsRemoteServerCreate.AzureFilesStorageAccessKey = config.AzureFilesStorageAccessKey.ValueString()
+	paramsRemoteServerCreate.AzureFilesStorageSasToken = config.AzureFilesStorageSasToken.ValueString()
+	paramsRemoteServerCreate.BackblazeB2ApplicationKey = config.BackblazeB2ApplicationKey.ValueString()
+	paramsRemoteServerCreate.BackblazeB2KeyId = config.BackblazeB2KeyId.ValueString()
+	paramsRemoteServerCreate.CloudflareSecretKey = config.CloudflareSecretKey.ValueString()
+	paramsRemoteServerCreate.FilebaseSecretKey = config.FilebaseSecretKey.ValueString()
+	paramsRemoteServerCreate.GoogleCloudStorageCredentialsJson = config.GoogleCloudStorageCredentialsJson.ValueString()
+	paramsRemoteServerCreate.GoogleCloudStorageS3CompatibleSecretKey = config.GoogleCloudStorageS3CompatibleSecretKey.ValueString()
+	paramsRemoteServerCreate.LinodeSecretKey = config.LinodeSecretKey.ValueString()
+	paramsRemoteServerCreate.S3CompatibleSecretKey = config.S3CompatibleSecretKey.ValueString()
+	paramsRemoteServerCreate.WasabiSecretKey = config.WasabiSecretKey.ValueString()
 	paramsRemoteServerCreate.AwsAccessKey = plan.AwsAccessKey.ValueString()
 	paramsRemoteServerCreate.AzureBlobStorageAccount = plan.AzureBlobStorageAccount.ValueString()
 	paramsRemoteServerCreate.AzureBlobStorageContainer = plan.AzureBlobStorageContainer.ValueString()
@@ -794,30 +819,36 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config remoteServerResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsRemoteServerUpdate := files_sdk.RemoteServerUpdateParams{}
 	paramsRemoteServerUpdate.Id = plan.Id.ValueInt64()
-	paramsRemoteServerUpdate.Password = plan.Password.ValueString()
-	paramsRemoteServerUpdate.PrivateKey = plan.PrivateKey.ValueString()
-	paramsRemoteServerUpdate.PrivateKeyPassphrase = plan.PrivateKeyPassphrase.ValueString()
-	if !plan.ResetAuthentication.IsNull() && !plan.ResetAuthentication.IsUnknown() {
-		paramsRemoteServerUpdate.ResetAuthentication = plan.ResetAuthentication.ValueBoolPointer()
+	paramsRemoteServerUpdate.Password = config.Password.ValueString()
+	paramsRemoteServerUpdate.PrivateKey = config.PrivateKey.ValueString()
+	paramsRemoteServerUpdate.PrivateKeyPassphrase = config.PrivateKeyPassphrase.ValueString()
+	if !config.ResetAuthentication.IsNull() && !config.ResetAuthentication.IsUnknown() {
+		paramsRemoteServerUpdate.ResetAuthentication = config.ResetAuthentication.ValueBoolPointer()
 	}
-	paramsRemoteServerUpdate.SslCertificate = plan.SslCertificate.ValueString()
-	paramsRemoteServerUpdate.AwsSecretKey = plan.AwsSecretKey.ValueString()
-	paramsRemoteServerUpdate.AzureBlobStorageAccessKey = plan.AzureBlobStorageAccessKey.ValueString()
-	paramsRemoteServerUpdate.AzureBlobStorageSasToken = plan.AzureBlobStorageSasToken.ValueString()
-	paramsRemoteServerUpdate.AzureFilesStorageAccessKey = plan.AzureFilesStorageAccessKey.ValueString()
-	paramsRemoteServerUpdate.AzureFilesStorageSasToken = plan.AzureFilesStorageSasToken.ValueString()
-	paramsRemoteServerUpdate.BackblazeB2ApplicationKey = plan.BackblazeB2ApplicationKey.ValueString()
-	paramsRemoteServerUpdate.BackblazeB2KeyId = plan.BackblazeB2KeyId.ValueString()
-	paramsRemoteServerUpdate.CloudflareSecretKey = plan.CloudflareSecretKey.ValueString()
-	paramsRemoteServerUpdate.FilebaseSecretKey = plan.FilebaseSecretKey.ValueString()
-	paramsRemoteServerUpdate.GoogleCloudStorageCredentialsJson = plan.GoogleCloudStorageCredentialsJson.ValueString()
-	paramsRemoteServerUpdate.GoogleCloudStorageS3CompatibleSecretKey = plan.GoogleCloudStorageS3CompatibleSecretKey.ValueString()
-	paramsRemoteServerUpdate.LinodeSecretKey = plan.LinodeSecretKey.ValueString()
-	paramsRemoteServerUpdate.S3CompatibleSecretKey = plan.S3CompatibleSecretKey.ValueString()
-	paramsRemoteServerUpdate.WasabiSecretKey = plan.WasabiSecretKey.ValueString()
+	paramsRemoteServerUpdate.SslCertificate = config.SslCertificate.ValueString()
+	paramsRemoteServerUpdate.AwsSecretKey = config.AwsSecretKey.ValueString()
+	paramsRemoteServerUpdate.AzureBlobStorageAccessKey = config.AzureBlobStorageAccessKey.ValueString()
+	paramsRemoteServerUpdate.AzureBlobStorageSasToken = config.AzureBlobStorageSasToken.ValueString()
+	paramsRemoteServerUpdate.AzureFilesStorageAccessKey = config.AzureFilesStorageAccessKey.ValueString()
+	paramsRemoteServerUpdate.AzureFilesStorageSasToken = config.AzureFilesStorageSasToken.ValueString()
+	paramsRemoteServerUpdate.BackblazeB2ApplicationKey = config.BackblazeB2ApplicationKey.ValueString()
+	paramsRemoteServerUpdate.BackblazeB2KeyId = config.BackblazeB2KeyId.ValueString()
+	paramsRemoteServerUpdate.CloudflareSecretKey = config.CloudflareSecretKey.ValueString()
+	paramsRemoteServerUpdate.FilebaseSecretKey = config.FilebaseSecretKey.ValueString()
+	paramsRemoteServerUpdate.GoogleCloudStorageCredentialsJson = config.GoogleCloudStorageCredentialsJson.ValueString()
+	paramsRemoteServerUpdate.GoogleCloudStorageS3CompatibleSecretKey = config.GoogleCloudStorageS3CompatibleSecretKey.ValueString()
+	paramsRemoteServerUpdate.LinodeSecretKey = config.LinodeSecretKey.ValueString()
+	paramsRemoteServerUpdate.S3CompatibleSecretKey = config.S3CompatibleSecretKey.ValueString()
+	paramsRemoteServerUpdate.WasabiSecretKey = config.WasabiSecretKey.ValueString()
 	paramsRemoteServerUpdate.AwsAccessKey = plan.AwsAccessKey.ValueString()
 	paramsRemoteServerUpdate.AzureBlobStorageAccount = plan.AzureBlobStorageAccount.ValueString()
 	paramsRemoteServerUpdate.AzureBlobStorageContainer = plan.AzureBlobStorageContainer.ValueString()

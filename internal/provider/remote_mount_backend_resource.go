@@ -208,6 +208,12 @@ func (r *remoteMountBackendResource) Create(ctx context.Context, req resource.Cr
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config remoteMountBackendResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsRemoteMountBackendCreate := files_sdk.RemoteMountBackendCreateParams{}
 	if !plan.Enabled.IsNull() && !plan.Enabled.IsUnknown() {
@@ -289,6 +295,12 @@ func (r *remoteMountBackendResource) Read(ctx context.Context, req resource.Read
 func (r *remoteMountBackendResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan remoteMountBackendResourceModel
 	diags := req.Plan.Get(ctx, &plan)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var config remoteMountBackendResourceModel
+	diags = req.Config.Get(ctx, &config)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return

@@ -97,6 +97,12 @@ func (r *messageCommentReactionResource) Create(ctx context.Context, req resourc
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config messageCommentReactionResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsMessageCommentReactionCreate := files_sdk.MessageCommentReactionCreateParams{}
 	paramsMessageCommentReactionCreate.UserId = plan.UserId.ValueInt64()

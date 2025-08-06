@@ -36,25 +36,22 @@ type gpgKeyResource struct {
 }
 
 type gpgKeyResourceModel struct {
-	Name                   types.String `tfsdk:"name"`
-	UserId                 types.Int64  `tfsdk:"user_id"`
-	PublicKey              types.String `tfsdk:"public_key"`
-	PublicKeyHash          types.String `tfsdk:"public_key_hash"`
-	PrivateKey             types.String `tfsdk:"private_key"`
-	PrivateKeyHash         types.String `tfsdk:"private_key_hash"`
-	PrivateKeyPassword     types.String `tfsdk:"private_key_password"`
-	PrivateKeyPasswordHash types.String `tfsdk:"private_key_password_hash"`
-	GenerateExpiresAt      types.String `tfsdk:"generate_expires_at"`
-	GenerateKeypair        types.Bool   `tfsdk:"generate_keypair"`
-	GenerateFullName       types.String `tfsdk:"generate_full_name"`
-	GenerateEmail          types.String `tfsdk:"generate_email"`
-	Id                     types.Int64  `tfsdk:"id"`
-	ExpiresAt              types.String `tfsdk:"expires_at"`
-	PublicKeyMd5           types.String `tfsdk:"public_key_md5"`
-	PrivateKeyMd5          types.String `tfsdk:"private_key_md5"`
-	GeneratedPublicKey     types.String `tfsdk:"generated_public_key"`
-	GeneratedPrivateKey    types.String `tfsdk:"generated_private_key"`
-	PrivateKeyPasswordMd5  types.String `tfsdk:"private_key_password_md5"`
+	Name                  types.String `tfsdk:"name"`
+	UserId                types.Int64  `tfsdk:"user_id"`
+	PublicKey             types.String `tfsdk:"public_key"`
+	PrivateKey            types.String `tfsdk:"private_key"`
+	PrivateKeyPassword    types.String `tfsdk:"private_key_password"`
+	GenerateExpiresAt     types.String `tfsdk:"generate_expires_at"`
+	GenerateKeypair       types.Bool   `tfsdk:"generate_keypair"`
+	GenerateFullName      types.String `tfsdk:"generate_full_name"`
+	GenerateEmail         types.String `tfsdk:"generate_email"`
+	Id                    types.Int64  `tfsdk:"id"`
+	ExpiresAt             types.String `tfsdk:"expires_at"`
+	PublicKeyMd5          types.String `tfsdk:"public_key_md5"`
+	PrivateKeyMd5         types.String `tfsdk:"private_key_md5"`
+	GeneratedPublicKey    types.String `tfsdk:"generated_public_key"`
+	GeneratedPrivateKey   types.String `tfsdk:"generated_private_key"`
+	PrivateKeyPasswordMd5 types.String `tfsdk:"private_key_password_md5"`
 }
 
 func (r *gpgKeyResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -100,27 +97,22 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			"public_key": schema.StringAttribute{
 				Description: "MD5 hash of your GPG public key",
 				Optional:    true,
-			},
-			"public_key_hash": schema.StringAttribute{
-				Computed: true,
+				WriteOnly:   true,
 			},
 			"private_key": schema.StringAttribute{
 				Description: "MD5 hash of your GPG private key.",
 				Optional:    true,
-			},
-			"private_key_hash": schema.StringAttribute{
-				Computed: true,
+				WriteOnly:   true,
 			},
 			"private_key_password": schema.StringAttribute{
 				Description: "Your GPG private key password. Only required for password protected keys.",
 				Optional:    true,
-			},
-			"private_key_password_hash": schema.StringAttribute{
-				Computed: true,
+				WriteOnly:   true,
 			},
 			"generate_expires_at": schema.StringAttribute{
 				Description: "Expiration date of the key. Used for the generation of the key. Will be ignored if `generate_keypair` is false.",
 				Optional:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -128,6 +120,7 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			"generate_keypair": schema.BoolAttribute{
 				Description: "If true, generate a new GPG key pair. Can not be used with `public_key`/`private_key`",
 				Optional:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.RequiresReplace(),
 				},
@@ -135,6 +128,7 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			"generate_full_name": schema.StringAttribute{
 				Description: "Full name of the key owner. Used for the generation of the key. Will be ignored if `generate_keypair` is false.",
 				Optional:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -142,6 +136,7 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			"generate_email": schema.StringAttribute{
 				Description: "Email address of the key owner. Used for the generation of the key. Will be ignored if `generate_keypair` is false.",
 				Optional:    true,
+				WriteOnly:   true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
 				},
@@ -188,18 +183,24 @@ func (r *gpgKeyResource) Create(ctx context.Context, req resource.CreateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config gpgKeyResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsGpgKeyCreate := files_sdk.GpgKeyCreateParams{}
 	paramsGpgKeyCreate.UserId = plan.UserId.ValueInt64()
-	paramsGpgKeyCreate.PublicKey = plan.PublicKey.ValueString()
-	paramsGpgKeyCreate.PrivateKey = plan.PrivateKey.ValueString()
-	paramsGpgKeyCreate.PrivateKeyPassword = plan.PrivateKeyPassword.ValueString()
+	paramsGpgKeyCreate.PublicKey = config.PublicKey.ValueString()
+	paramsGpgKeyCreate.PrivateKey = config.PrivateKey.ValueString()
+	paramsGpgKeyCreate.PrivateKeyPassword = config.PrivateKeyPassword.ValueString()
 	paramsGpgKeyCreate.Name = plan.Name.ValueString()
-	if !plan.GenerateExpiresAt.IsNull() {
-		if plan.GenerateExpiresAt.ValueString() == "" {
+	if !config.GenerateExpiresAt.IsNull() {
+		if config.GenerateExpiresAt.ValueString() == "" {
 			paramsGpgKeyCreate.GenerateExpiresAt = new(time.Time)
 		} else {
-			createGenerateExpiresAt, err := time.Parse(time.RFC3339, plan.GenerateExpiresAt.ValueString())
+			createGenerateExpiresAt, err := time.Parse(time.RFC3339, config.GenerateExpiresAt.ValueString())
 			if err != nil {
 				resp.Diagnostics.AddAttributeError(
 					path.Root("generate_expires_at"),
@@ -211,11 +212,11 @@ func (r *gpgKeyResource) Create(ctx context.Context, req resource.CreateRequest,
 			}
 		}
 	}
-	if !plan.GenerateKeypair.IsNull() && !plan.GenerateKeypair.IsUnknown() {
-		paramsGpgKeyCreate.GenerateKeypair = plan.GenerateKeypair.ValueBoolPointer()
+	if !config.GenerateKeypair.IsNull() && !config.GenerateKeypair.IsUnknown() {
+		paramsGpgKeyCreate.GenerateKeypair = config.GenerateKeypair.ValueBoolPointer()
 	}
-	paramsGpgKeyCreate.GenerateFullName = plan.GenerateFullName.ValueString()
-	paramsGpgKeyCreate.GenerateEmail = plan.GenerateEmail.ValueString()
+	paramsGpgKeyCreate.GenerateFullName = config.GenerateFullName.ValueString()
+	paramsGpgKeyCreate.GenerateEmail = config.GenerateEmail.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -282,12 +283,18 @@ func (r *gpgKeyResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config gpgKeyResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsGpgKeyUpdate := files_sdk.GpgKeyUpdateParams{}
 	paramsGpgKeyUpdate.Id = plan.Id.ValueInt64()
-	paramsGpgKeyUpdate.PublicKey = plan.PublicKey.ValueString()
-	paramsGpgKeyUpdate.PrivateKey = plan.PrivateKey.ValueString()
-	paramsGpgKeyUpdate.PrivateKeyPassword = plan.PrivateKeyPassword.ValueString()
+	paramsGpgKeyUpdate.PublicKey = config.PublicKey.ValueString()
+	paramsGpgKeyUpdate.PrivateKey = config.PrivateKey.ValueString()
+	paramsGpgKeyUpdate.PrivateKeyPassword = config.PrivateKeyPassword.ValueString()
 	paramsGpgKeyUpdate.Name = plan.Name.ValueString()
 
 	if resp.Diagnostics.HasError() {

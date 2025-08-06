@@ -299,26 +299,32 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 			"splunk_token": schema.StringAttribute{
 				Description: "Applicable only for destination type: splunk. Authentication token provided by Splunk.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"azure_oauth_client_credentials_client_secret": schema.StringAttribute{
 				Description: "Applicable only for destination type: azure. Client Credentials OAuth Client Secret.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"qradar_password": schema.StringAttribute{
 				Description: "Applicable only for destination type: qradar. Basic auth password provided by QRadar.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"solar_winds_token": schema.StringAttribute{
 				Description: "Applicable only for destination type: solar_winds. Authentication token provided by Solar Winds.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"new_relic_api_key": schema.StringAttribute{
 				Description: "Applicable only for destination type: new_relic. API key provided by New Relic.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"datadog_api_key": schema.StringAttribute{
 				Description: "Applicable only for destination type: datadog. API key provided by Datadog.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"id": schema.Int64Attribute{
 				Description: "SIEM HTTP Destination ID",
@@ -445,6 +451,12 @@ func (r *siemHttpDestinationResource) Create(ctx context.Context, req resource.C
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config siemHttpDestinationResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsSiemHttpDestinationCreate := files_sdk.SiemHttpDestinationCreateParams{}
 	paramsSiemHttpDestinationCreate.Name = plan.Name.ValueString()
@@ -455,17 +467,17 @@ func (r *siemHttpDestinationResource) Create(ctx context.Context, req resource.C
 		paramsSiemHttpDestinationCreate.SendingActive = plan.SendingActive.ValueBoolPointer()
 	}
 	paramsSiemHttpDestinationCreate.GenericPayloadType = paramsSiemHttpDestinationCreate.GenericPayloadType.Enum()[plan.GenericPayloadType.ValueString()]
-	paramsSiemHttpDestinationCreate.SplunkToken = plan.SplunkToken.ValueString()
+	paramsSiemHttpDestinationCreate.SplunkToken = config.SplunkToken.ValueString()
 	paramsSiemHttpDestinationCreate.AzureDcrImmutableId = plan.AzureDcrImmutableId.ValueString()
 	paramsSiemHttpDestinationCreate.AzureStreamName = plan.AzureStreamName.ValueString()
 	paramsSiemHttpDestinationCreate.AzureOauthClientCredentialsTenantId = plan.AzureOauthClientCredentialsTenantId.ValueString()
 	paramsSiemHttpDestinationCreate.AzureOauthClientCredentialsClientId = plan.AzureOauthClientCredentialsClientId.ValueString()
-	paramsSiemHttpDestinationCreate.AzureOauthClientCredentialsClientSecret = plan.AzureOauthClientCredentialsClientSecret.ValueString()
+	paramsSiemHttpDestinationCreate.AzureOauthClientCredentialsClientSecret = config.AzureOauthClientCredentialsClientSecret.ValueString()
 	paramsSiemHttpDestinationCreate.QradarUsername = plan.QradarUsername.ValueString()
-	paramsSiemHttpDestinationCreate.QradarPassword = plan.QradarPassword.ValueString()
-	paramsSiemHttpDestinationCreate.SolarWindsToken = plan.SolarWindsToken.ValueString()
-	paramsSiemHttpDestinationCreate.NewRelicApiKey = plan.NewRelicApiKey.ValueString()
-	paramsSiemHttpDestinationCreate.DatadogApiKey = plan.DatadogApiKey.ValueString()
+	paramsSiemHttpDestinationCreate.QradarPassword = config.QradarPassword.ValueString()
+	paramsSiemHttpDestinationCreate.SolarWindsToken = config.SolarWindsToken.ValueString()
+	paramsSiemHttpDestinationCreate.NewRelicApiKey = config.NewRelicApiKey.ValueString()
+	paramsSiemHttpDestinationCreate.DatadogApiKey = config.DatadogApiKey.ValueString()
 	if !plan.SftpActionSendEnabled.IsNull() && !plan.SftpActionSendEnabled.IsUnknown() {
 		paramsSiemHttpDestinationCreate.SftpActionSendEnabled = plan.SftpActionSendEnabled.ValueBoolPointer()
 	}
@@ -567,6 +579,12 @@ func (r *siemHttpDestinationResource) Update(ctx context.Context, req resource.U
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config siemHttpDestinationResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsSiemHttpDestinationUpdate := files_sdk.SiemHttpDestinationUpdateParams{}
 	paramsSiemHttpDestinationUpdate.Id = plan.Id.ValueInt64()
@@ -578,17 +596,17 @@ func (r *siemHttpDestinationResource) Update(ctx context.Context, req resource.U
 		paramsSiemHttpDestinationUpdate.SendingActive = plan.SendingActive.ValueBoolPointer()
 	}
 	paramsSiemHttpDestinationUpdate.GenericPayloadType = paramsSiemHttpDestinationUpdate.GenericPayloadType.Enum()[plan.GenericPayloadType.ValueString()]
-	paramsSiemHttpDestinationUpdate.SplunkToken = plan.SplunkToken.ValueString()
+	paramsSiemHttpDestinationUpdate.SplunkToken = config.SplunkToken.ValueString()
 	paramsSiemHttpDestinationUpdate.AzureDcrImmutableId = plan.AzureDcrImmutableId.ValueString()
 	paramsSiemHttpDestinationUpdate.AzureStreamName = plan.AzureStreamName.ValueString()
 	paramsSiemHttpDestinationUpdate.AzureOauthClientCredentialsTenantId = plan.AzureOauthClientCredentialsTenantId.ValueString()
 	paramsSiemHttpDestinationUpdate.AzureOauthClientCredentialsClientId = plan.AzureOauthClientCredentialsClientId.ValueString()
-	paramsSiemHttpDestinationUpdate.AzureOauthClientCredentialsClientSecret = plan.AzureOauthClientCredentialsClientSecret.ValueString()
+	paramsSiemHttpDestinationUpdate.AzureOauthClientCredentialsClientSecret = config.AzureOauthClientCredentialsClientSecret.ValueString()
 	paramsSiemHttpDestinationUpdate.QradarUsername = plan.QradarUsername.ValueString()
-	paramsSiemHttpDestinationUpdate.QradarPassword = plan.QradarPassword.ValueString()
-	paramsSiemHttpDestinationUpdate.SolarWindsToken = plan.SolarWindsToken.ValueString()
-	paramsSiemHttpDestinationUpdate.NewRelicApiKey = plan.NewRelicApiKey.ValueString()
-	paramsSiemHttpDestinationUpdate.DatadogApiKey = plan.DatadogApiKey.ValueString()
+	paramsSiemHttpDestinationUpdate.QradarPassword = config.QradarPassword.ValueString()
+	paramsSiemHttpDestinationUpdate.SolarWindsToken = config.SolarWindsToken.ValueString()
+	paramsSiemHttpDestinationUpdate.NewRelicApiKey = config.NewRelicApiKey.ValueString()
+	paramsSiemHttpDestinationUpdate.DatadogApiKey = config.DatadogApiKey.ValueString()
 	if !plan.SftpActionSendEnabled.IsNull() && !plan.SftpActionSendEnabled.IsUnknown() {
 		paramsSiemHttpDestinationUpdate.SftpActionSendEnabled = plan.SftpActionSendEnabled.ValueBoolPointer()
 	}

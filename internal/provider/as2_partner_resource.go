@@ -174,6 +174,7 @@ func (r *as2PartnerResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			"http_auth_password": schema.StringAttribute{
 				Description: "Password to send to server for HTTP Authentication.",
 				Optional:    true,
+				WriteOnly:   true,
 			},
 			"id": schema.Int64Attribute{
 				Description: "ID of the AS2 Partner.",
@@ -221,13 +222,19 @@ func (r *as2PartnerResource) Create(ctx context.Context, req resource.CreateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config as2PartnerResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsAs2PartnerCreate := files_sdk.As2PartnerCreateParams{}
 	if !plan.EnableDedicatedIps.IsNull() && !plan.EnableDedicatedIps.IsUnknown() {
 		paramsAs2PartnerCreate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
 	}
 	paramsAs2PartnerCreate.HttpAuthUsername = plan.HttpAuthUsername.ValueString()
-	paramsAs2PartnerCreate.HttpAuthPassword = plan.HttpAuthPassword.ValueString()
+	paramsAs2PartnerCreate.HttpAuthPassword = config.HttpAuthPassword.ValueString()
 	paramsAs2PartnerCreate.MdnValidationLevel = paramsAs2PartnerCreate.MdnValidationLevel.Enum()[plan.MdnValidationLevel.ValueString()]
 	paramsAs2PartnerCreate.SignatureValidationLevel = paramsAs2PartnerCreate.SignatureValidationLevel.Enum()[plan.SignatureValidationLevel.ValueString()]
 	paramsAs2PartnerCreate.ServerCertificate = paramsAs2PartnerCreate.ServerCertificate.Enum()[plan.ServerCertificate.ValueString()]
@@ -305,6 +312,12 @@ func (r *as2PartnerResource) Update(ctx context.Context, req resource.UpdateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config as2PartnerResourceModel
+	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsAs2PartnerUpdate := files_sdk.As2PartnerUpdateParams{}
 	paramsAs2PartnerUpdate.Id = plan.Id.ValueInt64()
@@ -312,7 +325,7 @@ func (r *as2PartnerResource) Update(ctx context.Context, req resource.UpdateRequ
 		paramsAs2PartnerUpdate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
 	}
 	paramsAs2PartnerUpdate.HttpAuthUsername = plan.HttpAuthUsername.ValueString()
-	paramsAs2PartnerUpdate.HttpAuthPassword = plan.HttpAuthPassword.ValueString()
+	paramsAs2PartnerUpdate.HttpAuthPassword = config.HttpAuthPassword.ValueString()
 	paramsAs2PartnerUpdate.MdnValidationLevel = paramsAs2PartnerUpdate.MdnValidationLevel.Enum()[plan.MdnValidationLevel.ValueString()]
 	paramsAs2PartnerUpdate.SignatureValidationLevel = paramsAs2PartnerUpdate.SignatureValidationLevel.Enum()[plan.SignatureValidationLevel.ValueString()]
 	paramsAs2PartnerUpdate.ServerCertificate = paramsAs2PartnerUpdate.ServerCertificate.Enum()[plan.ServerCertificate.ValueString()]

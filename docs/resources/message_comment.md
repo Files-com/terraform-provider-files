@@ -28,7 +28,9 @@ resource "files_message_comment" "example_message_comment" {
 
 ### Optional
 
-- `user_id` (Number) User ID.  Provide a value of `0` to operate the current session's user.
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
+- `user_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) User ID.  Provide a value of `0` to operate the current session's user.
 
 ### Read-Only
 
