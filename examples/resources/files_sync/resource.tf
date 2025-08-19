@@ -5,7 +5,6 @@ resource "files_sync" "example_sync" {
   dest_path             = "example"
   src_remote_server_id  = 1
   dest_remote_server_id = 1
-  two_way               = false
   keep_after_copy       = false
   delete_empty_folders  = false
   disabled              = false

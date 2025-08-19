@@ -45,7 +45,6 @@ type syncResourceModel struct {
 	DestPath            types.String `tfsdk:"dest_path"`
 	SrcRemoteServerId   types.Int64  `tfsdk:"src_remote_server_id"`
 	DestRemoteServerId  types.Int64  `tfsdk:"dest_remote_server_id"`
-	TwoWay              types.Bool   `tfsdk:"two_way"`
 	KeepAfterCopy       types.Bool   `tfsdk:"keep_after_copy"`
 	DeleteEmptyFolders  types.Bool   `tfsdk:"delete_empty_folders"`
 	Disabled            types.Bool   `tfsdk:"disabled"`
@@ -61,6 +60,7 @@ type syncResourceModel struct {
 	Id                  types.Int64  `tfsdk:"id"`
 	SiteId              types.Int64  `tfsdk:"site_id"`
 	UserId              types.Int64  `tfsdk:"user_id"`
+	TwoWay              types.Bool   `tfsdk:"two_way"`
 	IncludePatterns     types.List   `tfsdk:"include_patterns"`
 	ExcludePatterns     types.List   `tfsdk:"exclude_patterns"`
 	CreatedAt           types.String `tfsdk:"created_at"`
@@ -141,14 +141,6 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
-				},
-			},
-			"two_way": schema.BoolAttribute{
-				Description: "Is this a two-way sync?",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"keep_after_copy": schema.BoolAttribute{
@@ -267,6 +259,10 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "User who created or owns this sync",
 				Computed:    true,
 			},
+			"two_way": schema.BoolAttribute{
+				Description: "Is this a two-way sync?",
+				Computed:    true,
+			},
 			"include_patterns": schema.ListAttribute{
 				Description: "Array of glob patterns to include",
 				Computed:    true,
@@ -314,9 +310,6 @@ func (r *syncResource) Create(ctx context.Context, req resource.CreateRequest, r
 	paramsSyncCreate.DestPath = plan.DestPath.ValueString()
 	paramsSyncCreate.SrcRemoteServerId = plan.SrcRemoteServerId.ValueInt64()
 	paramsSyncCreate.DestRemoteServerId = plan.DestRemoteServerId.ValueInt64()
-	if !plan.TwoWay.IsNull() && !plan.TwoWay.IsUnknown() {
-		paramsSyncCreate.TwoWay = plan.TwoWay.ValueBoolPointer()
-	}
 	if !plan.KeepAfterCopy.IsNull() && !plan.KeepAfterCopy.IsUnknown() {
 		paramsSyncCreate.KeepAfterCopy = plan.KeepAfterCopy.ValueBoolPointer()
 	}
@@ -422,9 +415,6 @@ func (r *syncResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	paramsSyncUpdate.DestPath = plan.DestPath.ValueString()
 	paramsSyncUpdate.SrcRemoteServerId = plan.SrcRemoteServerId.ValueInt64()
 	paramsSyncUpdate.DestRemoteServerId = plan.DestRemoteServerId.ValueInt64()
-	if !plan.TwoWay.IsNull() && !plan.TwoWay.IsUnknown() {
-		paramsSyncUpdate.TwoWay = plan.TwoWay.ValueBoolPointer()
-	}
 	if !plan.KeepAfterCopy.IsNull() && !plan.KeepAfterCopy.IsUnknown() {
 		paramsSyncUpdate.KeepAfterCopy = plan.KeepAfterCopy.ValueBoolPointer()
 	}

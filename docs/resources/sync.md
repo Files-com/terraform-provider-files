@@ -26,7 +26,6 @@ resource "files_sync" "example_sync" {
   dest_path             = "example"
   src_remote_server_id  = 1
   dest_remote_server_id = 1
-  two_way               = false
   keep_after_copy       = false
   delete_empty_folders  = false
   disabled              = false
@@ -65,7 +64,6 @@ resource "files_sync" "example_sync" {
 - `sync_interval_minutes` (Number) Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.
 - `trigger` (String) Trigger type: daily, custom_schedule, or manual
 - `trigger_file` (String) Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.
-- `two_way` (Boolean) Is this a two-way sync?
 
 ### Read-Only
 
@@ -75,6 +73,7 @@ resource "files_sync" "example_sync" {
 - `include_patterns` (List of String) Array of glob patterns to include
 - `latest_sync_run` (String) The latest run of this sync
 - `site_id` (Number) Site ID this sync belongs to
+- `two_way` (Boolean) Is this a two-way sync?
 - `updated_at` (String) When this sync was last updated
 - `user_id` (Number) User who created or owns this sync
 
