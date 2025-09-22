@@ -31,6 +31,7 @@ data "files_remote_mount_backend" "example_remote_mount_backend" {
 - `enabled` (Boolean) True if this backend is enabled.
 - `fall` (Number) Number of consecutive failures before considering the backend unhealthy.
 - `health_check_enabled` (Boolean) True if health checks are enabled for this backend.
+- `health_check_results` (Dynamic) Array of recent health check results.
 - `health_check_type` (String) Type of health check to perform.
 - `interval` (Number) Interval in seconds between health checks.
 - `min_free_cpu` (String) Minimum free CPU percentage required for this backend to be considered healthy.

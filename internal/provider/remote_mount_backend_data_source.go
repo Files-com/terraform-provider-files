@@ -6,9 +6,11 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	remote_mount_backend "github.com/Files-com/files-sdk-go/v3/remotemountbackend"
+	"github.com/Files-com/terraform-provider-files/lib"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -26,22 +28,23 @@ type remoteMountBackendDataSource struct {
 }
 
 type remoteMountBackendDataSourceModel struct {
-	Id                    types.Int64  `tfsdk:"id"`
-	CanaryFilePath        types.String `tfsdk:"canary_file_path"`
-	Enabled               types.Bool   `tfsdk:"enabled"`
-	Fall                  types.Int64  `tfsdk:"fall"`
-	HealthCheckEnabled    types.Bool   `tfsdk:"health_check_enabled"`
-	HealthCheckType       types.String `tfsdk:"health_check_type"`
-	Interval              types.Int64  `tfsdk:"interval"`
-	MinFreeCpu            types.String `tfsdk:"min_free_cpu"`
-	MinFreeMem            types.String `tfsdk:"min_free_mem"`
-	Priority              types.Int64  `tfsdk:"priority"`
-	RemotePath            types.String `tfsdk:"remote_path"`
-	RemoteServerId        types.Int64  `tfsdk:"remote_server_id"`
-	RemoteServerMountId   types.Int64  `tfsdk:"remote_server_mount_id"`
-	Rise                  types.Int64  `tfsdk:"rise"`
-	Status                types.String `tfsdk:"status"`
-	UndergoingMaintenance types.Bool   `tfsdk:"undergoing_maintenance"`
+	Id                    types.Int64   `tfsdk:"id"`
+	CanaryFilePath        types.String  `tfsdk:"canary_file_path"`
+	Enabled               types.Bool    `tfsdk:"enabled"`
+	Fall                  types.Int64   `tfsdk:"fall"`
+	HealthCheckEnabled    types.Bool    `tfsdk:"health_check_enabled"`
+	HealthCheckResults    types.Dynamic `tfsdk:"health_check_results"`
+	HealthCheckType       types.String  `tfsdk:"health_check_type"`
+	Interval              types.Int64   `tfsdk:"interval"`
+	MinFreeCpu            types.String  `tfsdk:"min_free_cpu"`
+	MinFreeMem            types.String  `tfsdk:"min_free_mem"`
+	Priority              types.Int64   `tfsdk:"priority"`
+	RemotePath            types.String  `tfsdk:"remote_path"`
+	RemoteServerId        types.Int64   `tfsdk:"remote_server_id"`
+	RemoteServerMountId   types.Int64   `tfsdk:"remote_server_mount_id"`
+	Rise                  types.Int64   `tfsdk:"rise"`
+	Status                types.String  `tfsdk:"status"`
+	UndergoingMaintenance types.Bool    `tfsdk:"undergoing_maintenance"`
 }
 
 func (r *remoteMountBackendDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -89,6 +92,10 @@ func (r *remoteMountBackendDataSource) Schema(_ context.Context, _ datasource.Sc
 			},
 			"health_check_enabled": schema.BoolAttribute{
 				Description: "True if health checks are enabled for this backend.",
+				Computed:    true,
+			},
+			"health_check_results": schema.DynamicAttribute{
+				Description: "Array of recent health check results.",
 				Computed:    true,
 			},
 			"health_check_type": schema.StringAttribute{
@@ -170,10 +177,14 @@ func (r *remoteMountBackendDataSource) Read(ctx context.Context, req datasource.
 }
 
 func (r *remoteMountBackendDataSource) populateDataSourceModel(ctx context.Context, remoteMountBackend files_sdk.RemoteMountBackend, state *remoteMountBackendDataSourceModel) (diags diag.Diagnostics) {
+	var propDiags diag.Diagnostics
+
 	state.CanaryFilePath = types.StringValue(remoteMountBackend.CanaryFilePath)
 	state.Enabled = types.BoolPointerValue(remoteMountBackend.Enabled)
 	state.Fall = types.Int64Value(remoteMountBackend.Fall)
 	state.HealthCheckEnabled = types.BoolPointerValue(remoteMountBackend.HealthCheckEnabled)
+	state.HealthCheckResults, propDiags = lib.ToDynamic(ctx, path.Root("health_check_results"), remoteMountBackend.HealthCheckResults, state.HealthCheckResults.UnderlyingValue())
+	diags.Append(propDiags...)
 	state.HealthCheckType = types.StringValue(remoteMountBackend.HealthCheckType)
 	state.Id = types.Int64Value(remoteMountBackend.Id)
 	state.Interval = types.Int64Value(remoteMountBackend.Interval)

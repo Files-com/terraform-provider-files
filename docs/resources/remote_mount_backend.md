@@ -54,6 +54,7 @@ resource "files_remote_mount_backend" "example_remote_mount_backend" {
 
 ### Read-Only
 
+- `health_check_results` (Dynamic) Array of recent health check results.
 - `id` (Number) Unique identifier for this backend.
 - `status` (String) Status of this backend.
 - `undergoing_maintenance` (Boolean) True if this backend is undergoing maintenance.

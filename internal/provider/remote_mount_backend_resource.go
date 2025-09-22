@@ -8,6 +8,7 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	remote_mount_backend "github.com/Files-com/files-sdk-go/v3/remotemountbackend"
+	"github.com/Files-com/terraform-provider-files/lib"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -36,22 +37,23 @@ type remoteMountBackendResource struct {
 }
 
 type remoteMountBackendResourceModel struct {
-	CanaryFilePath        types.String `tfsdk:"canary_file_path"`
-	RemoteServerId        types.Int64  `tfsdk:"remote_server_id"`
-	RemoteServerMountId   types.Int64  `tfsdk:"remote_server_mount_id"`
-	Enabled               types.Bool   `tfsdk:"enabled"`
-	Fall                  types.Int64  `tfsdk:"fall"`
-	HealthCheckEnabled    types.Bool   `tfsdk:"health_check_enabled"`
-	HealthCheckType       types.String `tfsdk:"health_check_type"`
-	Interval              types.Int64  `tfsdk:"interval"`
-	MinFreeCpu            types.String `tfsdk:"min_free_cpu"`
-	MinFreeMem            types.String `tfsdk:"min_free_mem"`
-	Priority              types.Int64  `tfsdk:"priority"`
-	RemotePath            types.String `tfsdk:"remote_path"`
-	Rise                  types.Int64  `tfsdk:"rise"`
-	Id                    types.Int64  `tfsdk:"id"`
-	Status                types.String `tfsdk:"status"`
-	UndergoingMaintenance types.Bool   `tfsdk:"undergoing_maintenance"`
+	CanaryFilePath        types.String  `tfsdk:"canary_file_path"`
+	RemoteServerId        types.Int64   `tfsdk:"remote_server_id"`
+	RemoteServerMountId   types.Int64   `tfsdk:"remote_server_mount_id"`
+	Enabled               types.Bool    `tfsdk:"enabled"`
+	Fall                  types.Int64   `tfsdk:"fall"`
+	HealthCheckEnabled    types.Bool    `tfsdk:"health_check_enabled"`
+	HealthCheckType       types.String  `tfsdk:"health_check_type"`
+	Interval              types.Int64   `tfsdk:"interval"`
+	MinFreeCpu            types.String  `tfsdk:"min_free_cpu"`
+	MinFreeMem            types.String  `tfsdk:"min_free_mem"`
+	Priority              types.Int64   `tfsdk:"priority"`
+	RemotePath            types.String  `tfsdk:"remote_path"`
+	Rise                  types.Int64   `tfsdk:"rise"`
+	HealthCheckResults    types.Dynamic `tfsdk:"health_check_results"`
+	Id                    types.Int64   `tfsdk:"id"`
+	Status                types.String  `tfsdk:"status"`
+	UndergoingMaintenance types.Bool    `tfsdk:"undergoing_maintenance"`
 }
 
 func (r *remoteMountBackendResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -178,6 +180,10 @@ func (r *remoteMountBackendResource) Schema(_ context.Context, _ resource.Schema
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
+			},
+			"health_check_results": schema.DynamicAttribute{
+				Description: "Array of recent health check results.",
+				Computed:    true,
 			},
 			"id": schema.Int64Attribute{
 				Description: "Unique identifier for this backend.",
@@ -392,10 +398,14 @@ func (r *remoteMountBackendResource) ImportState(ctx context.Context, req resour
 }
 
 func (r *remoteMountBackendResource) populateResourceModel(ctx context.Context, remoteMountBackend files_sdk.RemoteMountBackend, state *remoteMountBackendResourceModel) (diags diag.Diagnostics) {
+	var propDiags diag.Diagnostics
+
 	state.CanaryFilePath = types.StringValue(remoteMountBackend.CanaryFilePath)
 	state.Enabled = types.BoolPointerValue(remoteMountBackend.Enabled)
 	state.Fall = types.Int64Value(remoteMountBackend.Fall)
 	state.HealthCheckEnabled = types.BoolPointerValue(remoteMountBackend.HealthCheckEnabled)
+	state.HealthCheckResults, propDiags = lib.ToDynamic(ctx, path.Root("health_check_results"), remoteMountBackend.HealthCheckResults, state.HealthCheckResults.UnderlyingValue())
+	diags.Append(propDiags...)
 	state.HealthCheckType = types.StringValue(remoteMountBackend.HealthCheckType)
 	state.Id = types.Int64Value(remoteMountBackend.Id)
 	state.Interval = types.Int64Value(remoteMountBackend.Interval)
