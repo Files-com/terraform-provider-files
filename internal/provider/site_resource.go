@@ -198,6 +198,7 @@ type siteResourceModel struct {
 	ImmutableFilesSetAt                      types.String  `tfsdk:"immutable_files_set_at"`
 	Logo                                     types.String  `tfsdk:"logo"`
 	LoginPageBackgroundImage                 types.String  `tfsdk:"login_page_background_image"`
+	ManagedSiteSettings                      types.Dynamic `tfsdk:"managed_site_settings"`
 	NextBillingAmount                        types.String  `tfsdk:"next_billing_amount"`
 	NextBillingDate                          types.String  `tfsdk:"next_billing_date"`
 	OncehubLink                              types.String  `tfsdk:"oncehub_link"`
@@ -209,7 +210,6 @@ type siteResourceModel struct {
 	TrialDaysLeft                            types.Int64   `tfsdk:"trial_days_left"`
 	TrialUntil                               types.String  `tfsdk:"trial_until"`
 	User                                     types.String  `tfsdk:"user"`
-	ManagedSiteSettings                      types.List    `tfsdk:"managed_site_settings"`
 }
 
 func (r *siteResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -1488,6 +1488,10 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "Branded login page background",
 				Computed:    true,
 			},
+			"managed_site_settings": schema.DynamicAttribute{
+				Description: "List of site settings managed by the parent site",
+				Computed:    true,
+			},
 			"next_billing_amount": schema.StringAttribute{
 				Description: "Next billing amount",
 				Computed:    true,
@@ -1531,11 +1535,6 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			"user": schema.StringAttribute{
 				Description: "User of current session",
 				Computed:    true,
-			},
-			"managed_site_settings": schema.ListAttribute{
-				Description: "List of site settings managed by the parent site",
-				Computed:    true,
-				ElementType: types.StringType,
 			},
 		},
 	}
@@ -2101,6 +2100,8 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	}
 	state.LoginPageBackgroundImage = types.StringValue(string(respLoginPageBackgroundImage))
 	state.MaxPriorPasswords = types.Int64Value(site.MaxPriorPasswords)
+	state.ManagedSiteSettings, propDiags = lib.ToDynamic(ctx, path.Root("managed_site_settings"), site.ManagedSiteSettings, state.ManagedSiteSettings.UnderlyingValue())
+	diags.Append(propDiags...)
 	state.MotdText = types.StringValue(site.MotdText)
 	state.MotdUseForFtp = types.BoolPointerValue(site.MotdUseForFtp)
 	state.MotdUseForSftp = types.BoolPointerValue(site.MotdUseForSftp)
@@ -2202,8 +2203,6 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.WelcomeScreen = types.StringValue(site.WelcomeScreen)
 	state.WindowsModeFtp = types.BoolPointerValue(site.WindowsModeFtp)
 	state.GroupAdminsCanSetUserPassword = types.BoolPointerValue(site.GroupAdminsCanSetUserPassword)
-	state.ManagedSiteSettings, propDiags = types.ListValueFrom(ctx, types.StringType, site.ManagedSiteSettings)
-	diags.Append(propDiags...)
 
 	return
 }

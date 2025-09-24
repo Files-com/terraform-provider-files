@@ -128,6 +128,7 @@ type siteDataSourceModel struct {
 	Logo                                     types.String  `tfsdk:"logo"`
 	LoginPageBackgroundImage                 types.String  `tfsdk:"login_page_background_image"`
 	MaxPriorPasswords                        types.Int64   `tfsdk:"max_prior_passwords"`
+	ManagedSiteSettings                      types.Dynamic `tfsdk:"managed_site_settings"`
 	MotdText                                 types.String  `tfsdk:"motd_text"`
 	MotdUseForFtp                            types.Bool    `tfsdk:"motd_use_for_ftp"`
 	MotdUseForSftp                           types.Bool    `tfsdk:"motd_use_for_sftp"`
@@ -200,7 +201,6 @@ type siteDataSourceModel struct {
 	WelcomeScreen                            types.String  `tfsdk:"welcome_screen"`
 	WindowsModeFtp                           types.Bool    `tfsdk:"windows_mode_ftp"`
 	GroupAdminsCanSetUserPassword            types.Bool    `tfsdk:"group_admins_can_set_user_password"`
-	ManagedSiteSettings                      types.List    `tfsdk:"managed_site_settings"`
 }
 
 func (r *siteDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -628,6 +628,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Number of prior passwords to disallow",
 				Computed:    true,
 			},
+			"managed_site_settings": schema.DynamicAttribute{
+				Description: "List of site settings managed by the parent site",
+				Computed:    true,
+			},
 			"motd_text": schema.StringAttribute{
 				Description: "A message to show users when they connect via FTP or SFTP.",
 				Computed:    true,
@@ -916,11 +920,6 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Allow group admins set password authentication method",
 				Computed:    true,
 			},
-			"managed_site_settings": schema.ListAttribute{
-				Description: "List of site settings managed by the parent site",
-				Computed:    true,
-				ElementType: types.StringType,
-			},
 		},
 	}
 }
@@ -1116,6 +1115,8 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	}
 	state.LoginPageBackgroundImage = types.StringValue(string(respLoginPageBackgroundImage))
 	state.MaxPriorPasswords = types.Int64Value(site.MaxPriorPasswords)
+	state.ManagedSiteSettings, propDiags = lib.ToDynamic(ctx, path.Root("managed_site_settings"), site.ManagedSiteSettings, state.ManagedSiteSettings.UnderlyingValue())
+	diags.Append(propDiags...)
 	state.MotdText = types.StringValue(site.MotdText)
 	state.MotdUseForFtp = types.BoolPointerValue(site.MotdUseForFtp)
 	state.MotdUseForSftp = types.BoolPointerValue(site.MotdUseForSftp)
@@ -1217,8 +1218,6 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.WelcomeScreen = types.StringValue(site.WelcomeScreen)
 	state.WindowsModeFtp = types.BoolPointerValue(site.WindowsModeFtp)
 	state.GroupAdminsCanSetUserPassword = types.BoolPointerValue(site.GroupAdminsCanSetUserPassword)
-	state.ManagedSiteSettings, propDiags = types.ListValueFrom(ctx, types.StringType, site.ManagedSiteSettings)
-	diags.Append(propDiags...)
 
 	return
 }

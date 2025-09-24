@@ -2,19 +2,25 @@ package provider
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	child_site_management_policy "github.com/Files-com/files-sdk-go/v3/childsitemanagementpolicy"
+	"github.com/Files-com/terraform-provider-files/lib"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/dynamicplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -33,11 +39,15 @@ type childSiteManagementPolicyResource struct {
 }
 
 type childSiteManagementPolicyResourceModel struct {
-	SiteSettingName  types.String `tfsdk:"site_setting_name"`
-	ManagedValue     types.String `tfsdk:"managed_value"`
-	SkipChildSiteIds types.List   `tfsdk:"skip_child_site_ids"`
-	Id               types.Int64  `tfsdk:"id"`
-	SiteId           types.Int64  `tfsdk:"site_id"`
+	PolicyType          types.String  `tfsdk:"policy_type"`
+	Name                types.String  `tfsdk:"name"`
+	Description         types.String  `tfsdk:"description"`
+	Value               types.Dynamic `tfsdk:"value"`
+	SkipChildSiteIds    types.List    `tfsdk:"skip_child_site_ids"`
+	Id                  types.Int64   `tfsdk:"id"`
+	AppliedChildSiteIds types.List    `tfsdk:"applied_child_site_ids"`
+	CreatedAt           types.String  `tfsdk:"created_at"`
+	UpdatedAt           types.String  `tfsdk:"updated_at"`
 }
 
 func (r *childSiteManagementPolicyResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -65,18 +75,41 @@ func (r *childSiteManagementPolicyResource) Metadata(_ context.Context, req reso
 
 func (r *childSiteManagementPolicyResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A ChildSiteManagementPolicyEntity is a policy object defined by a parent site that enforces a specific setting and its managed value across all child sites.\n\nThis setting remains locked on child sites unless the policy explicitly exempts them.",
+		Description: "A Child Site Management Policy is a centralized policy defined by a parent site to enforce consistent configurations across child sites. These policies allow parent sites to maintain control over specific aspects of their child sites' functionality and appearance.\n\n\n\nPolicies can be applied to all child sites, or specific sites can be exempted from policy management by adding their site ID to the `skip_child_site_ids` parameter.\n\n\n\nThe `value` field contains the policy configuration data, with the format varying based on the policy type. When a policy is active, its managed configurations are automatically enforced on applicable child sites, and attribute modifications are not permitted.",
 		Attributes: map[string]schema.Attribute{
-			"site_setting_name": schema.StringAttribute{
-				Description: "The name of the setting that is managed by the policy",
+			"policy_type": schema.StringAttribute{
+				Description: "Type of policy.  Valid values: `settings`.",
 				Required:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("settings"),
+				},
 			},
-			"managed_value": schema.StringAttribute{
-				Description: "The value for the setting that will be enforced for all child sites that are not exempt",
-				Required:    true,
+			"name": schema.StringAttribute{
+				Description: "Name for this policy.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"description": schema.StringAttribute{
+				Description: "Description for this policy.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"value": schema.DynamicAttribute{
+				Description: "Policy configuration data. Attributes differ by policy type. For more information, refer to the Value Hash section of the developer documentation.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Dynamic{
+					dynamicplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"skip_child_site_ids": schema.ListAttribute{
-				Description: "The list of child site IDs that are exempt from this policy",
+				Description: "IDs of child sites that this policy has been exempted from. If `skip_child_site_ids` is empty, the policy will be applied to all child sites. To apply a policy to a child site that has been exempted, remove it from `skip_child_site_ids` or set it to an empty array (`[]`).",
 				Computed:    true,
 				Optional:    true,
 				ElementType: types.Int64Type,
@@ -85,14 +118,23 @@ func (r *childSiteManagementPolicyResource) Schema(_ context.Context, _ resource
 				},
 			},
 			"id": schema.Int64Attribute{
-				Description: "ChildSiteManagementPolicy ID",
+				Description: "Policy ID.",
 				Computed:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
-			"site_id": schema.Int64Attribute{
-				Description: "ID of the Site managing the policy",
+			"applied_child_site_ids": schema.ListAttribute{
+				Description: "IDs of child sites that this policy has been applied to. This field is read-only.",
+				Computed:    true,
+				ElementType: types.Int64Type,
+			},
+			"created_at": schema.StringAttribute{
+				Description: "When this policy was created.",
+				Computed:    true,
+			},
+			"updated_at": schema.StringAttribute{
+				Description: "When this policy was last updated.",
 				Computed:    true,
 			},
 		},
@@ -114,12 +156,25 @@ func (r *childSiteManagementPolicyResource) Create(ctx context.Context, req reso
 	}
 
 	paramsChildSiteManagementPolicyCreate := files_sdk.ChildSiteManagementPolicyCreateParams{}
-	paramsChildSiteManagementPolicyCreate.SiteSettingName = plan.SiteSettingName.ValueString()
-	paramsChildSiteManagementPolicyCreate.ManagedValue = plan.ManagedValue.ValueString()
+	createValue, diags := lib.DynamicToStringMap(ctx, path.Root("value"), plan.Value)
+	resp.Diagnostics.Append(diags...)
+	createValueBytes, err := json.Marshal(createValue)
+	if err != nil {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("value"),
+			"Error Creating Files ChildSiteManagementPolicy",
+			"Could not marshal value to JSON: "+err.Error(),
+		)
+	} else {
+		paramsChildSiteManagementPolicyCreate.Value = string(createValueBytes)
+	}
 	if !plan.SkipChildSiteIds.IsNull() && !plan.SkipChildSiteIds.IsUnknown() {
 		diags = plan.SkipChildSiteIds.ElementsAs(ctx, &paramsChildSiteManagementPolicyCreate.SkipChildSiteIds, false)
 		resp.Diagnostics.Append(diags...)
 	}
+	paramsChildSiteManagementPolicyCreate.PolicyType = paramsChildSiteManagementPolicyCreate.PolicyType.Enum()[plan.PolicyType.ValueString()]
+	paramsChildSiteManagementPolicyCreate.Name = plan.Name.ValueString()
+	paramsChildSiteManagementPolicyCreate.Description = plan.Description.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -195,12 +250,25 @@ func (r *childSiteManagementPolicyResource) Update(ctx context.Context, req reso
 
 	paramsChildSiteManagementPolicyUpdate := files_sdk.ChildSiteManagementPolicyUpdateParams{}
 	paramsChildSiteManagementPolicyUpdate.Id = plan.Id.ValueInt64()
-	paramsChildSiteManagementPolicyUpdate.SiteSettingName = plan.SiteSettingName.ValueString()
-	paramsChildSiteManagementPolicyUpdate.ManagedValue = plan.ManagedValue.ValueString()
+	updateValue, diags := lib.DynamicToStringMap(ctx, path.Root("value"), plan.Value)
+	resp.Diagnostics.Append(diags...)
+	updateValueBytes, err := json.Marshal(updateValue)
+	if err != nil {
+		resp.Diagnostics.AddAttributeError(
+			path.Root("value"),
+			"Error Creating Files ChildSiteManagementPolicy",
+			"Could not marshal value to JSON: "+err.Error(),
+		)
+	} else {
+		paramsChildSiteManagementPolicyUpdate.Value = string(updateValueBytes)
+	}
 	if !plan.SkipChildSiteIds.IsNull() && !plan.SkipChildSiteIds.IsUnknown() {
 		diags = plan.SkipChildSiteIds.ElementsAs(ctx, &paramsChildSiteManagementPolicyUpdate.SkipChildSiteIds, false)
 		resp.Diagnostics.Append(diags...)
 	}
+	paramsChildSiteManagementPolicyUpdate.PolicyType = paramsChildSiteManagementPolicyUpdate.PolicyType.Enum()[plan.PolicyType.ValueString()]
+	paramsChildSiteManagementPolicyUpdate.Name = plan.Name.ValueString()
+	paramsChildSiteManagementPolicyUpdate.Description = plan.Description.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -272,11 +340,27 @@ func (r *childSiteManagementPolicyResource) populateResourceModel(ctx context.Co
 	var propDiags diag.Diagnostics
 
 	state.Id = types.Int64Value(childSiteManagementPolicy.Id)
-	state.SiteId = types.Int64Value(childSiteManagementPolicy.SiteId)
-	state.SiteSettingName = types.StringValue(childSiteManagementPolicy.SiteSettingName)
-	state.ManagedValue = types.StringValue(childSiteManagementPolicy.ManagedValue)
+	state.PolicyType = types.StringValue(childSiteManagementPolicy.PolicyType)
+	state.Name = types.StringValue(childSiteManagementPolicy.Name)
+	state.Description = types.StringValue(childSiteManagementPolicy.Description)
+	state.Value, propDiags = lib.ToDynamic(ctx, path.Root("value"), childSiteManagementPolicy.Value, state.Value.UnderlyingValue())
+	diags.Append(propDiags...)
+	state.AppliedChildSiteIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, childSiteManagementPolicy.AppliedChildSiteIds)
+	diags.Append(propDiags...)
 	state.SkipChildSiteIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, childSiteManagementPolicy.SkipChildSiteIds)
 	diags.Append(propDiags...)
+	if err := lib.TimeToStringType(ctx, path.Root("created_at"), childSiteManagementPolicy.CreatedAt, &state.CreatedAt); err != nil {
+		diags.AddError(
+			"Error Creating Files ChildSiteManagementPolicy",
+			"Could not convert state created_at to string: "+err.Error(),
+		)
+	}
+	if err := lib.TimeToStringType(ctx, path.Root("updated_at"), childSiteManagementPolicy.UpdatedAt, &state.UpdatedAt); err != nil {
+		diags.AddError(
+			"Error Creating Files ChildSiteManagementPolicy",
+			"Could not convert state updated_at to string: "+err.Error(),
+		)
+	}
 
 	return
 }

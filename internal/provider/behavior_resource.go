@@ -88,7 +88,7 @@ func (r *behaviorResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 				Description: "Behavior type.",
 				Required:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("webhook", "file_expiration", "auto_encrypt", "lock_subfolders", "storage_region", "serve_publicly", "create_user_folders", "remote_server_sync", "inbox", "limit_file_extensions", "limit_file_regex", "amazon_sns", "watermark", "remote_server_mount", "slack_webhook", "auto_decrypt", "override_upload_filename", "permission_fence", "limit_filename_length", "organize_files_into_subfolders", "teams_webhook", "google_pub_sub"),
+					stringvalidator.OneOf("webhook", "file_expiration", "auto_encrypt", "lock_subfolders", "storage_region", "serve_publicly", "create_user_folders", "remote_server_sync", "inbox", "limit_file_extensions", "limit_file_regex", "amazon_sns", "watermark", "remote_server_mount", "slack_webhook", "auto_decrypt", "override_upload_filename", "permission_fence", "limit_filename_length", "organize_files_into_subfolders", "teams_webhook", "google_pub_sub", "archive_overwritten_or_deleted_files"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),

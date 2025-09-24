@@ -3,15 +3,22 @@
 page_title: "files_child_site_management_policy Data Source - files"
 subcategory: ""
 description: |-
-  A ChildSiteManagementPolicyEntity is a policy object defined by a parent site that enforces a specific setting and its managed value across all child sites.
-  This setting remains locked on child sites unless the policy explicitly exempts them.
+  A Child Site Management Policy is a centralized policy defined by a parent site to enforce consistent configurations across child sites. These policies allow parent sites to maintain control over specific aspects of their child sites' functionality and appearance.
+  Policies can be applied to all child sites, or specific sites can be exempted from policy management by adding their site ID to the skip_child_site_ids parameter.
+  The value field contains the policy configuration data, with the format varying based on the policy type. When a policy is active, its managed configurations are automatically enforced on applicable child sites, and attribute modifications are not permitted.
 ---
 
 # files_child_site_management_policy (Data Source)
 
-A ChildSiteManagementPolicyEntity is a policy object defined by a parent site that enforces a specific setting and its managed value across all child sites.
+A Child Site Management Policy is a centralized policy defined by a parent site to enforce consistent configurations across child sites. These policies allow parent sites to maintain control over specific aspects of their child sites' functionality and appearance.
 
-This setting remains locked on child sites unless the policy explicitly exempts them.
+
+
+Policies can be applied to all child sites, or specific sites can be exempted from policy management by adding their site ID to the `skip_child_site_ids` parameter.
+
+
+
+The `value` field contains the policy configuration data, with the format varying based on the policy type. When a policy is active, its managed configurations are automatically enforced on applicable child sites, and attribute modifications are not permitted.
 
 ## Example Usage
 
@@ -26,11 +33,15 @@ data "files_child_site_management_policy" "example_child_site_management_policy"
 
 ### Required
 
-- `id` (Number) ChildSiteManagementPolicy ID
+- `id` (Number) Policy ID.
 
 ### Read-Only
 
-- `managed_value` (String) The value for the setting that will be enforced for all child sites that are not exempt
-- `site_id` (Number) ID of the Site managing the policy
-- `site_setting_name` (String) The name of the setting that is managed by the policy
-- `skip_child_site_ids` (List of Number) The list of child site IDs that are exempt from this policy
+- `applied_child_site_ids` (List of Number) IDs of child sites that this policy has been applied to. This field is read-only.
+- `created_at` (String) When this policy was created.
+- `description` (String) Description for this policy.
+- `name` (String) Name for this policy.
+- `policy_type` (String) Type of policy.  Valid values: `settings`.
+- `skip_child_site_ids` (List of Number) IDs of child sites that this policy has been exempted from. If `skip_child_site_ids` is empty, the policy will be applied to all child sites. To apply a policy to a child site that has been exempted, remove it from `skip_child_site_ids` or set it to an empty array (`[]`).
+- `updated_at` (String) When this policy was last updated.
+- `value` (Dynamic) Policy configuration data. Attributes differ by policy type. For more information, refer to the Value Hash section of the developer documentation.
