@@ -43,7 +43,6 @@ type syncRunDataSourceModel struct {
 	Runtime              types.String `tfsdk:"runtime"`
 	LogUrl               types.String `tfsdk:"log_url"`
 	CompletedAt          types.String `tfsdk:"completed_at"`
-	Notified             types.Bool   `tfsdk:"notified"`
 	DryRun               types.Bool   `tfsdk:"dry_run"`
 	BytesSynced          types.Int64  `tfsdk:"bytes_synced"`
 	EstimatedBytesCount  types.Int64  `tfsdk:"estimated_bytes_count"`
@@ -139,10 +138,6 @@ func (r *syncRunDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Description: "When this run was completed",
 				Computed:    true,
 			},
-			"notified": schema.BoolAttribute{
-				Description: "Whether notifications were sent for this run",
-				Computed:    true,
-			},
 			"dry_run": schema.BoolAttribute{
 				Description: "Whether this run was a dry run (no actual changes made)",
 				Computed:    true,
@@ -221,7 +216,6 @@ func (r *syncRunDataSource) populateDataSourceModel(ctx context.Context, syncRun
 			"Could not convert state completed_at to string: "+err.Error(),
 		)
 	}
-	state.Notified = types.BoolPointerValue(syncRun.Notified)
 	state.DryRun = types.BoolPointerValue(syncRun.DryRun)
 	state.BytesSynced = types.Int64Value(syncRun.BytesSynced)
 	state.EstimatedBytesCount = types.Int64Value(syncRun.EstimatedBytesCount)
