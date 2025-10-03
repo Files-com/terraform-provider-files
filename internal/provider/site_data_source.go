@@ -45,6 +45,7 @@ type siteDataSourceModel struct {
 	AllowedCountries                         types.String  `tfsdk:"allowed_countries"`
 	AllowedIps                               types.String  `tfsdk:"allowed_ips"`
 	AlwaysMkdirParents                       types.Bool    `tfsdk:"always_mkdir_parents"`
+	As2MessageRetentionDays                  types.Int64   `tfsdk:"as2_message_retention_days"`
 	AskAboutOverwrites                       types.Bool    `tfsdk:"ask_about_overwrites"`
 	BundleActivityNotifications              types.String  `tfsdk:"bundle_activity_notifications"`
 	BundleExpiration                         types.Int64   `tfsdk:"bundle_expiration"`
@@ -293,6 +294,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"always_mkdir_parents": schema.BoolAttribute{
 				Description: "Create parent directories if they do not exist during uploads?  This is primarily used to work around broken upload clients that assume servers will perform this step.",
+				Computed:    true,
+			},
+			"as2_message_retention_days": schema.Int64Attribute{
+				Description: "Number of days to retain AS2 messages (incoming and outgoing).",
 				Computed:    true,
 			},
 			"ask_about_overwrites": schema.BoolAttribute{
@@ -971,6 +976,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.AllowedCountries = types.StringValue(site.AllowedCountries)
 	state.AllowedIps = types.StringValue(site.AllowedIps)
 	state.AlwaysMkdirParents = types.BoolPointerValue(site.AlwaysMkdirParents)
+	state.As2MessageRetentionDays = types.Int64Value(site.As2MessageRetentionDays)
 	state.AskAboutOverwrites = types.BoolPointerValue(site.AskAboutOverwrites)
 	state.BundleActivityNotifications = types.StringValue(site.BundleActivityNotifications)
 	state.BundleExpiration = types.Int64Value(site.BundleExpiration)

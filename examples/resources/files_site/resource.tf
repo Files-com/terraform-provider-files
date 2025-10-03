@@ -41,6 +41,7 @@ resource "files_site" "example_site" {
   calculate_file_checksums_sha256               = false
   legacy_checksums_mode                         = false
   migrate_remote_server_sync_to_sync            = false
+  as2_message_retention_days                    = 1
   session_expiry                                = 1.0
   ssl_required                                  = false
   sftp_insecure_ciphers                         = false

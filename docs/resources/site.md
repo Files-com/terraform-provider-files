@@ -61,6 +61,7 @@ resource "files_site" "example_site" {
   calculate_file_checksums_sha256               = false
   legacy_checksums_mode                         = false
   migrate_remote_server_sync_to_sync            = false
+  as2_message_retention_days                    = 1
   session_expiry                                = 1.0
   ssl_required                                  = false
   sftp_insecure_ciphers                         = false
@@ -197,6 +198,7 @@ resource "files_site" "example_site" {
 - `allowed_countries` (String) Comma separated list of allowed Country codes
 - `allowed_ips` (String) List of allowed IP addresses
 - `always_mkdir_parents` (Boolean) Create parent directories if they do not exist during uploads?  This is primarily used to work around broken upload clients that assume servers will perform this step.
+- `as2_message_retention_days` (Number) Number of days to retain AS2 messages (incoming and outgoing).
 - `ask_about_overwrites` (Boolean) If false, rename conflicting files instead of asking for overwrite confirmation.  Only applies to web interface.
 - `bundle_activity_notifications` (String) Do Bundle owners receive activity notifications?
 - `bundle_expiration` (Number) Site-wide Bundle expiration in days
