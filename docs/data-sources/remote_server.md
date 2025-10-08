@@ -147,6 +147,7 @@ data "files_remote_server" "example_remote_server" {
 - `azure_files_storage_share_name` (String) Azure Files:  Storage Share name
 - `backblaze_b2_bucket` (String) Backblaze B2 Cloud Storage: Bucket name
 - `backblaze_b2_s3_endpoint` (String) Backblaze B2 Cloud Storage: S3 Endpoint
+- `buffer_uploads_always` (Boolean) If true, uploads to this server will be uploaded first to Files.com before being sent to the remote server. This can improve performance in certain access patterns, such as high-latency connections.  It will cause data to be temporarily stored in Files.com.
 - `cloudflare_access_key` (String) Cloudflare: Access Key.
 - `cloudflare_bucket` (String) Cloudflare: Bucket name
 - `cloudflare_endpoint` (String) Cloudflare: endpoint
