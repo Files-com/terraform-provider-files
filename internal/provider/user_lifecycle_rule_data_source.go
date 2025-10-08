@@ -28,6 +28,7 @@ type userLifecycleRuleDataSource struct {
 type userLifecycleRuleDataSourceModel struct {
 	Id                   types.Int64  `tfsdk:"id"`
 	AuthenticationMethod types.String `tfsdk:"authentication_method"`
+	GroupIds             types.List   `tfsdk:"group_ids"`
 	InactivityDays       types.Int64  `tfsdk:"inactivity_days"`
 	IncludeFolderAdmins  types.Bool   `tfsdk:"include_folder_admins"`
 	IncludeSiteAdmins    types.Bool   `tfsdk:"include_site_admins"`
@@ -71,6 +72,11 @@ func (r *userLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.Sch
 			"authentication_method": schema.StringAttribute{
 				Description: "User authentication method for the rule",
 				Computed:    true,
+			},
+			"group_ids": schema.ListAttribute{
+				Description: "Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users.",
+				Computed:    true,
+				ElementType: types.Int64Type,
 			},
 			"inactivity_days": schema.Int64Attribute{
 				Description: "Number of days of inactivity before the rule applies",
@@ -135,8 +141,12 @@ func (r *userLifecycleRuleDataSource) Read(ctx context.Context, req datasource.R
 }
 
 func (r *userLifecycleRuleDataSource) populateDataSourceModel(ctx context.Context, userLifecycleRule files_sdk.UserLifecycleRule, state *userLifecycleRuleDataSourceModel) (diags diag.Diagnostics) {
+	var propDiags diag.Diagnostics
+
 	state.Id = types.Int64Value(userLifecycleRule.Id)
 	state.AuthenticationMethod = types.StringValue(userLifecycleRule.AuthenticationMethod)
+	state.GroupIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, userLifecycleRule.GroupIds)
+	diags.Append(propDiags...)
 	state.InactivityDays = types.Int64Value(userLifecycleRule.InactivityDays)
 	state.IncludeFolderAdmins = types.BoolPointerValue(userLifecycleRule.IncludeFolderAdmins)
 	state.IncludeSiteAdmins = types.BoolPointerValue(userLifecycleRule.IncludeSiteAdmins)

@@ -30,6 +30,7 @@ The rule can also include or exclude site and folder admins from the action.
 ```terraform
 resource "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
   authentication_method = "password"
+  group_ids             = [1, 2, 3]
   inactivity_days       = 12
   include_site_admins   = true
   include_folder_admins = true
@@ -45,6 +46,7 @@ resource "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
 
 - `action` (String) Action to take on inactive users (disable or delete)
 - `authentication_method` (String) User authentication method for the rule
+- `group_ids` (List of Number) Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users.
 - `inactivity_days` (Number) Number of days of inactivity before the rule applies
 - `include_folder_admins` (Boolean) Include folder admins in the rule
 - `include_site_admins` (Boolean) Include site admins in the rule

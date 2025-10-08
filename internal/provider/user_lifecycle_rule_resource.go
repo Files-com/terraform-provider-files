@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -37,6 +38,7 @@ type userLifecycleRuleResource struct {
 
 type userLifecycleRuleResourceModel struct {
 	AuthenticationMethod types.String `tfsdk:"authentication_method"`
+	GroupIds             types.List   `tfsdk:"group_ids"`
 	InactivityDays       types.Int64  `tfsdk:"inactivity_days"`
 	IncludeFolderAdmins  types.Bool   `tfsdk:"include_folder_admins"`
 	IncludeSiteAdmins    types.Bool   `tfsdk:"include_site_admins"`
@@ -83,6 +85,15 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"group_ids": schema.ListAttribute{
+				Description: "Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users.",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.Int64Type,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"inactivity_days": schema.Int64Attribute{
@@ -171,6 +182,10 @@ func (r *userLifecycleRuleResource) Create(ctx context.Context, req resource.Cre
 	paramsUserLifecycleRuleCreate := files_sdk.UserLifecycleRuleCreateParams{}
 	paramsUserLifecycleRuleCreate.Action = paramsUserLifecycleRuleCreate.Action.Enum()[plan.Action.ValueString()]
 	paramsUserLifecycleRuleCreate.AuthenticationMethod = paramsUserLifecycleRuleCreate.AuthenticationMethod.Enum()[plan.AuthenticationMethod.ValueString()]
+	if !plan.GroupIds.IsNull() && !plan.GroupIds.IsUnknown() {
+		diags = plan.GroupIds.ElementsAs(ctx, &paramsUserLifecycleRuleCreate.GroupIds, false)
+		resp.Diagnostics.Append(diags...)
+	}
 	paramsUserLifecycleRuleCreate.InactivityDays = plan.InactivityDays.ValueInt64()
 	if !plan.IncludeSiteAdmins.IsNull() && !plan.IncludeSiteAdmins.IsUnknown() {
 		paramsUserLifecycleRuleCreate.IncludeSiteAdmins = plan.IncludeSiteAdmins.ValueBoolPointer()
@@ -257,6 +272,10 @@ func (r *userLifecycleRuleResource) Update(ctx context.Context, req resource.Upd
 	paramsUserLifecycleRuleUpdate.Id = plan.Id.ValueInt64()
 	paramsUserLifecycleRuleUpdate.Action = paramsUserLifecycleRuleUpdate.Action.Enum()[plan.Action.ValueString()]
 	paramsUserLifecycleRuleUpdate.AuthenticationMethod = paramsUserLifecycleRuleUpdate.AuthenticationMethod.Enum()[plan.AuthenticationMethod.ValueString()]
+	if !plan.GroupIds.IsNull() && !plan.GroupIds.IsUnknown() {
+		diags = plan.GroupIds.ElementsAs(ctx, &paramsUserLifecycleRuleUpdate.GroupIds, false)
+		resp.Diagnostics.Append(diags...)
+	}
 	paramsUserLifecycleRuleUpdate.InactivityDays = plan.InactivityDays.ValueInt64()
 	if !plan.IncludeSiteAdmins.IsNull() && !plan.IncludeSiteAdmins.IsUnknown() {
 		paramsUserLifecycleRuleUpdate.IncludeSiteAdmins = plan.IncludeSiteAdmins.ValueBoolPointer()
@@ -334,8 +353,12 @@ func (r *userLifecycleRuleResource) ImportState(ctx context.Context, req resourc
 }
 
 func (r *userLifecycleRuleResource) populateResourceModel(ctx context.Context, userLifecycleRule files_sdk.UserLifecycleRule, state *userLifecycleRuleResourceModel) (diags diag.Diagnostics) {
+	var propDiags diag.Diagnostics
+
 	state.Id = types.Int64Value(userLifecycleRule.Id)
 	state.AuthenticationMethod = types.StringValue(userLifecycleRule.AuthenticationMethod)
+	state.GroupIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, userLifecycleRule.GroupIds)
+	diags.Append(propDiags...)
 	state.InactivityDays = types.Int64Value(userLifecycleRule.InactivityDays)
 	state.IncludeFolderAdmins = types.BoolPointerValue(userLifecycleRule.IncludeFolderAdmins)
 	state.IncludeSiteAdmins = types.BoolPointerValue(userLifecycleRule.IncludeSiteAdmins)
