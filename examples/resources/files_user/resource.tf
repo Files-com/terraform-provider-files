@@ -13,6 +13,7 @@ resource "files_user" "example_user" {
   bypass_site_allowed_ips      = false
   dav_permission               = true
   disabled                     = true
+  filesystem_layout            = "site_root"
   ftp_permission               = true
   header_text                  = "User-specific message."
   language                     = "en"
@@ -21,6 +22,7 @@ resource "files_user" "example_user" {
   company                      = "ACME Corp."
   notes                        = "Internal notes on this user."
   office_integration_enabled   = true
+  partner_id                   = 1
   password_validity_days       = 1
   readonly_site_admin          = true
   receive_admin_alerts         = true

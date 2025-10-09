@@ -49,6 +49,7 @@ type userResourceModel struct {
 	DavPermission                    types.Bool              `tfsdk:"dav_permission"`
 	Disabled                         types.Bool              `tfsdk:"disabled"`
 	Email                            types.String            `tfsdk:"email"`
+	FilesystemLayout                 types.String            `tfsdk:"filesystem_layout"`
 	FtpPermission                    types.Bool              `tfsdk:"ftp_permission"`
 	GroupIds                         lib.SortedElementString `tfsdk:"group_ids"`
 	HeaderText                       types.String            `tfsdk:"header_text"`
@@ -58,6 +59,7 @@ type userResourceModel struct {
 	Notes                            types.String            `tfsdk:"notes"`
 	NotificationDailySendTime        types.Int64             `tfsdk:"notification_daily_send_time"`
 	OfficeIntegrationEnabled         types.Bool              `tfsdk:"office_integration_enabled"`
+	PartnerId                        types.Int64             `tfsdk:"partner_id"`
 	PasswordValidityDays             types.Int64             `tfsdk:"password_validity_days"`
 	ReceiveAdminAlerts               types.Bool              `tfsdk:"receive_admin_alerts"`
 	Require2fa                       types.String            `tfsdk:"require_2fa"`
@@ -229,6 +231,17 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"filesystem_layout": schema.StringAttribute{
+				Description: "File system layout",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("site_root", "user_root", "partner_root", "integration_centric"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"ftp_permission": schema.BoolAttribute{
 				Description: "Can the user access with FTP/FTPS?",
 				Computed:    true,
@@ -300,6 +313,14 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"partner_id": schema.Int64Attribute{
+				Description: "Partner ID if this user belongs to a Partner",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"password_validity_days": schema.Int64Attribute{
@@ -679,6 +700,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
 		paramsUserCreate.Disabled = plan.Disabled.ValueBoolPointer()
 	}
+	paramsUserCreate.FilesystemLayout = paramsUserCreate.FilesystemLayout.Enum()[plan.FilesystemLayout.ValueString()]
 	if !plan.FtpPermission.IsNull() && !plan.FtpPermission.IsUnknown() {
 		paramsUserCreate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
 	}
@@ -691,6 +713,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !plan.OfficeIntegrationEnabled.IsNull() && !plan.OfficeIntegrationEnabled.IsUnknown() {
 		paramsUserCreate.OfficeIntegrationEnabled = plan.OfficeIntegrationEnabled.ValueBoolPointer()
 	}
+	paramsUserCreate.PartnerId = plan.PartnerId.ValueInt64()
 	paramsUserCreate.PasswordValidityDays = plan.PasswordValidityDays.ValueInt64()
 	if !plan.ReadonlySiteAdmin.IsNull() && !plan.ReadonlySiteAdmin.IsUnknown() {
 		paramsUserCreate.ReadonlySiteAdmin = plan.ReadonlySiteAdmin.ValueBoolPointer()
@@ -868,6 +891,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
 		paramsUserUpdate.Disabled = plan.Disabled.ValueBoolPointer()
 	}
+	paramsUserUpdate.FilesystemLayout = paramsUserUpdate.FilesystemLayout.Enum()[plan.FilesystemLayout.ValueString()]
 	if !plan.FtpPermission.IsNull() && !plan.FtpPermission.IsUnknown() {
 		paramsUserUpdate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
 	}
@@ -880,6 +904,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.OfficeIntegrationEnabled.IsNull() && !plan.OfficeIntegrationEnabled.IsUnknown() {
 		paramsUserUpdate.OfficeIntegrationEnabled = plan.OfficeIntegrationEnabled.ValueBoolPointer()
 	}
+	paramsUserUpdate.PartnerId = plan.PartnerId.ValueInt64()
 	paramsUserUpdate.PasswordValidityDays = plan.PasswordValidityDays.ValueInt64()
 	if !plan.ReadonlySiteAdmin.IsNull() && !plan.ReadonlySiteAdmin.IsUnknown() {
 		paramsUserUpdate.ReadonlySiteAdmin = plan.ReadonlySiteAdmin.ValueBoolPointer()
@@ -1030,6 +1055,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.Disabled = types.BoolPointerValue(user.Disabled)
 	state.DisabledExpiredOrInactive = types.BoolPointerValue(user.DisabledExpiredOrInactive)
 	state.Email = types.StringValue(user.Email)
+	state.FilesystemLayout = types.StringValue(user.FilesystemLayout)
 	if err := lib.TimeToStringType(ctx, path.Root("first_login_at"), user.FirstLoginAt, &state.FirstLoginAt); err != nil {
 		diags.AddError(
 			"Error Creating Files User",
@@ -1106,6 +1132,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.Notes = types.StringValue(user.Notes)
 	state.NotificationDailySendTime = types.Int64Value(user.NotificationDailySendTime)
 	state.OfficeIntegrationEnabled = types.BoolPointerValue(user.OfficeIntegrationEnabled)
+	state.PartnerId = types.Int64Value(user.PartnerId)
 	if err := lib.TimeToStringType(ctx, path.Root("password_set_at"), user.PasswordSetAt, &state.PasswordSetAt); err != nil {
 		diags.AddError(
 			"Error Creating Files User",

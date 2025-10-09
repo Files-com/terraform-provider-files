@@ -57,6 +57,7 @@ data "files_sso_strategy" "example_sso_strategy" {
 - `provision_company` (String) Default company for auto provisioned users.
 - `provision_dav_permission` (Boolean) Auto-provisioned users get WebDAV permission?
 - `provision_email_signup_groups` (String) Comma-separated list of group names whose members will be created with email_signup authentication.
+- `provision_filesystem_layout` (String) File System layout to use for auto provisioned users.
 - `provision_ftp_permission` (Boolean) Auto-provisioned users get FTP permission?
 - `provision_group_admin_groups` (String) Comma-separated list of group names whose members will be provisioned as Group Admins.
 - `provision_group_default` (String) Comma-separated list of group names for groups to automatically add all auto-provisioned users to.
@@ -80,5 +81,5 @@ data "files_sso_strategy" "example_sso_strategy" {
 - `scim_oauth_access_token` (String) SCIM OAuth Access Token.
 - `scim_oauth_access_token_expires_at` (String) SCIM OAuth Access Token Expiration Time.
 - `scim_username` (String) SCIM username.
-- `subdomain` (String) Subdomain
+- `subdomain` (String) Subdomain or domain name for your auth provider.   Example: `https://[subdomain].okta.com/`
 - `user_count` (Number) Count of users with this SSO Strategy

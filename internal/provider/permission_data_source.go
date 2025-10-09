@@ -32,6 +32,7 @@ type permissionDataSourceModel struct {
 	Username   types.String `tfsdk:"username"`
 	GroupId    types.Int64  `tfsdk:"group_id"`
 	GroupName  types.String `tfsdk:"group_name"`
+	PartnerId  types.Int64  `tfsdk:"partner_id"`
 	Permission types.String `tfsdk:"permission"`
 	Recursive  types.Bool   `tfsdk:"recursive"`
 	SiteId     types.Int64  `tfsdk:"site_id"`
@@ -86,6 +87,10 @@ func (r *permissionDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			},
 			"group_name": schema.StringAttribute{
 				Description: "Group name (if applicable)",
+				Computed:    true,
+			},
+			"partner_id": schema.Int64Attribute{
+				Description: "Partner ID (if applicable)",
 				Computed:    true,
 			},
 			"permission": schema.StringAttribute{
@@ -164,6 +169,7 @@ func (r *permissionDataSource) populateDataSourceModel(ctx context.Context, perm
 	state.Username = types.StringValue(permission.Username)
 	state.GroupId = types.Int64Value(permission.GroupId)
 	state.GroupName = types.StringValue(permission.GroupName)
+	state.PartnerId = types.Int64Value(permission.PartnerId)
 	state.Permission = types.StringValue(permission.Permission)
 	state.Recursive = types.BoolPointerValue(permission.Recursive)
 	state.SiteId = types.Int64Value(permission.SiteId)

@@ -68,6 +68,7 @@ resource "files_permission" "example_permission" {
   group_id   = 1
   permission = "full"
   recursive  = false
+  partner_id = 1
   user_id    = 1
   username   = "user"
   group_name = "example"
@@ -86,6 +87,7 @@ resource "files_permission" "example_permission" {
 
 - `group_id` (Number) Group ID
 - `group_name` (String) Group name (if applicable)
+- `partner_id` (Number) Partner ID (if applicable)
 - `permission` (String) Permission type.  See the table referenced in the documentation for an explanation of each permission.
 - `recursive` (Boolean) Recursive: does this permission apply to subfolders?
 - `site_id` (Number) Site ID

@@ -41,6 +41,7 @@ type permissionResourceModel struct {
 	Username   types.String `tfsdk:"username"`
 	GroupId    types.Int64  `tfsdk:"group_id"`
 	GroupName  types.String `tfsdk:"group_name"`
+	PartnerId  types.Int64  `tfsdk:"partner_id"`
 	Permission types.String `tfsdk:"permission"`
 	Recursive  types.Bool   `tfsdk:"recursive"`
 	SiteId     types.Int64  `tfsdk:"site_id"`
@@ -117,6 +118,15 @@ func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"partner_id": schema.Int64Attribute{
+				Description: "Partner ID (if applicable)",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
+				},
+			},
 			"permission": schema.StringAttribute{
 				Description: "Permission type.  See the table referenced in the documentation for an explanation of each permission.",
 				Computed:    true,
@@ -179,6 +189,7 @@ func (r *permissionResource) Create(ctx context.Context, req resource.CreateRequ
 	if !plan.Recursive.IsNull() && !plan.Recursive.IsUnknown() {
 		paramsPermissionCreate.Recursive = plan.Recursive.ValueBoolPointer()
 	}
+	paramsPermissionCreate.PartnerId = plan.PartnerId.ValueInt64()
 	paramsPermissionCreate.UserId = plan.UserId.ValueInt64()
 	paramsPermissionCreate.Username = plan.Username.ValueString()
 	paramsPermissionCreate.GroupName = plan.GroupName.ValueString()
@@ -324,6 +335,7 @@ func (r *permissionResource) populateResourceModel(ctx context.Context, permissi
 	state.Username = types.StringValue(permission.Username)
 	state.GroupId = types.Int64Value(permission.GroupId)
 	state.GroupName = types.StringValue(permission.GroupName)
+	state.PartnerId = types.Int64Value(permission.PartnerId)
 	state.Permission = types.StringValue(permission.Permission)
 	state.Recursive = types.BoolPointerValue(permission.Recursive)
 	state.SiteId = types.Int64Value(permission.SiteId)

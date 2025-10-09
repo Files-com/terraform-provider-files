@@ -71,6 +71,7 @@ resource "files_user" "example_user" {
   bypass_site_allowed_ips      = false
   dav_permission               = true
   disabled                     = true
+  filesystem_layout            = "site_root"
   ftp_permission               = true
   header_text                  = "User-specific message."
   language                     = "en"
@@ -79,6 +80,7 @@ resource "files_user" "example_user" {
   company                      = "ACME Corp."
   notes                        = "Internal notes on this user."
   office_integration_enabled   = true
+  partner_id                   = 1
   password_validity_days       = 1
   readonly_site_admin          = true
   receive_admin_alerts         = true
@@ -126,6 +128,7 @@ resource "files_user" "example_user" {
 - `dav_permission` (Boolean) Can the user connect with WebDAV?
 - `disabled` (Boolean) Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date.
 - `email` (String) User email address
+- `filesystem_layout` (String) File system layout
 - `ftp_permission` (Boolean) Can the user access with FTP/FTPS?
 - `grant_permission` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Permission to grant on the User Root upon user creation. Can be blank or `full`, `read`, `write`, `list`, `read+write`, or `list+write`
 - `group_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Group ID to associate this user with.
@@ -137,6 +140,7 @@ resource "files_user" "example_user" {
 - `notes` (String) Any internal notes on the user
 - `notification_daily_send_time` (Number) Hour of the day at which daily notifications should be sent. Can be in range 0 to 23
 - `office_integration_enabled` (Boolean) Enable integration with Office for the web?
+- `partner_id` (Number) Partner ID if this user belongs to a Partner
 - `password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) User password.
 - `password_confirmation` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Optional, but if provided, we will ensure that it matches the value sent in `password`.
 - `password_validity_days` (Number) Number of days to allow user to use the same password

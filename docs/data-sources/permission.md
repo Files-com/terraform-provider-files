@@ -79,6 +79,7 @@ data "files_permission" "example_permission" {
 
 - `group_id` (Number) Group ID
 - `group_name` (String) Group name (if applicable)
+- `partner_id` (Number) Partner ID (if applicable)
 - `path` (String) Path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `permission` (String) Permission type.  See the table referenced in the documentation for an explanation of each permission.
 - `recursive` (Boolean) Recursive: does this permission apply to subfolders?

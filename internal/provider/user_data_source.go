@@ -46,6 +46,7 @@ type userDataSourceModel struct {
 	Disabled                         types.Bool   `tfsdk:"disabled"`
 	DisabledExpiredOrInactive        types.Bool   `tfsdk:"disabled_expired_or_inactive"`
 	Email                            types.String `tfsdk:"email"`
+	FilesystemLayout                 types.String `tfsdk:"filesystem_layout"`
 	FirstLoginAt                     types.String `tfsdk:"first_login_at"`
 	FtpPermission                    types.Bool   `tfsdk:"ftp_permission"`
 	GroupIds                         types.String `tfsdk:"group_ids"`
@@ -67,6 +68,7 @@ type userDataSourceModel struct {
 	Notes                            types.String `tfsdk:"notes"`
 	NotificationDailySendTime        types.Int64  `tfsdk:"notification_daily_send_time"`
 	OfficeIntegrationEnabled         types.Bool   `tfsdk:"office_integration_enabled"`
+	PartnerId                        types.Int64  `tfsdk:"partner_id"`
 	PasswordSetAt                    types.String `tfsdk:"password_set_at"`
 	PasswordValidityDays             types.Int64  `tfsdk:"password_validity_days"`
 	PublicKeysCount                  types.Int64  `tfsdk:"public_keys_count"`
@@ -196,6 +198,10 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "User email address",
 				Computed:    true,
 			},
+			"filesystem_layout": schema.StringAttribute{
+				Description: "File system layout",
+				Computed:    true,
+			},
 			"first_login_at": schema.StringAttribute{
 				Description: "User's first login time",
 				Computed:    true,
@@ -278,6 +284,10 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"office_integration_enabled": schema.BoolAttribute{
 				Description: "Enable integration with Office for the web?",
+				Computed:    true,
+			},
+			"partner_id": schema.Int64Attribute{
+				Description: "Partner ID if this user belongs to a Partner",
 				Computed:    true,
 			},
 			"password_set_at": schema.StringAttribute{
@@ -454,6 +464,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.Disabled = types.BoolPointerValue(user.Disabled)
 	state.DisabledExpiredOrInactive = types.BoolPointerValue(user.DisabledExpiredOrInactive)
 	state.Email = types.StringValue(user.Email)
+	state.FilesystemLayout = types.StringValue(user.FilesystemLayout)
 	if err := lib.TimeToStringType(ctx, path.Root("first_login_at"), user.FirstLoginAt, &state.FirstLoginAt); err != nil {
 		diags.AddError(
 			"Error Creating Files User",
@@ -530,6 +541,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.Notes = types.StringValue(user.Notes)
 	state.NotificationDailySendTime = types.Int64Value(user.NotificationDailySendTime)
 	state.OfficeIntegrationEnabled = types.BoolPointerValue(user.OfficeIntegrationEnabled)
+	state.PartnerId = types.Int64Value(user.PartnerId)
 	if err := lib.TimeToStringType(ctx, path.Root("password_set_at"), user.PasswordSetAt, &state.PasswordSetAt); err != nil {
 		diags.AddError(
 			"Error Creating Files User",

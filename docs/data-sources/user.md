@@ -90,6 +90,7 @@ data "files_user" "example_user" {
 - `disabled_expired_or_inactive` (Boolean) Computed property that returns true if user disabled or expired or inactive.
 - `email` (String) User email address
 - `externally_managed` (Boolean) Is this user managed by a SsoStrategy?
+- `filesystem_layout` (String) File system layout
 - `first_login_at` (String) User's first login time
 - `ftp_permission` (Boolean) Can the user access with FTP/FTPS?
 - `group_ids` (String) Comma-separated list of group IDs of which this user is a member
@@ -110,6 +111,7 @@ data "files_user" "example_user" {
 - `notes` (String) Any internal notes on the user
 - `notification_daily_send_time` (Number) Hour of the day at which daily notifications should be sent. Can be in range 0 to 23
 - `office_integration_enabled` (Boolean) Enable integration with Office for the web?
+- `partner_id` (Number) Partner ID if this user belongs to a Partner
 - `password_expire_at` (String) Password expiration datetime
 - `password_expired` (Boolean) Is user's password expired?
 - `password_set_at` (String) Last time the user's password was set

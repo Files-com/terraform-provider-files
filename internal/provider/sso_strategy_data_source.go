@@ -63,6 +63,7 @@ type ssoStrategyDataSourceModel struct {
 	ProvisionTimeZone                types.String `tfsdk:"provision_time_zone"`
 	ProvisionCompany                 types.String `tfsdk:"provision_company"`
 	ProvisionRequire2fa              types.String `tfsdk:"provision_require_2fa"`
+	ProvisionFilesystemLayout        types.String `tfsdk:"provision_filesystem_layout"`
 	ProviderIdentifier               types.String `tfsdk:"provider_identifier"`
 	LdapBaseDn                       types.String `tfsdk:"ldap_base_dn"`
 	LdapDomain                       types.String `tfsdk:"ldap_domain"`
@@ -168,7 +169,7 @@ func (r *ssoStrategyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Computed:    true,
 			},
 			"subdomain": schema.StringAttribute{
-				Description: "Subdomain",
+				Description: "Subdomain or domain name for your auth provider.   Example: `https://[subdomain].okta.com/`",
 				Computed:    true,
 			},
 			"provision_users": schema.BoolAttribute{
@@ -248,6 +249,10 @@ func (r *ssoStrategyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 			},
 			"provision_require_2fa": schema.StringAttribute{
 				Description: "2FA required setting for auto provisioned users.",
+				Computed:    true,
+			},
+			"provision_filesystem_layout": schema.StringAttribute{
+				Description: "File System layout to use for auto provisioned users.",
 				Computed:    true,
 			},
 			"provider_identifier": schema.StringAttribute{
@@ -366,6 +371,7 @@ func (r *ssoStrategyDataSource) populateDataSourceModel(ctx context.Context, sso
 	state.ProvisionTimeZone = types.StringValue(ssoStrategy.ProvisionTimeZone)
 	state.ProvisionCompany = types.StringValue(ssoStrategy.ProvisionCompany)
 	state.ProvisionRequire2fa = types.StringValue(ssoStrategy.ProvisionRequire2fa)
+	state.ProvisionFilesystemLayout = types.StringValue(ssoStrategy.ProvisionFilesystemLayout)
 	state.ProviderIdentifier = types.StringValue(ssoStrategy.ProviderIdentifier)
 	state.LdapBaseDn = types.StringValue(ssoStrategy.LdapBaseDn)
 	state.LdapDomain = types.StringValue(ssoStrategy.LdapDomain)
