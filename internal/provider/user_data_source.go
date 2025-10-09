@@ -68,6 +68,7 @@ type userDataSourceModel struct {
 	Notes                            types.String `tfsdk:"notes"`
 	NotificationDailySendTime        types.Int64  `tfsdk:"notification_daily_send_time"`
 	OfficeIntegrationEnabled         types.Bool   `tfsdk:"office_integration_enabled"`
+	PartnerAdmin                     types.Bool   `tfsdk:"partner_admin"`
 	PartnerId                        types.Int64  `tfsdk:"partner_id"`
 	PasswordSetAt                    types.String `tfsdk:"password_set_at"`
 	PasswordValidityDays             types.Int64  `tfsdk:"password_validity_days"`
@@ -284,6 +285,10 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"office_integration_enabled": schema.BoolAttribute{
 				Description: "Enable integration with Office for the web?",
+				Computed:    true,
+			},
+			"partner_admin": schema.BoolAttribute{
+				Description: "Is this user a Partner administrator?",
 				Computed:    true,
 			},
 			"partner_id": schema.Int64Attribute{
@@ -541,6 +546,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.Notes = types.StringValue(user.Notes)
 	state.NotificationDailySendTime = types.Int64Value(user.NotificationDailySendTime)
 	state.OfficeIntegrationEnabled = types.BoolPointerValue(user.OfficeIntegrationEnabled)
+	state.PartnerAdmin = types.BoolPointerValue(user.PartnerAdmin)
 	state.PartnerId = types.Int64Value(user.PartnerId)
 	if err := lib.TimeToStringType(ctx, path.Root("password_set_at"), user.PasswordSetAt, &state.PasswordSetAt); err != nil {
 		diags.AddError(

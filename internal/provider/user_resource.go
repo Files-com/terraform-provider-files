@@ -105,6 +105,7 @@ type userResourceModel struct {
 	LastActiveAt                     types.String            `tfsdk:"last_active_at"`
 	LastProtocolCipher               types.String            `tfsdk:"last_protocol_cipher"`
 	LockoutExpires                   types.String            `tfsdk:"lockout_expires"`
+	PartnerAdmin                     types.Bool              `tfsdk:"partner_admin"`
 	PasswordSetAt                    types.String            `tfsdk:"password_set_at"`
 	PublicKeysCount                  types.Int64             `tfsdk:"public_keys_count"`
 	Active2fa                        types.Bool              `tfsdk:"active_2fa"`
@@ -588,6 +589,10 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"lockout_expires": schema.StringAttribute{
 				Description: "Time in the future that the user will no longer be locked out if applicable",
+				Computed:    true,
+			},
+			"partner_admin": schema.BoolAttribute{
+				Description: "Is this user a Partner administrator?",
 				Computed:    true,
 			},
 			"password_set_at": schema.StringAttribute{
@@ -1132,6 +1137,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.Notes = types.StringValue(user.Notes)
 	state.NotificationDailySendTime = types.Int64Value(user.NotificationDailySendTime)
 	state.OfficeIntegrationEnabled = types.BoolPointerValue(user.OfficeIntegrationEnabled)
+	state.PartnerAdmin = types.BoolPointerValue(user.PartnerAdmin)
 	state.PartnerId = types.Int64Value(user.PartnerId)
 	if err := lib.TimeToStringType(ctx, path.Root("password_set_at"), user.PasswordSetAt, &state.PasswordSetAt); err != nil {
 		diags.AddError(

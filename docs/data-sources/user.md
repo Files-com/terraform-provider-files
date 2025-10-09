@@ -111,6 +111,7 @@ data "files_user" "example_user" {
 - `notes` (String) Any internal notes on the user
 - `notification_daily_send_time` (Number) Hour of the day at which daily notifications should be sent. Can be in range 0 to 23
 - `office_integration_enabled` (Boolean) Enable integration with Office for the web?
+- `partner_admin` (Boolean) Is this user a Partner administrator?
 - `partner_id` (Number) Partner ID if this user belongs to a Partner
 - `password_expire_at` (String) Password expiration datetime
 - `password_expired` (Boolean) Is user's password expired?

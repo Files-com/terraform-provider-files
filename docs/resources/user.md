@@ -185,6 +185,7 @@ resource "files_user" "example_user" {
 - `last_sftp_login_at` (String) User's most recent login time via SFTP
 - `last_web_login_at` (String) User's most recent login time via web
 - `lockout_expires` (String) Time in the future that the user will no longer be locked out if applicable
+- `partner_admin` (Boolean) Is this user a Partner administrator?
 - `password_expire_at` (String) Password expiration datetime
 - `password_expired` (Boolean) Is user's password expired?
 - `password_set_at` (String) Last time the user's password was set
