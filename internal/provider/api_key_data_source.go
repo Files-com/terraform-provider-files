@@ -28,18 +28,21 @@ type apiKeyDataSource struct {
 }
 
 type apiKeyDataSourceModel struct {
-	Id               types.Int64  `tfsdk:"id"`
-	DescriptiveLabel types.String `tfsdk:"descriptive_label"`
-	Description      types.String `tfsdk:"description"`
-	CreatedAt        types.String `tfsdk:"created_at"`
-	ExpiresAt        types.String `tfsdk:"expires_at"`
-	Key              types.String `tfsdk:"key"`
-	LastUseAt        types.String `tfsdk:"last_use_at"`
-	Name             types.String `tfsdk:"name"`
-	PermissionSet    types.String `tfsdk:"permission_set"`
-	Platform         types.String `tfsdk:"platform"`
-	Url              types.String `tfsdk:"url"`
-	UserId           types.Int64  `tfsdk:"user_id"`
+	Id                  types.Int64  `tfsdk:"id"`
+	DescriptiveLabel    types.String `tfsdk:"descriptive_label"`
+	Description         types.String `tfsdk:"description"`
+	CreatedAt           types.String `tfsdk:"created_at"`
+	ExpiresAt           types.String `tfsdk:"expires_at"`
+	Key                 types.String `tfsdk:"key"`
+	AwsStyleCredentials types.Bool   `tfsdk:"aws_style_credentials"`
+	AwsAccessKeyId      types.String `tfsdk:"aws_access_key_id"`
+	AwsSecretKey        types.String `tfsdk:"aws_secret_key"`
+	LastUseAt           types.String `tfsdk:"last_use_at"`
+	Name                types.String `tfsdk:"name"`
+	PermissionSet       types.String `tfsdk:"permission_set"`
+	Platform            types.String `tfsdk:"platform"`
+	Url                 types.String `tfsdk:"url"`
+	UserId              types.Int64  `tfsdk:"user_id"`
 }
 
 func (r *apiKeyDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -91,6 +94,18 @@ func (r *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			},
 			"key": schema.StringAttribute{
 				Description: "API Key actual key string",
+				Computed:    true,
+			},
+			"aws_style_credentials": schema.BoolAttribute{
+				Description: "If `true`, this API key will be usable with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.",
+				Computed:    true,
+			},
+			"aws_access_key_id": schema.StringAttribute{
+				Description: "AWS Access Key ID to use with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.",
+				Computed:    true,
+			},
+			"aws_secret_key": schema.StringAttribute{
+				Description: "AWS Secret Key to use with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.",
 				Computed:    true,
 			},
 			"last_use_at": schema.StringAttribute{
@@ -168,6 +183,9 @@ func (r *apiKeyDataSource) populateDataSourceModel(ctx context.Context, apiKey f
 		)
 	}
 	state.Key = types.StringValue(apiKey.Key)
+	state.AwsStyleCredentials = types.BoolPointerValue(apiKey.AwsStyleCredentials)
+	state.AwsAccessKeyId = types.StringValue(apiKey.AwsAccessKeyId)
+	state.AwsSecretKey = types.StringValue(apiKey.AwsSecretKey)
 	if err := lib.TimeToStringType(ctx, path.Root("last_use_at"), apiKey.LastUseAt, &state.LastUseAt); err != nil {
 		diags.AddError(
 			"Error Creating Files ApiKey",

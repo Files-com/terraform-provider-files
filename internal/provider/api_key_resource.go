@@ -15,6 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -37,19 +38,22 @@ type apiKeyResource struct {
 }
 
 type apiKeyResourceModel struct {
-	Name             types.String `tfsdk:"name"`
-	Description      types.String `tfsdk:"description"`
-	ExpiresAt        types.String `tfsdk:"expires_at"`
-	PermissionSet    types.String `tfsdk:"permission_set"`
-	UserId           types.Int64  `tfsdk:"user_id"`
-	Path             types.String `tfsdk:"path"`
-	Id               types.Int64  `tfsdk:"id"`
-	DescriptiveLabel types.String `tfsdk:"descriptive_label"`
-	CreatedAt        types.String `tfsdk:"created_at"`
-	Key              types.String `tfsdk:"key"`
-	LastUseAt        types.String `tfsdk:"last_use_at"`
-	Platform         types.String `tfsdk:"platform"`
-	Url              types.String `tfsdk:"url"`
+	Name                types.String `tfsdk:"name"`
+	Description         types.String `tfsdk:"description"`
+	ExpiresAt           types.String `tfsdk:"expires_at"`
+	AwsStyleCredentials types.Bool   `tfsdk:"aws_style_credentials"`
+	PermissionSet       types.String `tfsdk:"permission_set"`
+	UserId              types.Int64  `tfsdk:"user_id"`
+	Path                types.String `tfsdk:"path"`
+	Id                  types.Int64  `tfsdk:"id"`
+	DescriptiveLabel    types.String `tfsdk:"descriptive_label"`
+	CreatedAt           types.String `tfsdk:"created_at"`
+	Key                 types.String `tfsdk:"key"`
+	AwsAccessKeyId      types.String `tfsdk:"aws_access_key_id"`
+	AwsSecretKey        types.String `tfsdk:"aws_secret_key"`
+	LastUseAt           types.String `tfsdk:"last_use_at"`
+	Platform            types.String `tfsdk:"platform"`
+	Url                 types.String `tfsdk:"url"`
 }
 
 func (r *apiKeyResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -99,6 +103,15 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"aws_style_credentials": schema.BoolAttribute{
+				Description: "If `true`, this API key will be usable with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+					boolplanmodifier.RequiresReplace(),
+				},
+			},
 			"permission_set": schema.StringAttribute{
 				Description: "Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.",
 				Computed:    true,
@@ -144,6 +157,14 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			},
 			"key": schema.StringAttribute{
 				Description: "API Key actual key string",
+				Computed:    true,
+			},
+			"aws_access_key_id": schema.StringAttribute{
+				Description: "AWS Access Key ID to use with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.",
+				Computed:    true,
+			},
+			"aws_secret_key": schema.StringAttribute{
+				Description: "AWS Secret Key to use with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.",
 				Computed:    true,
 			},
 			"last_use_at": schema.StringAttribute{
@@ -197,6 +218,9 @@ func (r *apiKeyResource) Create(ctx context.Context, req resource.CreateRequest,
 	}
 	paramsApiKeyCreate.PermissionSet = paramsApiKeyCreate.PermissionSet.Enum()[plan.PermissionSet.ValueString()]
 	paramsApiKeyCreate.Name = plan.Name.ValueString()
+	if !plan.AwsStyleCredentials.IsNull() && !plan.AwsStyleCredentials.IsUnknown() {
+		paramsApiKeyCreate.AwsStyleCredentials = plan.AwsStyleCredentials.ValueBoolPointer()
+	}
 	paramsApiKeyCreate.Path = config.Path.ValueString()
 
 	if resp.Diagnostics.HasError() {
@@ -376,6 +400,9 @@ func (r *apiKeyResource) populateResourceModel(ctx context.Context, apiKey files
 		)
 	}
 	state.Key = types.StringValue(apiKey.Key)
+	state.AwsStyleCredentials = types.BoolPointerValue(apiKey.AwsStyleCredentials)
+	state.AwsAccessKeyId = types.StringValue(apiKey.AwsAccessKeyId)
+	state.AwsSecretKey = types.StringValue(apiKey.AwsSecretKey)
 	if err := lib.TimeToStringType(ctx, path.Root("last_use_at"), apiKey.LastUseAt, &state.LastUseAt); err != nil {
 		diags.AddError(
 			"Error Creating Files ApiKey",

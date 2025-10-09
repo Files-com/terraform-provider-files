@@ -40,6 +40,9 @@ data "files_api_key" "example_api_key" {
 
 ### Read-Only
 
+- `aws_access_key_id` (String) AWS Access Key ID to use with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.
+- `aws_secret_key` (String) AWS Secret Key to use with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.
+- `aws_style_credentials` (Boolean) If `true`, this API key will be usable with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.
 - `created_at` (String) Time which API Key was created
 - `description` (String) User-supplied description of API key.
 - `descriptive_label` (String) Unique label that describes this API key.  Useful for external systems where you may have API keys from multiple accounts and want a human-readable label for each key.

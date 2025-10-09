@@ -27,12 +27,13 @@ We recommend registering API keys to service users wherever possible and then us
 
 ```terraform
 resource "files_api_key" "example_api_key" {
-  user_id        = 1
-  description    = "example"
-  expires_at     = "2000-01-01T01:00:00Z"
-  permission_set = "full"
-  name           = "My Main API Key"
-  path           = "shared/docs"
+  user_id               = 1
+  description           = "example"
+  expires_at            = "2000-01-01T01:00:00Z"
+  permission_set        = "full"
+  name                  = "My Main API Key"
+  aws_style_credentials = true
+  path                  = "shared/docs"
 }
 ```
 
@@ -47,6 +48,7 @@ resource "files_api_key" "example_api_key" {
 
 > **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
 
+- `aws_style_credentials` (Boolean) If `true`, this API key will be usable with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.
 - `description` (String) User-supplied description of API key.
 - `expires_at` (String) API Key expiration date
 - `path` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Folder path restriction for `office_integration` permission set API keys.
@@ -55,6 +57,8 @@ resource "files_api_key" "example_api_key" {
 
 ### Read-Only
 
+- `aws_access_key_id` (String) AWS Access Key ID to use with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.
+- `aws_secret_key` (String) AWS Secret Key to use with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.
 - `created_at` (String) Time which API Key was created
 - `descriptive_label` (String) Unique label that describes this API key.  Useful for external systems where you may have API keys from multiple accounts and want a human-readable label for each key.
 - `id` (Number) API Key ID

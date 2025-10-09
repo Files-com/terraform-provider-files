@@ -103,7 +103,7 @@ data "files_history_export" "example_history_export" {
 - `query_failure_type` (String) If searching for Histories about login failures, this parameter restricts results to failures of this specific type.  Valid values: `expired_trial`, `account_overdue`, `locked_out`, `ip_mismatch`, `password_mismatch`, `site_mismatch`, `username_not_found`, `none`, `no_ftp_permission`, `no_web_permission`, `no_directory`, `errno_enoent`, `no_sftp_permission`, `no_dav_permission`, `no_restapi_permission`, `key_mismatch`, `region_mismatch`, `expired_access`, `desktop_ip_mismatch`, `desktop_api_key_not_used_quickly_enough`, `disabled`, `country_mismatch`, `insecure_ftp`, `insecure_cipher`, `rate_limited`
 - `query_file_id` (String) Return results that are file actions related to the file indicated by this File ID
 - `query_folder` (String) Return results that are file actions related to files or folders inside folder paths matching this pattern.
-- `query_interface` (String) Filter results by this this interface type. Valid values: `web`, `ftp`, `robot`, `jsapi`, `webdesktopapi`, `sftp`, `dav`, `desktop`, `restapi`, `scim`, `office`, `mobile`, `as2`, `inbound_email`, `remote`
+- `query_interface` (String) Filter results by this this interface type. Valid values: `web`, `ftp`, `robot`, `jsapi`, `webdesktopapi`, `sftp`, `dav`, `desktop`, `restapi`, `scim`, `office`, `mobile`, `as2`, `inbound_email`, `remote`, `inbound_s3`
 - `query_ip` (String) Filter results by this IP address.
 - `query_parent_id` (String) Return results that are file actions inside the parent folder specified by this folder ID
 - `query_path` (String) Return results that are file actions related to paths matching this pattern.
