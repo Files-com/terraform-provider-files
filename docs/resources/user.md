@@ -80,6 +80,7 @@ resource "files_user" "example_user" {
   company                      = "ACME Corp."
   notes                        = "Internal notes on this user."
   office_integration_enabled   = true
+  partner_admin                = true
   partner_id                   = 1
   password_validity_days       = 1
   readonly_site_admin          = true
@@ -140,6 +141,7 @@ resource "files_user" "example_user" {
 - `notes` (String) Any internal notes on the user
 - `notification_daily_send_time` (Number) Hour of the day at which daily notifications should be sent. Can be in range 0 to 23
 - `office_integration_enabled` (Boolean) Enable integration with Office for the web?
+- `partner_admin` (Boolean) Is this user a Partner administrator?
 - `partner_id` (Number) Partner ID if this user belongs to a Partner
 - `password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) User password.
 - `password_confirmation` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Optional, but if provided, we will ensure that it matches the value sent in `password`.
@@ -185,7 +187,6 @@ resource "files_user" "example_user" {
 - `last_sftp_login_at` (String) User's most recent login time via SFTP
 - `last_web_login_at` (String) User's most recent login time via web
 - `lockout_expires` (String) Time in the future that the user will no longer be locked out if applicable
-- `partner_admin` (Boolean) Is this user a Partner administrator?
 - `password_expire_at` (String) Password expiration datetime
 - `password_expired` (Boolean) Is user's password expired?
 - `password_set_at` (String) Last time the user's password was set

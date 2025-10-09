@@ -22,6 +22,7 @@ resource "files_user" "example_user" {
   company                      = "ACME Corp."
   notes                        = "Internal notes on this user."
   office_integration_enabled   = true
+  partner_admin                = true
   partner_id                   = 1
   password_validity_days       = 1
   readonly_site_admin          = true

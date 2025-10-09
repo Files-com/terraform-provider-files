@@ -59,6 +59,7 @@ type userResourceModel struct {
 	Notes                            types.String            `tfsdk:"notes"`
 	NotificationDailySendTime        types.Int64             `tfsdk:"notification_daily_send_time"`
 	OfficeIntegrationEnabled         types.Bool              `tfsdk:"office_integration_enabled"`
+	PartnerAdmin                     types.Bool              `tfsdk:"partner_admin"`
 	PartnerId                        types.Int64             `tfsdk:"partner_id"`
 	PasswordValidityDays             types.Int64             `tfsdk:"password_validity_days"`
 	ReceiveAdminAlerts               types.Bool              `tfsdk:"receive_admin_alerts"`
@@ -105,7 +106,6 @@ type userResourceModel struct {
 	LastActiveAt                     types.String            `tfsdk:"last_active_at"`
 	LastProtocolCipher               types.String            `tfsdk:"last_protocol_cipher"`
 	LockoutExpires                   types.String            `tfsdk:"lockout_expires"`
-	PartnerAdmin                     types.Bool              `tfsdk:"partner_admin"`
 	PasswordSetAt                    types.String            `tfsdk:"password_set_at"`
 	PublicKeysCount                  types.Int64             `tfsdk:"public_keys_count"`
 	Active2fa                        types.Bool              `tfsdk:"active_2fa"`
@@ -310,6 +310,14 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"office_integration_enabled": schema.BoolAttribute{
 				Description: "Enable integration with Office for the web?",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"partner_admin": schema.BoolAttribute{
+				Description: "Is this user a Partner administrator?",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -591,10 +599,6 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "Time in the future that the user will no longer be locked out if applicable",
 				Computed:    true,
 			},
-			"partner_admin": schema.BoolAttribute{
-				Description: "Is this user a Partner administrator?",
-				Computed:    true,
-			},
 			"password_set_at": schema.StringAttribute{
 				Description: "Last time the user's password was set",
 				Computed:    true,
@@ -717,6 +721,9 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	paramsUserCreate.Notes = plan.Notes.ValueString()
 	if !plan.OfficeIntegrationEnabled.IsNull() && !plan.OfficeIntegrationEnabled.IsUnknown() {
 		paramsUserCreate.OfficeIntegrationEnabled = plan.OfficeIntegrationEnabled.ValueBoolPointer()
+	}
+	if !plan.PartnerAdmin.IsNull() && !plan.PartnerAdmin.IsUnknown() {
+		paramsUserCreate.PartnerAdmin = plan.PartnerAdmin.ValueBoolPointer()
 	}
 	paramsUserCreate.PartnerId = plan.PartnerId.ValueInt64()
 	paramsUserCreate.PasswordValidityDays = plan.PasswordValidityDays.ValueInt64()
@@ -908,6 +915,9 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	paramsUserUpdate.Notes = plan.Notes.ValueString()
 	if !plan.OfficeIntegrationEnabled.IsNull() && !plan.OfficeIntegrationEnabled.IsUnknown() {
 		paramsUserUpdate.OfficeIntegrationEnabled = plan.OfficeIntegrationEnabled.ValueBoolPointer()
+	}
+	if !plan.PartnerAdmin.IsNull() && !plan.PartnerAdmin.IsUnknown() {
+		paramsUserUpdate.PartnerAdmin = plan.PartnerAdmin.ValueBoolPointer()
 	}
 	paramsUserUpdate.PartnerId = plan.PartnerId.ValueInt64()
 	paramsUserUpdate.PasswordValidityDays = plan.PasswordValidityDays.ValueInt64()
