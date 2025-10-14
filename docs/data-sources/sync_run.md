@@ -48,4 +48,5 @@ data "files_sync_run" "example_sync_run" {
 - `status` (String) Status of the sync run (success, failure, partial_failure, in_progress, skipped)
 - `successful_files` (Number) Number of files successfully synced
 - `sync_id` (Number) ID of the Sync this run belongs to
+- `sync_name` (String) Name of the Sync this run belongs to
 - `updated_at` (String) When this run was last updated
