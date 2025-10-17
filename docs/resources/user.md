@@ -96,6 +96,7 @@ resource "files_user" "example_user" {
   sso_strategy_id              = 1
   subscribe_to_newsletter      = true
   require_2fa                  = "always_require"
+  tags                         = "example"
   time_zone                    = "Pacific Time (US & Canada)"
   user_root                    = "example"
   user_home                    = "example"
@@ -159,6 +160,7 @@ resource "files_user" "example_user" {
 - `ssl_required` (String) SSL required setting
 - `sso_strategy_id` (Number) SSO (Single Sign On) strategy ID for the user, if applicable.
 - `subscribe_to_newsletter` (Boolean) Is the user subscribed to the newsletter?
+- `tags` (String) Comma-separated list of Tags for this user. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.
 - `time_zone` (String) User time zone
 - `user_home` (String) Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface.
 - `user_root` (String) Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface.

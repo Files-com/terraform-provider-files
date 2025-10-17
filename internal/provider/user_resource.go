@@ -75,6 +75,7 @@ type userResourceModel struct {
 	SslRequired                      types.String            `tfsdk:"ssl_required"`
 	SsoStrategyId                    types.Int64             `tfsdk:"sso_strategy_id"`
 	SubscribeToNewsletter            types.Bool              `tfsdk:"subscribe_to_newsletter"`
+	Tags                             types.String            `tfsdk:"tags"`
 	TimeZone                         types.String            `tfsdk:"time_zone"`
 	UserRoot                         types.String            `tfsdk:"user_root"`
 	UserHome                         types.String            `tfsdk:"user_home"`
@@ -450,6 +451,14 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"tags": schema.StringAttribute{
+				Description: "Comma-separated list of Tags for this user. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"time_zone": schema.StringAttribute{
 				Description: "User time zone",
 				Computed:    true,
@@ -773,6 +782,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		paramsUserCreate.SubscribeToNewsletter = plan.SubscribeToNewsletter.ValueBoolPointer()
 	}
 	paramsUserCreate.Require2fa = paramsUserCreate.Require2fa.Enum()[plan.Require2fa.ValueString()]
+	paramsUserCreate.Tags = plan.Tags.ValueString()
 	paramsUserCreate.TimeZone = plan.TimeZone.ValueString()
 	paramsUserCreate.UserRoot = plan.UserRoot.ValueString()
 	paramsUserCreate.UserHome = plan.UserHome.ValueString()
@@ -967,6 +977,7 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		paramsUserUpdate.SubscribeToNewsletter = plan.SubscribeToNewsletter.ValueBoolPointer()
 	}
 	paramsUserUpdate.Require2fa = paramsUserUpdate.Require2fa.Enum()[plan.Require2fa.ValueString()]
+	paramsUserUpdate.Tags = plan.Tags.ValueString()
 	paramsUserUpdate.TimeZone = plan.TimeZone.ValueString()
 	paramsUserUpdate.UserRoot = plan.UserRoot.ValueString()
 	paramsUserUpdate.UserHome = plan.UserHome.ValueString()
@@ -1179,6 +1190,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.SsoStrategyId = types.Int64Value(user.SsoStrategyId)
 	state.SubscribeToNewsletter = types.BoolPointerValue(user.SubscribeToNewsletter)
 	state.ExternallyManaged = types.BoolPointerValue(user.ExternallyManaged)
+	state.Tags = types.StringValue(user.Tags)
 	state.TimeZone = types.StringValue(user.TimeZone)
 	state.TypeOf2fa = types.StringValue(user.TypeOf2fa)
 	state.TypeOf2faForDisplay = types.StringValue(user.TypeOf2faForDisplay)

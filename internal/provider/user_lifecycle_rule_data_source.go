@@ -29,13 +29,15 @@ type userLifecycleRuleDataSourceModel struct {
 	Id                   types.Int64  `tfsdk:"id"`
 	AuthenticationMethod types.String `tfsdk:"authentication_method"`
 	GroupIds             types.List   `tfsdk:"group_ids"`
+	Action               types.String `tfsdk:"action"`
 	InactivityDays       types.Int64  `tfsdk:"inactivity_days"`
 	IncludeFolderAdmins  types.Bool   `tfsdk:"include_folder_admins"`
 	IncludeSiteAdmins    types.Bool   `tfsdk:"include_site_admins"`
-	Action               types.String `tfsdk:"action"`
-	UserState            types.String `tfsdk:"user_state"`
 	Name                 types.String `tfsdk:"name"`
+	PartnerTag           types.String `tfsdk:"partner_tag"`
 	SiteId               types.Int64  `tfsdk:"site_id"`
+	UserState            types.String `tfsdk:"user_state"`
+	UserTag              types.String `tfsdk:"user_tag"`
 }
 
 func (r *userLifecycleRuleDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -70,7 +72,7 @@ func (r *userLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.Sch
 				Required:    true,
 			},
 			"authentication_method": schema.StringAttribute{
-				Description: "User authentication method for the rule",
+				Description: "User authentication method for which the rule will apply.",
 				Computed:    true,
 			},
 			"group_ids": schema.ListAttribute{
@@ -78,32 +80,40 @@ func (r *userLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.Sch
 				Computed:    true,
 				ElementType: types.Int64Type,
 			},
+			"action": schema.StringAttribute{
+				Description: "Action to take on inactive users (disable or delete)",
+				Computed:    true,
+			},
 			"inactivity_days": schema.Int64Attribute{
 				Description: "Number of days of inactivity before the rule applies",
 				Computed:    true,
 			},
 			"include_folder_admins": schema.BoolAttribute{
-				Description: "Include folder admins in the rule",
+				Description: "If true, the rule will apply to folder admins.",
 				Computed:    true,
 			},
 			"include_site_admins": schema.BoolAttribute{
-				Description: "Include site admins in the rule",
-				Computed:    true,
-			},
-			"action": schema.StringAttribute{
-				Description: "Action to take on inactive users (disable or delete)",
-				Computed:    true,
-			},
-			"user_state": schema.StringAttribute{
-				Description: "State of the users to apply the rule to (inactive or disabled)",
+				Description: "If true, the rule will apply to site admins.",
 				Computed:    true,
 			},
 			"name": schema.StringAttribute{
 				Description: "User Lifecycle Rule name",
 				Computed:    true,
 			},
+			"partner_tag": schema.StringAttribute{
+				Description: "If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.",
+				Computed:    true,
+			},
 			"site_id": schema.Int64Attribute{
 				Description: "Site ID",
+				Computed:    true,
+			},
+			"user_state": schema.StringAttribute{
+				Description: "State of the users to apply the rule to (inactive or disabled)",
+				Computed:    true,
+			},
+			"user_tag": schema.StringAttribute{
+				Description: "If provided, only users with this tag will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.",
 				Computed:    true,
 			},
 		},
@@ -147,13 +157,15 @@ func (r *userLifecycleRuleDataSource) populateDataSourceModel(ctx context.Contex
 	state.AuthenticationMethod = types.StringValue(userLifecycleRule.AuthenticationMethod)
 	state.GroupIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, userLifecycleRule.GroupIds)
 	diags.Append(propDiags...)
+	state.Action = types.StringValue(userLifecycleRule.Action)
 	state.InactivityDays = types.Int64Value(userLifecycleRule.InactivityDays)
 	state.IncludeFolderAdmins = types.BoolPointerValue(userLifecycleRule.IncludeFolderAdmins)
 	state.IncludeSiteAdmins = types.BoolPointerValue(userLifecycleRule.IncludeSiteAdmins)
-	state.Action = types.StringValue(userLifecycleRule.Action)
-	state.UserState = types.StringValue(userLifecycleRule.UserState)
 	state.Name = types.StringValue(userLifecycleRule.Name)
+	state.PartnerTag = types.StringValue(userLifecycleRule.PartnerTag)
 	state.SiteId = types.Int64Value(userLifecycleRule.SiteId)
+	state.UserState = types.StringValue(userLifecycleRule.UserState)
+	state.UserTag = types.StringValue(userLifecycleRule.UserTag)
 
 	return
 }

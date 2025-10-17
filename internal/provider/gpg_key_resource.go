@@ -37,6 +37,7 @@ type gpgKeyResource struct {
 
 type gpgKeyResourceModel struct {
 	Name                  types.String `tfsdk:"name"`
+	PartnerId             types.Int64  `tfsdk:"partner_id"`
 	UserId                types.Int64  `tfsdk:"user_id"`
 	PublicKey             types.String `tfsdk:"public_key"`
 	PrivateKey            types.String `tfsdk:"private_key"`
@@ -85,8 +86,16 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Description: "Your GPG key name.",
 				Required:    true,
 			},
+			"partner_id": schema.Int64Attribute{
+				Description: "Partner ID who owns this GPG Key, if applicable.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"user_id": schema.Int64Attribute{
-				Description: "GPG owner's user id",
+				Description: "User ID who owns this GPG Key, if applicable.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
@@ -192,6 +201,7 @@ func (r *gpgKeyResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	paramsGpgKeyCreate := files_sdk.GpgKeyCreateParams{}
 	paramsGpgKeyCreate.UserId = plan.UserId.ValueInt64()
+	paramsGpgKeyCreate.PartnerId = plan.PartnerId.ValueInt64()
 	paramsGpgKeyCreate.PublicKey = config.PublicKey.ValueString()
 	paramsGpgKeyCreate.PrivateKey = config.PrivateKey.ValueString()
 	paramsGpgKeyCreate.PrivateKeyPassword = config.PrivateKeyPassword.ValueString()
@@ -292,6 +302,7 @@ func (r *gpgKeyResource) Update(ctx context.Context, req resource.UpdateRequest,
 
 	paramsGpgKeyUpdate := files_sdk.GpgKeyUpdateParams{}
 	paramsGpgKeyUpdate.Id = plan.Id.ValueInt64()
+	paramsGpgKeyUpdate.PartnerId = plan.PartnerId.ValueInt64()
 	paramsGpgKeyUpdate.PublicKey = config.PublicKey.ValueString()
 	paramsGpgKeyUpdate.PrivateKey = config.PrivateKey.ValueString()
 	paramsGpgKeyUpdate.PrivateKeyPassword = config.PrivateKeyPassword.ValueString()
@@ -372,6 +383,7 @@ func (r *gpgKeyResource) populateResourceModel(ctx context.Context, gpgKey files
 		)
 	}
 	state.Name = types.StringValue(gpgKey.Name)
+	state.PartnerId = types.Int64Value(gpgKey.PartnerId)
 	state.UserId = types.Int64Value(gpgKey.UserId)
 	state.PublicKeyMd5 = types.StringValue(gpgKey.PublicKeyMd5)
 	state.PrivateKeyMd5 = types.StringValue(gpgKey.PrivateKeyMd5)

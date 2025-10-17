@@ -14,12 +14,13 @@ A Partner is a first-class entity that cleanly represents an external organizati
 
 ```terraform
 resource "files_partner" "example_partner" {
+  name                         = "Acme Corp"
   allow_bypassing_2fa_policies = false
   allow_credential_changes     = false
   allow_user_creation          = false
-  name                         = "Acme Corp"
   notes                        = "This is a note about the partner."
   root_folder                  = "/AcmeCorp"
+  tags                         = "example"
 }
 ```
 
@@ -34,6 +35,7 @@ resource "files_partner" "example_partner" {
 - `name` (String) The name of the Partner.
 - `notes` (String) Notes about this Partner.
 - `root_folder` (String) The root folder path for this Partner.
+- `tags` (String) Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.
 
 ### Read-Only
 

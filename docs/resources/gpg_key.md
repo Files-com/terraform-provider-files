@@ -25,6 +25,7 @@ By storing both keys together in a GPGKey object, Files.com makes it easier to u
 ```terraform
 resource "files_gpg_key" "example_gpg_key" {
   user_id              = 1
+  partner_id           = 1
   public_key           = "7f8bc1210b09b9ddf469e6b6b8920e76"
   private_key          = "ab236cfe4a195f0226bc2e674afdd6b0"
   private_key_password = "[your GPG private key password]"
@@ -51,10 +52,11 @@ resource "files_gpg_key" "example_gpg_key" {
 - `generate_expires_at` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Expiration date of the key. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
 - `generate_full_name` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Full name of the key owner. Used for the generation of the key. Will be ignored if `generate_keypair` is false.
 - `generate_keypair` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) If true, generate a new GPG key pair. Can not be used with `public_key`/`private_key`
+- `partner_id` (Number) Partner ID who owns this GPG Key, if applicable.
 - `private_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) MD5 hash of your GPG private key.
 - `private_key_password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Your GPG private key password. Only required for password protected keys.
 - `public_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) MD5 hash of your GPG public key
-- `user_id` (Number) GPG owner's user id
+- `user_id` (Number) User ID who owns this GPG Key, if applicable.
 
 ### Read-Only
 

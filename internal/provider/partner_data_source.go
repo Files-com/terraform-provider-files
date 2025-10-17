@@ -33,6 +33,7 @@ type partnerDataSourceModel struct {
 	Name                      types.String `tfsdk:"name"`
 	Notes                     types.String `tfsdk:"notes"`
 	RootFolder                types.String `tfsdk:"root_folder"`
+	Tags                      types.String `tfsdk:"tags"`
 }
 
 func (r *partnerDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -90,6 +91,10 @@ func (r *partnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Description: "The root folder path for this Partner.",
 				Computed:    true,
 			},
+			"tags": schema.StringAttribute{
+				Description: "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.",
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -132,6 +137,7 @@ func (r *partnerDataSource) populateDataSourceModel(ctx context.Context, partner
 	state.Name = types.StringValue(partner.Name)
 	state.Notes = types.StringValue(partner.Notes)
 	state.RootFolder = types.StringValue(partner.RootFolder)
+	state.Tags = types.StringValue(partner.Tags)
 
 	return
 }

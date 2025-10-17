@@ -26,16 +26,17 @@ type permissionDataSource struct {
 }
 
 type permissionDataSourceModel struct {
-	Id         types.Int64  `tfsdk:"id"`
-	Path       types.String `tfsdk:"path"`
-	UserId     types.Int64  `tfsdk:"user_id"`
-	Username   types.String `tfsdk:"username"`
-	GroupId    types.Int64  `tfsdk:"group_id"`
-	GroupName  types.String `tfsdk:"group_name"`
-	PartnerId  types.Int64  `tfsdk:"partner_id"`
-	Permission types.String `tfsdk:"permission"`
-	Recursive  types.Bool   `tfsdk:"recursive"`
-	SiteId     types.Int64  `tfsdk:"site_id"`
+	Id          types.Int64  `tfsdk:"id"`
+	Path        types.String `tfsdk:"path"`
+	UserId      types.Int64  `tfsdk:"user_id"`
+	Username    types.String `tfsdk:"username"`
+	GroupId     types.Int64  `tfsdk:"group_id"`
+	GroupName   types.String `tfsdk:"group_name"`
+	PartnerId   types.Int64  `tfsdk:"partner_id"`
+	PartnerName types.String `tfsdk:"partner_name"`
+	Permission  types.String `tfsdk:"permission"`
+	Recursive   types.Bool   `tfsdk:"recursive"`
+	SiteId      types.Int64  `tfsdk:"site_id"`
 }
 
 func (r *permissionDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -91,6 +92,10 @@ func (r *permissionDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			},
 			"partner_id": schema.Int64Attribute{
 				Description: "Partner ID (if applicable)",
+				Computed:    true,
+			},
+			"partner_name": schema.StringAttribute{
+				Description: "Partner name (if applicable)",
 				Computed:    true,
 			},
 			"permission": schema.StringAttribute{
@@ -170,6 +175,7 @@ func (r *permissionDataSource) populateDataSourceModel(ctx context.Context, perm
 	state.GroupId = types.Int64Value(permission.GroupId)
 	state.GroupName = types.StringValue(permission.GroupName)
 	state.PartnerId = types.Int64Value(permission.PartnerId)
+	state.PartnerName = types.StringValue(permission.PartnerName)
 	state.Permission = types.StringValue(permission.Permission)
 	state.Recursive = types.BoolPointerValue(permission.Recursive)
 	state.SiteId = types.Int64Value(permission.SiteId)

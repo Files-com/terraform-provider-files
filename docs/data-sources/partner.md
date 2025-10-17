@@ -33,3 +33,4 @@ data "files_partner" "example_partner" {
 - `name` (String) The name of the Partner.
 - `notes` (String) Notes about this Partner.
 - `root_folder` (String) The root folder path for this Partner.
+- `tags` (String) Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.

@@ -97,6 +97,7 @@ resource "files_permission" "example_permission" {
 ### Read-Only
 
 - `id` (Number) Permission ID
+- `partner_name` (String) Partner name (if applicable)
 
 ## Import
 

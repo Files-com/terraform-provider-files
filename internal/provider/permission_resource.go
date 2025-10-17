@@ -36,16 +36,17 @@ type permissionResource struct {
 }
 
 type permissionResourceModel struct {
-	Path       types.String `tfsdk:"path"`
-	UserId     types.Int64  `tfsdk:"user_id"`
-	Username   types.String `tfsdk:"username"`
-	GroupId    types.Int64  `tfsdk:"group_id"`
-	GroupName  types.String `tfsdk:"group_name"`
-	PartnerId  types.Int64  `tfsdk:"partner_id"`
-	Permission types.String `tfsdk:"permission"`
-	Recursive  types.Bool   `tfsdk:"recursive"`
-	SiteId     types.Int64  `tfsdk:"site_id"`
-	Id         types.Int64  `tfsdk:"id"`
+	Path        types.String `tfsdk:"path"`
+	UserId      types.Int64  `tfsdk:"user_id"`
+	Username    types.String `tfsdk:"username"`
+	GroupId     types.Int64  `tfsdk:"group_id"`
+	GroupName   types.String `tfsdk:"group_name"`
+	PartnerId   types.Int64  `tfsdk:"partner_id"`
+	Permission  types.String `tfsdk:"permission"`
+	Recursive   types.Bool   `tfsdk:"recursive"`
+	SiteId      types.Int64  `tfsdk:"site_id"`
+	Id          types.Int64  `tfsdk:"id"`
+	PartnerName types.String `tfsdk:"partner_name"`
 }
 
 func (r *permissionResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -163,6 +164,10 @@ func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
+			},
+			"partner_name": schema.StringAttribute{
+				Description: "Partner name (if applicable)",
+				Computed:    true,
 			},
 		},
 	}
@@ -336,6 +341,7 @@ func (r *permissionResource) populateResourceModel(ctx context.Context, permissi
 	state.GroupId = types.Int64Value(permission.GroupId)
 	state.GroupName = types.StringValue(permission.GroupName)
 	state.PartnerId = types.Int64Value(permission.PartnerId)
+	state.PartnerName = types.StringValue(permission.PartnerName)
 	state.Permission = types.StringValue(permission.Permission)
 	state.Recursive = types.BoolPointerValue(permission.Recursive)
 	state.SiteId = types.Int64Value(permission.SiteId)

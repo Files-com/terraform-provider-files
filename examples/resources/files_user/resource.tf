@@ -38,6 +38,7 @@ resource "files_user" "example_user" {
   sso_strategy_id              = 1
   subscribe_to_newsletter      = true
   require_2fa                  = "always_require"
+  tags                         = "example"
   time_zone                    = "Pacific Time (US & Canada)"
   user_root                    = "example"
   user_home                    = "example"

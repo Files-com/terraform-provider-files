@@ -34,8 +34,10 @@ resource "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
   inactivity_days       = 12
   include_site_admins   = true
   include_folder_admins = true
-  user_state            = "inactive"
   name                  = "password specific rules"
+  partner_tag           = "guest"
+  user_state            = "inactive"
+  user_tag              = "guest"
 }
 ```
 
@@ -45,13 +47,15 @@ resource "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
 ### Optional
 
 - `action` (String) Action to take on inactive users (disable or delete)
-- `authentication_method` (String) User authentication method for the rule
+- `authentication_method` (String) User authentication method for which the rule will apply.
 - `group_ids` (List of Number) Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users.
 - `inactivity_days` (Number) Number of days of inactivity before the rule applies
-- `include_folder_admins` (Boolean) Include folder admins in the rule
-- `include_site_admins` (Boolean) Include site admins in the rule
+- `include_folder_admins` (Boolean) If true, the rule will apply to folder admins.
+- `include_site_admins` (Boolean) If true, the rule will apply to site admins.
 - `name` (String) User Lifecycle Rule name
+- `partner_tag` (String) If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.
 - `user_state` (String) State of the users to apply the rule to (inactive or disabled)
+- `user_tag` (String) If provided, only users with this tag will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.
 
 ### Read-Only
 

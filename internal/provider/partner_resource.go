@@ -40,6 +40,7 @@ type partnerResourceModel struct {
 	Name                      types.String `tfsdk:"name"`
 	Notes                     types.String `tfsdk:"notes"`
 	RootFolder                types.String `tfsdk:"root_folder"`
+	Tags                      types.String `tfsdk:"tags"`
 	Id                        types.Int64  `tfsdk:"id"`
 }
 
@@ -118,6 +119,14 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"tags": schema.StringAttribute{
+				Description: "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"id": schema.Int64Attribute{
 				Description: "The unique ID of the Partner.",
 				Computed:    true,
@@ -144,6 +153,7 @@ func (r *partnerResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	paramsPartnerCreate := files_sdk.PartnerCreateParams{}
+	paramsPartnerCreate.Name = plan.Name.ValueString()
 	if !plan.AllowBypassing2faPolicies.IsNull() && !plan.AllowBypassing2faPolicies.IsUnknown() {
 		paramsPartnerCreate.AllowBypassing2faPolicies = plan.AllowBypassing2faPolicies.ValueBoolPointer()
 	}
@@ -153,9 +163,9 @@ func (r *partnerResource) Create(ctx context.Context, req resource.CreateRequest
 	if !plan.AllowUserCreation.IsNull() && !plan.AllowUserCreation.IsUnknown() {
 		paramsPartnerCreate.AllowUserCreation = plan.AllowUserCreation.ValueBoolPointer()
 	}
-	paramsPartnerCreate.Name = plan.Name.ValueString()
 	paramsPartnerCreate.Notes = plan.Notes.ValueString()
 	paramsPartnerCreate.RootFolder = plan.RootFolder.ValueString()
+	paramsPartnerCreate.Tags = plan.Tags.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -231,6 +241,7 @@ func (r *partnerResource) Update(ctx context.Context, req resource.UpdateRequest
 
 	paramsPartnerUpdate := files_sdk.PartnerUpdateParams{}
 	paramsPartnerUpdate.Id = plan.Id.ValueInt64()
+	paramsPartnerUpdate.Name = plan.Name.ValueString()
 	if !plan.AllowBypassing2faPolicies.IsNull() && !plan.AllowBypassing2faPolicies.IsUnknown() {
 		paramsPartnerUpdate.AllowBypassing2faPolicies = plan.AllowBypassing2faPolicies.ValueBoolPointer()
 	}
@@ -240,9 +251,9 @@ func (r *partnerResource) Update(ctx context.Context, req resource.UpdateRequest
 	if !plan.AllowUserCreation.IsNull() && !plan.AllowUserCreation.IsUnknown() {
 		paramsPartnerUpdate.AllowUserCreation = plan.AllowUserCreation.ValueBoolPointer()
 	}
-	paramsPartnerUpdate.Name = plan.Name.ValueString()
 	paramsPartnerUpdate.Notes = plan.Notes.ValueString()
 	paramsPartnerUpdate.RootFolder = plan.RootFolder.ValueString()
+	paramsPartnerUpdate.Tags = plan.Tags.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -318,6 +329,7 @@ func (r *partnerResource) populateResourceModel(ctx context.Context, partner fil
 	state.Name = types.StringValue(partner.Name)
 	state.Notes = types.StringValue(partner.Notes)
 	state.RootFolder = types.StringValue(partner.RootFolder)
+	state.Tags = types.StringValue(partner.Tags)
 
 	return
 }

@@ -41,7 +41,8 @@ data "files_gpg_key" "example_gpg_key" {
 - `generated_private_key` (String) Your GPG private key.
 - `generated_public_key` (String) Your GPG public key
 - `name` (String) Your GPG key name.
+- `partner_id` (Number) Partner ID who owns this GPG Key, if applicable.
 - `private_key_md5` (String) MD5 hash of your GPG private key.
 - `private_key_password_md5` (String) Your GPG private key password. Only required for password protected keys.
 - `public_key_md5` (String) MD5 hash of your GPG public key
-- `user_id` (Number) GPG owner's user id
+- `user_id` (Number) User ID who owns this GPG Key, if applicable.

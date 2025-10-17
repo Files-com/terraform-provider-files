@@ -39,12 +39,14 @@ type userLifecycleRuleResource struct {
 type userLifecycleRuleResourceModel struct {
 	AuthenticationMethod types.String `tfsdk:"authentication_method"`
 	GroupIds             types.List   `tfsdk:"group_ids"`
+	Action               types.String `tfsdk:"action"`
 	InactivityDays       types.Int64  `tfsdk:"inactivity_days"`
 	IncludeFolderAdmins  types.Bool   `tfsdk:"include_folder_admins"`
 	IncludeSiteAdmins    types.Bool   `tfsdk:"include_site_admins"`
-	Action               types.String `tfsdk:"action"`
-	UserState            types.String `tfsdk:"user_state"`
 	Name                 types.String `tfsdk:"name"`
+	PartnerTag           types.String `tfsdk:"partner_tag"`
+	UserState            types.String `tfsdk:"user_state"`
+	UserTag              types.String `tfsdk:"user_tag"`
 	Id                   types.Int64  `tfsdk:"id"`
 	SiteId               types.Int64  `tfsdk:"site_id"`
 }
@@ -77,7 +79,7 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 		Description: "A UserLifecycleRule represents a rule that applies to users based on their inactivity, state and authentication method.\n\n\n\nThe rule either disable or delete users who have been inactive or disabled for a specified number of days.\n\n\n\nThe authentication_method property specifies the authentication method for the rule, which can be set to \"all\" or other specific methods.\n\n\n\nThe rule can also include or exclude site and folder admins from the action.",
 		Attributes: map[string]schema.Attribute{
 			"authentication_method": schema.StringAttribute{
-				Description: "User authentication method for the rule",
+				Description: "User authentication method for which the rule will apply.",
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
@@ -96,6 +98,17 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 					listplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"action": schema.StringAttribute{
+				Description: "Action to take on inactive users (disable or delete)",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("disable", "delete"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"inactivity_days": schema.Int64Attribute{
 				Description: "Number of days of inactivity before the rule applies",
 				Computed:    true,
@@ -105,7 +118,7 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 				},
 			},
 			"include_folder_admins": schema.BoolAttribute{
-				Description: "Include folder admins in the rule",
+				Description: "If true, the rule will apply to folder admins.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -113,20 +126,25 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 				},
 			},
 			"include_site_admins": schema.BoolAttribute{
-				Description: "Include site admins in the rule",
+				Description: "If true, the rule will apply to site admins.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"action": schema.StringAttribute{
-				Description: "Action to take on inactive users (disable or delete)",
+			"name": schema.StringAttribute{
+				Description: "User Lifecycle Rule name",
 				Computed:    true,
 				Optional:    true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("disable", "delete"),
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
+			},
+			"partner_tag": schema.StringAttribute{
+				Description: "If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.",
+				Computed:    true,
+				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -142,8 +160,8 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"name": schema.StringAttribute{
-				Description: "User Lifecycle Rule name",
+			"user_tag": schema.StringAttribute{
+				Description: "If provided, only users with this tag will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -193,8 +211,10 @@ func (r *userLifecycleRuleResource) Create(ctx context.Context, req resource.Cre
 	if !plan.IncludeFolderAdmins.IsNull() && !plan.IncludeFolderAdmins.IsUnknown() {
 		paramsUserLifecycleRuleCreate.IncludeFolderAdmins = plan.IncludeFolderAdmins.ValueBoolPointer()
 	}
-	paramsUserLifecycleRuleCreate.UserState = paramsUserLifecycleRuleCreate.UserState.Enum()[plan.UserState.ValueString()]
 	paramsUserLifecycleRuleCreate.Name = plan.Name.ValueString()
+	paramsUserLifecycleRuleCreate.PartnerTag = plan.PartnerTag.ValueString()
+	paramsUserLifecycleRuleCreate.UserState = paramsUserLifecycleRuleCreate.UserState.Enum()[plan.UserState.ValueString()]
+	paramsUserLifecycleRuleCreate.UserTag = plan.UserTag.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -283,8 +303,10 @@ func (r *userLifecycleRuleResource) Update(ctx context.Context, req resource.Upd
 	if !plan.IncludeFolderAdmins.IsNull() && !plan.IncludeFolderAdmins.IsUnknown() {
 		paramsUserLifecycleRuleUpdate.IncludeFolderAdmins = plan.IncludeFolderAdmins.ValueBoolPointer()
 	}
-	paramsUserLifecycleRuleUpdate.UserState = paramsUserLifecycleRuleUpdate.UserState.Enum()[plan.UserState.ValueString()]
 	paramsUserLifecycleRuleUpdate.Name = plan.Name.ValueString()
+	paramsUserLifecycleRuleUpdate.PartnerTag = plan.PartnerTag.ValueString()
+	paramsUserLifecycleRuleUpdate.UserState = paramsUserLifecycleRuleUpdate.UserState.Enum()[plan.UserState.ValueString()]
+	paramsUserLifecycleRuleUpdate.UserTag = plan.UserTag.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -359,13 +381,15 @@ func (r *userLifecycleRuleResource) populateResourceModel(ctx context.Context, u
 	state.AuthenticationMethod = types.StringValue(userLifecycleRule.AuthenticationMethod)
 	state.GroupIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, userLifecycleRule.GroupIds)
 	diags.Append(propDiags...)
+	state.Action = types.StringValue(userLifecycleRule.Action)
 	state.InactivityDays = types.Int64Value(userLifecycleRule.InactivityDays)
 	state.IncludeFolderAdmins = types.BoolPointerValue(userLifecycleRule.IncludeFolderAdmins)
 	state.IncludeSiteAdmins = types.BoolPointerValue(userLifecycleRule.IncludeSiteAdmins)
-	state.Action = types.StringValue(userLifecycleRule.Action)
-	state.UserState = types.StringValue(userLifecycleRule.UserState)
 	state.Name = types.StringValue(userLifecycleRule.Name)
+	state.PartnerTag = types.StringValue(userLifecycleRule.PartnerTag)
 	state.SiteId = types.Int64Value(userLifecycleRule.SiteId)
+	state.UserState = types.StringValue(userLifecycleRule.UserState)
+	state.UserTag = types.StringValue(userLifecycleRule.UserTag)
 
 	return
 }

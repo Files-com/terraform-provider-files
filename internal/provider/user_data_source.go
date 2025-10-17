@@ -90,6 +90,7 @@ type userDataSourceModel struct {
 	SsoStrategyId                    types.Int64  `tfsdk:"sso_strategy_id"`
 	SubscribeToNewsletter            types.Bool   `tfsdk:"subscribe_to_newsletter"`
 	ExternallyManaged                types.Bool   `tfsdk:"externally_managed"`
+	Tags                             types.String `tfsdk:"tags"`
 	TimeZone                         types.String `tfsdk:"time_zone"`
 	TypeOf2fa                        types.String `tfsdk:"type_of_2fa"`
 	TypeOf2faForDisplay              types.String `tfsdk:"type_of_2fa_for_display"`
@@ -375,6 +376,10 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Is this user managed by a SsoStrategy?",
 				Computed:    true,
 			},
+			"tags": schema.StringAttribute{
+				Description: "Comma-separated list of Tags for this user. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.",
+				Computed:    true,
+			},
 			"time_zone": schema.StringAttribute{
 				Description: "User time zone",
 				Computed:    true,
@@ -578,6 +583,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.SsoStrategyId = types.Int64Value(user.SsoStrategyId)
 	state.SubscribeToNewsletter = types.BoolPointerValue(user.SubscribeToNewsletter)
 	state.ExternallyManaged = types.BoolPointerValue(user.ExternallyManaged)
+	state.Tags = types.StringValue(user.Tags)
 	state.TimeZone = types.StringValue(user.TimeZone)
 	state.TypeOf2fa = types.StringValue(user.TypeOf2fa)
 	state.TypeOf2faForDisplay = types.StringValue(user.TypeOf2faForDisplay)

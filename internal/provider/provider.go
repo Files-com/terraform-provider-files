@@ -212,6 +212,7 @@ func (p *filesProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewRemoteMountBackendDataSource,
 		NewRemoteServerDataSource,
 		NewRequestDataSource,
+		NewScimLogDataSource,
 		NewSftpHostKeyDataSource,
 		NewShareGroupDataSource,
 		NewSiemHttpDestinationDataSource,
