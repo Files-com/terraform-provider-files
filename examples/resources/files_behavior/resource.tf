@@ -295,3 +295,15 @@ resource "files_behavior" "example_archive_overwritten_or_deleted_files_behavior
     archive_path              = "/Archive"
   }
 }
+
+resource "files_behavior" "example_auto_recrypt_behavior" {
+  path     = "path"
+  behavior = "auto_recrypt"
+  value    = {
+    decrypt_gpg_key_ids = [1]
+    encrypt_gpg_key_ids = [1]
+    ignore_mdc_error    = true
+    signing_key_id      = 1
+    armor               = false
+  }
+}
