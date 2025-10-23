@@ -1,6 +1,10 @@
 # Files.com Terraform Provider
 
-The Files.com Terraform Provider provides convenient access to the Files.com API for managing your Files.com account.
+The Files.com Terraform Provider makes it easy to manage your Files.com account using Terraform configuration files.
+
+Files.com is the cloud-native, next-gen MFT, SFTP, and secure file-sharing platform that replaces brittle legacy servers with one always-on, secure fabric. Automate mission-critical file flows—across any cloud, protocol, or partner—while supporting human collaboration and eliminating manual work.
+
+With universal SFTP, AS2, HTTPS, and 50+ native connectors backed by military-grade encryption, Files.com unifies governance, visibility, and compliance in a single pane of glass.
 
 ## Introduction
 
