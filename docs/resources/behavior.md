@@ -108,6 +108,7 @@ resource "files_behavior" "example_serve_publicly_behavior" {
     key            = "public-photos"
     show_index     = true
     force_download = true
+    cors_enabled   = false
   }
 }
 
