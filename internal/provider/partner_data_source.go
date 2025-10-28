@@ -29,6 +29,7 @@ type partnerDataSourceModel struct {
 	Id                        types.Int64  `tfsdk:"id"`
 	AllowBypassing2faPolicies types.Bool   `tfsdk:"allow_bypassing_2fa_policies"`
 	AllowCredentialChanges    types.Bool   `tfsdk:"allow_credential_changes"`
+	AllowProvidingGpgKeys     types.Bool   `tfsdk:"allow_providing_gpg_keys"`
 	AllowUserCreation         types.Bool   `tfsdk:"allow_user_creation"`
 	Name                      types.String `tfsdk:"name"`
 	Notes                     types.String `tfsdk:"notes"`
@@ -73,6 +74,10 @@ func (r *partnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 			},
 			"allow_credential_changes": schema.BoolAttribute{
 				Description: "Allow Partner Admins to change or reset credentials for users belonging to this Partner.",
+				Computed:    true,
+			},
+			"allow_providing_gpg_keys": schema.BoolAttribute{
+				Description: "Allow Partner Admins to provide GPG keys.",
 				Computed:    true,
 			},
 			"allow_user_creation": schema.BoolAttribute{
@@ -132,6 +137,7 @@ func (r *partnerDataSource) Read(ctx context.Context, req datasource.ReadRequest
 func (r *partnerDataSource) populateDataSourceModel(ctx context.Context, partner files_sdk.Partner, state *partnerDataSourceModel) (diags diag.Diagnostics) {
 	state.AllowBypassing2faPolicies = types.BoolPointerValue(partner.AllowBypassing2faPolicies)
 	state.AllowCredentialChanges = types.BoolPointerValue(partner.AllowCredentialChanges)
+	state.AllowProvidingGpgKeys = types.BoolPointerValue(partner.AllowProvidingGpgKeys)
 	state.AllowUserCreation = types.BoolPointerValue(partner.AllowUserCreation)
 	state.Id = types.Int64Value(partner.Id)
 	state.Name = types.StringValue(partner.Name)

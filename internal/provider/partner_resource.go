@@ -36,6 +36,7 @@ type partnerResource struct {
 type partnerResourceModel struct {
 	AllowBypassing2faPolicies types.Bool   `tfsdk:"allow_bypassing_2fa_policies"`
 	AllowCredentialChanges    types.Bool   `tfsdk:"allow_credential_changes"`
+	AllowProvidingGpgKeys     types.Bool   `tfsdk:"allow_providing_gpg_keys"`
 	AllowUserCreation         types.Bool   `tfsdk:"allow_user_creation"`
 	Name                      types.String `tfsdk:"name"`
 	Notes                     types.String `tfsdk:"notes"`
@@ -81,6 +82,14 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			},
 			"allow_credential_changes": schema.BoolAttribute{
 				Description: "Allow Partner Admins to change or reset credentials for users belonging to this Partner.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"allow_providing_gpg_keys": schema.BoolAttribute{
+				Description: "Allow Partner Admins to provide GPG keys.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -159,6 +168,9 @@ func (r *partnerResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 	if !plan.AllowCredentialChanges.IsNull() && !plan.AllowCredentialChanges.IsUnknown() {
 		paramsPartnerCreate.AllowCredentialChanges = plan.AllowCredentialChanges.ValueBoolPointer()
+	}
+	if !plan.AllowProvidingGpgKeys.IsNull() && !plan.AllowProvidingGpgKeys.IsUnknown() {
+		paramsPartnerCreate.AllowProvidingGpgKeys = plan.AllowProvidingGpgKeys.ValueBoolPointer()
 	}
 	if !plan.AllowUserCreation.IsNull() && !plan.AllowUserCreation.IsUnknown() {
 		paramsPartnerCreate.AllowUserCreation = plan.AllowUserCreation.ValueBoolPointer()
@@ -248,6 +260,9 @@ func (r *partnerResource) Update(ctx context.Context, req resource.UpdateRequest
 	if !plan.AllowCredentialChanges.IsNull() && !plan.AllowCredentialChanges.IsUnknown() {
 		paramsPartnerUpdate.AllowCredentialChanges = plan.AllowCredentialChanges.ValueBoolPointer()
 	}
+	if !plan.AllowProvidingGpgKeys.IsNull() && !plan.AllowProvidingGpgKeys.IsUnknown() {
+		paramsPartnerUpdate.AllowProvidingGpgKeys = plan.AllowProvidingGpgKeys.ValueBoolPointer()
+	}
 	if !plan.AllowUserCreation.IsNull() && !plan.AllowUserCreation.IsUnknown() {
 		paramsPartnerUpdate.AllowUserCreation = plan.AllowUserCreation.ValueBoolPointer()
 	}
@@ -324,6 +339,7 @@ func (r *partnerResource) ImportState(ctx context.Context, req resource.ImportSt
 func (r *partnerResource) populateResourceModel(ctx context.Context, partner files_sdk.Partner, state *partnerResourceModel) (diags diag.Diagnostics) {
 	state.AllowBypassing2faPolicies = types.BoolPointerValue(partner.AllowBypassing2faPolicies)
 	state.AllowCredentialChanges = types.BoolPointerValue(partner.AllowCredentialChanges)
+	state.AllowProvidingGpgKeys = types.BoolPointerValue(partner.AllowProvidingGpgKeys)
 	state.AllowUserCreation = types.BoolPointerValue(partner.AllowUserCreation)
 	state.Id = types.Int64Value(partner.Id)
 	state.Name = types.StringValue(partner.Name)

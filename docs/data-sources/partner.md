@@ -29,6 +29,7 @@ data "files_partner" "example_partner" {
 
 - `allow_bypassing_2fa_policies` (Boolean) Allow users created under this Partner to bypass Two-Factor Authentication policies.
 - `allow_credential_changes` (Boolean) Allow Partner Admins to change or reset credentials for users belonging to this Partner.
+- `allow_providing_gpg_keys` (Boolean) Allow Partner Admins to provide GPG keys.
 - `allow_user_creation` (Boolean) Allow Partner Admins to create users.
 - `name` (String) The name of the Partner.
 - `notes` (String) Notes about this Partner.
