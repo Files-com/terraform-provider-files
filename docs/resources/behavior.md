@@ -78,12 +78,13 @@ resource "files_behavior" "example_auto_encrypt_behavior" {
   path     = "path"
   behavior = "auto_encrypt"
   value    = {
-    gpg_key_id     = 1
-    gpg_key_ids    = [1]
-    algorithm      = "PGP/GPG"
-    signing_key_id = 1
-    suffix         = ".gpg"
-    armor          = false
+    gpg_key_id         = 1
+    gpg_key_ids        = [1]
+    algorithm          = "PGP/GPG"
+    signing_key_id     = 1
+    suffix             = ".gpg"
+    armor              = false
+    gpg_key_partner_id = 1
   }
 }
 
@@ -241,11 +242,12 @@ resource "files_behavior" "example_auto_decrypt_behavior" {
   path     = "path"
   behavior = "auto_decrypt"
   value    = {
-    gpg_key_id       = 1
-    gpg_key_ids      = [1]
-    algorithm        = "PGP/GPG"
-    suffix           = ".gpg"
-    ignore_mdc_error = true
+    gpg_key_id         = 1
+    gpg_key_ids        = [1]
+    algorithm          = "PGP/GPG"
+    suffix             = ".gpg"
+    ignore_mdc_error   = true
+    gpg_key_partner_id = 1
   }
 }
 
@@ -336,11 +338,13 @@ resource "files_behavior" "example_auto_recrypt_behavior" {
   path     = "path"
   behavior = "auto_recrypt"
   value    = {
-    decrypt_gpg_key_ids = [1]
-    encrypt_gpg_key_ids = [1]
-    ignore_mdc_error    = true
-    signing_key_id      = 1
-    armor               = false
+    decrypt_gpg_key_ids        = [1]
+    encrypt_gpg_key_ids        = [1]
+    decrypt_gpg_key_partner_id = 1
+    encrypt_gpg_key_partner_id = 1
+    ignore_mdc_error           = true
+    signing_key_id             = 1
+    armor                      = false
   }
 }
 ```
