@@ -113,6 +113,7 @@ data "files_user" "example_user" {
 - `office_integration_enabled` (Boolean) Enable integration with Office for the web?
 - `partner_admin` (Boolean) Is this user a Partner administrator?
 - `partner_id` (Number) Partner ID if this user belongs to a Partner
+- `partner_name` (String) Name of the Partner if this user belongs to a Partner
 - `password_expire_at` (String) Password expiration datetime
 - `password_expired` (Boolean) Is user's password expired?
 - `password_set_at` (String) Last time the user's password was set

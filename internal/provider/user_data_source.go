@@ -70,6 +70,7 @@ type userDataSourceModel struct {
 	OfficeIntegrationEnabled         types.Bool   `tfsdk:"office_integration_enabled"`
 	PartnerAdmin                     types.Bool   `tfsdk:"partner_admin"`
 	PartnerId                        types.Int64  `tfsdk:"partner_id"`
+	PartnerName                      types.String `tfsdk:"partner_name"`
 	PasswordSetAt                    types.String `tfsdk:"password_set_at"`
 	PasswordValidityDays             types.Int64  `tfsdk:"password_validity_days"`
 	PublicKeysCount                  types.Int64  `tfsdk:"public_keys_count"`
@@ -294,6 +295,10 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"partner_id": schema.Int64Attribute{
 				Description: "Partner ID if this user belongs to a Partner",
+				Computed:    true,
+			},
+			"partner_name": schema.StringAttribute{
+				Description: "Name of the Partner if this user belongs to a Partner",
 				Computed:    true,
 			},
 			"password_set_at": schema.StringAttribute{
@@ -553,6 +558,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.OfficeIntegrationEnabled = types.BoolPointerValue(user.OfficeIntegrationEnabled)
 	state.PartnerAdmin = types.BoolPointerValue(user.PartnerAdmin)
 	state.PartnerId = types.Int64Value(user.PartnerId)
+	state.PartnerName = types.StringValue(user.PartnerName)
 	if err := lib.TimeToStringType(ctx, path.Root("password_set_at"), user.PasswordSetAt, &state.PasswordSetAt); err != nil {
 		diags.AddError(
 			"Error Creating Files User",

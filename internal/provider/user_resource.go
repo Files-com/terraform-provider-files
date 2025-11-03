@@ -107,6 +107,7 @@ type userResourceModel struct {
 	LastActiveAt                     types.String            `tfsdk:"last_active_at"`
 	LastProtocolCipher               types.String            `tfsdk:"last_protocol_cipher"`
 	LockoutExpires                   types.String            `tfsdk:"lockout_expires"`
+	PartnerName                      types.String            `tfsdk:"partner_name"`
 	PasswordSetAt                    types.String            `tfsdk:"password_set_at"`
 	PublicKeysCount                  types.Int64             `tfsdk:"public_keys_count"`
 	Active2fa                        types.Bool              `tfsdk:"active_2fa"`
@@ -606,6 +607,10 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"lockout_expires": schema.StringAttribute{
 				Description: "Time in the future that the user will no longer be locked out if applicable",
+				Computed:    true,
+			},
+			"partner_name": schema.StringAttribute{
+				Description: "Name of the Partner if this user belongs to a Partner",
 				Computed:    true,
 			},
 			"password_set_at": schema.StringAttribute{
@@ -1160,6 +1165,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.OfficeIntegrationEnabled = types.BoolPointerValue(user.OfficeIntegrationEnabled)
 	state.PartnerAdmin = types.BoolPointerValue(user.PartnerAdmin)
 	state.PartnerId = types.Int64Value(user.PartnerId)
+	state.PartnerName = types.StringValue(user.PartnerName)
 	if err := lib.TimeToStringType(ctx, path.Root("password_set_at"), user.PasswordSetAt, &state.PasswordSetAt); err != nil {
 		diags.AddError(
 			"Error Creating Files User",

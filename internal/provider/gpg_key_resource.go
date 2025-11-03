@@ -48,6 +48,7 @@ type gpgKeyResourceModel struct {
 	GenerateEmail         types.String `tfsdk:"generate_email"`
 	Id                    types.Int64  `tfsdk:"id"`
 	ExpiresAt             types.String `tfsdk:"expires_at"`
+	PartnerName           types.String `tfsdk:"partner_name"`
 	PublicKeyMd5          types.String `tfsdk:"public_key_md5"`
 	PrivateKeyMd5         types.String `tfsdk:"private_key_md5"`
 	GeneratedPublicKey    types.String `tfsdk:"generated_public_key"`
@@ -159,6 +160,10 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			},
 			"expires_at": schema.StringAttribute{
 				Description: "Your GPG key expiration date.",
+				Computed:    true,
+			},
+			"partner_name": schema.StringAttribute{
+				Description: "Name of the Partner who owns this GPG Key, if applicable.",
 				Computed:    true,
 			},
 			"public_key_md5": schema.StringAttribute{
@@ -384,6 +389,7 @@ func (r *gpgKeyResource) populateResourceModel(ctx context.Context, gpgKey files
 	}
 	state.Name = types.StringValue(gpgKey.Name)
 	state.PartnerId = types.Int64Value(gpgKey.PartnerId)
+	state.PartnerName = types.StringValue(gpgKey.PartnerName)
 	state.UserId = types.Int64Value(gpgKey.UserId)
 	state.PublicKeyMd5 = types.StringValue(gpgKey.PublicKeyMd5)
 	state.PrivateKeyMd5 = types.StringValue(gpgKey.PrivateKeyMd5)

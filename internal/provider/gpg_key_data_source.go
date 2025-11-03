@@ -32,6 +32,7 @@ type gpgKeyDataSourceModel struct {
 	ExpiresAt             types.String `tfsdk:"expires_at"`
 	Name                  types.String `tfsdk:"name"`
 	PartnerId             types.Int64  `tfsdk:"partner_id"`
+	PartnerName           types.String `tfsdk:"partner_name"`
 	UserId                types.Int64  `tfsdk:"user_id"`
 	PublicKeyMd5          types.String `tfsdk:"public_key_md5"`
 	PrivateKeyMd5         types.String `tfsdk:"private_key_md5"`
@@ -81,6 +82,10 @@ func (r *gpgKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			},
 			"partner_id": schema.Int64Attribute{
 				Description: "Partner ID who owns this GPG Key, if applicable.",
+				Computed:    true,
+			},
+			"partner_name": schema.StringAttribute{
+				Description: "Name of the Partner who owns this GPG Key, if applicable.",
 				Computed:    true,
 			},
 			"user_id": schema.Int64Attribute{
@@ -151,6 +156,7 @@ func (r *gpgKeyDataSource) populateDataSourceModel(ctx context.Context, gpgKey f
 	}
 	state.Name = types.StringValue(gpgKey.Name)
 	state.PartnerId = types.Int64Value(gpgKey.PartnerId)
+	state.PartnerName = types.StringValue(gpgKey.PartnerName)
 	state.UserId = types.Int64Value(gpgKey.UserId)
 	state.PublicKeyMd5 = types.StringValue(gpgKey.PublicKeyMd5)
 	state.PrivateKeyMd5 = types.StringValue(gpgKey.PrivateKeyMd5)
