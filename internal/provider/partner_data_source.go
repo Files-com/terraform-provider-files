@@ -33,8 +33,10 @@ type partnerDataSourceModel struct {
 	AllowUserCreation         types.Bool   `tfsdk:"allow_user_creation"`
 	Name                      types.String `tfsdk:"name"`
 	Notes                     types.String `tfsdk:"notes"`
+	PartnerAdminIds           types.List   `tfsdk:"partner_admin_ids"`
 	RootFolder                types.String `tfsdk:"root_folder"`
 	Tags                      types.String `tfsdk:"tags"`
+	UserIds                   types.List   `tfsdk:"user_ids"`
 }
 
 func (r *partnerDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -92,6 +94,11 @@ func (r *partnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Description: "Notes about this Partner.",
 				Computed:    true,
 			},
+			"partner_admin_ids": schema.ListAttribute{
+				Description: "Array of User IDs that are Partner Admins for this Partner.",
+				Computed:    true,
+				ElementType: types.Int64Type,
+			},
 			"root_folder": schema.StringAttribute{
 				Description: "The root folder path for this Partner.",
 				Computed:    true,
@@ -99,6 +106,11 @@ func (r *partnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 			"tags": schema.StringAttribute{
 				Description: "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.",
 				Computed:    true,
+			},
+			"user_ids": schema.ListAttribute{
+				Description: "Array of User IDs that belong to this Partner.",
+				Computed:    true,
+				ElementType: types.Int64Type,
 			},
 		},
 	}
@@ -135,6 +147,8 @@ func (r *partnerDataSource) Read(ctx context.Context, req datasource.ReadRequest
 }
 
 func (r *partnerDataSource) populateDataSourceModel(ctx context.Context, partner files_sdk.Partner, state *partnerDataSourceModel) (diags diag.Diagnostics) {
+	var propDiags diag.Diagnostics
+
 	state.AllowBypassing2faPolicies = types.BoolPointerValue(partner.AllowBypassing2faPolicies)
 	state.AllowCredentialChanges = types.BoolPointerValue(partner.AllowCredentialChanges)
 	state.AllowProvidingGpgKeys = types.BoolPointerValue(partner.AllowProvidingGpgKeys)
@@ -142,8 +156,12 @@ func (r *partnerDataSource) populateDataSourceModel(ctx context.Context, partner
 	state.Id = types.Int64Value(partner.Id)
 	state.Name = types.StringValue(partner.Name)
 	state.Notes = types.StringValue(partner.Notes)
+	state.PartnerAdminIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, partner.PartnerAdminIds)
+	diags.Append(propDiags...)
 	state.RootFolder = types.StringValue(partner.RootFolder)
 	state.Tags = types.StringValue(partner.Tags)
+	state.UserIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, partner.UserIds)
+	diags.Append(propDiags...)
 
 	return
 }

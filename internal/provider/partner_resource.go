@@ -43,6 +43,8 @@ type partnerResourceModel struct {
 	RootFolder                types.String `tfsdk:"root_folder"`
 	Tags                      types.String `tfsdk:"tags"`
 	Id                        types.Int64  `tfsdk:"id"`
+	PartnerAdminIds           types.List   `tfsdk:"partner_admin_ids"`
+	UserIds                   types.List   `tfsdk:"user_ids"`
 }
 
 func (r *partnerResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -142,6 +144,16 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
+			},
+			"partner_admin_ids": schema.ListAttribute{
+				Description: "Array of User IDs that are Partner Admins for this Partner.",
+				Computed:    true,
+				ElementType: types.Int64Type,
+			},
+			"user_ids": schema.ListAttribute{
+				Description: "Array of User IDs that belong to this Partner.",
+				Computed:    true,
+				ElementType: types.Int64Type,
 			},
 		},
 	}
@@ -337,6 +349,8 @@ func (r *partnerResource) ImportState(ctx context.Context, req resource.ImportSt
 }
 
 func (r *partnerResource) populateResourceModel(ctx context.Context, partner files_sdk.Partner, state *partnerResourceModel) (diags diag.Diagnostics) {
+	var propDiags diag.Diagnostics
+
 	state.AllowBypassing2faPolicies = types.BoolPointerValue(partner.AllowBypassing2faPolicies)
 	state.AllowCredentialChanges = types.BoolPointerValue(partner.AllowCredentialChanges)
 	state.AllowProvidingGpgKeys = types.BoolPointerValue(partner.AllowProvidingGpgKeys)
@@ -344,8 +358,12 @@ func (r *partnerResource) populateResourceModel(ctx context.Context, partner fil
 	state.Id = types.Int64Value(partner.Id)
 	state.Name = types.StringValue(partner.Name)
 	state.Notes = types.StringValue(partner.Notes)
+	state.PartnerAdminIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, partner.PartnerAdminIds)
+	diags.Append(propDiags...)
 	state.RootFolder = types.StringValue(partner.RootFolder)
 	state.Tags = types.StringValue(partner.Tags)
+	state.UserIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, partner.UserIds)
+	diags.Append(propDiags...)
 
 	return
 }

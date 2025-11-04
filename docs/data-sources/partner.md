@@ -33,5 +33,7 @@ data "files_partner" "example_partner" {
 - `allow_user_creation` (Boolean) Allow Partner Admins to create users.
 - `name` (String) The name of the Partner.
 - `notes` (String) Notes about this Partner.
+- `partner_admin_ids` (List of Number) Array of User IDs that are Partner Admins for this Partner.
 - `root_folder` (String) The root folder path for this Partner.
 - `tags` (String) Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.
+- `user_ids` (List of Number) Array of User IDs that belong to this Partner.
