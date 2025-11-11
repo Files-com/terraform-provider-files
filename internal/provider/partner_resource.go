@@ -34,11 +34,11 @@ type partnerResource struct {
 }
 
 type partnerResourceModel struct {
+	Name                      types.String `tfsdk:"name"`
 	AllowBypassing2faPolicies types.Bool   `tfsdk:"allow_bypassing_2fa_policies"`
 	AllowCredentialChanges    types.Bool   `tfsdk:"allow_credential_changes"`
 	AllowProvidingGpgKeys     types.Bool   `tfsdk:"allow_providing_gpg_keys"`
 	AllowUserCreation         types.Bool   `tfsdk:"allow_user_creation"`
-	Name                      types.String `tfsdk:"name"`
 	Notes                     types.String `tfsdk:"notes"`
 	RootFolder                types.String `tfsdk:"root_folder"`
 	Tags                      types.String `tfsdk:"tags"`
@@ -74,6 +74,10 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 	resp.Schema = schema.Schema{
 		Description: "A Partner is a first-class entity that cleanly represents an external organization, enables delegated administration, and enforces strict boundaries.",
 		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Description: "The name of the Partner.",
+				Required:    true,
+			},
 			"allow_bypassing_2fa_policies": schema.BoolAttribute{
 				Description: "Allow users created under this Partner to bypass Two-Factor Authentication policies.",
 				Computed:    true,
@@ -104,14 +108,6 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"name": schema.StringAttribute{
-				Description: "The name of the Partner.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"notes": schema.StringAttribute{
@@ -174,7 +170,6 @@ func (r *partnerResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	paramsPartnerCreate := files_sdk.PartnerCreateParams{}
-	paramsPartnerCreate.Name = plan.Name.ValueString()
 	if !plan.AllowBypassing2faPolicies.IsNull() && !plan.AllowBypassing2faPolicies.IsUnknown() {
 		paramsPartnerCreate.AllowBypassing2faPolicies = plan.AllowBypassing2faPolicies.ValueBoolPointer()
 	}
@@ -190,6 +185,7 @@ func (r *partnerResource) Create(ctx context.Context, req resource.CreateRequest
 	paramsPartnerCreate.Notes = plan.Notes.ValueString()
 	paramsPartnerCreate.RootFolder = plan.RootFolder.ValueString()
 	paramsPartnerCreate.Tags = plan.Tags.ValueString()
+	paramsPartnerCreate.Name = plan.Name.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -265,7 +261,6 @@ func (r *partnerResource) Update(ctx context.Context, req resource.UpdateRequest
 
 	paramsPartnerUpdate := files_sdk.PartnerUpdateParams{}
 	paramsPartnerUpdate.Id = plan.Id.ValueInt64()
-	paramsPartnerUpdate.Name = plan.Name.ValueString()
 	if !plan.AllowBypassing2faPolicies.IsNull() && !plan.AllowBypassing2faPolicies.IsUnknown() {
 		paramsPartnerUpdate.AllowBypassing2faPolicies = plan.AllowBypassing2faPolicies.ValueBoolPointer()
 	}
@@ -281,6 +276,7 @@ func (r *partnerResource) Update(ctx context.Context, req resource.UpdateRequest
 	paramsPartnerUpdate.Notes = plan.Notes.ValueString()
 	paramsPartnerUpdate.RootFolder = plan.RootFolder.ValueString()
 	paramsPartnerUpdate.Tags = plan.Tags.ValueString()
+	paramsPartnerUpdate.Name = plan.Name.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return

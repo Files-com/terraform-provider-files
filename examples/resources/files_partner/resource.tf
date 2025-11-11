@@ -1,5 +1,4 @@
 resource "files_partner" "example_partner" {
-  name                         = "Acme Corp"
   allow_bypassing_2fa_policies = false
   allow_credential_changes     = false
   allow_providing_gpg_keys     = false
@@ -7,5 +6,6 @@ resource "files_partner" "example_partner" {
   notes                        = "This is a note about the partner."
   root_folder                  = "/AcmeCorp"
   tags                         = "example"
+  name                         = "Acme Corp"
 }
 
