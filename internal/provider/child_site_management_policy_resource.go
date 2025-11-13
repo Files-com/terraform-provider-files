@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -158,16 +157,7 @@ func (r *childSiteManagementPolicyResource) Create(ctx context.Context, req reso
 	paramsChildSiteManagementPolicyCreate := files_sdk.ChildSiteManagementPolicyCreateParams{}
 	createValue, diags := lib.DynamicToStringMap(ctx, path.Root("value"), plan.Value)
 	resp.Diagnostics.Append(diags...)
-	createValueBytes, err := json.Marshal(createValue)
-	if err != nil {
-		resp.Diagnostics.AddAttributeError(
-			path.Root("value"),
-			"Error Creating Files ChildSiteManagementPolicy",
-			"Could not marshal value to JSON: "+err.Error(),
-		)
-	} else {
-		paramsChildSiteManagementPolicyCreate.Value = string(createValueBytes)
-	}
+	paramsChildSiteManagementPolicyCreate.Value = createValue
 	if !plan.SkipChildSiteIds.IsNull() && !plan.SkipChildSiteIds.IsUnknown() {
 		diags = plan.SkipChildSiteIds.ElementsAs(ctx, &paramsChildSiteManagementPolicyCreate.SkipChildSiteIds, false)
 		resp.Diagnostics.Append(diags...)
@@ -252,16 +242,7 @@ func (r *childSiteManagementPolicyResource) Update(ctx context.Context, req reso
 	paramsChildSiteManagementPolicyUpdate.Id = plan.Id.ValueInt64()
 	updateValue, diags := lib.DynamicToStringMap(ctx, path.Root("value"), plan.Value)
 	resp.Diagnostics.Append(diags...)
-	updateValueBytes, err := json.Marshal(updateValue)
-	if err != nil {
-		resp.Diagnostics.AddAttributeError(
-			path.Root("value"),
-			"Error Creating Files ChildSiteManagementPolicy",
-			"Could not marshal value to JSON: "+err.Error(),
-		)
-	} else {
-		paramsChildSiteManagementPolicyUpdate.Value = string(updateValueBytes)
-	}
+	paramsChildSiteManagementPolicyUpdate.Value = updateValue
 	if !plan.SkipChildSiteIds.IsNull() && !plan.SkipChildSiteIds.IsUnknown() {
 		diags = plan.SkipChildSiteIds.ElementsAs(ctx, &paramsChildSiteManagementPolicyUpdate.SkipChildSiteIds, false)
 		resp.Diagnostics.Append(diags...)
