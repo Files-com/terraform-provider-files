@@ -351,7 +351,7 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("daily", "custom_schedule", "webhook", "email", "action"),
+					stringvalidator.OneOf("manual", "daily", "custom_schedule", "webhook", "email", "action"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
