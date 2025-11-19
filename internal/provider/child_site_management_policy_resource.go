@@ -155,7 +155,7 @@ func (r *childSiteManagementPolicyResource) Create(ctx context.Context, req reso
 	}
 
 	paramsChildSiteManagementPolicyCreate := files_sdk.ChildSiteManagementPolicyCreateParams{}
-	createValue, diags := lib.DynamicToStringMap(ctx, path.Root("value"), plan.Value)
+	createValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), plan.Value)
 	resp.Diagnostics.Append(diags...)
 	paramsChildSiteManagementPolicyCreate.Value = createValue
 	if !plan.SkipChildSiteIds.IsNull() && !plan.SkipChildSiteIds.IsUnknown() {
@@ -240,7 +240,7 @@ func (r *childSiteManagementPolicyResource) Update(ctx context.Context, req reso
 
 	paramsChildSiteManagementPolicyUpdate := files_sdk.ChildSiteManagementPolicyUpdateParams{}
 	paramsChildSiteManagementPolicyUpdate.Id = plan.Id.ValueInt64()
-	updateValue, diags := lib.DynamicToStringMap(ctx, path.Root("value"), plan.Value)
+	updateValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), plan.Value)
 	resp.Diagnostics.Append(diags...)
 	paramsChildSiteManagementPolicyUpdate.Value = updateValue
 	if !plan.SkipChildSiteIds.IsNull() && !plan.SkipChildSiteIds.IsUnknown() {

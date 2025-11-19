@@ -164,7 +164,7 @@ func (r *behaviorResource) Create(ctx context.Context, req resource.CreateReques
 	}
 
 	paramsBehaviorCreate := files_sdk.BehaviorCreateParams{}
-	createValue, diags := lib.DynamicToStringMap(ctx, path.Root("value"), plan.Value)
+	createValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), plan.Value)
 	resp.Diagnostics.Append(diags...)
 	createValueBytes, err := json.Marshal(createValue)
 	if err != nil {
@@ -261,7 +261,7 @@ func (r *behaviorResource) Update(ctx context.Context, req resource.UpdateReques
 
 	paramsBehaviorUpdate := files_sdk.BehaviorUpdateParams{}
 	paramsBehaviorUpdate.Id = plan.Id.ValueInt64()
-	updateValue, diags := lib.DynamicToStringMap(ctx, path.Root("value"), plan.Value)
+	updateValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), plan.Value)
 	resp.Diagnostics.Append(diags...)
 	updateValueBytes, err := json.Marshal(updateValue)
 	if err != nil {

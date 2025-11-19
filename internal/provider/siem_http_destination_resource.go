@@ -460,7 +460,7 @@ func (r *siemHttpDestinationResource) Create(ctx context.Context, req resource.C
 
 	paramsSiemHttpDestinationCreate := files_sdk.SiemHttpDestinationCreateParams{}
 	paramsSiemHttpDestinationCreate.Name = plan.Name.ValueString()
-	createAdditionalHeaders, diags := lib.DynamicToStringMap(ctx, path.Root("additional_headers"), plan.AdditionalHeaders)
+	createAdditionalHeaders, diags := lib.DynamicToInterface(ctx, path.Root("additional_headers"), plan.AdditionalHeaders)
 	resp.Diagnostics.Append(diags...)
 	paramsSiemHttpDestinationCreate.AdditionalHeaders = createAdditionalHeaders
 	if !plan.SendingActive.IsNull() && !plan.SendingActive.IsUnknown() {
@@ -589,7 +589,7 @@ func (r *siemHttpDestinationResource) Update(ctx context.Context, req resource.U
 	paramsSiemHttpDestinationUpdate := files_sdk.SiemHttpDestinationUpdateParams{}
 	paramsSiemHttpDestinationUpdate.Id = plan.Id.ValueInt64()
 	paramsSiemHttpDestinationUpdate.Name = plan.Name.ValueString()
-	updateAdditionalHeaders, diags := lib.DynamicToStringMap(ctx, path.Root("additional_headers"), plan.AdditionalHeaders)
+	updateAdditionalHeaders, diags := lib.DynamicToInterface(ctx, path.Root("additional_headers"), plan.AdditionalHeaders)
 	resp.Diagnostics.Append(diags...)
 	paramsSiemHttpDestinationUpdate.AdditionalHeaders = updateAdditionalHeaders
 	if !plan.SendingActive.IsNull() && !plan.SendingActive.IsUnknown() {

@@ -101,6 +101,16 @@ func DynamicToStringMap(ctx context.Context, path path.Path, source types.Dynami
 	}
 }
 
+func DynamicToInterface(ctx context.Context, path path.Path, source types.Dynamic) (interface{}, diag.Diagnostics) {
+	if source.IsNull() || source.IsUnknown() || source.IsUnderlyingValueNull() || source.IsUnderlyingValueUnknown() {
+		return nil, nil
+	}
+
+	ctx = setAttributePath(ctx, path)
+
+	return AttributeToInterface(ctx, path, source.UnderlyingValue())
+}
+
 func ElementsToStringMap(ctx context.Context, path path.Path, attrs map[string]attr.Value) (dest map[string]interface{}, diags diag.Diagnostics) {
 	dest = make(map[string]interface{})
 

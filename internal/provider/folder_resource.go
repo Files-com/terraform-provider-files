@@ -322,7 +322,7 @@ func (r *folderResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	paramsFolderUpdate := files_sdk.FileUpdateParams{}
 	paramsFolderUpdate.Path = plan.Path.ValueString()
-	updateCustomMetadata, diags := lib.DynamicToStringMap(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
+	updateCustomMetadata, diags := lib.DynamicToInterface(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
 	resp.Diagnostics.Append(diags...)
 	paramsFolderUpdate.CustomMetadata = updateCustomMetadata
 	if !plan.ProvidedMtime.IsNull() {
@@ -440,7 +440,7 @@ func (r *folderResource) Update(ctx context.Context, req resource.UpdateRequest,
 
 	paramsFolderUpdate := files_sdk.FileUpdateParams{}
 	paramsFolderUpdate.Path = plan.Path.ValueString()
-	updateCustomMetadata, diags := lib.DynamicToStringMap(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
+	updateCustomMetadata, diags := lib.DynamicToInterface(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
 	resp.Diagnostics.Append(diags...)
 	paramsFolderUpdate.CustomMetadata = updateCustomMetadata
 	if !plan.ProvidedMtime.IsNull() {

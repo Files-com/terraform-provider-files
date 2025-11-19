@@ -493,7 +493,7 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 		diags = plan.TriggerActions.ElementsAs(ctx, &paramsAutomationCreate.TriggerActions, false)
 		resp.Diagnostics.Append(diags...)
 	}
-	createValue, diags := lib.DynamicToStringMap(ctx, path.Root("value"), plan.Value)
+	createValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), plan.Value)
 	resp.Diagnostics.Append(diags...)
 	paramsAutomationCreate.Value = createValue
 	paramsAutomationCreate.RecurringDay = plan.RecurringDay.ValueInt64()
@@ -634,7 +634,7 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 		diags = plan.TriggerActions.ElementsAs(ctx, &paramsAutomationUpdate.TriggerActions, false)
 		resp.Diagnostics.Append(diags...)
 	}
-	updateValue, diags := lib.DynamicToStringMap(ctx, path.Root("value"), plan.Value)
+	updateValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), plan.Value)
 	resp.Diagnostics.Append(diags...)
 	paramsAutomationUpdate.Value = updateValue
 	paramsAutomationUpdate.RecurringDay = plan.RecurringDay.ValueInt64()

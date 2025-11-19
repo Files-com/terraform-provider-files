@@ -239,7 +239,7 @@ func (r *as2PartnerResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsAs2PartnerCreate.SignatureValidationLevel = paramsAs2PartnerCreate.SignatureValidationLevel.Enum()[plan.SignatureValidationLevel.ValueString()]
 	paramsAs2PartnerCreate.ServerCertificate = paramsAs2PartnerCreate.ServerCertificate.Enum()[plan.ServerCertificate.ValueString()]
 	paramsAs2PartnerCreate.DefaultMimeType = plan.DefaultMimeType.ValueString()
-	createAdditionalHttpHeaders, diags := lib.DynamicToStringMap(ctx, path.Root("additional_http_headers"), plan.AdditionalHttpHeaders)
+	createAdditionalHttpHeaders, diags := lib.DynamicToInterface(ctx, path.Root("additional_http_headers"), plan.AdditionalHttpHeaders)
 	resp.Diagnostics.Append(diags...)
 	paramsAs2PartnerCreate.AdditionalHttpHeaders = createAdditionalHttpHeaders
 	paramsAs2PartnerCreate.As2StationId = plan.As2StationId.ValueInt64()
@@ -330,7 +330,7 @@ func (r *as2PartnerResource) Update(ctx context.Context, req resource.UpdateRequ
 	paramsAs2PartnerUpdate.SignatureValidationLevel = paramsAs2PartnerUpdate.SignatureValidationLevel.Enum()[plan.SignatureValidationLevel.ValueString()]
 	paramsAs2PartnerUpdate.ServerCertificate = paramsAs2PartnerUpdate.ServerCertificate.Enum()[plan.ServerCertificate.ValueString()]
 	paramsAs2PartnerUpdate.DefaultMimeType = plan.DefaultMimeType.ValueString()
-	updateAdditionalHttpHeaders, diags := lib.DynamicToStringMap(ctx, path.Root("additional_http_headers"), plan.AdditionalHttpHeaders)
+	updateAdditionalHttpHeaders, diags := lib.DynamicToInterface(ctx, path.Root("additional_http_headers"), plan.AdditionalHttpHeaders)
 	resp.Diagnostics.Append(diags...)
 	paramsAs2PartnerUpdate.AdditionalHttpHeaders = updateAdditionalHttpHeaders
 	paramsAs2PartnerUpdate.Name = plan.Name.ValueString()

@@ -296,7 +296,7 @@ func (r *fileResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	paramsFileUpdate := files_sdk.FileUpdateParams{}
 	paramsFileUpdate.Path = plan.Path.ValueString()
-	updateCustomMetadata, diags := lib.DynamicToStringMap(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
+	updateCustomMetadata, diags := lib.DynamicToInterface(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
 	resp.Diagnostics.Append(diags...)
 	paramsFileUpdate.CustomMetadata = updateCustomMetadata
 	if !plan.ProvidedMtime.IsNull() {
@@ -414,7 +414,7 @@ func (r *fileResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	paramsFileUpdate := files_sdk.FileUpdateParams{}
 	paramsFileUpdate.Path = plan.Path.ValueString()
-	updateCustomMetadata, diags := lib.DynamicToStringMap(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
+	updateCustomMetadata, diags := lib.DynamicToInterface(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
 	resp.Diagnostics.Append(diags...)
 	paramsFileUpdate.CustomMetadata = updateCustomMetadata
 	if !plan.ProvidedMtime.IsNull() {

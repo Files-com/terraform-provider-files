@@ -1828,7 +1828,7 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.RevokeBundleAccessOnDisableOrDelete.IsNull() && !plan.RevokeBundleAccessOnDisableOrDelete.IsUnknown() {
 		paramsSiteUpdate.RevokeBundleAccessOnDisableOrDelete = plan.RevokeBundleAccessOnDisableOrDelete.ValueBoolPointer()
 	}
-	updateBundleWatermarkValue, diags := lib.DynamicToStringMap(ctx, path.Root("bundle_watermark_value"), plan.BundleWatermarkValue)
+	updateBundleWatermarkValue, diags := lib.DynamicToInterface(ctx, path.Root("bundle_watermark_value"), plan.BundleWatermarkValue)
 	resp.Diagnostics.Append(diags...)
 	paramsSiteUpdate.BundleWatermarkValue = updateBundleWatermarkValue
 	if !plan.GroupAdminsCanSetUserPassword.IsNull() && !plan.GroupAdminsCanSetUserPassword.IsUnknown() {

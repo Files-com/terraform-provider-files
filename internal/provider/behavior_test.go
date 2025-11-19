@@ -90,6 +90,20 @@ resource "files_behavior" "bar_remote_server_sync" {
 					resource.TestCheckResourceAttr("files_behavior.bar_remote_server_sync", "value.schedule.times_of_day.1", "03:00"),
 				),
 			},
+			{
+				Config: providerConfig + `
+resource "files_behavior" "primitive_file_expiration" {
+  behavior  = "file_expiration"
+  path      = "Bar"
+  value     = 14
+}
+`,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttr("files_behavior.primitive_file_expiration", "behavior", "file_expiration"),
+					resource.TestCheckResourceAttr("files_behavior.primitive_file_expiration", "path", "Bar"),
+					resource.TestCheckResourceAttr("files_behavior.primitive_file_expiration", "value", "14"),
+				),
+			},
 		},
 	})
 }
