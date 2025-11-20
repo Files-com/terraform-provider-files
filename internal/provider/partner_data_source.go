@@ -71,7 +71,7 @@ func (r *partnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Required:    true,
 			},
 			"allow_bypassing_2fa_policies": schema.BoolAttribute{
-				Description: "Allow users created under this Partner to bypass Two-Factor Authentication policies.",
+				Description: "Allow Partner Admins to change Two-Factor Authentication requirements for Partner Users.",
 				Computed:    true,
 			},
 			"allow_credential_changes": schema.BoolAttribute{
