@@ -5,6 +5,9 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
   }
   sending_active                           = true
   generic_payload_type                     = "example"
+  file_destination_path                    = "example"
+  file_format                              = "example"
+  file_interval_minutes                    = 1
   azure_dcr_immutable_id                   = "example"
   azure_stream_name                        = "example"
   azure_oauth_client_credentials_tenant_id = "example"

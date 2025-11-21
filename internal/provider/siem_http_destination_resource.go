@@ -39,8 +39,11 @@ type siemHttpDestinationResource struct {
 
 type siemHttpDestinationResourceModel struct {
 	DestinationType                               types.String  `tfsdk:"destination_type"`
-	DestinationUrl                                types.String  `tfsdk:"destination_url"`
 	Name                                          types.String  `tfsdk:"name"`
+	DestinationUrl                                types.String  `tfsdk:"destination_url"`
+	FileDestinationPath                           types.String  `tfsdk:"file_destination_path"`
+	FileFormat                                    types.String  `tfsdk:"file_format"`
+	FileIntervalMinutes                           types.Int64   `tfsdk:"file_interval_minutes"`
 	AdditionalHeaders                             types.Dynamic `tfsdk:"additional_headers"`
 	SendingActive                                 types.Bool    `tfsdk:"sending_active"`
 	GenericPayloadType                            types.String  `tfsdk:"generic_payload_type"`
@@ -126,12 +129,8 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 				Description: "Destination Type",
 				Required:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("generic", "splunk", "azure_legacy", "qradar", "sumo", "rapid7", "solar_winds", "new_relic", "datadog", "azure"),
+					stringvalidator.OneOf("generic", "splunk", "azure_legacy", "qradar", "sumo", "rapid7", "solar_winds", "new_relic", "datadog", "azure", "file"),
 				},
-			},
-			"destination_url": schema.StringAttribute{
-				Description: "Destination Url",
-				Required:    true,
 			},
 			"name": schema.StringAttribute{
 				Description: "Name for this Destination",
@@ -139,6 +138,41 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"destination_url": schema.StringAttribute{
+				Description: "Destination Url",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"file_destination_path": schema.StringAttribute{
+				Description: "Applicable only for destination type: file. Destination folder path on Files.com.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"file_format": schema.StringAttribute{
+				Description: "Applicable only for destination type: file. Generated file format.",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("json", "csv"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"file_interval_minutes": schema.Int64Attribute{
+				Description: "Applicable only for destination type: file. Interval, in minutes, between file deliveries.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"additional_headers": schema.DynamicAttribute{
@@ -405,7 +439,7 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 				Description: "Type of URL that was last called. Can be `destination_url` or `azure_oauth_client_credentials_url`",
 				Computed:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("destination_url", "azure_oauth_client_credentials_url"),
+					stringvalidator.OneOf("destination_url", "azure_oauth_client_credentials_url", "file_destination"),
 				},
 			},
 			"last_http_call_success": schema.BoolAttribute{
@@ -467,6 +501,9 @@ func (r *siemHttpDestinationResource) Create(ctx context.Context, req resource.C
 		paramsSiemHttpDestinationCreate.SendingActive = plan.SendingActive.ValueBoolPointer()
 	}
 	paramsSiemHttpDestinationCreate.GenericPayloadType = paramsSiemHttpDestinationCreate.GenericPayloadType.Enum()[plan.GenericPayloadType.ValueString()]
+	paramsSiemHttpDestinationCreate.FileDestinationPath = plan.FileDestinationPath.ValueString()
+	paramsSiemHttpDestinationCreate.FileFormat = paramsSiemHttpDestinationCreate.FileFormat.Enum()[plan.FileFormat.ValueString()]
+	paramsSiemHttpDestinationCreate.FileIntervalMinutes = plan.FileIntervalMinutes.ValueInt64()
 	paramsSiemHttpDestinationCreate.SplunkToken = config.SplunkToken.ValueString()
 	paramsSiemHttpDestinationCreate.AzureDcrImmutableId = plan.AzureDcrImmutableId.ValueString()
 	paramsSiemHttpDestinationCreate.AzureStreamName = plan.AzureStreamName.ValueString()
@@ -596,6 +633,9 @@ func (r *siemHttpDestinationResource) Update(ctx context.Context, req resource.U
 		paramsSiemHttpDestinationUpdate.SendingActive = plan.SendingActive.ValueBoolPointer()
 	}
 	paramsSiemHttpDestinationUpdate.GenericPayloadType = paramsSiemHttpDestinationUpdate.GenericPayloadType.Enum()[plan.GenericPayloadType.ValueString()]
+	paramsSiemHttpDestinationUpdate.FileDestinationPath = plan.FileDestinationPath.ValueString()
+	paramsSiemHttpDestinationUpdate.FileFormat = paramsSiemHttpDestinationUpdate.FileFormat.Enum()[plan.FileFormat.ValueString()]
+	paramsSiemHttpDestinationUpdate.FileIntervalMinutes = plan.FileIntervalMinutes.ValueInt64()
 	paramsSiemHttpDestinationUpdate.SplunkToken = config.SplunkToken.ValueString()
 	paramsSiemHttpDestinationUpdate.AzureDcrImmutableId = plan.AzureDcrImmutableId.ValueString()
 	paramsSiemHttpDestinationUpdate.AzureStreamName = plan.AzureStreamName.ValueString()
@@ -716,6 +756,9 @@ func (r *siemHttpDestinationResource) populateResourceModel(ctx context.Context,
 	state.Name = types.StringValue(siemHttpDestination.Name)
 	state.DestinationType = types.StringValue(siemHttpDestination.DestinationType)
 	state.DestinationUrl = types.StringValue(siemHttpDestination.DestinationUrl)
+	state.FileDestinationPath = types.StringValue(siemHttpDestination.FileDestinationPath)
+	state.FileFormat = types.StringValue(siemHttpDestination.FileFormat)
+	state.FileIntervalMinutes = types.Int64Value(siemHttpDestination.FileIntervalMinutes)
 	state.AdditionalHeaders, propDiags = lib.ToDynamic(ctx, path.Root("additional_headers"), siemHttpDestination.AdditionalHeaders, state.AdditionalHeaders.UnderlyingValue())
 	diags.Append(propDiags...)
 	state.SendingActive = types.BoolPointerValue(siemHttpDestination.SendingActive)

@@ -32,6 +32,9 @@ type siemHttpDestinationDataSourceModel struct {
 	Name                                          types.String  `tfsdk:"name"`
 	DestinationType                               types.String  `tfsdk:"destination_type"`
 	DestinationUrl                                types.String  `tfsdk:"destination_url"`
+	FileDestinationPath                           types.String  `tfsdk:"file_destination_path"`
+	FileFormat                                    types.String  `tfsdk:"file_format"`
+	FileIntervalMinutes                           types.Int64   `tfsdk:"file_interval_minutes"`
 	AdditionalHeaders                             types.Dynamic `tfsdk:"additional_headers"`
 	SendingActive                                 types.Bool    `tfsdk:"sending_active"`
 	GenericPayloadType                            types.String  `tfsdk:"generic_payload_type"`
@@ -120,6 +123,18 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 			},
 			"destination_url": schema.StringAttribute{
 				Description: "Destination Url",
+				Computed:    true,
+			},
+			"file_destination_path": schema.StringAttribute{
+				Description: "Applicable only for destination type: file. Destination folder path on Files.com.",
+				Computed:    true,
+			},
+			"file_format": schema.StringAttribute{
+				Description: "Applicable only for destination type: file. Generated file format.",
+				Computed:    true,
+			},
+			"file_interval_minutes": schema.Int64Attribute{
+				Description: "Applicable only for destination type: file. Interval, in minutes, between file deliveries.",
 				Computed:    true,
 			},
 			"additional_headers": schema.DynamicAttribute{
@@ -343,6 +358,9 @@ func (r *siemHttpDestinationDataSource) populateDataSourceModel(ctx context.Cont
 	state.Name = types.StringValue(siemHttpDestination.Name)
 	state.DestinationType = types.StringValue(siemHttpDestination.DestinationType)
 	state.DestinationUrl = types.StringValue(siemHttpDestination.DestinationUrl)
+	state.FileDestinationPath = types.StringValue(siemHttpDestination.FileDestinationPath)
+	state.FileFormat = types.StringValue(siemHttpDestination.FileFormat)
+	state.FileIntervalMinutes = types.Int64Value(siemHttpDestination.FileIntervalMinutes)
 	state.AdditionalHeaders, propDiags = lib.ToDynamic(ctx, path.Root("additional_headers"), siemHttpDestination.AdditionalHeaders, state.AdditionalHeaders.UnderlyingValue())
 	diags.Append(propDiags...)
 	state.SendingActive = types.BoolPointerValue(siemHttpDestination.SendingActive)

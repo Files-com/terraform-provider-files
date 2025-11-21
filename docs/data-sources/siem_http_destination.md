@@ -45,6 +45,9 @@ data "files_siem_http_destination" "example_siem_http_destination" {
 - `email_send_enabled` (Boolean) Whether or not sending is enabled for email logs.
 - `exavault_api_request_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `exavault_api_request_send_enabled` (Boolean) Whether or not sending is enabled for exavault_api_request logs.
+- `file_destination_path` (String) Applicable only for destination type: file. Destination folder path on Files.com.
+- `file_format` (String) Applicable only for destination type: file. Generated file format.
+- `file_interval_minutes` (Number) Applicable only for destination type: file. Interval, in minutes, between file deliveries.
 - `ftp_action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `ftp_action_send_enabled` (Boolean) Whether or not sending is enabled for ftp_action logs.
 - `generic_payload_type` (String) Applicable only for destination type: generic. Indicates the type of HTTP body. Can be json_newline or json_array. json_newline is multiple log entries as JSON separated by newlines. json_array is a single JSON array containing multiple log entries as JSON.
