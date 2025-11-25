@@ -10,7 +10,7 @@ resource "files_remote_server" "example_remote_server" {
   azure_files_storage_share_name                = "share-name"
   backblaze_b2_bucket                           = "my-bucket"
   backblaze_b2_s3_endpoint                      = "s3.us-west-001.backblazeb2.com"
-  buffer_uploads_always                         = true
+  buffer_uploads                                = "example"
   cloudflare_access_key                         = "example"
   cloudflare_bucket                             = "my-bucket"
   cloudflare_endpoint                           = "https://<ACCOUNT_ID>.r2.cloudflarestorage.com"

@@ -39,7 +39,7 @@ type remoteServerResourceModel struct {
 	Hostname                                types.String `tfsdk:"hostname"`
 	Name                                    types.String `tfsdk:"name"`
 	Port                                    types.Int64  `tfsdk:"port"`
-	BufferUploadsAlways                     types.Bool   `tfsdk:"buffer_uploads_always"`
+	BufferUploads                           types.String `tfsdk:"buffer_uploads"`
 	MaxConnections                          types.Int64  `tfsdk:"max_connections"`
 	PinToSiteRegion                         types.Bool   `tfsdk:"pin_to_site_region"`
 	S3Bucket                                types.String `tfsdk:"s3_bucket"`
@@ -164,12 +164,15 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
-			"buffer_uploads_always": schema.BoolAttribute{
-				Description: "If true, uploads to this server will be uploaded first to Files.com before being sent to the remote server. This can improve performance in certain access patterns, such as high-latency connections.  It will cause data to be temporarily stored in Files.com.",
+			"buffer_uploads": schema.StringAttribute{
+				Description: "If set to always, uploads to this server will be uploaded first to Files.com before being sent to the remote server. This can improve performance in certain access patterns, such as high-latency connections.  It will cause data to be temporarily stored in Files.com. If set to auto, we will perform this optimization if we believe it to be a benefit in a given situation.",
 				Computed:    true,
 				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
+				Validators: []validator.String{
+					stringvalidator.OneOf("auto", "always", "never"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"max_connections": schema.Int64Attribute{
@@ -720,9 +723,7 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.AzureFilesStorageShareName = plan.AzureFilesStorageShareName.ValueString()
 	paramsRemoteServerCreate.BackblazeB2Bucket = plan.BackblazeB2Bucket.ValueString()
 	paramsRemoteServerCreate.BackblazeB2S3Endpoint = plan.BackblazeB2S3Endpoint.ValueString()
-	if !plan.BufferUploadsAlways.IsNull() && !plan.BufferUploadsAlways.IsUnknown() {
-		paramsRemoteServerCreate.BufferUploadsAlways = plan.BufferUploadsAlways.ValueBoolPointer()
-	}
+	paramsRemoteServerCreate.BufferUploads = paramsRemoteServerCreate.BufferUploads.Enum()[plan.BufferUploads.ValueString()]
 	paramsRemoteServerCreate.CloudflareAccessKey = plan.CloudflareAccessKey.ValueString()
 	paramsRemoteServerCreate.CloudflareBucket = plan.CloudflareBucket.ValueString()
 	paramsRemoteServerCreate.CloudflareEndpoint = plan.CloudflareEndpoint.ValueString()
@@ -873,9 +874,7 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	paramsRemoteServerUpdate.AzureFilesStorageShareName = plan.AzureFilesStorageShareName.ValueString()
 	paramsRemoteServerUpdate.BackblazeB2Bucket = plan.BackblazeB2Bucket.ValueString()
 	paramsRemoteServerUpdate.BackblazeB2S3Endpoint = plan.BackblazeB2S3Endpoint.ValueString()
-	if !plan.BufferUploadsAlways.IsNull() && !plan.BufferUploadsAlways.IsUnknown() {
-		paramsRemoteServerUpdate.BufferUploadsAlways = plan.BufferUploadsAlways.ValueBoolPointer()
-	}
+	paramsRemoteServerUpdate.BufferUploads = paramsRemoteServerUpdate.BufferUploads.Enum()[plan.BufferUploads.ValueString()]
 	paramsRemoteServerUpdate.CloudflareAccessKey = plan.CloudflareAccessKey.ValueString()
 	paramsRemoteServerUpdate.CloudflareBucket = plan.CloudflareBucket.ValueString()
 	paramsRemoteServerUpdate.CloudflareEndpoint = plan.CloudflareEndpoint.ValueString()
@@ -993,7 +992,7 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.RemoteHomePath = types.StringValue(remoteServer.RemoteHomePath)
 	state.Name = types.StringValue(remoteServer.Name)
 	state.Port = types.Int64Value(remoteServer.Port)
-	state.BufferUploadsAlways = types.BoolPointerValue(remoteServer.BufferUploadsAlways)
+	state.BufferUploads = types.StringValue(remoteServer.BufferUploads)
 	state.MaxConnections = types.Int64Value(remoteServer.MaxConnections)
 	state.PinToSiteRegion = types.BoolPointerValue(remoteServer.PinToSiteRegion)
 	state.PinnedRegion = types.StringValue(remoteServer.PinnedRegion)

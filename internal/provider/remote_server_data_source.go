@@ -33,7 +33,7 @@ type remoteServerDataSourceModel struct {
 	RemoteHomePath                          types.String `tfsdk:"remote_home_path"`
 	Name                                    types.String `tfsdk:"name"`
 	Port                                    types.Int64  `tfsdk:"port"`
-	BufferUploadsAlways                     types.Bool   `tfsdk:"buffer_uploads_always"`
+	BufferUploads                           types.String `tfsdk:"buffer_uploads"`
 	MaxConnections                          types.Int64  `tfsdk:"max_connections"`
 	PinToSiteRegion                         types.Bool   `tfsdk:"pin_to_site_region"`
 	PinnedRegion                            types.String `tfsdk:"pinned_region"`
@@ -139,8 +139,8 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Description: "Port for remote server.  Not needed for S3.",
 				Computed:    true,
 			},
-			"buffer_uploads_always": schema.BoolAttribute{
-				Description: "If true, uploads to this server will be uploaded first to Files.com before being sent to the remote server. This can improve performance in certain access patterns, such as high-latency connections.  It will cause data to be temporarily stored in Files.com.",
+			"buffer_uploads": schema.StringAttribute{
+				Description: "If set to always, uploads to this server will be uploaded first to Files.com before being sent to the remote server. This can improve performance in certain access patterns, such as high-latency connections.  It will cause data to be temporarily stored in Files.com. If set to auto, we will perform this optimization if we believe it to be a benefit in a given situation.",
 				Computed:    true,
 			},
 			"max_connections": schema.Int64Attribute{
@@ -377,7 +377,7 @@ func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, re
 	state.RemoteHomePath = types.StringValue(remoteServer.RemoteHomePath)
 	state.Name = types.StringValue(remoteServer.Name)
 	state.Port = types.Int64Value(remoteServer.Port)
-	state.BufferUploadsAlways = types.BoolPointerValue(remoteServer.BufferUploadsAlways)
+	state.BufferUploads = types.StringValue(remoteServer.BufferUploads)
 	state.MaxConnections = types.Int64Value(remoteServer.MaxConnections)
 	state.PinToSiteRegion = types.BoolPointerValue(remoteServer.PinToSiteRegion)
 	state.PinnedRegion = types.StringValue(remoteServer.PinnedRegion)
