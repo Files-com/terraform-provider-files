@@ -136,6 +136,7 @@ resource "files_remote_server" "example_remote_server" {
   cloudflare_access_key                         = "example"
   cloudflare_bucket                             = "my-bucket"
   cloudflare_endpoint                           = "https://<ACCOUNT_ID>.r2.cloudflarestorage.com"
+  description                                   = "More information or notes about my server"
   dropbox_teams                                 = true
   enable_dedicated_ips                          = true
   filebase_access_key                           = "example"
@@ -201,6 +202,7 @@ resource "files_remote_server" "example_remote_server" {
 - `cloudflare_bucket` (String) Cloudflare: Bucket name
 - `cloudflare_endpoint` (String) Cloudflare: endpoint
 - `cloudflare_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Cloudflare: Secret Key
+- `description` (String) Internal description for your reference
 - `dropbox_teams` (Boolean) Dropbox: If true, list Team folders in root?
 - `enable_dedicated_ips` (Boolean) `true` if remote server only accepts connections from dedicated IPs
 - `filebase_access_key` (String) Filebase: Access Key.

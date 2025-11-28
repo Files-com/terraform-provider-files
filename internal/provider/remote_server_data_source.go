@@ -32,6 +32,7 @@ type remoteServerDataSourceModel struct {
 	Hostname                                types.String `tfsdk:"hostname"`
 	RemoteHomePath                          types.String `tfsdk:"remote_home_path"`
 	Name                                    types.String `tfsdk:"name"`
+	Description                             types.String `tfsdk:"description"`
 	Port                                    types.Int64  `tfsdk:"port"`
 	BufferUploads                           types.String `tfsdk:"buffer_uploads"`
 	MaxConnections                          types.Int64  `tfsdk:"max_connections"`
@@ -133,6 +134,10 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			},
 			"name": schema.StringAttribute{
 				Description: "Internal name for your reference",
+				Computed:    true,
+			},
+			"description": schema.StringAttribute{
+				Description: "Internal description for your reference",
 				Computed:    true,
 			},
 			"port": schema.Int64Attribute{
@@ -376,6 +381,7 @@ func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, re
 	state.Hostname = types.StringValue(remoteServer.Hostname)
 	state.RemoteHomePath = types.StringValue(remoteServer.RemoteHomePath)
 	state.Name = types.StringValue(remoteServer.Name)
+	state.Description = types.StringValue(remoteServer.Description)
 	state.Port = types.Int64Value(remoteServer.Port)
 	state.BufferUploads = types.StringValue(remoteServer.BufferUploads)
 	state.MaxConnections = types.Int64Value(remoteServer.MaxConnections)

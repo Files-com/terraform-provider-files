@@ -151,6 +151,7 @@ data "files_remote_server" "example_remote_server" {
 - `cloudflare_access_key` (String) Cloudflare: Access Key.
 - `cloudflare_bucket` (String) Cloudflare: Bucket name
 - `cloudflare_endpoint` (String) Cloudflare: endpoint
+- `description` (String) Internal description for your reference
 - `disabled` (Boolean) If true, this server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.
 - `dropbox_teams` (Boolean) Dropbox: If true, list Team folders in root?
 - `enable_dedicated_ips` (Boolean) `true` if remote server only accepts connections from dedicated IPs

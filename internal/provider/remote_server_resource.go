@@ -38,6 +38,7 @@ type remoteServerResource struct {
 type remoteServerResourceModel struct {
 	Hostname                                types.String `tfsdk:"hostname"`
 	Name                                    types.String `tfsdk:"name"`
+	Description                             types.String `tfsdk:"description"`
 	Port                                    types.Int64  `tfsdk:"port"`
 	BufferUploads                           types.String `tfsdk:"buffer_uploads"`
 	MaxConnections                          types.Int64  `tfsdk:"max_connections"`
@@ -150,6 +151,14 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 			},
 			"name": schema.StringAttribute{
 				Description: "Internal name for your reference",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"description": schema.StringAttribute{
+				Description: "Internal description for your reference",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -727,6 +736,7 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.CloudflareAccessKey = plan.CloudflareAccessKey.ValueString()
 	paramsRemoteServerCreate.CloudflareBucket = plan.CloudflareBucket.ValueString()
 	paramsRemoteServerCreate.CloudflareEndpoint = plan.CloudflareEndpoint.ValueString()
+	paramsRemoteServerCreate.Description = plan.Description.ValueString()
 	if !plan.DropboxTeams.IsNull() && !plan.DropboxTeams.IsUnknown() {
 		paramsRemoteServerCreate.DropboxTeams = plan.DropboxTeams.ValueBoolPointer()
 	}
@@ -878,6 +888,7 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	paramsRemoteServerUpdate.CloudflareAccessKey = plan.CloudflareAccessKey.ValueString()
 	paramsRemoteServerUpdate.CloudflareBucket = plan.CloudflareBucket.ValueString()
 	paramsRemoteServerUpdate.CloudflareEndpoint = plan.CloudflareEndpoint.ValueString()
+	paramsRemoteServerUpdate.Description = plan.Description.ValueString()
 	if !plan.DropboxTeams.IsNull() && !plan.DropboxTeams.IsUnknown() {
 		paramsRemoteServerUpdate.DropboxTeams = plan.DropboxTeams.ValueBoolPointer()
 	}
@@ -991,6 +1002,7 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.Hostname = types.StringValue(remoteServer.Hostname)
 	state.RemoteHomePath = types.StringValue(remoteServer.RemoteHomePath)
 	state.Name = types.StringValue(remoteServer.Name)
+	state.Description = types.StringValue(remoteServer.Description)
 	state.Port = types.Int64Value(remoteServer.Port)
 	state.BufferUploads = types.StringValue(remoteServer.BufferUploads)
 	state.MaxConnections = types.Int64Value(remoteServer.MaxConnections)

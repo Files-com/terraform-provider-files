@@ -14,6 +14,7 @@ resource "files_remote_server" "example_remote_server" {
   cloudflare_access_key                         = "example"
   cloudflare_bucket                             = "my-bucket"
   cloudflare_endpoint                           = "https://<ACCOUNT_ID>.r2.cloudflarestorage.com"
+  description                                   = "More information or notes about my server"
   dropbox_teams                                 = true
   enable_dedicated_ips                          = true
   filebase_access_key                           = "example"
