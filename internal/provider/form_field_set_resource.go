@@ -243,26 +243,33 @@ func (r *formFieldSetResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	paramsFormFieldSetUpdate := files_sdk.FormFieldSetUpdateParams{}
-	paramsFormFieldSetUpdate.Id = plan.Id.ValueInt64()
-	paramsFormFieldSetUpdate.Title = plan.Title.ValueString()
-	if !plan.SkipEmail.IsNull() && !plan.SkipEmail.IsUnknown() {
-		paramsFormFieldSetUpdate.SkipEmail = plan.SkipEmail.ValueBoolPointer()
+	paramsFormFieldSetUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsFormFieldSetUpdate["id"] = plan.Id.ValueInt64()
 	}
-	if !plan.SkipName.IsNull() && !plan.SkipName.IsUnknown() {
-		paramsFormFieldSetUpdate.SkipName = plan.SkipName.ValueBoolPointer()
+	if !config.Title.IsNull() && !config.Title.IsUnknown() {
+		paramsFormFieldSetUpdate["title"] = config.Title.ValueString()
 	}
-	if !plan.SkipCompany.IsNull() && !plan.SkipCompany.IsUnknown() {
-		paramsFormFieldSetUpdate.SkipCompany = plan.SkipCompany.ValueBoolPointer()
+	if !config.SkipEmail.IsNull() && !config.SkipEmail.IsUnknown() {
+		paramsFormFieldSetUpdate["skip_email"] = config.SkipEmail.ValueBool()
 	}
-	paramsFormFieldSetUpdate.FormFields, diags = lib.DynamicToStringMapSlice(ctx, path.Root("form_fields"), plan.FormFields)
-	resp.Diagnostics.Append(diags...)
+	if !config.SkipName.IsNull() && !config.SkipName.IsUnknown() {
+		paramsFormFieldSetUpdate["skip_name"] = config.SkipName.ValueBool()
+	}
+	if !config.SkipCompany.IsNull() && !config.SkipCompany.IsUnknown() {
+		paramsFormFieldSetUpdate["skip_company"] = config.SkipCompany.ValueBool()
+	}
+	if !config.FormFields.IsNull() && !config.FormFields.IsUnknown() {
+		updateFormFields, diags := lib.DynamicToStringMapSlice(ctx, path.Root("form_fields"), config.FormFields)
+		resp.Diagnostics.Append(diags...)
+		paramsFormFieldSetUpdate["form_fields"] = updateFormFields
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	formFieldSet, err := r.client.Update(paramsFormFieldSetUpdate, files_sdk.WithContext(ctx))
+	formFieldSet, err := r.client.UpdateWithMap(paramsFormFieldSetUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files FormFieldSet",

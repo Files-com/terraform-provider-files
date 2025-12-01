@@ -197,18 +197,27 @@ func (r *shareGroupResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	paramsShareGroupUpdate := files_sdk.ShareGroupUpdateParams{}
-	paramsShareGroupUpdate.Id = plan.Id.ValueInt64()
-	paramsShareGroupUpdate.Notes = plan.Notes.ValueString()
-	paramsShareGroupUpdate.Name = plan.Name.ValueString()
-	paramsShareGroupUpdate.Members, diags = lib.DynamicToStringMapSlice(ctx, path.Root("members"), plan.Members)
-	resp.Diagnostics.Append(diags...)
+	paramsShareGroupUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsShareGroupUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.Notes.IsNull() && !config.Notes.IsUnknown() {
+		paramsShareGroupUpdate["notes"] = config.Notes.ValueString()
+	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsShareGroupUpdate["name"] = config.Name.ValueString()
+	}
+	if !config.Members.IsNull() && !config.Members.IsUnknown() {
+		updateMembers, diags := lib.DynamicToStringMapSlice(ctx, path.Root("members"), config.Members)
+		resp.Diagnostics.Append(diags...)
+		paramsShareGroupUpdate["members"] = updateMembers
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	shareGroup, err := r.client.Update(paramsShareGroupUpdate, files_sdk.WithContext(ctx))
+	shareGroup, err := r.client.UpdateWithMap(paramsShareGroupUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files ShareGroup",

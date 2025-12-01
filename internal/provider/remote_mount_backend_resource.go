@@ -312,30 +312,52 @@ func (r *remoteMountBackendResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	paramsRemoteMountBackendUpdate := files_sdk.RemoteMountBackendUpdateParams{}
-	paramsRemoteMountBackendUpdate.Id = plan.Id.ValueInt64()
-	if !plan.Enabled.IsNull() && !plan.Enabled.IsUnknown() {
-		paramsRemoteMountBackendUpdate.Enabled = plan.Enabled.ValueBoolPointer()
+	paramsRemoteMountBackendUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsRemoteMountBackendUpdate["id"] = plan.Id.ValueInt64()
 	}
-	paramsRemoteMountBackendUpdate.Fall = plan.Fall.ValueInt64()
-	if !plan.HealthCheckEnabled.IsNull() && !plan.HealthCheckEnabled.IsUnknown() {
-		paramsRemoteMountBackendUpdate.HealthCheckEnabled = plan.HealthCheckEnabled.ValueBoolPointer()
+	if !config.Enabled.IsNull() && !config.Enabled.IsUnknown() {
+		paramsRemoteMountBackendUpdate["enabled"] = config.Enabled.ValueBool()
 	}
-	paramsRemoteMountBackendUpdate.HealthCheckType = paramsRemoteMountBackendUpdate.HealthCheckType.Enum()[plan.HealthCheckType.ValueString()]
-	paramsRemoteMountBackendUpdate.Interval = plan.Interval.ValueInt64()
-	paramsRemoteMountBackendUpdate.MinFreeCpu = plan.MinFreeCpu.ValueString()
-	paramsRemoteMountBackendUpdate.MinFreeMem = plan.MinFreeMem.ValueString()
-	paramsRemoteMountBackendUpdate.Priority = plan.Priority.ValueInt64()
-	paramsRemoteMountBackendUpdate.RemotePath = plan.RemotePath.ValueString()
-	paramsRemoteMountBackendUpdate.Rise = plan.Rise.ValueInt64()
-	paramsRemoteMountBackendUpdate.CanaryFilePath = plan.CanaryFilePath.ValueString()
-	paramsRemoteMountBackendUpdate.RemoteServerId = plan.RemoteServerId.ValueInt64()
+	if !config.Fall.IsNull() && !config.Fall.IsUnknown() {
+		paramsRemoteMountBackendUpdate["fall"] = config.Fall.ValueInt64()
+	}
+	if !config.HealthCheckEnabled.IsNull() && !config.HealthCheckEnabled.IsUnknown() {
+		paramsRemoteMountBackendUpdate["health_check_enabled"] = config.HealthCheckEnabled.ValueBool()
+	}
+	if !config.HealthCheckType.IsNull() && !config.HealthCheckType.IsUnknown() {
+		paramsRemoteMountBackendUpdate["health_check_type"] = config.HealthCheckType.ValueString()
+	}
+	if !config.Interval.IsNull() && !config.Interval.IsUnknown() {
+		paramsRemoteMountBackendUpdate["interval"] = config.Interval.ValueInt64()
+	}
+	if !config.MinFreeCpu.IsNull() && !config.MinFreeCpu.IsUnknown() {
+		paramsRemoteMountBackendUpdate["min_free_cpu"] = config.MinFreeCpu.ValueString()
+	}
+	if !config.MinFreeMem.IsNull() && !config.MinFreeMem.IsUnknown() {
+		paramsRemoteMountBackendUpdate["min_free_mem"] = config.MinFreeMem.ValueString()
+	}
+	if !config.Priority.IsNull() && !config.Priority.IsUnknown() {
+		paramsRemoteMountBackendUpdate["priority"] = config.Priority.ValueInt64()
+	}
+	if !config.RemotePath.IsNull() && !config.RemotePath.IsUnknown() {
+		paramsRemoteMountBackendUpdate["remote_path"] = config.RemotePath.ValueString()
+	}
+	if !config.Rise.IsNull() && !config.Rise.IsUnknown() {
+		paramsRemoteMountBackendUpdate["rise"] = config.Rise.ValueInt64()
+	}
+	if !config.CanaryFilePath.IsNull() && !config.CanaryFilePath.IsUnknown() {
+		paramsRemoteMountBackendUpdate["canary_file_path"] = config.CanaryFilePath.ValueString()
+	}
+	if !config.RemoteServerId.IsNull() && !config.RemoteServerId.IsUnknown() {
+		paramsRemoteMountBackendUpdate["remote_server_id"] = config.RemoteServerId.ValueInt64()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	remoteMountBackend, err := r.client.Update(paramsRemoteMountBackendUpdate, files_sdk.WithContext(ctx))
+	remoteMountBackend, err := r.client.UpdateWithMap(paramsRemoteMountBackendUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files RemoteMountBackend",

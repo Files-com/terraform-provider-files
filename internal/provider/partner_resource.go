@@ -259,30 +259,40 @@ func (r *partnerResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	paramsPartnerUpdate := files_sdk.PartnerUpdateParams{}
-	paramsPartnerUpdate.Id = plan.Id.ValueInt64()
-	if !plan.AllowBypassing2faPolicies.IsNull() && !plan.AllowBypassing2faPolicies.IsUnknown() {
-		paramsPartnerUpdate.AllowBypassing2faPolicies = plan.AllowBypassing2faPolicies.ValueBoolPointer()
+	paramsPartnerUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsPartnerUpdate["id"] = plan.Id.ValueInt64()
 	}
-	if !plan.AllowCredentialChanges.IsNull() && !plan.AllowCredentialChanges.IsUnknown() {
-		paramsPartnerUpdate.AllowCredentialChanges = plan.AllowCredentialChanges.ValueBoolPointer()
+	if !config.AllowBypassing2faPolicies.IsNull() && !config.AllowBypassing2faPolicies.IsUnknown() {
+		paramsPartnerUpdate["allow_bypassing_2fa_policies"] = config.AllowBypassing2faPolicies.ValueBool()
 	}
-	if !plan.AllowProvidingGpgKeys.IsNull() && !plan.AllowProvidingGpgKeys.IsUnknown() {
-		paramsPartnerUpdate.AllowProvidingGpgKeys = plan.AllowProvidingGpgKeys.ValueBoolPointer()
+	if !config.AllowCredentialChanges.IsNull() && !config.AllowCredentialChanges.IsUnknown() {
+		paramsPartnerUpdate["allow_credential_changes"] = config.AllowCredentialChanges.ValueBool()
 	}
-	if !plan.AllowUserCreation.IsNull() && !plan.AllowUserCreation.IsUnknown() {
-		paramsPartnerUpdate.AllowUserCreation = plan.AllowUserCreation.ValueBoolPointer()
+	if !config.AllowProvidingGpgKeys.IsNull() && !config.AllowProvidingGpgKeys.IsUnknown() {
+		paramsPartnerUpdate["allow_providing_gpg_keys"] = config.AllowProvidingGpgKeys.ValueBool()
 	}
-	paramsPartnerUpdate.Notes = plan.Notes.ValueString()
-	paramsPartnerUpdate.RootFolder = plan.RootFolder.ValueString()
-	paramsPartnerUpdate.Tags = plan.Tags.ValueString()
-	paramsPartnerUpdate.Name = plan.Name.ValueString()
+	if !config.AllowUserCreation.IsNull() && !config.AllowUserCreation.IsUnknown() {
+		paramsPartnerUpdate["allow_user_creation"] = config.AllowUserCreation.ValueBool()
+	}
+	if !config.Notes.IsNull() && !config.Notes.IsUnknown() {
+		paramsPartnerUpdate["notes"] = config.Notes.ValueString()
+	}
+	if !config.RootFolder.IsNull() && !config.RootFolder.IsUnknown() {
+		paramsPartnerUpdate["root_folder"] = config.RootFolder.ValueString()
+	}
+	if !config.Tags.IsNull() && !config.Tags.IsUnknown() {
+		paramsPartnerUpdate["tags"] = config.Tags.ValueString()
+	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsPartnerUpdate["name"] = config.Name.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	partner, err := r.client.Update(paramsPartnerUpdate, files_sdk.WithContext(ctx))
+	partner, err := r.client.UpdateWithMap(paramsPartnerUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files Partner",

@@ -172,15 +172,19 @@ func (r *projectResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	paramsProjectUpdate := files_sdk.ProjectUpdateParams{}
-	paramsProjectUpdate.Id = plan.Id.ValueInt64()
-	paramsProjectUpdate.GlobalAccess = plan.GlobalAccess.ValueString()
+	paramsProjectUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsProjectUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.GlobalAccess.IsNull() && !config.GlobalAccess.IsUnknown() {
+		paramsProjectUpdate["global_access"] = config.GlobalAccess.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	project, err := r.client.Update(paramsProjectUpdate, files_sdk.WithContext(ctx))
+	project, err := r.client.UpdateWithMap(paramsProjectUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files Project",

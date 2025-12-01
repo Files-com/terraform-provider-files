@@ -210,15 +210,19 @@ func (r *fileCommentResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	paramsFileCommentUpdate := files_sdk.FileCommentUpdateParams{}
-	paramsFileCommentUpdate.Id = plan.Id.ValueInt64()
-	paramsFileCommentUpdate.Body = plan.Body.ValueString()
+	paramsFileCommentUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsFileCommentUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.Body.IsNull() && !config.Body.IsUnknown() {
+		paramsFileCommentUpdate["body"] = config.Body.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	fileComment, err := r.client.Update(paramsFileCommentUpdate, files_sdk.WithContext(ctx))
+	fileComment, err := r.client.UpdateWithMap(paramsFileCommentUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files FileComment",

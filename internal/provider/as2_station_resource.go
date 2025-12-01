@@ -240,18 +240,28 @@ func (r *as2StationResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	paramsAs2StationUpdate := files_sdk.As2StationUpdateParams{}
-	paramsAs2StationUpdate.Id = plan.Id.ValueInt64()
-	paramsAs2StationUpdate.Name = plan.Name.ValueString()
-	paramsAs2StationUpdate.PublicCertificate = plan.PublicCertificate.ValueString()
-	paramsAs2StationUpdate.PrivateKey = config.PrivateKey.ValueString()
-	paramsAs2StationUpdate.PrivateKeyPassword = config.PrivateKeyPassword.ValueString()
+	paramsAs2StationUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsAs2StationUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsAs2StationUpdate["name"] = config.Name.ValueString()
+	}
+	if !config.PublicCertificate.IsNull() && !config.PublicCertificate.IsUnknown() {
+		paramsAs2StationUpdate["public_certificate"] = config.PublicCertificate.ValueString()
+	}
+	if !config.PrivateKey.IsNull() && !config.PrivateKey.IsUnknown() {
+		paramsAs2StationUpdate["private_key"] = config.PrivateKey.ValueString()
+	}
+	if !config.PrivateKeyPassword.IsNull() && !config.PrivateKeyPassword.IsUnknown() {
+		paramsAs2StationUpdate["private_key_password"] = config.PrivateKeyPassword.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	as2Station, err := r.client.Update(paramsAs2StationUpdate, files_sdk.WithContext(ctx))
+	as2Station, err := r.client.UpdateWithMap(paramsAs2StationUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files As2Station",

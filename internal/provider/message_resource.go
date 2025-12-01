@@ -196,17 +196,25 @@ func (r *messageResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	paramsMessageUpdate := files_sdk.MessageUpdateParams{}
-	paramsMessageUpdate.Id = plan.Id.ValueInt64()
-	paramsMessageUpdate.ProjectId = config.ProjectId.ValueInt64()
-	paramsMessageUpdate.Subject = plan.Subject.ValueString()
-	paramsMessageUpdate.Body = plan.Body.ValueString()
+	paramsMessageUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsMessageUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.ProjectId.IsNull() && !config.ProjectId.IsUnknown() {
+		paramsMessageUpdate["project_id"] = config.ProjectId.ValueInt64()
+	}
+	if !config.Subject.IsNull() && !config.Subject.IsUnknown() {
+		paramsMessageUpdate["subject"] = config.Subject.ValueString()
+	}
+	if !config.Body.IsNull() && !config.Body.IsUnknown() {
+		paramsMessageUpdate["body"] = config.Body.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	message, err := r.client.Update(paramsMessageUpdate, files_sdk.WithContext(ctx))
+	message, err := r.client.UpdateWithMap(paramsMessageUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files Message",

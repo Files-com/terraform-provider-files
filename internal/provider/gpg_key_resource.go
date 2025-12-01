@@ -305,19 +305,31 @@ func (r *gpgKeyResource) Update(ctx context.Context, req resource.UpdateRequest,
 		return
 	}
 
-	paramsGpgKeyUpdate := files_sdk.GpgKeyUpdateParams{}
-	paramsGpgKeyUpdate.Id = plan.Id.ValueInt64()
-	paramsGpgKeyUpdate.PartnerId = plan.PartnerId.ValueInt64()
-	paramsGpgKeyUpdate.PublicKey = config.PublicKey.ValueString()
-	paramsGpgKeyUpdate.PrivateKey = config.PrivateKey.ValueString()
-	paramsGpgKeyUpdate.PrivateKeyPassword = config.PrivateKeyPassword.ValueString()
-	paramsGpgKeyUpdate.Name = plan.Name.ValueString()
+	paramsGpgKeyUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsGpgKeyUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.PartnerId.IsNull() && !config.PartnerId.IsUnknown() {
+		paramsGpgKeyUpdate["partner_id"] = config.PartnerId.ValueInt64()
+	}
+	if !config.PublicKey.IsNull() && !config.PublicKey.IsUnknown() {
+		paramsGpgKeyUpdate["public_key"] = config.PublicKey.ValueString()
+	}
+	if !config.PrivateKey.IsNull() && !config.PrivateKey.IsUnknown() {
+		paramsGpgKeyUpdate["private_key"] = config.PrivateKey.ValueString()
+	}
+	if !config.PrivateKeyPassword.IsNull() && !config.PrivateKeyPassword.IsUnknown() {
+		paramsGpgKeyUpdate["private_key_password"] = config.PrivateKeyPassword.ValueString()
+	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsGpgKeyUpdate["name"] = config.Name.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	gpgKey, err := r.client.Update(paramsGpgKeyUpdate, files_sdk.WithContext(ctx))
+	gpgKey, err := r.client.UpdateWithMap(paramsGpgKeyUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files GpgKey",

@@ -189,16 +189,22 @@ func (r *sftpHostKeyResource) Update(ctx context.Context, req resource.UpdateReq
 		return
 	}
 
-	paramsSftpHostKeyUpdate := files_sdk.SftpHostKeyUpdateParams{}
-	paramsSftpHostKeyUpdate.Id = plan.Id.ValueInt64()
-	paramsSftpHostKeyUpdate.Name = plan.Name.ValueString()
-	paramsSftpHostKeyUpdate.PrivateKey = config.PrivateKey.ValueString()
+	paramsSftpHostKeyUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsSftpHostKeyUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsSftpHostKeyUpdate["name"] = config.Name.ValueString()
+	}
+	if !config.PrivateKey.IsNull() && !config.PrivateKey.IsUnknown() {
+		paramsSftpHostKeyUpdate["private_key"] = config.PrivateKey.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	sftpHostKey, err := r.client.Update(paramsSftpHostKeyUpdate, files_sdk.WithContext(ctx))
+	sftpHostKey, err := r.client.UpdateWithMap(paramsSftpHostKeyUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files SftpHostKey",

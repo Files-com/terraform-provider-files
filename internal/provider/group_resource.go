@@ -270,31 +270,43 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 
-	paramsGroupUpdate := files_sdk.GroupUpdateParams{}
-	paramsGroupUpdate.Id = plan.Id.ValueInt64()
-	paramsGroupUpdate.Notes = plan.Notes.ValueString()
-	paramsGroupUpdate.UserIds = plan.UserIds.ValueString()
-	paramsGroupUpdate.AdminIds = plan.AdminIds.ValueString()
-	if !plan.FtpPermission.IsNull() && !plan.FtpPermission.IsUnknown() {
-		paramsGroupUpdate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
+	paramsGroupUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsGroupUpdate["id"] = plan.Id.ValueInt64()
 	}
-	if !plan.SftpPermission.IsNull() && !plan.SftpPermission.IsUnknown() {
-		paramsGroupUpdate.SftpPermission = plan.SftpPermission.ValueBoolPointer()
+	if !config.Notes.IsNull() && !config.Notes.IsUnknown() {
+		paramsGroupUpdate["notes"] = config.Notes.ValueString()
 	}
-	if !plan.DavPermission.IsNull() && !plan.DavPermission.IsUnknown() {
-		paramsGroupUpdate.DavPermission = plan.DavPermission.ValueBoolPointer()
+	if !config.UserIds.IsNull() && !config.UserIds.IsUnknown() {
+		paramsGroupUpdate["user_ids"] = config.UserIds.ValueString()
 	}
-	if !plan.RestapiPermission.IsNull() && !plan.RestapiPermission.IsUnknown() {
-		paramsGroupUpdate.RestapiPermission = plan.RestapiPermission.ValueBoolPointer()
+	if !config.AdminIds.IsNull() && !config.AdminIds.IsUnknown() {
+		paramsGroupUpdate["admin_ids"] = config.AdminIds.ValueString()
 	}
-	paramsGroupUpdate.AllowedIps = plan.AllowedIps.ValueString()
-	paramsGroupUpdate.Name = plan.Name.ValueString()
+	if !config.FtpPermission.IsNull() && !config.FtpPermission.IsUnknown() {
+		paramsGroupUpdate["ftp_permission"] = config.FtpPermission.ValueBool()
+	}
+	if !config.SftpPermission.IsNull() && !config.SftpPermission.IsUnknown() {
+		paramsGroupUpdate["sftp_permission"] = config.SftpPermission.ValueBool()
+	}
+	if !config.DavPermission.IsNull() && !config.DavPermission.IsUnknown() {
+		paramsGroupUpdate["dav_permission"] = config.DavPermission.ValueBool()
+	}
+	if !config.RestapiPermission.IsNull() && !config.RestapiPermission.IsUnknown() {
+		paramsGroupUpdate["restapi_permission"] = config.RestapiPermission.ValueBool()
+	}
+	if !config.AllowedIps.IsNull() && !config.AllowedIps.IsUnknown() {
+		paramsGroupUpdate["allowed_ips"] = config.AllowedIps.ValueString()
+	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsGroupUpdate["name"] = config.Name.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	group, err := r.client.Update(paramsGroupUpdate, files_sdk.WithContext(ctx))
+	group, err := r.client.UpdateWithMap(paramsGroupUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files Group",

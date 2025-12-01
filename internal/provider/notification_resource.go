@@ -394,52 +394,64 @@ func (r *notificationResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	paramsNotificationUpdate := files_sdk.NotificationUpdateParams{}
-	paramsNotificationUpdate.Id = plan.Id.ValueInt64()
-	if !plan.NotifyOnCopy.IsNull() && !plan.NotifyOnCopy.IsUnknown() {
-		paramsNotificationUpdate.NotifyOnCopy = plan.NotifyOnCopy.ValueBoolPointer()
+	paramsNotificationUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsNotificationUpdate["id"] = plan.Id.ValueInt64()
 	}
-	if !plan.NotifyOnDelete.IsNull() && !plan.NotifyOnDelete.IsUnknown() {
-		paramsNotificationUpdate.NotifyOnDelete = plan.NotifyOnDelete.ValueBoolPointer()
+	if !config.NotifyOnCopy.IsNull() && !config.NotifyOnCopy.IsUnknown() {
+		paramsNotificationUpdate["notify_on_copy"] = config.NotifyOnCopy.ValueBool()
 	}
-	if !plan.NotifyOnDownload.IsNull() && !plan.NotifyOnDownload.IsUnknown() {
-		paramsNotificationUpdate.NotifyOnDownload = plan.NotifyOnDownload.ValueBoolPointer()
+	if !config.NotifyOnDelete.IsNull() && !config.NotifyOnDelete.IsUnknown() {
+		paramsNotificationUpdate["notify_on_delete"] = config.NotifyOnDelete.ValueBool()
 	}
-	if !plan.NotifyOnMove.IsNull() && !plan.NotifyOnMove.IsUnknown() {
-		paramsNotificationUpdate.NotifyOnMove = plan.NotifyOnMove.ValueBoolPointer()
+	if !config.NotifyOnDownload.IsNull() && !config.NotifyOnDownload.IsUnknown() {
+		paramsNotificationUpdate["notify_on_download"] = config.NotifyOnDownload.ValueBool()
 	}
-	if !plan.NotifyOnUpload.IsNull() && !plan.NotifyOnUpload.IsUnknown() {
-		paramsNotificationUpdate.NotifyOnUpload = plan.NotifyOnUpload.ValueBoolPointer()
+	if !config.NotifyOnMove.IsNull() && !config.NotifyOnMove.IsUnknown() {
+		paramsNotificationUpdate["notify_on_move"] = config.NotifyOnMove.ValueBool()
 	}
-	if !plan.NotifyUserActions.IsNull() && !plan.NotifyUserActions.IsUnknown() {
-		paramsNotificationUpdate.NotifyUserActions = plan.NotifyUserActions.ValueBoolPointer()
+	if !config.NotifyOnUpload.IsNull() && !config.NotifyOnUpload.IsUnknown() {
+		paramsNotificationUpdate["notify_on_upload"] = config.NotifyOnUpload.ValueBool()
 	}
-	if !plan.Recursive.IsNull() && !plan.Recursive.IsUnknown() {
-		paramsNotificationUpdate.Recursive = plan.Recursive.ValueBoolPointer()
+	if !config.NotifyUserActions.IsNull() && !config.NotifyUserActions.IsUnknown() {
+		paramsNotificationUpdate["notify_user_actions"] = config.NotifyUserActions.ValueBool()
 	}
-	paramsNotificationUpdate.SendInterval = plan.SendInterval.ValueString()
-	paramsNotificationUpdate.Message = plan.Message.ValueString()
-	if !plan.TriggeringFilenames.IsNull() && !plan.TriggeringFilenames.IsUnknown() {
-		diags = plan.TriggeringFilenames.ElementsAs(ctx, &paramsNotificationUpdate.TriggeringFilenames, false)
+	if !config.Recursive.IsNull() && !config.Recursive.IsUnknown() {
+		paramsNotificationUpdate["recursive"] = config.Recursive.ValueBool()
+	}
+	if !config.SendInterval.IsNull() && !config.SendInterval.IsUnknown() {
+		paramsNotificationUpdate["send_interval"] = config.SendInterval.ValueString()
+	}
+	if !config.Message.IsNull() && !config.Message.IsUnknown() {
+		paramsNotificationUpdate["message"] = config.Message.ValueString()
+	}
+	if !config.TriggeringFilenames.IsNull() && !config.TriggeringFilenames.IsUnknown() {
+		var updateTriggeringFilenames []string
+		diags = config.TriggeringFilenames.ElementsAs(ctx, &updateTriggeringFilenames, false)
 		resp.Diagnostics.Append(diags...)
+		paramsNotificationUpdate["triggering_filenames"] = updateTriggeringFilenames
 	}
-	if !plan.TriggeringGroupIds.IsNull() && !plan.TriggeringGroupIds.IsUnknown() {
-		diags = plan.TriggeringGroupIds.ElementsAs(ctx, &paramsNotificationUpdate.TriggeringGroupIds, false)
+	if !config.TriggeringGroupIds.IsNull() && !config.TriggeringGroupIds.IsUnknown() {
+		var updateTriggeringGroupIds []int64
+		diags = config.TriggeringGroupIds.ElementsAs(ctx, &updateTriggeringGroupIds, false)
 		resp.Diagnostics.Append(diags...)
+		paramsNotificationUpdate["triggering_group_ids"] = updateTriggeringGroupIds
 	}
-	if !plan.TriggeringUserIds.IsNull() && !plan.TriggeringUserIds.IsUnknown() {
-		diags = plan.TriggeringUserIds.ElementsAs(ctx, &paramsNotificationUpdate.TriggeringUserIds, false)
+	if !config.TriggeringUserIds.IsNull() && !config.TriggeringUserIds.IsUnknown() {
+		var updateTriggeringUserIds []int64
+		diags = config.TriggeringUserIds.ElementsAs(ctx, &updateTriggeringUserIds, false)
 		resp.Diagnostics.Append(diags...)
+		paramsNotificationUpdate["triggering_user_ids"] = updateTriggeringUserIds
 	}
-	if !plan.TriggerByShareRecipients.IsNull() && !plan.TriggerByShareRecipients.IsUnknown() {
-		paramsNotificationUpdate.TriggerByShareRecipients = plan.TriggerByShareRecipients.ValueBoolPointer()
+	if !config.TriggerByShareRecipients.IsNull() && !config.TriggerByShareRecipients.IsUnknown() {
+		paramsNotificationUpdate["trigger_by_share_recipients"] = config.TriggerByShareRecipients.ValueBool()
 	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	notification, err := r.client.Update(paramsNotificationUpdate, files_sdk.WithContext(ctx))
+	notification, err := r.client.UpdateWithMap(paramsNotificationUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files Notification",

@@ -183,15 +183,19 @@ func (r *messageCommentResource) Update(ctx context.Context, req resource.Update
 		return
 	}
 
-	paramsMessageCommentUpdate := files_sdk.MessageCommentUpdateParams{}
-	paramsMessageCommentUpdate.Id = plan.Id.ValueInt64()
-	paramsMessageCommentUpdate.Body = plan.Body.ValueString()
+	paramsMessageCommentUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsMessageCommentUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.Body.IsNull() && !config.Body.IsUnknown() {
+		paramsMessageCommentUpdate["body"] = config.Body.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	messageComment, err := r.client.Update(paramsMessageCommentUpdate, files_sdk.WithContext(ctx))
+	messageComment, err := r.client.UpdateWithMap(paramsMessageCommentUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files MessageComment",

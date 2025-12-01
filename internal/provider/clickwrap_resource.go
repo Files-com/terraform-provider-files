@@ -223,19 +223,31 @@ func (r *clickwrapResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
-	paramsClickwrapUpdate := files_sdk.ClickwrapUpdateParams{}
-	paramsClickwrapUpdate.Id = plan.Id.ValueInt64()
-	paramsClickwrapUpdate.Name = plan.Name.ValueString()
-	paramsClickwrapUpdate.Body = plan.Body.ValueString()
-	paramsClickwrapUpdate.UseWithBundles = paramsClickwrapUpdate.UseWithBundles.Enum()[plan.UseWithBundles.ValueString()]
-	paramsClickwrapUpdate.UseWithInboxes = paramsClickwrapUpdate.UseWithInboxes.Enum()[plan.UseWithInboxes.ValueString()]
-	paramsClickwrapUpdate.UseWithUsers = paramsClickwrapUpdate.UseWithUsers.Enum()[plan.UseWithUsers.ValueString()]
+	paramsClickwrapUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsClickwrapUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsClickwrapUpdate["name"] = config.Name.ValueString()
+	}
+	if !config.Body.IsNull() && !config.Body.IsUnknown() {
+		paramsClickwrapUpdate["body"] = config.Body.ValueString()
+	}
+	if !config.UseWithBundles.IsNull() && !config.UseWithBundles.IsUnknown() {
+		paramsClickwrapUpdate["use_with_bundles"] = config.UseWithBundles.ValueString()
+	}
+	if !config.UseWithInboxes.IsNull() && !config.UseWithInboxes.IsUnknown() {
+		paramsClickwrapUpdate["use_with_inboxes"] = config.UseWithInboxes.ValueString()
+	}
+	if !config.UseWithUsers.IsNull() && !config.UseWithUsers.IsUnknown() {
+		paramsClickwrapUpdate["use_with_users"] = config.UseWithUsers.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	clickwrap, err := r.client.Update(paramsClickwrapUpdate, files_sdk.WithContext(ctx))
+	clickwrap, err := r.client.UpdateWithMap(paramsClickwrapUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files Clickwrap",

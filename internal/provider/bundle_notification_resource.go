@@ -216,20 +216,22 @@ func (r *bundleNotificationResource) Update(ctx context.Context, req resource.Up
 		return
 	}
 
-	paramsBundleNotificationUpdate := files_sdk.BundleNotificationUpdateParams{}
-	paramsBundleNotificationUpdate.Id = plan.Id.ValueInt64()
-	if !plan.NotifyOnRegistration.IsNull() && !plan.NotifyOnRegistration.IsUnknown() {
-		paramsBundleNotificationUpdate.NotifyOnRegistration = plan.NotifyOnRegistration.ValueBoolPointer()
+	paramsBundleNotificationUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsBundleNotificationUpdate["id"] = plan.Id.ValueInt64()
 	}
-	if !plan.NotifyOnUpload.IsNull() && !plan.NotifyOnUpload.IsUnknown() {
-		paramsBundleNotificationUpdate.NotifyOnUpload = plan.NotifyOnUpload.ValueBoolPointer()
+	if !config.NotifyOnRegistration.IsNull() && !config.NotifyOnRegistration.IsUnknown() {
+		paramsBundleNotificationUpdate["notify_on_registration"] = config.NotifyOnRegistration.ValueBool()
+	}
+	if !config.NotifyOnUpload.IsNull() && !config.NotifyOnUpload.IsUnknown() {
+		paramsBundleNotificationUpdate["notify_on_upload"] = config.NotifyOnUpload.ValueBool()
 	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	bundleNotification, err := r.client.Update(paramsBundleNotificationUpdate, files_sdk.WithContext(ctx))
+	bundleNotification, err := r.client.UpdateWithMap(paramsBundleNotificationUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files BundleNotification",

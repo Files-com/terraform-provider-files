@@ -259,9 +259,11 @@ func (r *behaviorResource) Update(ctx context.Context, req resource.UpdateReques
 		return
 	}
 
-	paramsBehaviorUpdate := files_sdk.BehaviorUpdateParams{}
-	paramsBehaviorUpdate.Id = plan.Id.ValueInt64()
-	updateValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), plan.Value)
+	paramsBehaviorUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsBehaviorUpdate["id"] = plan.Id.ValueInt64()
+	}
+	updateValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), config.Value)
 	resp.Diagnostics.Append(diags...)
 	updateValueBytes, err := json.Marshal(updateValue)
 	if err != nil {
@@ -271,22 +273,26 @@ func (r *behaviorResource) Update(ctx context.Context, req resource.UpdateReques
 			"Could not marshal value to JSON: "+err.Error(),
 		)
 	} else {
-		paramsBehaviorUpdate.Value = string(updateValueBytes)
+		paramsBehaviorUpdate["value"] = string(updateValueBytes)
 	}
-	if !plan.DisableParentFolderBehavior.IsNull() && !plan.DisableParentFolderBehavior.IsUnknown() {
-		paramsBehaviorUpdate.DisableParentFolderBehavior = plan.DisableParentFolderBehavior.ValueBoolPointer()
+	if !config.DisableParentFolderBehavior.IsNull() && !config.DisableParentFolderBehavior.IsUnknown() {
+		paramsBehaviorUpdate["disable_parent_folder_behavior"] = config.DisableParentFolderBehavior.ValueBool()
 	}
-	if !plan.Recursive.IsNull() && !plan.Recursive.IsUnknown() {
-		paramsBehaviorUpdate.Recursive = plan.Recursive.ValueBoolPointer()
+	if !config.Recursive.IsNull() && !config.Recursive.IsUnknown() {
+		paramsBehaviorUpdate["recursive"] = config.Recursive.ValueBool()
 	}
-	paramsBehaviorUpdate.Name = plan.Name.ValueString()
-	paramsBehaviorUpdate.Description = plan.Description.ValueString()
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsBehaviorUpdate["name"] = config.Name.ValueString()
+	}
+	if !config.Description.IsNull() && !config.Description.IsUnknown() {
+		paramsBehaviorUpdate["description"] = config.Description.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	behavior, err := r.client.Update(paramsBehaviorUpdate, files_sdk.WithContext(ctx))
+	behavior, err := r.client.UpdateWithMap(paramsBehaviorUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files Behavior",

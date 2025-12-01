@@ -571,80 +571,137 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	paramsAutomationUpdate := files_sdk.AutomationUpdateParams{}
-	paramsAutomationUpdate.Id = plan.Id.ValueInt64()
-	paramsAutomationUpdate.Source = plan.Source.ValueString()
-	if !plan.Destinations.IsNull() && !plan.Destinations.IsUnknown() {
-		diags = plan.Destinations.ElementsAs(ctx, &paramsAutomationUpdate.Destinations, false)
+	paramsAutomationUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsAutomationUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.Source.IsNull() && !config.Source.IsUnknown() {
+		paramsAutomationUpdate["source"] = config.Source.ValueString()
+	}
+	if !config.Destinations.IsNull() && !config.Destinations.IsUnknown() {
+		var updateDestinations []string
+		diags = config.Destinations.ElementsAs(ctx, &updateDestinations, false)
 		resp.Diagnostics.Append(diags...)
+		paramsAutomationUpdate["destinations"] = updateDestinations
 	}
-	paramsAutomationUpdate.DestinationReplaceFrom = plan.DestinationReplaceFrom.ValueString()
-	paramsAutomationUpdate.DestinationReplaceTo = plan.DestinationReplaceTo.ValueString()
-	paramsAutomationUpdate.Interval = plan.Interval.ValueString()
-	paramsAutomationUpdate.Path = plan.Path.ValueString()
-	paramsAutomationUpdate.LegacySyncIds, diags = lib.ListValueToString(ctx, path.Root("legacy_sync_ids"), plan.LegacySyncIds, ",")
-	resp.Diagnostics.Append(diags...)
-	paramsAutomationUpdate.SyncIds, diags = lib.ListValueToString(ctx, path.Root("sync_ids"), plan.SyncIds, ",")
-	resp.Diagnostics.Append(diags...)
-	paramsAutomationUpdate.UserIds, diags = lib.ListValueToString(ctx, path.Root("user_ids"), plan.UserIds, ",")
-	resp.Diagnostics.Append(diags...)
-	paramsAutomationUpdate.GroupIds, diags = lib.ListValueToString(ctx, path.Root("group_ids"), plan.GroupIds, ",")
-	resp.Diagnostics.Append(diags...)
-	if !plan.ScheduleDaysOfWeek.IsNull() && !plan.ScheduleDaysOfWeek.IsUnknown() {
-		diags = plan.ScheduleDaysOfWeek.ElementsAs(ctx, &paramsAutomationUpdate.ScheduleDaysOfWeek, false)
+	if !config.DestinationReplaceFrom.IsNull() && !config.DestinationReplaceFrom.IsUnknown() {
+		paramsAutomationUpdate["destination_replace_from"] = config.DestinationReplaceFrom.ValueString()
+	}
+	if !config.DestinationReplaceTo.IsNull() && !config.DestinationReplaceTo.IsUnknown() {
+		paramsAutomationUpdate["destination_replace_to"] = config.DestinationReplaceTo.ValueString()
+	}
+	if !config.Interval.IsNull() && !config.Interval.IsUnknown() {
+		paramsAutomationUpdate["interval"] = config.Interval.ValueString()
+	}
+	if !config.Path.IsNull() && !config.Path.IsUnknown() {
+		paramsAutomationUpdate["path"] = config.Path.ValueString()
+	}
+	if !config.LegacySyncIds.IsNull() && !config.LegacySyncIds.IsUnknown() {
+		updateLegacySyncIds, diags := lib.ListValueToString(ctx, path.Root("legacy_sync_ids"), config.LegacySyncIds, ",")
 		resp.Diagnostics.Append(diags...)
+		paramsAutomationUpdate["legacy_sync_ids"] = updateLegacySyncIds
 	}
-	if !plan.ScheduleTimesOfDay.IsNull() && !plan.ScheduleTimesOfDay.IsUnknown() {
-		diags = plan.ScheduleTimesOfDay.ElementsAs(ctx, &paramsAutomationUpdate.ScheduleTimesOfDay, false)
+	if !config.SyncIds.IsNull() && !config.SyncIds.IsUnknown() {
+		updateSyncIds, diags := lib.ListValueToString(ctx, path.Root("sync_ids"), config.SyncIds, ",")
 		resp.Diagnostics.Append(diags...)
+		paramsAutomationUpdate["sync_ids"] = updateSyncIds
 	}
-	paramsAutomationUpdate.ScheduleTimeZone = plan.ScheduleTimeZone.ValueString()
-	paramsAutomationUpdate.HolidayRegion = plan.HolidayRegion.ValueString()
-	if !plan.AlwaysOverwriteSizeMatchingFiles.IsNull() && !plan.AlwaysOverwriteSizeMatchingFiles.IsUnknown() {
-		paramsAutomationUpdate.AlwaysOverwriteSizeMatchingFiles = plan.AlwaysOverwriteSizeMatchingFiles.ValueBoolPointer()
-	}
-	if !plan.AlwaysSerializeJobs.IsNull() && !plan.AlwaysSerializeJobs.IsUnknown() {
-		paramsAutomationUpdate.AlwaysSerializeJobs = plan.AlwaysSerializeJobs.ValueBoolPointer()
-	}
-	paramsAutomationUpdate.Description = plan.Description.ValueString()
-	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
-		paramsAutomationUpdate.Disabled = plan.Disabled.ValueBoolPointer()
-	}
-	paramsAutomationUpdate.ExcludePattern = plan.ExcludePattern.ValueString()
-	paramsAutomationUpdate.ImportUrls, diags = lib.DynamicToStringMapSlice(ctx, path.Root("import_urls"), plan.ImportUrls)
-	resp.Diagnostics.Append(diags...)
-	if !plan.FlattenDestinationStructure.IsNull() && !plan.FlattenDestinationStructure.IsUnknown() {
-		paramsAutomationUpdate.FlattenDestinationStructure = plan.FlattenDestinationStructure.ValueBoolPointer()
-	}
-	if !plan.IgnoreLockedFolders.IsNull() && !plan.IgnoreLockedFolders.IsUnknown() {
-		paramsAutomationUpdate.IgnoreLockedFolders = plan.IgnoreLockedFolders.ValueBoolPointer()
-	}
-	if !plan.LegacyFolderMatching.IsNull() && !plan.LegacyFolderMatching.IsUnknown() {
-		paramsAutomationUpdate.LegacyFolderMatching = plan.LegacyFolderMatching.ValueBoolPointer()
-	}
-	paramsAutomationUpdate.Name = plan.Name.ValueString()
-	if !plan.OverwriteFiles.IsNull() && !plan.OverwriteFiles.IsUnknown() {
-		paramsAutomationUpdate.OverwriteFiles = plan.OverwriteFiles.ValueBoolPointer()
-	}
-	paramsAutomationUpdate.PathTimeZone = plan.PathTimeZone.ValueString()
-	paramsAutomationUpdate.RetryOnFailureIntervalInMinutes = plan.RetryOnFailureIntervalInMinutes.ValueInt64()
-	paramsAutomationUpdate.RetryOnFailureNumberOfAttempts = plan.RetryOnFailureNumberOfAttempts.ValueInt64()
-	paramsAutomationUpdate.Trigger = paramsAutomationUpdate.Trigger.Enum()[plan.Trigger.ValueString()]
-	if !plan.TriggerActions.IsNull() && !plan.TriggerActions.IsUnknown() {
-		diags = plan.TriggerActions.ElementsAs(ctx, &paramsAutomationUpdate.TriggerActions, false)
+	if !config.UserIds.IsNull() && !config.UserIds.IsUnknown() {
+		updateUserIds, diags := lib.ListValueToString(ctx, path.Root("user_ids"), config.UserIds, ",")
 		resp.Diagnostics.Append(diags...)
+		paramsAutomationUpdate["user_ids"] = updateUserIds
 	}
-	updateValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), plan.Value)
+	if !config.GroupIds.IsNull() && !config.GroupIds.IsUnknown() {
+		updateGroupIds, diags := lib.ListValueToString(ctx, path.Root("group_ids"), config.GroupIds, ",")
+		resp.Diagnostics.Append(diags...)
+		paramsAutomationUpdate["group_ids"] = updateGroupIds
+	}
+	if !config.ScheduleDaysOfWeek.IsNull() && !config.ScheduleDaysOfWeek.IsUnknown() {
+		var updateScheduleDaysOfWeek []int64
+		diags = config.ScheduleDaysOfWeek.ElementsAs(ctx, &updateScheduleDaysOfWeek, false)
+		resp.Diagnostics.Append(diags...)
+		paramsAutomationUpdate["schedule_days_of_week"] = updateScheduleDaysOfWeek
+	}
+	if !config.ScheduleTimesOfDay.IsNull() && !config.ScheduleTimesOfDay.IsUnknown() {
+		var updateScheduleTimesOfDay []string
+		diags = config.ScheduleTimesOfDay.ElementsAs(ctx, &updateScheduleTimesOfDay, false)
+		resp.Diagnostics.Append(diags...)
+		paramsAutomationUpdate["schedule_times_of_day"] = updateScheduleTimesOfDay
+	}
+	if !config.ScheduleTimeZone.IsNull() && !config.ScheduleTimeZone.IsUnknown() {
+		paramsAutomationUpdate["schedule_time_zone"] = config.ScheduleTimeZone.ValueString()
+	}
+	if !config.HolidayRegion.IsNull() && !config.HolidayRegion.IsUnknown() {
+		paramsAutomationUpdate["holiday_region"] = config.HolidayRegion.ValueString()
+	}
+	if !config.AlwaysOverwriteSizeMatchingFiles.IsNull() && !config.AlwaysOverwriteSizeMatchingFiles.IsUnknown() {
+		paramsAutomationUpdate["always_overwrite_size_matching_files"] = config.AlwaysOverwriteSizeMatchingFiles.ValueBool()
+	}
+	if !config.AlwaysSerializeJobs.IsNull() && !config.AlwaysSerializeJobs.IsUnknown() {
+		paramsAutomationUpdate["always_serialize_jobs"] = config.AlwaysSerializeJobs.ValueBool()
+	}
+	if !config.Description.IsNull() && !config.Description.IsUnknown() {
+		paramsAutomationUpdate["description"] = config.Description.ValueString()
+	}
+	if !config.Disabled.IsNull() && !config.Disabled.IsUnknown() {
+		paramsAutomationUpdate["disabled"] = config.Disabled.ValueBool()
+	}
+	if !config.ExcludePattern.IsNull() && !config.ExcludePattern.IsUnknown() {
+		paramsAutomationUpdate["exclude_pattern"] = config.ExcludePattern.ValueString()
+	}
+	if !config.ImportUrls.IsNull() && !config.ImportUrls.IsUnknown() {
+		updateImportUrls, diags := lib.DynamicToStringMapSlice(ctx, path.Root("import_urls"), config.ImportUrls)
+		resp.Diagnostics.Append(diags...)
+		paramsAutomationUpdate["import_urls"] = updateImportUrls
+	}
+	if !config.FlattenDestinationStructure.IsNull() && !config.FlattenDestinationStructure.IsUnknown() {
+		paramsAutomationUpdate["flatten_destination_structure"] = config.FlattenDestinationStructure.ValueBool()
+	}
+	if !config.IgnoreLockedFolders.IsNull() && !config.IgnoreLockedFolders.IsUnknown() {
+		paramsAutomationUpdate["ignore_locked_folders"] = config.IgnoreLockedFolders.ValueBool()
+	}
+	if !config.LegacyFolderMatching.IsNull() && !config.LegacyFolderMatching.IsUnknown() {
+		paramsAutomationUpdate["legacy_folder_matching"] = config.LegacyFolderMatching.ValueBool()
+	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsAutomationUpdate["name"] = config.Name.ValueString()
+	}
+	if !config.OverwriteFiles.IsNull() && !config.OverwriteFiles.IsUnknown() {
+		paramsAutomationUpdate["overwrite_files"] = config.OverwriteFiles.ValueBool()
+	}
+	if !config.PathTimeZone.IsNull() && !config.PathTimeZone.IsUnknown() {
+		paramsAutomationUpdate["path_time_zone"] = config.PathTimeZone.ValueString()
+	}
+	if !config.RetryOnFailureIntervalInMinutes.IsNull() && !config.RetryOnFailureIntervalInMinutes.IsUnknown() {
+		paramsAutomationUpdate["retry_on_failure_interval_in_minutes"] = config.RetryOnFailureIntervalInMinutes.ValueInt64()
+	}
+	if !config.RetryOnFailureNumberOfAttempts.IsNull() && !config.RetryOnFailureNumberOfAttempts.IsUnknown() {
+		paramsAutomationUpdate["retry_on_failure_number_of_attempts"] = config.RetryOnFailureNumberOfAttempts.ValueInt64()
+	}
+	if !config.Trigger.IsNull() && !config.Trigger.IsUnknown() {
+		paramsAutomationUpdate["trigger"] = config.Trigger.ValueString()
+	}
+	if !config.TriggerActions.IsNull() && !config.TriggerActions.IsUnknown() {
+		var updateTriggerActions []string
+		diags = config.TriggerActions.ElementsAs(ctx, &updateTriggerActions, false)
+		resp.Diagnostics.Append(diags...)
+		paramsAutomationUpdate["trigger_actions"] = updateTriggerActions
+	}
+	updateValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), config.Value)
 	resp.Diagnostics.Append(diags...)
-	paramsAutomationUpdate.Value = updateValue
-	paramsAutomationUpdate.RecurringDay = plan.RecurringDay.ValueInt64()
-	paramsAutomationUpdate.Automation = paramsAutomationUpdate.Automation.Enum()[plan.Automation.ValueString()]
+	paramsAutomationUpdate["value"] = updateValue
+	if !config.RecurringDay.IsNull() && !config.RecurringDay.IsUnknown() {
+		paramsAutomationUpdate["recurring_day"] = config.RecurringDay.ValueInt64()
+	}
+	if !config.Automation.IsNull() && !config.Automation.IsUnknown() {
+		paramsAutomationUpdate["automation"] = config.Automation.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	automation, err := r.client.Update(paramsAutomationUpdate, files_sdk.WithContext(ctx))
+	automation, err := r.client.UpdateWithMap(paramsAutomationUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files Automation",

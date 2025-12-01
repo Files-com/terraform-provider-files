@@ -319,29 +319,49 @@ func (r *as2PartnerResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	paramsAs2PartnerUpdate := files_sdk.As2PartnerUpdateParams{}
-	paramsAs2PartnerUpdate.Id = plan.Id.ValueInt64()
-	if !plan.EnableDedicatedIps.IsNull() && !plan.EnableDedicatedIps.IsUnknown() {
-		paramsAs2PartnerUpdate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
+	paramsAs2PartnerUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsAs2PartnerUpdate["id"] = plan.Id.ValueInt64()
 	}
-	paramsAs2PartnerUpdate.HttpAuthUsername = plan.HttpAuthUsername.ValueString()
-	paramsAs2PartnerUpdate.HttpAuthPassword = config.HttpAuthPassword.ValueString()
-	paramsAs2PartnerUpdate.MdnValidationLevel = paramsAs2PartnerUpdate.MdnValidationLevel.Enum()[plan.MdnValidationLevel.ValueString()]
-	paramsAs2PartnerUpdate.SignatureValidationLevel = paramsAs2PartnerUpdate.SignatureValidationLevel.Enum()[plan.SignatureValidationLevel.ValueString()]
-	paramsAs2PartnerUpdate.ServerCertificate = paramsAs2PartnerUpdate.ServerCertificate.Enum()[plan.ServerCertificate.ValueString()]
-	paramsAs2PartnerUpdate.DefaultMimeType = plan.DefaultMimeType.ValueString()
-	updateAdditionalHttpHeaders, diags := lib.DynamicToInterface(ctx, path.Root("additional_http_headers"), plan.AdditionalHttpHeaders)
+	if !config.EnableDedicatedIps.IsNull() && !config.EnableDedicatedIps.IsUnknown() {
+		paramsAs2PartnerUpdate["enable_dedicated_ips"] = config.EnableDedicatedIps.ValueBool()
+	}
+	if !config.HttpAuthUsername.IsNull() && !config.HttpAuthUsername.IsUnknown() {
+		paramsAs2PartnerUpdate["http_auth_username"] = config.HttpAuthUsername.ValueString()
+	}
+	if !config.HttpAuthPassword.IsNull() && !config.HttpAuthPassword.IsUnknown() {
+		paramsAs2PartnerUpdate["http_auth_password"] = config.HttpAuthPassword.ValueString()
+	}
+	if !config.MdnValidationLevel.IsNull() && !config.MdnValidationLevel.IsUnknown() {
+		paramsAs2PartnerUpdate["mdn_validation_level"] = config.MdnValidationLevel.ValueString()
+	}
+	if !config.SignatureValidationLevel.IsNull() && !config.SignatureValidationLevel.IsUnknown() {
+		paramsAs2PartnerUpdate["signature_validation_level"] = config.SignatureValidationLevel.ValueString()
+	}
+	if !config.ServerCertificate.IsNull() && !config.ServerCertificate.IsUnknown() {
+		paramsAs2PartnerUpdate["server_certificate"] = config.ServerCertificate.ValueString()
+	}
+	if !config.DefaultMimeType.IsNull() && !config.DefaultMimeType.IsUnknown() {
+		paramsAs2PartnerUpdate["default_mime_type"] = config.DefaultMimeType.ValueString()
+	}
+	updateAdditionalHttpHeaders, diags := lib.DynamicToInterface(ctx, path.Root("additional_http_headers"), config.AdditionalHttpHeaders)
 	resp.Diagnostics.Append(diags...)
-	paramsAs2PartnerUpdate.AdditionalHttpHeaders = updateAdditionalHttpHeaders
-	paramsAs2PartnerUpdate.Name = plan.Name.ValueString()
-	paramsAs2PartnerUpdate.Uri = plan.Uri.ValueString()
-	paramsAs2PartnerUpdate.PublicCertificate = plan.PublicCertificate.ValueString()
+	paramsAs2PartnerUpdate["additional_http_headers"] = updateAdditionalHttpHeaders
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsAs2PartnerUpdate["name"] = config.Name.ValueString()
+	}
+	if !config.Uri.IsNull() && !config.Uri.IsUnknown() {
+		paramsAs2PartnerUpdate["uri"] = config.Uri.ValueString()
+	}
+	if !config.PublicCertificate.IsNull() && !config.PublicCertificate.IsUnknown() {
+		paramsAs2PartnerUpdate["public_certificate"] = config.PublicCertificate.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	as2Partner, err := r.client.Update(paramsAs2PartnerUpdate, files_sdk.WithContext(ctx))
+	as2Partner, err := r.client.UpdateWithMap(paramsAs2PartnerUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files As2Partner",

@@ -623,71 +623,109 @@ func (r *siemHttpDestinationResource) Update(ctx context.Context, req resource.U
 		return
 	}
 
-	paramsSiemHttpDestinationUpdate := files_sdk.SiemHttpDestinationUpdateParams{}
-	paramsSiemHttpDestinationUpdate.Id = plan.Id.ValueInt64()
-	paramsSiemHttpDestinationUpdate.Name = plan.Name.ValueString()
-	updateAdditionalHeaders, diags := lib.DynamicToInterface(ctx, path.Root("additional_headers"), plan.AdditionalHeaders)
+	paramsSiemHttpDestinationUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["name"] = config.Name.ValueString()
+	}
+	updateAdditionalHeaders, diags := lib.DynamicToInterface(ctx, path.Root("additional_headers"), config.AdditionalHeaders)
 	resp.Diagnostics.Append(diags...)
-	paramsSiemHttpDestinationUpdate.AdditionalHeaders = updateAdditionalHeaders
-	if !plan.SendingActive.IsNull() && !plan.SendingActive.IsUnknown() {
-		paramsSiemHttpDestinationUpdate.SendingActive = plan.SendingActive.ValueBoolPointer()
+	paramsSiemHttpDestinationUpdate["additional_headers"] = updateAdditionalHeaders
+	if !config.SendingActive.IsNull() && !config.SendingActive.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["sending_active"] = config.SendingActive.ValueBool()
 	}
-	paramsSiemHttpDestinationUpdate.GenericPayloadType = paramsSiemHttpDestinationUpdate.GenericPayloadType.Enum()[plan.GenericPayloadType.ValueString()]
-	paramsSiemHttpDestinationUpdate.FileDestinationPath = plan.FileDestinationPath.ValueString()
-	paramsSiemHttpDestinationUpdate.FileFormat = paramsSiemHttpDestinationUpdate.FileFormat.Enum()[plan.FileFormat.ValueString()]
-	paramsSiemHttpDestinationUpdate.FileIntervalMinutes = plan.FileIntervalMinutes.ValueInt64()
-	paramsSiemHttpDestinationUpdate.SplunkToken = config.SplunkToken.ValueString()
-	paramsSiemHttpDestinationUpdate.AzureDcrImmutableId = plan.AzureDcrImmutableId.ValueString()
-	paramsSiemHttpDestinationUpdate.AzureStreamName = plan.AzureStreamName.ValueString()
-	paramsSiemHttpDestinationUpdate.AzureOauthClientCredentialsTenantId = plan.AzureOauthClientCredentialsTenantId.ValueString()
-	paramsSiemHttpDestinationUpdate.AzureOauthClientCredentialsClientId = plan.AzureOauthClientCredentialsClientId.ValueString()
-	paramsSiemHttpDestinationUpdate.AzureOauthClientCredentialsClientSecret = config.AzureOauthClientCredentialsClientSecret.ValueString()
-	paramsSiemHttpDestinationUpdate.QradarUsername = plan.QradarUsername.ValueString()
-	paramsSiemHttpDestinationUpdate.QradarPassword = config.QradarPassword.ValueString()
-	paramsSiemHttpDestinationUpdate.SolarWindsToken = config.SolarWindsToken.ValueString()
-	paramsSiemHttpDestinationUpdate.NewRelicApiKey = config.NewRelicApiKey.ValueString()
-	paramsSiemHttpDestinationUpdate.DatadogApiKey = config.DatadogApiKey.ValueString()
-	if !plan.SftpActionSendEnabled.IsNull() && !plan.SftpActionSendEnabled.IsUnknown() {
-		paramsSiemHttpDestinationUpdate.SftpActionSendEnabled = plan.SftpActionSendEnabled.ValueBoolPointer()
+	if !config.GenericPayloadType.IsNull() && !config.GenericPayloadType.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["generic_payload_type"] = config.GenericPayloadType.ValueString()
 	}
-	if !plan.FtpActionSendEnabled.IsNull() && !plan.FtpActionSendEnabled.IsUnknown() {
-		paramsSiemHttpDestinationUpdate.FtpActionSendEnabled = plan.FtpActionSendEnabled.ValueBoolPointer()
+	if !config.FileDestinationPath.IsNull() && !config.FileDestinationPath.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["file_destination_path"] = config.FileDestinationPath.ValueString()
 	}
-	if !plan.WebDavActionSendEnabled.IsNull() && !plan.WebDavActionSendEnabled.IsUnknown() {
-		paramsSiemHttpDestinationUpdate.WebDavActionSendEnabled = plan.WebDavActionSendEnabled.ValueBoolPointer()
+	if !config.FileFormat.IsNull() && !config.FileFormat.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["file_format"] = config.FileFormat.ValueString()
 	}
-	if !plan.SyncSendEnabled.IsNull() && !plan.SyncSendEnabled.IsUnknown() {
-		paramsSiemHttpDestinationUpdate.SyncSendEnabled = plan.SyncSendEnabled.ValueBoolPointer()
+	if !config.FileIntervalMinutes.IsNull() && !config.FileIntervalMinutes.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["file_interval_minutes"] = config.FileIntervalMinutes.ValueInt64()
 	}
-	if !plan.OutboundConnectionSendEnabled.IsNull() && !plan.OutboundConnectionSendEnabled.IsUnknown() {
-		paramsSiemHttpDestinationUpdate.OutboundConnectionSendEnabled = plan.OutboundConnectionSendEnabled.ValueBoolPointer()
+	if !config.SplunkToken.IsNull() && !config.SplunkToken.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["splunk_token"] = config.SplunkToken.ValueString()
 	}
-	if !plan.AutomationSendEnabled.IsNull() && !plan.AutomationSendEnabled.IsUnknown() {
-		paramsSiemHttpDestinationUpdate.AutomationSendEnabled = plan.AutomationSendEnabled.ValueBoolPointer()
+	if !config.AzureDcrImmutableId.IsNull() && !config.AzureDcrImmutableId.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["azure_dcr_immutable_id"] = config.AzureDcrImmutableId.ValueString()
 	}
-	if !plan.ApiRequestSendEnabled.IsNull() && !plan.ApiRequestSendEnabled.IsUnknown() {
-		paramsSiemHttpDestinationUpdate.ApiRequestSendEnabled = plan.ApiRequestSendEnabled.ValueBoolPointer()
+	if !config.AzureStreamName.IsNull() && !config.AzureStreamName.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["azure_stream_name"] = config.AzureStreamName.ValueString()
 	}
-	if !plan.PublicHostingRequestSendEnabled.IsNull() && !plan.PublicHostingRequestSendEnabled.IsUnknown() {
-		paramsSiemHttpDestinationUpdate.PublicHostingRequestSendEnabled = plan.PublicHostingRequestSendEnabled.ValueBoolPointer()
+	if !config.AzureOauthClientCredentialsTenantId.IsNull() && !config.AzureOauthClientCredentialsTenantId.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["azure_oauth_client_credentials_tenant_id"] = config.AzureOauthClientCredentialsTenantId.ValueString()
 	}
-	if !plan.EmailSendEnabled.IsNull() && !plan.EmailSendEnabled.IsUnknown() {
-		paramsSiemHttpDestinationUpdate.EmailSendEnabled = plan.EmailSendEnabled.ValueBoolPointer()
+	if !config.AzureOauthClientCredentialsClientId.IsNull() && !config.AzureOauthClientCredentialsClientId.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["azure_oauth_client_credentials_client_id"] = config.AzureOauthClientCredentialsClientId.ValueString()
 	}
-	if !plan.ExavaultApiRequestSendEnabled.IsNull() && !plan.ExavaultApiRequestSendEnabled.IsUnknown() {
-		paramsSiemHttpDestinationUpdate.ExavaultApiRequestSendEnabled = plan.ExavaultApiRequestSendEnabled.ValueBoolPointer()
+	if !config.AzureOauthClientCredentialsClientSecret.IsNull() && !config.AzureOauthClientCredentialsClientSecret.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["azure_oauth_client_credentials_client_secret"] = config.AzureOauthClientCredentialsClientSecret.ValueString()
 	}
-	if !plan.SettingsChangeSendEnabled.IsNull() && !plan.SettingsChangeSendEnabled.IsUnknown() {
-		paramsSiemHttpDestinationUpdate.SettingsChangeSendEnabled = plan.SettingsChangeSendEnabled.ValueBoolPointer()
+	if !config.QradarUsername.IsNull() && !config.QradarUsername.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["qradar_username"] = config.QradarUsername.ValueString()
 	}
-	paramsSiemHttpDestinationUpdate.DestinationType = paramsSiemHttpDestinationUpdate.DestinationType.Enum()[plan.DestinationType.ValueString()]
-	paramsSiemHttpDestinationUpdate.DestinationUrl = plan.DestinationUrl.ValueString()
+	if !config.QradarPassword.IsNull() && !config.QradarPassword.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["qradar_password"] = config.QradarPassword.ValueString()
+	}
+	if !config.SolarWindsToken.IsNull() && !config.SolarWindsToken.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["solar_winds_token"] = config.SolarWindsToken.ValueString()
+	}
+	if !config.NewRelicApiKey.IsNull() && !config.NewRelicApiKey.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["new_relic_api_key"] = config.NewRelicApiKey.ValueString()
+	}
+	if !config.DatadogApiKey.IsNull() && !config.DatadogApiKey.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["datadog_api_key"] = config.DatadogApiKey.ValueString()
+	}
+	if !config.SftpActionSendEnabled.IsNull() && !config.SftpActionSendEnabled.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["sftp_action_send_enabled"] = config.SftpActionSendEnabled.ValueBool()
+	}
+	if !config.FtpActionSendEnabled.IsNull() && !config.FtpActionSendEnabled.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["ftp_action_send_enabled"] = config.FtpActionSendEnabled.ValueBool()
+	}
+	if !config.WebDavActionSendEnabled.IsNull() && !config.WebDavActionSendEnabled.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["web_dav_action_send_enabled"] = config.WebDavActionSendEnabled.ValueBool()
+	}
+	if !config.SyncSendEnabled.IsNull() && !config.SyncSendEnabled.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["sync_send_enabled"] = config.SyncSendEnabled.ValueBool()
+	}
+	if !config.OutboundConnectionSendEnabled.IsNull() && !config.OutboundConnectionSendEnabled.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["outbound_connection_send_enabled"] = config.OutboundConnectionSendEnabled.ValueBool()
+	}
+	if !config.AutomationSendEnabled.IsNull() && !config.AutomationSendEnabled.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["automation_send_enabled"] = config.AutomationSendEnabled.ValueBool()
+	}
+	if !config.ApiRequestSendEnabled.IsNull() && !config.ApiRequestSendEnabled.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["api_request_send_enabled"] = config.ApiRequestSendEnabled.ValueBool()
+	}
+	if !config.PublicHostingRequestSendEnabled.IsNull() && !config.PublicHostingRequestSendEnabled.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["public_hosting_request_send_enabled"] = config.PublicHostingRequestSendEnabled.ValueBool()
+	}
+	if !config.EmailSendEnabled.IsNull() && !config.EmailSendEnabled.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["email_send_enabled"] = config.EmailSendEnabled.ValueBool()
+	}
+	if !config.ExavaultApiRequestSendEnabled.IsNull() && !config.ExavaultApiRequestSendEnabled.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["exavault_api_request_send_enabled"] = config.ExavaultApiRequestSendEnabled.ValueBool()
+	}
+	if !config.SettingsChangeSendEnabled.IsNull() && !config.SettingsChangeSendEnabled.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["settings_change_send_enabled"] = config.SettingsChangeSendEnabled.ValueBool()
+	}
+	if !config.DestinationType.IsNull() && !config.DestinationType.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["destination_type"] = config.DestinationType.ValueString()
+	}
+	if !config.DestinationUrl.IsNull() && !config.DestinationUrl.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["destination_url"] = config.DestinationUrl.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	siemHttpDestination, err := r.client.Update(paramsSiemHttpDestinationUpdate, files_sdk.WithContext(ctx))
+	siemHttpDestination, err := r.client.UpdateWithMap(paramsSiemHttpDestinationUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files SiemHttpDestination",

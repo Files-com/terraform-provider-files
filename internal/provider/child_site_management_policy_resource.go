@@ -238,24 +238,34 @@ func (r *childSiteManagementPolicyResource) Update(ctx context.Context, req reso
 		return
 	}
 
-	paramsChildSiteManagementPolicyUpdate := files_sdk.ChildSiteManagementPolicyUpdateParams{}
-	paramsChildSiteManagementPolicyUpdate.Id = plan.Id.ValueInt64()
-	updateValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), plan.Value)
-	resp.Diagnostics.Append(diags...)
-	paramsChildSiteManagementPolicyUpdate.Value = updateValue
-	if !plan.SkipChildSiteIds.IsNull() && !plan.SkipChildSiteIds.IsUnknown() {
-		diags = plan.SkipChildSiteIds.ElementsAs(ctx, &paramsChildSiteManagementPolicyUpdate.SkipChildSiteIds, false)
-		resp.Diagnostics.Append(diags...)
+	paramsChildSiteManagementPolicyUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsChildSiteManagementPolicyUpdate["id"] = plan.Id.ValueInt64()
 	}
-	paramsChildSiteManagementPolicyUpdate.PolicyType = paramsChildSiteManagementPolicyUpdate.PolicyType.Enum()[plan.PolicyType.ValueString()]
-	paramsChildSiteManagementPolicyUpdate.Name = plan.Name.ValueString()
-	paramsChildSiteManagementPolicyUpdate.Description = plan.Description.ValueString()
+	updateValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), config.Value)
+	resp.Diagnostics.Append(diags...)
+	paramsChildSiteManagementPolicyUpdate["value"] = updateValue
+	if !config.SkipChildSiteIds.IsNull() && !config.SkipChildSiteIds.IsUnknown() {
+		var updateSkipChildSiteIds []int64
+		diags = config.SkipChildSiteIds.ElementsAs(ctx, &updateSkipChildSiteIds, false)
+		resp.Diagnostics.Append(diags...)
+		paramsChildSiteManagementPolicyUpdate["skip_child_site_ids"] = updateSkipChildSiteIds
+	}
+	if !config.PolicyType.IsNull() && !config.PolicyType.IsUnknown() {
+		paramsChildSiteManagementPolicyUpdate["policy_type"] = config.PolicyType.ValueString()
+	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsChildSiteManagementPolicyUpdate["name"] = config.Name.ValueString()
+	}
+	if !config.Description.IsNull() && !config.Description.IsUnknown() {
+		paramsChildSiteManagementPolicyUpdate["description"] = config.Description.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	childSiteManagementPolicy, err := r.client.Update(paramsChildSiteManagementPolicyUpdate, files_sdk.WithContext(ctx))
+	childSiteManagementPolicy, err := r.client.UpdateWithMap(paramsChildSiteManagementPolicyUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files ChildSiteManagementPolicy",

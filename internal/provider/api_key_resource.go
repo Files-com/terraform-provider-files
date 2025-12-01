@@ -295,14 +295,18 @@ func (r *apiKeyResource) Update(ctx context.Context, req resource.UpdateRequest,
 		return
 	}
 
-	paramsApiKeyUpdate := files_sdk.ApiKeyUpdateParams{}
-	paramsApiKeyUpdate.Id = plan.Id.ValueInt64()
-	paramsApiKeyUpdate.Description = plan.Description.ValueString()
-	if !plan.ExpiresAt.IsNull() {
-		if plan.ExpiresAt.ValueString() == "" {
-			paramsApiKeyUpdate.ExpiresAt = new(time.Time)
+	paramsApiKeyUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsApiKeyUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.Description.IsNull() && !config.Description.IsUnknown() {
+		paramsApiKeyUpdate["description"] = config.Description.ValueString()
+	}
+	if !config.ExpiresAt.IsNull() && !config.ExpiresAt.IsUnknown() {
+		if config.ExpiresAt.ValueString() == "" {
+			paramsApiKeyUpdate["expires_at"] = new(time.Time)
 		} else {
-			updateExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
+			updateExpiresAt, err := time.Parse(time.RFC3339, config.ExpiresAt.ValueString())
 			if err != nil {
 				resp.Diagnostics.AddAttributeError(
 					path.Root("expires_at"),
@@ -310,18 +314,22 @@ func (r *apiKeyResource) Update(ctx context.Context, req resource.UpdateRequest,
 					"Could not parse expires_at time: "+err.Error(),
 				)
 			} else {
-				paramsApiKeyUpdate.ExpiresAt = &updateExpiresAt
+				paramsApiKeyUpdate["expires_at"] = &updateExpiresAt
 			}
 		}
 	}
-	paramsApiKeyUpdate.PermissionSet = paramsApiKeyUpdate.PermissionSet.Enum()[plan.PermissionSet.ValueString()]
-	paramsApiKeyUpdate.Name = plan.Name.ValueString()
+	if !config.PermissionSet.IsNull() && !config.PermissionSet.IsUnknown() {
+		paramsApiKeyUpdate["permission_set"] = config.PermissionSet.ValueString()
+	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsApiKeyUpdate["name"] = config.Name.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	apiKey, err := r.client.Update(paramsApiKeyUpdate, files_sdk.WithContext(ctx))
+	apiKey, err := r.client.UpdateWithMap(paramsApiKeyUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files ApiKey",

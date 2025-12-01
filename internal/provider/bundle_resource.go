@@ -548,28 +548,42 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 		return
 	}
 
-	paramsBundleUpdate := files_sdk.BundleUpdateParams{}
-	paramsBundleUpdate.Id = plan.Id.ValueInt64()
-	if !plan.Paths.IsNull() && !plan.Paths.IsUnknown() {
-		diags = plan.Paths.ElementsAs(ctx, &paramsBundleUpdate.Paths, false)
+	paramsBundleUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsBundleUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.Paths.IsNull() && !config.Paths.IsUnknown() {
+		var updatePaths []string
+		diags = config.Paths.ElementsAs(ctx, &updatePaths, false)
 		resp.Diagnostics.Append(diags...)
+		paramsBundleUpdate["paths"] = updatePaths
 	}
-	paramsBundleUpdate.Password = config.Password.ValueString()
-	paramsBundleUpdate.FormFieldSetId = config.FormFieldSetId.ValueInt64()
-	paramsBundleUpdate.ClickwrapId = plan.ClickwrapId.ValueInt64()
-	paramsBundleUpdate.Code = plan.Code.ValueString()
+	if !config.Password.IsNull() && !config.Password.IsUnknown() {
+		paramsBundleUpdate["password"] = config.Password.ValueString()
+	}
+	if !config.FormFieldSetId.IsNull() && !config.FormFieldSetId.IsUnknown() {
+		paramsBundleUpdate["form_field_set_id"] = config.FormFieldSetId.ValueInt64()
+	}
+	if !config.ClickwrapId.IsNull() && !config.ClickwrapId.IsUnknown() {
+		paramsBundleUpdate["clickwrap_id"] = config.ClickwrapId.ValueInt64()
+	}
+	if !config.Code.IsNull() && !config.Code.IsUnknown() {
+		paramsBundleUpdate["code"] = config.Code.ValueString()
+	}
 	if !config.CreateSnapshot.IsNull() && !config.CreateSnapshot.IsUnknown() {
-		paramsBundleUpdate.CreateSnapshot = config.CreateSnapshot.ValueBoolPointer()
+		paramsBundleUpdate["create_snapshot"] = config.CreateSnapshot.ValueBool()
 	}
-	paramsBundleUpdate.Description = plan.Description.ValueString()
-	if !plan.DontSeparateSubmissionsByFolder.IsNull() && !plan.DontSeparateSubmissionsByFolder.IsUnknown() {
-		paramsBundleUpdate.DontSeparateSubmissionsByFolder = plan.DontSeparateSubmissionsByFolder.ValueBoolPointer()
+	if !config.Description.IsNull() && !config.Description.IsUnknown() {
+		paramsBundleUpdate["description"] = config.Description.ValueString()
 	}
-	if !plan.ExpiresAt.IsNull() {
-		if plan.ExpiresAt.ValueString() == "" {
-			paramsBundleUpdate.ExpiresAt = new(time.Time)
+	if !config.DontSeparateSubmissionsByFolder.IsNull() && !config.DontSeparateSubmissionsByFolder.IsUnknown() {
+		paramsBundleUpdate["dont_separate_submissions_by_folder"] = config.DontSeparateSubmissionsByFolder.ValueBool()
+	}
+	if !config.ExpiresAt.IsNull() && !config.ExpiresAt.IsUnknown() {
+		if config.ExpiresAt.ValueString() == "" {
+			paramsBundleUpdate["expires_at"] = new(time.Time)
 		} else {
-			updateExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
+			updateExpiresAt, err := time.Parse(time.RFC3339, config.ExpiresAt.ValueString())
 			if err != nil {
 				resp.Diagnostics.AddAttributeError(
 					path.Root("expires_at"),
@@ -577,36 +591,48 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 					"Could not parse expires_at time: "+err.Error(),
 				)
 			} else {
-				paramsBundleUpdate.ExpiresAt = &updateExpiresAt
+				paramsBundleUpdate["expires_at"] = &updateExpiresAt
 			}
 		}
 	}
 	if !config.FinalizeSnapshot.IsNull() && !config.FinalizeSnapshot.IsUnknown() {
-		paramsBundleUpdate.FinalizeSnapshot = config.FinalizeSnapshot.ValueBoolPointer()
+		paramsBundleUpdate["finalize_snapshot"] = config.FinalizeSnapshot.ValueBool()
 	}
-	paramsBundleUpdate.InboxId = plan.InboxId.ValueInt64()
-	paramsBundleUpdate.MaxUses = plan.MaxUses.ValueInt64()
-	paramsBundleUpdate.Note = plan.Note.ValueString()
-	paramsBundleUpdate.PathTemplate = plan.PathTemplate.ValueString()
-	paramsBundleUpdate.PathTemplateTimeZone = plan.PathTemplateTimeZone.ValueString()
-	paramsBundleUpdate.Permissions = paramsBundleUpdate.Permissions.Enum()[plan.Permissions.ValueString()]
-	if !plan.RequireRegistration.IsNull() && !plan.RequireRegistration.IsUnknown() {
-		paramsBundleUpdate.RequireRegistration = plan.RequireRegistration.ValueBoolPointer()
+	if !config.InboxId.IsNull() && !config.InboxId.IsUnknown() {
+		paramsBundleUpdate["inbox_id"] = config.InboxId.ValueInt64()
 	}
-	if !plan.RequireShareRecipient.IsNull() && !plan.RequireShareRecipient.IsUnknown() {
-		paramsBundleUpdate.RequireShareRecipient = plan.RequireShareRecipient.ValueBoolPointer()
+	if !config.MaxUses.IsNull() && !config.MaxUses.IsUnknown() {
+		paramsBundleUpdate["max_uses"] = config.MaxUses.ValueInt64()
 	}
-	if !plan.SendEmailReceiptToUploader.IsNull() && !plan.SendEmailReceiptToUploader.IsUnknown() {
-		paramsBundleUpdate.SendEmailReceiptToUploader = plan.SendEmailReceiptToUploader.ValueBoolPointer()
+	if !config.Note.IsNull() && !config.Note.IsUnknown() {
+		paramsBundleUpdate["note"] = config.Note.ValueString()
 	}
-	if !plan.SkipCompany.IsNull() && !plan.SkipCompany.IsUnknown() {
-		paramsBundleUpdate.SkipCompany = plan.SkipCompany.ValueBoolPointer()
+	if !config.PathTemplate.IsNull() && !config.PathTemplate.IsUnknown() {
+		paramsBundleUpdate["path_template"] = config.PathTemplate.ValueString()
 	}
-	if !plan.StartAccessOnDate.IsNull() {
-		if plan.StartAccessOnDate.ValueString() == "" {
-			paramsBundleUpdate.StartAccessOnDate = new(time.Time)
+	if !config.PathTemplateTimeZone.IsNull() && !config.PathTemplateTimeZone.IsUnknown() {
+		paramsBundleUpdate["path_template_time_zone"] = config.PathTemplateTimeZone.ValueString()
+	}
+	if !config.Permissions.IsNull() && !config.Permissions.IsUnknown() {
+		paramsBundleUpdate["permissions"] = config.Permissions.ValueString()
+	}
+	if !config.RequireRegistration.IsNull() && !config.RequireRegistration.IsUnknown() {
+		paramsBundleUpdate["require_registration"] = config.RequireRegistration.ValueBool()
+	}
+	if !config.RequireShareRecipient.IsNull() && !config.RequireShareRecipient.IsUnknown() {
+		paramsBundleUpdate["require_share_recipient"] = config.RequireShareRecipient.ValueBool()
+	}
+	if !config.SendEmailReceiptToUploader.IsNull() && !config.SendEmailReceiptToUploader.IsUnknown() {
+		paramsBundleUpdate["send_email_receipt_to_uploader"] = config.SendEmailReceiptToUploader.ValueBool()
+	}
+	if !config.SkipCompany.IsNull() && !config.SkipCompany.IsUnknown() {
+		paramsBundleUpdate["skip_company"] = config.SkipCompany.ValueBool()
+	}
+	if !config.StartAccessOnDate.IsNull() && !config.StartAccessOnDate.IsUnknown() {
+		if config.StartAccessOnDate.ValueString() == "" {
+			paramsBundleUpdate["start_access_on_date"] = new(time.Time)
 		} else {
-			updateStartAccessOnDate, err := time.Parse(time.RFC3339, plan.StartAccessOnDate.ValueString())
+			updateStartAccessOnDate, err := time.Parse(time.RFC3339, config.StartAccessOnDate.ValueString())
 			if err != nil {
 				resp.Diagnostics.AddAttributeError(
 					path.Root("start_access_on_date"),
@@ -614,22 +640,22 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 					"Could not parse start_access_on_date time: "+err.Error(),
 				)
 			} else {
-				paramsBundleUpdate.StartAccessOnDate = &updateStartAccessOnDate
+				paramsBundleUpdate["start_access_on_date"] = &updateStartAccessOnDate
 			}
 		}
 	}
-	if !plan.SkipEmail.IsNull() && !plan.SkipEmail.IsUnknown() {
-		paramsBundleUpdate.SkipEmail = plan.SkipEmail.ValueBoolPointer()
+	if !config.SkipEmail.IsNull() && !config.SkipEmail.IsUnknown() {
+		paramsBundleUpdate["skip_email"] = config.SkipEmail.ValueBool()
 	}
-	if !plan.SkipName.IsNull() && !plan.SkipName.IsUnknown() {
-		paramsBundleUpdate.SkipName = plan.SkipName.ValueBoolPointer()
+	if !config.SkipName.IsNull() && !config.SkipName.IsUnknown() {
+		paramsBundleUpdate["skip_name"] = config.SkipName.ValueBool()
 	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	bundle, err := r.client.Update(paramsBundleUpdate, files_sdk.WithContext(ctx))
+	bundle, err := r.client.UpdateWithMap(paramsBundleUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files Bundle",

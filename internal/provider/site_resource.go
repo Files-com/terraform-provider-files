@@ -1611,322 +1611,460 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		return
 	}
 
-	paramsSiteUpdate := files_sdk.SiteUpdateParams{}
-	paramsSiteUpdate.Name = plan.Name.ValueString()
-	paramsSiteUpdate.Subdomain = plan.Subdomain.ValueString()
-	paramsSiteUpdate.Domain = plan.Domain.ValueString()
-	if !plan.DomainHstsHeader.IsNull() && !plan.DomainHstsHeader.IsUnknown() {
-		paramsSiteUpdate.DomainHstsHeader = plan.DomainHstsHeader.ValueBoolPointer()
+	paramsSiteUpdate := map[string]interface{}{}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsSiteUpdate["name"] = config.Name.ValueString()
 	}
-	paramsSiteUpdate.DomainLetsencryptChain = plan.DomainLetsencryptChain.ValueString()
-	paramsSiteUpdate.Email = plan.Email.ValueString()
-	paramsSiteUpdate.ReplyToEmail = plan.ReplyToEmail.ValueString()
-	if !plan.AllowBundleNames.IsNull() && !plan.AllowBundleNames.IsUnknown() {
-		paramsSiteUpdate.AllowBundleNames = plan.AllowBundleNames.ValueBoolPointer()
+	if !config.Subdomain.IsNull() && !config.Subdomain.IsUnknown() {
+		paramsSiteUpdate["subdomain"] = config.Subdomain.ValueString()
 	}
-	paramsSiteUpdate.BundleExpiration = plan.BundleExpiration.ValueInt64()
-	if !plan.WelcomeEmailEnabled.IsNull() && !plan.WelcomeEmailEnabled.IsUnknown() {
-		paramsSiteUpdate.WelcomeEmailEnabled = plan.WelcomeEmailEnabled.ValueBoolPointer()
+	if !config.Domain.IsNull() && !config.Domain.IsUnknown() {
+		paramsSiteUpdate["domain"] = config.Domain.ValueString()
 	}
-	if !plan.AskAboutOverwrites.IsNull() && !plan.AskAboutOverwrites.IsUnknown() {
-		paramsSiteUpdate.AskAboutOverwrites = plan.AskAboutOverwrites.ValueBoolPointer()
+	if !config.DomainHstsHeader.IsNull() && !config.DomainHstsHeader.IsUnknown() {
+		paramsSiteUpdate["domain_hsts_header"] = config.DomainHstsHeader.ValueBool()
 	}
-	if !plan.ShowRequestAccessLink.IsNull() && !plan.ShowRequestAccessLink.IsUnknown() {
-		paramsSiteUpdate.ShowRequestAccessLink = plan.ShowRequestAccessLink.ValueBoolPointer()
+	if !config.DomainLetsencryptChain.IsNull() && !config.DomainLetsencryptChain.IsUnknown() {
+		paramsSiteUpdate["domain_letsencrypt_chain"] = config.DomainLetsencryptChain.ValueString()
 	}
-	if !plan.AlwaysMkdirParents.IsNull() && !plan.AlwaysMkdirParents.IsUnknown() {
-		paramsSiteUpdate.AlwaysMkdirParents = plan.AlwaysMkdirParents.ValueBoolPointer()
+	if !config.Email.IsNull() && !config.Email.IsUnknown() {
+		paramsSiteUpdate["email"] = config.Email.ValueString()
 	}
-	paramsSiteUpdate.WelcomeEmailCc = plan.WelcomeEmailCc.ValueString()
-	paramsSiteUpdate.WelcomeEmailSubject = plan.WelcomeEmailSubject.ValueString()
-	paramsSiteUpdate.WelcomeCustomText = plan.WelcomeCustomText.ValueString()
-	paramsSiteUpdate.Language = plan.Language.ValueString()
-	if !plan.WindowsModeFtp.IsNull() && !plan.WindowsModeFtp.IsUnknown() {
-		paramsSiteUpdate.WindowsModeFtp = plan.WindowsModeFtp.ValueBoolPointer()
+	if !config.ReplyToEmail.IsNull() && !config.ReplyToEmail.IsUnknown() {
+		paramsSiteUpdate["reply_to_email"] = config.ReplyToEmail.ValueString()
 	}
-	paramsSiteUpdate.DefaultTimeZone = plan.DefaultTimeZone.ValueString()
-	if !plan.DesktopApp.IsNull() && !plan.DesktopApp.IsUnknown() {
-		paramsSiteUpdate.DesktopApp = plan.DesktopApp.ValueBoolPointer()
+	if !config.AllowBundleNames.IsNull() && !config.AllowBundleNames.IsUnknown() {
+		paramsSiteUpdate["allow_bundle_names"] = config.AllowBundleNames.ValueBool()
 	}
-	if !plan.DesktopAppSessionIpPinning.IsNull() && !plan.DesktopAppSessionIpPinning.IsUnknown() {
-		paramsSiteUpdate.DesktopAppSessionIpPinning = plan.DesktopAppSessionIpPinning.ValueBoolPointer()
+	if !config.BundleExpiration.IsNull() && !config.BundleExpiration.IsUnknown() {
+		paramsSiteUpdate["bundle_expiration"] = config.BundleExpiration.ValueInt64()
 	}
-	paramsSiteUpdate.DesktopAppSessionLifetime = plan.DesktopAppSessionLifetime.ValueInt64()
-	if !plan.MobileApp.IsNull() && !plan.MobileApp.IsUnknown() {
-		paramsSiteUpdate.MobileApp = plan.MobileApp.ValueBoolPointer()
+	if !config.WelcomeEmailEnabled.IsNull() && !config.WelcomeEmailEnabled.IsUnknown() {
+		paramsSiteUpdate["welcome_email_enabled"] = config.WelcomeEmailEnabled.ValueBool()
 	}
-	if !plan.MobileAppSessionIpPinning.IsNull() && !plan.MobileAppSessionIpPinning.IsUnknown() {
-		paramsSiteUpdate.MobileAppSessionIpPinning = plan.MobileAppSessionIpPinning.ValueBoolPointer()
+	if !config.AskAboutOverwrites.IsNull() && !config.AskAboutOverwrites.IsUnknown() {
+		paramsSiteUpdate["ask_about_overwrites"] = config.AskAboutOverwrites.ValueBool()
 	}
-	paramsSiteUpdate.MobileAppSessionLifetime = plan.MobileAppSessionLifetime.ValueInt64()
-	if !plan.FolderPermissionsGroupsOnly.IsNull() && !plan.FolderPermissionsGroupsOnly.IsUnknown() {
-		paramsSiteUpdate.FolderPermissionsGroupsOnly = plan.FolderPermissionsGroupsOnly.ValueBoolPointer()
+	if !config.ShowRequestAccessLink.IsNull() && !config.ShowRequestAccessLink.IsUnknown() {
+		paramsSiteUpdate["show_request_access_link"] = config.ShowRequestAccessLink.ValueBool()
 	}
-	paramsSiteUpdate.WelcomeScreen = plan.WelcomeScreen.ValueString()
-	if !plan.OfficeIntegrationAvailable.IsNull() && !plan.OfficeIntegrationAvailable.IsUnknown() {
-		paramsSiteUpdate.OfficeIntegrationAvailable = plan.OfficeIntegrationAvailable.ValueBoolPointer()
+	if !config.AlwaysMkdirParents.IsNull() && !config.AlwaysMkdirParents.IsUnknown() {
+		paramsSiteUpdate["always_mkdir_parents"] = config.AlwaysMkdirParents.ValueBool()
 	}
-	paramsSiteUpdate.OfficeIntegrationType = plan.OfficeIntegrationType.ValueString()
-	if !plan.PinAllRemoteServersToSiteRegion.IsNull() && !plan.PinAllRemoteServersToSiteRegion.IsUnknown() {
-		paramsSiteUpdate.PinAllRemoteServersToSiteRegion = plan.PinAllRemoteServersToSiteRegion.ValueBoolPointer()
+	if !config.WelcomeEmailCc.IsNull() && !config.WelcomeEmailCc.IsUnknown() {
+		paramsSiteUpdate["welcome_email_cc"] = config.WelcomeEmailCc.ValueString()
 	}
-	paramsSiteUpdate.MotdText = plan.MotdText.ValueString()
-	if !plan.MotdUseForFtp.IsNull() && !plan.MotdUseForFtp.IsUnknown() {
-		paramsSiteUpdate.MotdUseForFtp = plan.MotdUseForFtp.ValueBoolPointer()
+	if !config.WelcomeEmailSubject.IsNull() && !config.WelcomeEmailSubject.IsUnknown() {
+		paramsSiteUpdate["welcome_email_subject"] = config.WelcomeEmailSubject.ValueString()
 	}
-	if !plan.MotdUseForSftp.IsNull() && !plan.MotdUseForSftp.IsUnknown() {
-		paramsSiteUpdate.MotdUseForSftp = plan.MotdUseForSftp.ValueBoolPointer()
+	if !config.WelcomeCustomText.IsNull() && !config.WelcomeCustomText.IsUnknown() {
+		paramsSiteUpdate["welcome_custom_text"] = config.WelcomeCustomText.ValueString()
 	}
-	if !plan.AdditionalTextFileTypes.IsNull() && !plan.AdditionalTextFileTypes.IsUnknown() {
-		diags = plan.AdditionalTextFileTypes.ElementsAs(ctx, &paramsSiteUpdate.AdditionalTextFileTypes, false)
+	if !config.Language.IsNull() && !config.Language.IsUnknown() {
+		paramsSiteUpdate["language"] = config.Language.ValueString()
+	}
+	if !config.WindowsModeFtp.IsNull() && !config.WindowsModeFtp.IsUnknown() {
+		paramsSiteUpdate["windows_mode_ftp"] = config.WindowsModeFtp.ValueBool()
+	}
+	if !config.DefaultTimeZone.IsNull() && !config.DefaultTimeZone.IsUnknown() {
+		paramsSiteUpdate["default_time_zone"] = config.DefaultTimeZone.ValueString()
+	}
+	if !config.DesktopApp.IsNull() && !config.DesktopApp.IsUnknown() {
+		paramsSiteUpdate["desktop_app"] = config.DesktopApp.ValueBool()
+	}
+	if !config.DesktopAppSessionIpPinning.IsNull() && !config.DesktopAppSessionIpPinning.IsUnknown() {
+		paramsSiteUpdate["desktop_app_session_ip_pinning"] = config.DesktopAppSessionIpPinning.ValueBool()
+	}
+	if !config.DesktopAppSessionLifetime.IsNull() && !config.DesktopAppSessionLifetime.IsUnknown() {
+		paramsSiteUpdate["desktop_app_session_lifetime"] = config.DesktopAppSessionLifetime.ValueInt64()
+	}
+	if !config.MobileApp.IsNull() && !config.MobileApp.IsUnknown() {
+		paramsSiteUpdate["mobile_app"] = config.MobileApp.ValueBool()
+	}
+	if !config.MobileAppSessionIpPinning.IsNull() && !config.MobileAppSessionIpPinning.IsUnknown() {
+		paramsSiteUpdate["mobile_app_session_ip_pinning"] = config.MobileAppSessionIpPinning.ValueBool()
+	}
+	if !config.MobileAppSessionLifetime.IsNull() && !config.MobileAppSessionLifetime.IsUnknown() {
+		paramsSiteUpdate["mobile_app_session_lifetime"] = config.MobileAppSessionLifetime.ValueInt64()
+	}
+	if !config.FolderPermissionsGroupsOnly.IsNull() && !config.FolderPermissionsGroupsOnly.IsUnknown() {
+		paramsSiteUpdate["folder_permissions_groups_only"] = config.FolderPermissionsGroupsOnly.ValueBool()
+	}
+	if !config.WelcomeScreen.IsNull() && !config.WelcomeScreen.IsUnknown() {
+		paramsSiteUpdate["welcome_screen"] = config.WelcomeScreen.ValueString()
+	}
+	if !config.OfficeIntegrationAvailable.IsNull() && !config.OfficeIntegrationAvailable.IsUnknown() {
+		paramsSiteUpdate["office_integration_available"] = config.OfficeIntegrationAvailable.ValueBool()
+	}
+	if !config.OfficeIntegrationType.IsNull() && !config.OfficeIntegrationType.IsUnknown() {
+		paramsSiteUpdate["office_integration_type"] = config.OfficeIntegrationType.ValueString()
+	}
+	if !config.PinAllRemoteServersToSiteRegion.IsNull() && !config.PinAllRemoteServersToSiteRegion.IsUnknown() {
+		paramsSiteUpdate["pin_all_remote_servers_to_site_region"] = config.PinAllRemoteServersToSiteRegion.ValueBool()
+	}
+	if !config.MotdText.IsNull() && !config.MotdText.IsUnknown() {
+		paramsSiteUpdate["motd_text"] = config.MotdText.ValueString()
+	}
+	if !config.MotdUseForFtp.IsNull() && !config.MotdUseForFtp.IsUnknown() {
+		paramsSiteUpdate["motd_use_for_ftp"] = config.MotdUseForFtp.ValueBool()
+	}
+	if !config.MotdUseForSftp.IsNull() && !config.MotdUseForSftp.IsUnknown() {
+		paramsSiteUpdate["motd_use_for_sftp"] = config.MotdUseForSftp.ValueBool()
+	}
+	if !config.AdditionalTextFileTypes.IsNull() && !config.AdditionalTextFileTypes.IsUnknown() {
+		var updateAdditionalTextFileTypes []string
+		diags = config.AdditionalTextFileTypes.ElementsAs(ctx, &updateAdditionalTextFileTypes, false)
 		resp.Diagnostics.Append(diags...)
+		paramsSiteUpdate["additional_text_file_types"] = updateAdditionalTextFileTypes
 	}
-	if !plan.BundleRequireNote.IsNull() && !plan.BundleRequireNote.IsUnknown() {
-		paramsSiteUpdate.BundleRequireNote = plan.BundleRequireNote.ValueBoolPointer()
+	if !config.BundleRequireNote.IsNull() && !config.BundleRequireNote.IsUnknown() {
+		paramsSiteUpdate["bundle_require_note"] = config.BundleRequireNote.ValueBool()
 	}
-	if !plan.BundleSendSharedReceipts.IsNull() && !plan.BundleSendSharedReceipts.IsUnknown() {
-		paramsSiteUpdate.BundleSendSharedReceipts = plan.BundleSendSharedReceipts.ValueBoolPointer()
+	if !config.BundleSendSharedReceipts.IsNull() && !config.BundleSendSharedReceipts.IsUnknown() {
+		paramsSiteUpdate["bundle_send_shared_receipts"] = config.BundleSendSharedReceipts.ValueBool()
 	}
-	if !plan.CalculateFileChecksumsCrc32.IsNull() && !plan.CalculateFileChecksumsCrc32.IsUnknown() {
-		paramsSiteUpdate.CalculateFileChecksumsCrc32 = plan.CalculateFileChecksumsCrc32.ValueBoolPointer()
+	if !config.CalculateFileChecksumsCrc32.IsNull() && !config.CalculateFileChecksumsCrc32.IsUnknown() {
+		paramsSiteUpdate["calculate_file_checksums_crc32"] = config.CalculateFileChecksumsCrc32.ValueBool()
 	}
-	if !plan.CalculateFileChecksumsMd5.IsNull() && !plan.CalculateFileChecksumsMd5.IsUnknown() {
-		paramsSiteUpdate.CalculateFileChecksumsMd5 = plan.CalculateFileChecksumsMd5.ValueBoolPointer()
+	if !config.CalculateFileChecksumsMd5.IsNull() && !config.CalculateFileChecksumsMd5.IsUnknown() {
+		paramsSiteUpdate["calculate_file_checksums_md5"] = config.CalculateFileChecksumsMd5.ValueBool()
 	}
-	if !plan.CalculateFileChecksumsSha1.IsNull() && !plan.CalculateFileChecksumsSha1.IsUnknown() {
-		paramsSiteUpdate.CalculateFileChecksumsSha1 = plan.CalculateFileChecksumsSha1.ValueBoolPointer()
+	if !config.CalculateFileChecksumsSha1.IsNull() && !config.CalculateFileChecksumsSha1.IsUnknown() {
+		paramsSiteUpdate["calculate_file_checksums_sha1"] = config.CalculateFileChecksumsSha1.ValueBool()
 	}
-	if !plan.CalculateFileChecksumsSha256.IsNull() && !plan.CalculateFileChecksumsSha256.IsUnknown() {
-		paramsSiteUpdate.CalculateFileChecksumsSha256 = plan.CalculateFileChecksumsSha256.ValueBoolPointer()
+	if !config.CalculateFileChecksumsSha256.IsNull() && !config.CalculateFileChecksumsSha256.IsUnknown() {
+		paramsSiteUpdate["calculate_file_checksums_sha256"] = config.CalculateFileChecksumsSha256.ValueBool()
 	}
-	if !plan.LegacyChecksumsMode.IsNull() && !plan.LegacyChecksumsMode.IsUnknown() {
-		paramsSiteUpdate.LegacyChecksumsMode = plan.LegacyChecksumsMode.ValueBoolPointer()
+	if !config.LegacyChecksumsMode.IsNull() && !config.LegacyChecksumsMode.IsUnknown() {
+		paramsSiteUpdate["legacy_checksums_mode"] = config.LegacyChecksumsMode.ValueBool()
 	}
-	if !plan.MigrateRemoteServerSyncToSync.IsNull() && !plan.MigrateRemoteServerSyncToSync.IsUnknown() {
-		paramsSiteUpdate.MigrateRemoteServerSyncToSync = plan.MigrateRemoteServerSyncToSync.ValueBoolPointer()
+	if !config.MigrateRemoteServerSyncToSync.IsNull() && !config.MigrateRemoteServerSyncToSync.IsUnknown() {
+		paramsSiteUpdate["migrate_remote_server_sync_to_sync"] = config.MigrateRemoteServerSyncToSync.ValueBool()
 	}
-	paramsSiteUpdate.As2MessageRetentionDays = plan.As2MessageRetentionDays.ValueInt64()
-	paramsSiteUpdate.SessionExpiry = plan.SessionExpiry.ValueString()
-	if !plan.SslRequired.IsNull() && !plan.SslRequired.IsUnknown() {
-		paramsSiteUpdate.SslRequired = plan.SslRequired.ValueBoolPointer()
+	if !config.As2MessageRetentionDays.IsNull() && !config.As2MessageRetentionDays.IsUnknown() {
+		paramsSiteUpdate["as2_message_retention_days"] = config.As2MessageRetentionDays.ValueInt64()
 	}
-	if !plan.SftpInsecureCiphers.IsNull() && !plan.SftpInsecureCiphers.IsUnknown() {
-		paramsSiteUpdate.SftpInsecureCiphers = plan.SftpInsecureCiphers.ValueBoolPointer()
+	if !config.SessionExpiry.IsNull() && !config.SessionExpiry.IsUnknown() {
+		paramsSiteUpdate["session_expiry"] = config.SessionExpiry.ValueString()
 	}
-	if !plan.SftpInsecureDiffieHellman.IsNull() && !plan.SftpInsecureDiffieHellman.IsUnknown() {
-		paramsSiteUpdate.SftpInsecureDiffieHellman = plan.SftpInsecureDiffieHellman.ValueBoolPointer()
+	if !config.SslRequired.IsNull() && !config.SslRequired.IsUnknown() {
+		paramsSiteUpdate["ssl_required"] = config.SslRequired.ValueBool()
 	}
-	if !plan.DisableFilesCertificateGeneration.IsNull() && !plan.DisableFilesCertificateGeneration.IsUnknown() {
-		paramsSiteUpdate.DisableFilesCertificateGeneration = plan.DisableFilesCertificateGeneration.ValueBoolPointer()
+	if !config.SftpInsecureCiphers.IsNull() && !config.SftpInsecureCiphers.IsUnknown() {
+		paramsSiteUpdate["sftp_insecure_ciphers"] = config.SftpInsecureCiphers.ValueBool()
 	}
-	if !plan.UserLockout.IsNull() && !plan.UserLockout.IsUnknown() {
-		paramsSiteUpdate.UserLockout = plan.UserLockout.ValueBoolPointer()
+	if !config.SftpInsecureDiffieHellman.IsNull() && !config.SftpInsecureDiffieHellman.IsUnknown() {
+		paramsSiteUpdate["sftp_insecure_diffie_hellman"] = config.SftpInsecureDiffieHellman.ValueBool()
 	}
-	paramsSiteUpdate.UserLockoutTries = plan.UserLockoutTries.ValueInt64()
-	paramsSiteUpdate.UserLockoutWithin = plan.UserLockoutWithin.ValueInt64()
-	paramsSiteUpdate.UserLockoutLockPeriod = plan.UserLockoutLockPeriod.ValueInt64()
-	if !plan.IncludePasswordInWelcomeEmail.IsNull() && !plan.IncludePasswordInWelcomeEmail.IsUnknown() {
-		paramsSiteUpdate.IncludePasswordInWelcomeEmail = plan.IncludePasswordInWelcomeEmail.ValueBoolPointer()
+	if !config.DisableFilesCertificateGeneration.IsNull() && !config.DisableFilesCertificateGeneration.IsUnknown() {
+		paramsSiteUpdate["disable_files_certificate_generation"] = config.DisableFilesCertificateGeneration.ValueBool()
 	}
-	paramsSiteUpdate.AllowedCountries = plan.AllowedCountries.ValueString()
-	paramsSiteUpdate.AllowedIps = plan.AllowedIps.ValueString()
-	paramsSiteUpdate.DisallowedCountries = plan.DisallowedCountries.ValueString()
-	paramsSiteUpdate.DaysToRetainBackups = plan.DaysToRetainBackups.ValueInt64()
-	paramsSiteUpdate.MaxPriorPasswords = plan.MaxPriorPasswords.ValueInt64()
-	paramsSiteUpdate.PasswordValidityDays = plan.PasswordValidityDays.ValueInt64()
-	paramsSiteUpdate.PasswordMinLength = plan.PasswordMinLength.ValueInt64()
-	if !plan.PasswordRequireLetter.IsNull() && !plan.PasswordRequireLetter.IsUnknown() {
-		paramsSiteUpdate.PasswordRequireLetter = plan.PasswordRequireLetter.ValueBoolPointer()
+	if !config.UserLockout.IsNull() && !config.UserLockout.IsUnknown() {
+		paramsSiteUpdate["user_lockout"] = config.UserLockout.ValueBool()
 	}
-	if !plan.PasswordRequireMixed.IsNull() && !plan.PasswordRequireMixed.IsUnknown() {
-		paramsSiteUpdate.PasswordRequireMixed = plan.PasswordRequireMixed.ValueBoolPointer()
+	if !config.UserLockoutTries.IsNull() && !config.UserLockoutTries.IsUnknown() {
+		paramsSiteUpdate["user_lockout_tries"] = config.UserLockoutTries.ValueInt64()
 	}
-	if !plan.PasswordRequireSpecial.IsNull() && !plan.PasswordRequireSpecial.IsUnknown() {
-		paramsSiteUpdate.PasswordRequireSpecial = plan.PasswordRequireSpecial.ValueBoolPointer()
+	if !config.UserLockoutWithin.IsNull() && !config.UserLockoutWithin.IsUnknown() {
+		paramsSiteUpdate["user_lockout_within"] = config.UserLockoutWithin.ValueInt64()
 	}
-	if !plan.PasswordRequireNumber.IsNull() && !plan.PasswordRequireNumber.IsUnknown() {
-		paramsSiteUpdate.PasswordRequireNumber = plan.PasswordRequireNumber.ValueBoolPointer()
+	if !config.UserLockoutLockPeriod.IsNull() && !config.UserLockoutLockPeriod.IsUnknown() {
+		paramsSiteUpdate["user_lockout_lock_period"] = config.UserLockoutLockPeriod.ValueInt64()
 	}
-	if !plan.PasswordRequireUnbreached.IsNull() && !plan.PasswordRequireUnbreached.IsUnknown() {
-		paramsSiteUpdate.PasswordRequireUnbreached = plan.PasswordRequireUnbreached.ValueBoolPointer()
+	if !config.IncludePasswordInWelcomeEmail.IsNull() && !config.IncludePasswordInWelcomeEmail.IsUnknown() {
+		paramsSiteUpdate["include_password_in_welcome_email"] = config.IncludePasswordInWelcomeEmail.ValueBool()
 	}
-	if !plan.RequireLogoutFromBundlesAndInboxes.IsNull() && !plan.RequireLogoutFromBundlesAndInboxes.IsUnknown() {
-		paramsSiteUpdate.RequireLogoutFromBundlesAndInboxes = plan.RequireLogoutFromBundlesAndInboxes.ValueBoolPointer()
+	if !config.AllowedCountries.IsNull() && !config.AllowedCountries.IsUnknown() {
+		paramsSiteUpdate["allowed_countries"] = config.AllowedCountries.ValueString()
 	}
-	if !plan.DavUserRootEnabled.IsNull() && !plan.DavUserRootEnabled.IsUnknown() {
-		paramsSiteUpdate.DavUserRootEnabled = plan.DavUserRootEnabled.ValueBoolPointer()
+	if !config.AllowedIps.IsNull() && !config.AllowedIps.IsUnknown() {
+		paramsSiteUpdate["allowed_ips"] = config.AllowedIps.ValueString()
 	}
-	if !plan.SftpUserRootEnabled.IsNull() && !plan.SftpUserRootEnabled.IsUnknown() {
-		paramsSiteUpdate.SftpUserRootEnabled = plan.SftpUserRootEnabled.ValueBoolPointer()
+	if !config.DisallowedCountries.IsNull() && !config.DisallowedCountries.IsUnknown() {
+		paramsSiteUpdate["disallowed_countries"] = config.DisallowedCountries.ValueString()
 	}
-	if !plan.DisablePasswordReset.IsNull() && !plan.DisablePasswordReset.IsUnknown() {
-		paramsSiteUpdate.DisablePasswordReset = plan.DisablePasswordReset.ValueBoolPointer()
+	if !config.DaysToRetainBackups.IsNull() && !config.DaysToRetainBackups.IsUnknown() {
+		paramsSiteUpdate["days_to_retain_backups"] = config.DaysToRetainBackups.ValueInt64()
 	}
-	paramsSiteUpdate.BundleNotFoundMessage = plan.BundleNotFoundMessage.ValueString()
-	if !plan.BundlePasswordRequired.IsNull() && !plan.BundlePasswordRequired.IsUnknown() {
-		paramsSiteUpdate.BundlePasswordRequired = plan.BundlePasswordRequired.ValueBoolPointer()
+	if !config.MaxPriorPasswords.IsNull() && !config.MaxPriorPasswords.IsUnknown() {
+		paramsSiteUpdate["max_prior_passwords"] = config.MaxPriorPasswords.ValueInt64()
 	}
-	if !plan.BundleRequireRegistration.IsNull() && !plan.BundleRequireRegistration.IsUnknown() {
-		paramsSiteUpdate.BundleRequireRegistration = plan.BundleRequireRegistration.ValueBoolPointer()
+	if !config.PasswordValidityDays.IsNull() && !config.PasswordValidityDays.IsUnknown() {
+		paramsSiteUpdate["password_validity_days"] = config.PasswordValidityDays.ValueInt64()
 	}
-	if !plan.BundleRequireShareRecipient.IsNull() && !plan.BundleRequireShareRecipient.IsUnknown() {
-		paramsSiteUpdate.BundleRequireShareRecipient = plan.BundleRequireShareRecipient.ValueBoolPointer()
+	if !config.PasswordMinLength.IsNull() && !config.PasswordMinLength.IsUnknown() {
+		paramsSiteUpdate["password_min_length"] = config.PasswordMinLength.ValueInt64()
 	}
-	paramsSiteUpdate.BundleRegistrationNotifications = plan.BundleRegistrationNotifications.ValueString()
-	paramsSiteUpdate.BundleActivityNotifications = plan.BundleActivityNotifications.ValueString()
-	paramsSiteUpdate.BundleUploadReceiptNotifications = plan.BundleUploadReceiptNotifications.ValueString()
-	if !plan.DocumentEditsInBundleAllowed.IsNull() && !plan.DocumentEditsInBundleAllowed.IsUnknown() {
-		paramsSiteUpdate.DocumentEditsInBundleAllowed = plan.DocumentEditsInBundleAllowed.ValueBoolPointer()
+	if !config.PasswordRequireLetter.IsNull() && !config.PasswordRequireLetter.IsUnknown() {
+		paramsSiteUpdate["password_require_letter"] = config.PasswordRequireLetter.ValueBool()
 	}
-	if !plan.PasswordRequirementsApplyToBundles.IsNull() && !plan.PasswordRequirementsApplyToBundles.IsUnknown() {
-		paramsSiteUpdate.PasswordRequirementsApplyToBundles = plan.PasswordRequirementsApplyToBundles.ValueBoolPointer()
+	if !config.PasswordRequireMixed.IsNull() && !config.PasswordRequireMixed.IsUnknown() {
+		paramsSiteUpdate["password_require_mixed"] = config.PasswordRequireMixed.ValueBool()
 	}
-	if !plan.PreventRootPermissionsForNonSiteAdmins.IsNull() && !plan.PreventRootPermissionsForNonSiteAdmins.IsUnknown() {
-		paramsSiteUpdate.PreventRootPermissionsForNonSiteAdmins = plan.PreventRootPermissionsForNonSiteAdmins.ValueBoolPointer()
+	if !config.PasswordRequireSpecial.IsNull() && !config.PasswordRequireSpecial.IsUnknown() {
+		paramsSiteUpdate["password_require_special"] = config.PasswordRequireSpecial.ValueBool()
 	}
-	if !plan.OptOutGlobal.IsNull() && !plan.OptOutGlobal.IsUnknown() {
-		paramsSiteUpdate.OptOutGlobal = plan.OptOutGlobal.ValueBoolPointer()
+	if !config.PasswordRequireNumber.IsNull() && !config.PasswordRequireNumber.IsUnknown() {
+		paramsSiteUpdate["password_require_number"] = config.PasswordRequireNumber.ValueBool()
 	}
-	if !plan.UseProvidedModifiedAt.IsNull() && !plan.UseProvidedModifiedAt.IsUnknown() {
-		paramsSiteUpdate.UseProvidedModifiedAt = plan.UseProvidedModifiedAt.ValueBoolPointer()
+	if !config.PasswordRequireUnbreached.IsNull() && !config.PasswordRequireUnbreached.IsUnknown() {
+		paramsSiteUpdate["password_require_unbreached"] = config.PasswordRequireUnbreached.ValueBool()
 	}
-	if !plan.CustomNamespace.IsNull() && !plan.CustomNamespace.IsUnknown() {
-		paramsSiteUpdate.CustomNamespace = plan.CustomNamespace.ValueBoolPointer()
+	if !config.RequireLogoutFromBundlesAndInboxes.IsNull() && !config.RequireLogoutFromBundlesAndInboxes.IsUnknown() {
+		paramsSiteUpdate["require_logout_from_bundles_and_inboxes"] = config.RequireLogoutFromBundlesAndInboxes.ValueBool()
 	}
-	if !plan.NonSsoGroupsAllowed.IsNull() && !plan.NonSsoGroupsAllowed.IsUnknown() {
-		paramsSiteUpdate.NonSsoGroupsAllowed = plan.NonSsoGroupsAllowed.ValueBoolPointer()
+	if !config.DavUserRootEnabled.IsNull() && !config.DavUserRootEnabled.IsUnknown() {
+		paramsSiteUpdate["dav_user_root_enabled"] = config.DavUserRootEnabled.ValueBool()
 	}
-	if !plan.NonSsoUsersAllowed.IsNull() && !plan.NonSsoUsersAllowed.IsUnknown() {
-		paramsSiteUpdate.NonSsoUsersAllowed = plan.NonSsoUsersAllowed.ValueBoolPointer()
+	if !config.SftpUserRootEnabled.IsNull() && !config.SftpUserRootEnabled.IsUnknown() {
+		paramsSiteUpdate["sftp_user_root_enabled"] = config.SftpUserRootEnabled.ValueBool()
 	}
-	if !plan.SharingEnabled.IsNull() && !plan.SharingEnabled.IsUnknown() {
-		paramsSiteUpdate.SharingEnabled = plan.SharingEnabled.ValueBoolPointer()
+	if !config.DisablePasswordReset.IsNull() && !config.DisablePasswordReset.IsUnknown() {
+		paramsSiteUpdate["disable_password_reset"] = config.DisablePasswordReset.ValueBool()
 	}
-	if !plan.SnapshotSharingEnabled.IsNull() && !plan.SnapshotSharingEnabled.IsUnknown() {
-		paramsSiteUpdate.SnapshotSharingEnabled = plan.SnapshotSharingEnabled.ValueBoolPointer()
+	if !config.BundleNotFoundMessage.IsNull() && !config.BundleNotFoundMessage.IsUnknown() {
+		paramsSiteUpdate["bundle_not_found_message"] = config.BundleNotFoundMessage.ValueString()
 	}
-	if !plan.UserRequestsEnabled.IsNull() && !plan.UserRequestsEnabled.IsUnknown() {
-		paramsSiteUpdate.UserRequestsEnabled = plan.UserRequestsEnabled.ValueBoolPointer()
+	if !config.BundlePasswordRequired.IsNull() && !config.BundlePasswordRequired.IsUnknown() {
+		paramsSiteUpdate["bundle_password_required"] = config.BundlePasswordRequired.ValueBool()
 	}
-	if !plan.UserRequestsNotifyAdmins.IsNull() && !plan.UserRequestsNotifyAdmins.IsUnknown() {
-		paramsSiteUpdate.UserRequestsNotifyAdmins = plan.UserRequestsNotifyAdmins.ValueBoolPointer()
+	if !config.BundleRequireRegistration.IsNull() && !config.BundleRequireRegistration.IsUnknown() {
+		paramsSiteUpdate["bundle_require_registration"] = config.BundleRequireRegistration.ValueBool()
 	}
-	if !plan.DavEnabled.IsNull() && !plan.DavEnabled.IsUnknown() {
-		paramsSiteUpdate.DavEnabled = plan.DavEnabled.ValueBoolPointer()
+	if !config.BundleRequireShareRecipient.IsNull() && !config.BundleRequireShareRecipient.IsUnknown() {
+		paramsSiteUpdate["bundle_require_share_recipient"] = config.BundleRequireShareRecipient.ValueBool()
 	}
-	if !plan.FtpEnabled.IsNull() && !plan.FtpEnabled.IsUnknown() {
-		paramsSiteUpdate.FtpEnabled = plan.FtpEnabled.ValueBoolPointer()
+	if !config.BundleRegistrationNotifications.IsNull() && !config.BundleRegistrationNotifications.IsUnknown() {
+		paramsSiteUpdate["bundle_registration_notifications"] = config.BundleRegistrationNotifications.ValueString()
 	}
-	if !plan.SftpEnabled.IsNull() && !plan.SftpEnabled.IsUnknown() {
-		paramsSiteUpdate.SftpEnabled = plan.SftpEnabled.ValueBoolPointer()
+	if !config.BundleActivityNotifications.IsNull() && !config.BundleActivityNotifications.IsUnknown() {
+		paramsSiteUpdate["bundle_activity_notifications"] = config.BundleActivityNotifications.ValueString()
 	}
-	if !plan.UsersCanCreateApiKeys.IsNull() && !plan.UsersCanCreateApiKeys.IsUnknown() {
-		paramsSiteUpdate.UsersCanCreateApiKeys = plan.UsersCanCreateApiKeys.ValueBoolPointer()
+	if !config.BundleUploadReceiptNotifications.IsNull() && !config.BundleUploadReceiptNotifications.IsUnknown() {
+		paramsSiteUpdate["bundle_upload_receipt_notifications"] = config.BundleUploadReceiptNotifications.ValueString()
 	}
-	if !plan.UsersCanCreateSshKeys.IsNull() && !plan.UsersCanCreateSshKeys.IsUnknown() {
-		paramsSiteUpdate.UsersCanCreateSshKeys = plan.UsersCanCreateSshKeys.ValueBoolPointer()
+	if !config.DocumentEditsInBundleAllowed.IsNull() && !config.DocumentEditsInBundleAllowed.IsUnknown() {
+		paramsSiteUpdate["document_edits_in_bundle_allowed"] = config.DocumentEditsInBundleAllowed.ValueBool()
 	}
-	if !plan.ShowUserNotificationsLogInLink.IsNull() && !plan.ShowUserNotificationsLogInLink.IsUnknown() {
-		paramsSiteUpdate.ShowUserNotificationsLogInLink = plan.ShowUserNotificationsLogInLink.ValueBoolPointer()
+	if !config.PasswordRequirementsApplyToBundles.IsNull() && !config.PasswordRequirementsApplyToBundles.IsUnknown() {
+		paramsSiteUpdate["password_requirements_apply_to_bundles"] = config.PasswordRequirementsApplyToBundles.ValueBool()
 	}
-	paramsSiteUpdate.SftpHostKeyType = plan.SftpHostKeyType.ValueString()
-	paramsSiteUpdate.ActiveSftpHostKeyId = plan.ActiveSftpHostKeyId.ValueInt64()
-	if !plan.ProtocolAccessGroupsOnly.IsNull() && !plan.ProtocolAccessGroupsOnly.IsUnknown() {
-		paramsSiteUpdate.ProtocolAccessGroupsOnly = plan.ProtocolAccessGroupsOnly.ValueBoolPointer()
+	if !config.PreventRootPermissionsForNonSiteAdmins.IsNull() && !config.PreventRootPermissionsForNonSiteAdmins.IsUnknown() {
+		paramsSiteUpdate["prevent_root_permissions_for_non_site_admins"] = config.PreventRootPermissionsForNonSiteAdmins.ValueBool()
 	}
-	if !plan.RevokeBundleAccessOnDisableOrDelete.IsNull() && !plan.RevokeBundleAccessOnDisableOrDelete.IsUnknown() {
-		paramsSiteUpdate.RevokeBundleAccessOnDisableOrDelete = plan.RevokeBundleAccessOnDisableOrDelete.ValueBoolPointer()
+	if !config.OptOutGlobal.IsNull() && !config.OptOutGlobal.IsUnknown() {
+		paramsSiteUpdate["opt_out_global"] = config.OptOutGlobal.ValueBool()
 	}
-	updateBundleWatermarkValue, diags := lib.DynamicToInterface(ctx, path.Root("bundle_watermark_value"), plan.BundleWatermarkValue)
+	if !config.UseProvidedModifiedAt.IsNull() && !config.UseProvidedModifiedAt.IsUnknown() {
+		paramsSiteUpdate["use_provided_modified_at"] = config.UseProvidedModifiedAt.ValueBool()
+	}
+	if !config.CustomNamespace.IsNull() && !config.CustomNamespace.IsUnknown() {
+		paramsSiteUpdate["custom_namespace"] = config.CustomNamespace.ValueBool()
+	}
+	if !config.NonSsoGroupsAllowed.IsNull() && !config.NonSsoGroupsAllowed.IsUnknown() {
+		paramsSiteUpdate["non_sso_groups_allowed"] = config.NonSsoGroupsAllowed.ValueBool()
+	}
+	if !config.NonSsoUsersAllowed.IsNull() && !config.NonSsoUsersAllowed.IsUnknown() {
+		paramsSiteUpdate["non_sso_users_allowed"] = config.NonSsoUsersAllowed.ValueBool()
+	}
+	if !config.SharingEnabled.IsNull() && !config.SharingEnabled.IsUnknown() {
+		paramsSiteUpdate["sharing_enabled"] = config.SharingEnabled.ValueBool()
+	}
+	if !config.SnapshotSharingEnabled.IsNull() && !config.SnapshotSharingEnabled.IsUnknown() {
+		paramsSiteUpdate["snapshot_sharing_enabled"] = config.SnapshotSharingEnabled.ValueBool()
+	}
+	if !config.UserRequestsEnabled.IsNull() && !config.UserRequestsEnabled.IsUnknown() {
+		paramsSiteUpdate["user_requests_enabled"] = config.UserRequestsEnabled.ValueBool()
+	}
+	if !config.UserRequestsNotifyAdmins.IsNull() && !config.UserRequestsNotifyAdmins.IsUnknown() {
+		paramsSiteUpdate["user_requests_notify_admins"] = config.UserRequestsNotifyAdmins.ValueBool()
+	}
+	if !config.DavEnabled.IsNull() && !config.DavEnabled.IsUnknown() {
+		paramsSiteUpdate["dav_enabled"] = config.DavEnabled.ValueBool()
+	}
+	if !config.FtpEnabled.IsNull() && !config.FtpEnabled.IsUnknown() {
+		paramsSiteUpdate["ftp_enabled"] = config.FtpEnabled.ValueBool()
+	}
+	if !config.SftpEnabled.IsNull() && !config.SftpEnabled.IsUnknown() {
+		paramsSiteUpdate["sftp_enabled"] = config.SftpEnabled.ValueBool()
+	}
+	if !config.UsersCanCreateApiKeys.IsNull() && !config.UsersCanCreateApiKeys.IsUnknown() {
+		paramsSiteUpdate["users_can_create_api_keys"] = config.UsersCanCreateApiKeys.ValueBool()
+	}
+	if !config.UsersCanCreateSshKeys.IsNull() && !config.UsersCanCreateSshKeys.IsUnknown() {
+		paramsSiteUpdate["users_can_create_ssh_keys"] = config.UsersCanCreateSshKeys.ValueBool()
+	}
+	if !config.ShowUserNotificationsLogInLink.IsNull() && !config.ShowUserNotificationsLogInLink.IsUnknown() {
+		paramsSiteUpdate["show_user_notifications_log_in_link"] = config.ShowUserNotificationsLogInLink.ValueBool()
+	}
+	if !config.SftpHostKeyType.IsNull() && !config.SftpHostKeyType.IsUnknown() {
+		paramsSiteUpdate["sftp_host_key_type"] = config.SftpHostKeyType.ValueString()
+	}
+	if !config.ActiveSftpHostKeyId.IsNull() && !config.ActiveSftpHostKeyId.IsUnknown() {
+		paramsSiteUpdate["active_sftp_host_key_id"] = config.ActiveSftpHostKeyId.ValueInt64()
+	}
+	if !config.ProtocolAccessGroupsOnly.IsNull() && !config.ProtocolAccessGroupsOnly.IsUnknown() {
+		paramsSiteUpdate["protocol_access_groups_only"] = config.ProtocolAccessGroupsOnly.ValueBool()
+	}
+	if !config.RevokeBundleAccessOnDisableOrDelete.IsNull() && !config.RevokeBundleAccessOnDisableOrDelete.IsUnknown() {
+		paramsSiteUpdate["revoke_bundle_access_on_disable_or_delete"] = config.RevokeBundleAccessOnDisableOrDelete.ValueBool()
+	}
+	updateBundleWatermarkValue, diags := lib.DynamicToInterface(ctx, path.Root("bundle_watermark_value"), config.BundleWatermarkValue)
 	resp.Diagnostics.Append(diags...)
-	paramsSiteUpdate.BundleWatermarkValue = updateBundleWatermarkValue
-	if !plan.GroupAdminsCanSetUserPassword.IsNull() && !plan.GroupAdminsCanSetUserPassword.IsUnknown() {
-		paramsSiteUpdate.GroupAdminsCanSetUserPassword = plan.GroupAdminsCanSetUserPassword.ValueBoolPointer()
+	paramsSiteUpdate["bundle_watermark_value"] = updateBundleWatermarkValue
+	if !config.GroupAdminsCanSetUserPassword.IsNull() && !config.GroupAdminsCanSetUserPassword.IsUnknown() {
+		paramsSiteUpdate["group_admins_can_set_user_password"] = config.GroupAdminsCanSetUserPassword.ValueBool()
 	}
-	if !plan.BundleRecipientBlacklistFreeEmailDomains.IsNull() && !plan.BundleRecipientBlacklistFreeEmailDomains.IsUnknown() {
-		paramsSiteUpdate.BundleRecipientBlacklistFreeEmailDomains = plan.BundleRecipientBlacklistFreeEmailDomains.ValueBoolPointer()
+	if !config.BundleRecipientBlacklistFreeEmailDomains.IsNull() && !config.BundleRecipientBlacklistFreeEmailDomains.IsUnknown() {
+		paramsSiteUpdate["bundle_recipient_blacklist_free_email_domains"] = config.BundleRecipientBlacklistFreeEmailDomains.ValueBool()
 	}
-	if !plan.BundleRecipientBlacklistDomains.IsNull() && !plan.BundleRecipientBlacklistDomains.IsUnknown() {
-		diags = plan.BundleRecipientBlacklistDomains.ElementsAs(ctx, &paramsSiteUpdate.BundleRecipientBlacklistDomains, false)
+	if !config.BundleRecipientBlacklistDomains.IsNull() && !config.BundleRecipientBlacklistDomains.IsUnknown() {
+		var updateBundleRecipientBlacklistDomains []string
+		diags = config.BundleRecipientBlacklistDomains.ElementsAs(ctx, &updateBundleRecipientBlacklistDomains, false)
 		resp.Diagnostics.Append(diags...)
+		paramsSiteUpdate["bundle_recipient_blacklist_domains"] = updateBundleRecipientBlacklistDomains
 	}
-	if !plan.AdminsBypassLockedSubfolders.IsNull() && !plan.AdminsBypassLockedSubfolders.IsUnknown() {
-		paramsSiteUpdate.AdminsBypassLockedSubfolders = plan.AdminsBypassLockedSubfolders.ValueBoolPointer()
+	if !config.AdminsBypassLockedSubfolders.IsNull() && !config.AdminsBypassLockedSubfolders.IsUnknown() {
+		paramsSiteUpdate["admins_bypass_locked_subfolders"] = config.AdminsBypassLockedSubfolders.ValueBool()
 	}
-	if !plan.Allowed2faMethodSms.IsNull() && !plan.Allowed2faMethodSms.IsUnknown() {
-		paramsSiteUpdate.Allowed2faMethodSms = plan.Allowed2faMethodSms.ValueBoolPointer()
+	if !config.Allowed2faMethodSms.IsNull() && !config.Allowed2faMethodSms.IsUnknown() {
+		paramsSiteUpdate["allowed_2fa_method_sms"] = config.Allowed2faMethodSms.ValueBool()
 	}
-	if !plan.Allowed2faMethodTotp.IsNull() && !plan.Allowed2faMethodTotp.IsUnknown() {
-		paramsSiteUpdate.Allowed2faMethodTotp = plan.Allowed2faMethodTotp.ValueBoolPointer()
+	if !config.Allowed2faMethodTotp.IsNull() && !config.Allowed2faMethodTotp.IsUnknown() {
+		paramsSiteUpdate["allowed_2fa_method_totp"] = config.Allowed2faMethodTotp.ValueBool()
 	}
-	if !plan.Allowed2faMethodWebauthn.IsNull() && !plan.Allowed2faMethodWebauthn.IsUnknown() {
-		paramsSiteUpdate.Allowed2faMethodWebauthn = plan.Allowed2faMethodWebauthn.ValueBoolPointer()
+	if !config.Allowed2faMethodWebauthn.IsNull() && !config.Allowed2faMethodWebauthn.IsUnknown() {
+		paramsSiteUpdate["allowed_2fa_method_webauthn"] = config.Allowed2faMethodWebauthn.ValueBool()
 	}
-	if !plan.Allowed2faMethodYubi.IsNull() && !plan.Allowed2faMethodYubi.IsUnknown() {
-		paramsSiteUpdate.Allowed2faMethodYubi = plan.Allowed2faMethodYubi.ValueBoolPointer()
+	if !config.Allowed2faMethodYubi.IsNull() && !config.Allowed2faMethodYubi.IsUnknown() {
+		paramsSiteUpdate["allowed_2fa_method_yubi"] = config.Allowed2faMethodYubi.ValueBool()
 	}
-	if !plan.Allowed2faMethodEmail.IsNull() && !plan.Allowed2faMethodEmail.IsUnknown() {
-		paramsSiteUpdate.Allowed2faMethodEmail = plan.Allowed2faMethodEmail.ValueBoolPointer()
+	if !config.Allowed2faMethodEmail.IsNull() && !config.Allowed2faMethodEmail.IsUnknown() {
+		paramsSiteUpdate["allowed_2fa_method_email"] = config.Allowed2faMethodEmail.ValueBool()
 	}
-	if !plan.Allowed2faMethodStatic.IsNull() && !plan.Allowed2faMethodStatic.IsUnknown() {
-		paramsSiteUpdate.Allowed2faMethodStatic = plan.Allowed2faMethodStatic.ValueBoolPointer()
+	if !config.Allowed2faMethodStatic.IsNull() && !config.Allowed2faMethodStatic.IsUnknown() {
+		paramsSiteUpdate["allowed_2fa_method_static"] = config.Allowed2faMethodStatic.ValueBool()
 	}
-	if !plan.Allowed2faMethodBypassForFtpSftpDav.IsNull() && !plan.Allowed2faMethodBypassForFtpSftpDav.IsUnknown() {
-		paramsSiteUpdate.Allowed2faMethodBypassForFtpSftpDav = plan.Allowed2faMethodBypassForFtpSftpDav.ValueBoolPointer()
+	if !config.Allowed2faMethodBypassForFtpSftpDav.IsNull() && !config.Allowed2faMethodBypassForFtpSftpDav.IsUnknown() {
+		paramsSiteUpdate["allowed_2fa_method_bypass_for_ftp_sftp_dav"] = config.Allowed2faMethodBypassForFtpSftpDav.ValueBool()
 	}
-	if !plan.Require2fa.IsNull() && !plan.Require2fa.IsUnknown() {
-		paramsSiteUpdate.Require2fa = plan.Require2fa.ValueBoolPointer()
+	if !config.Require2fa.IsNull() && !config.Require2fa.IsUnknown() {
+		paramsSiteUpdate["require_2fa"] = config.Require2fa.ValueBool()
 	}
-	paramsSiteUpdate.Require2faUserType = plan.Require2faUserType.ValueString()
-	paramsSiteUpdate.Color2Top = plan.Color2Top.ValueString()
-	paramsSiteUpdate.Color2Left = plan.Color2Left.ValueString()
-	paramsSiteUpdate.Color2Link = plan.Color2Link.ValueString()
-	paramsSiteUpdate.Color2Text = plan.Color2Text.ValueString()
-	paramsSiteUpdate.Color2TopText = plan.Color2TopText.ValueString()
-	paramsSiteUpdate.SiteHeader = plan.SiteHeader.ValueString()
-	paramsSiteUpdate.SiteFooter = plan.SiteFooter.ValueString()
-	paramsSiteUpdate.SitePublicHeader = plan.SitePublicHeader.ValueString()
-	paramsSiteUpdate.SitePublicFooter = plan.SitePublicFooter.ValueString()
-	paramsSiteUpdate.LoginHelpText = plan.LoginHelpText.ValueString()
-	if !plan.UseDedicatedIpsForSmtp.IsNull() && !plan.UseDedicatedIpsForSmtp.IsUnknown() {
-		paramsSiteUpdate.UseDedicatedIpsForSmtp = plan.UseDedicatedIpsForSmtp.ValueBoolPointer()
+	if !config.Require2faUserType.IsNull() && !config.Require2faUserType.IsUnknown() {
+		paramsSiteUpdate["require_2fa_user_type"] = config.Require2faUserType.ValueString()
 	}
-	paramsSiteUpdate.EmailFooterCustomText = plan.EmailFooterCustomText.ValueString()
-	paramsSiteUpdate.SmtpAddress = plan.SmtpAddress.ValueString()
-	paramsSiteUpdate.SmtpAuthentication = plan.SmtpAuthentication.ValueString()
-	paramsSiteUpdate.SmtpFrom = plan.SmtpFrom.ValueString()
-	paramsSiteUpdate.SmtpUsername = plan.SmtpUsername.ValueString()
-	paramsSiteUpdate.SmtpPort = plan.SmtpPort.ValueInt64()
-	if !plan.LdapEnabled.IsNull() && !plan.LdapEnabled.IsUnknown() {
-		paramsSiteUpdate.LdapEnabled = plan.LdapEnabled.ValueBoolPointer()
+	if !config.Color2Top.IsNull() && !config.Color2Top.IsUnknown() {
+		paramsSiteUpdate["color2_top"] = config.Color2Top.ValueString()
 	}
-	paramsSiteUpdate.LdapType = plan.LdapType.ValueString()
-	paramsSiteUpdate.LdapHost = plan.LdapHost.ValueString()
-	paramsSiteUpdate.LdapHost2 = plan.LdapHost2.ValueString()
-	paramsSiteUpdate.LdapHost3 = plan.LdapHost3.ValueString()
-	paramsSiteUpdate.LdapPort = plan.LdapPort.ValueInt64()
-	if !plan.LdapSecure.IsNull() && !plan.LdapSecure.IsUnknown() {
-		paramsSiteUpdate.LdapSecure = plan.LdapSecure.ValueBoolPointer()
+	if !config.Color2Left.IsNull() && !config.Color2Left.IsUnknown() {
+		paramsSiteUpdate["color2_left"] = config.Color2Left.ValueString()
 	}
-	paramsSiteUpdate.LdapUsername = plan.LdapUsername.ValueString()
-	paramsSiteUpdate.LdapUsernameField = plan.LdapUsernameField.ValueString()
-	paramsSiteUpdate.LdapDomain = plan.LdapDomain.ValueString()
-	paramsSiteUpdate.LdapUserAction = plan.LdapUserAction.ValueString()
-	paramsSiteUpdate.LdapGroupAction = plan.LdapGroupAction.ValueString()
-	paramsSiteUpdate.LdapUserIncludeGroups = plan.LdapUserIncludeGroups.ValueString()
-	paramsSiteUpdate.LdapGroupExclusion = plan.LdapGroupExclusion.ValueString()
-	paramsSiteUpdate.LdapGroupInclusion = plan.LdapGroupInclusion.ValueString()
-	paramsSiteUpdate.LdapBaseDn = plan.LdapBaseDn.ValueString()
-	if !plan.UploadsViaEmailAuthentication.IsNull() && !plan.UploadsViaEmailAuthentication.IsUnknown() {
-		paramsSiteUpdate.UploadsViaEmailAuthentication = plan.UploadsViaEmailAuthentication.ValueBoolPointer()
+	if !config.Color2Link.IsNull() && !config.Color2Link.IsUnknown() {
+		paramsSiteUpdate["color2_link"] = config.Color2Link.ValueString()
 	}
-	paramsSiteUpdate.SessionExpiryMinutes = plan.SessionExpiryMinutes.ValueInt64()
+	if !config.Color2Text.IsNull() && !config.Color2Text.IsUnknown() {
+		paramsSiteUpdate["color2_text"] = config.Color2Text.ValueString()
+	}
+	if !config.Color2TopText.IsNull() && !config.Color2TopText.IsUnknown() {
+		paramsSiteUpdate["color2_top_text"] = config.Color2TopText.ValueString()
+	}
+	if !config.SiteHeader.IsNull() && !config.SiteHeader.IsUnknown() {
+		paramsSiteUpdate["site_header"] = config.SiteHeader.ValueString()
+	}
+	if !config.SiteFooter.IsNull() && !config.SiteFooter.IsUnknown() {
+		paramsSiteUpdate["site_footer"] = config.SiteFooter.ValueString()
+	}
+	if !config.SitePublicHeader.IsNull() && !config.SitePublicHeader.IsUnknown() {
+		paramsSiteUpdate["site_public_header"] = config.SitePublicHeader.ValueString()
+	}
+	if !config.SitePublicFooter.IsNull() && !config.SitePublicFooter.IsUnknown() {
+		paramsSiteUpdate["site_public_footer"] = config.SitePublicFooter.ValueString()
+	}
+	if !config.LoginHelpText.IsNull() && !config.LoginHelpText.IsUnknown() {
+		paramsSiteUpdate["login_help_text"] = config.LoginHelpText.ValueString()
+	}
+	if !config.UseDedicatedIpsForSmtp.IsNull() && !config.UseDedicatedIpsForSmtp.IsUnknown() {
+		paramsSiteUpdate["use_dedicated_ips_for_smtp"] = config.UseDedicatedIpsForSmtp.ValueBool()
+	}
+	if !config.EmailFooterCustomText.IsNull() && !config.EmailFooterCustomText.IsUnknown() {
+		paramsSiteUpdate["email_footer_custom_text"] = config.EmailFooterCustomText.ValueString()
+	}
+	if !config.SmtpAddress.IsNull() && !config.SmtpAddress.IsUnknown() {
+		paramsSiteUpdate["smtp_address"] = config.SmtpAddress.ValueString()
+	}
+	if !config.SmtpAuthentication.IsNull() && !config.SmtpAuthentication.IsUnknown() {
+		paramsSiteUpdate["smtp_authentication"] = config.SmtpAuthentication.ValueString()
+	}
+	if !config.SmtpFrom.IsNull() && !config.SmtpFrom.IsUnknown() {
+		paramsSiteUpdate["smtp_from"] = config.SmtpFrom.ValueString()
+	}
+	if !config.SmtpUsername.IsNull() && !config.SmtpUsername.IsUnknown() {
+		paramsSiteUpdate["smtp_username"] = config.SmtpUsername.ValueString()
+	}
+	if !config.SmtpPort.IsNull() && !config.SmtpPort.IsUnknown() {
+		paramsSiteUpdate["smtp_port"] = config.SmtpPort.ValueInt64()
+	}
+	if !config.LdapEnabled.IsNull() && !config.LdapEnabled.IsUnknown() {
+		paramsSiteUpdate["ldap_enabled"] = config.LdapEnabled.ValueBool()
+	}
+	if !config.LdapType.IsNull() && !config.LdapType.IsUnknown() {
+		paramsSiteUpdate["ldap_type"] = config.LdapType.ValueString()
+	}
+	if !config.LdapHost.IsNull() && !config.LdapHost.IsUnknown() {
+		paramsSiteUpdate["ldap_host"] = config.LdapHost.ValueString()
+	}
+	if !config.LdapHost2.IsNull() && !config.LdapHost2.IsUnknown() {
+		paramsSiteUpdate["ldap_host_2"] = config.LdapHost2.ValueString()
+	}
+	if !config.LdapHost3.IsNull() && !config.LdapHost3.IsUnknown() {
+		paramsSiteUpdate["ldap_host_3"] = config.LdapHost3.ValueString()
+	}
+	if !config.LdapPort.IsNull() && !config.LdapPort.IsUnknown() {
+		paramsSiteUpdate["ldap_port"] = config.LdapPort.ValueInt64()
+	}
+	if !config.LdapSecure.IsNull() && !config.LdapSecure.IsUnknown() {
+		paramsSiteUpdate["ldap_secure"] = config.LdapSecure.ValueBool()
+	}
+	if !config.LdapUsername.IsNull() && !config.LdapUsername.IsUnknown() {
+		paramsSiteUpdate["ldap_username"] = config.LdapUsername.ValueString()
+	}
+	if !config.LdapUsernameField.IsNull() && !config.LdapUsernameField.IsUnknown() {
+		paramsSiteUpdate["ldap_username_field"] = config.LdapUsernameField.ValueString()
+	}
+	if !config.LdapDomain.IsNull() && !config.LdapDomain.IsUnknown() {
+		paramsSiteUpdate["ldap_domain"] = config.LdapDomain.ValueString()
+	}
+	if !config.LdapUserAction.IsNull() && !config.LdapUserAction.IsUnknown() {
+		paramsSiteUpdate["ldap_user_action"] = config.LdapUserAction.ValueString()
+	}
+	if !config.LdapGroupAction.IsNull() && !config.LdapGroupAction.IsUnknown() {
+		paramsSiteUpdate["ldap_group_action"] = config.LdapGroupAction.ValueString()
+	}
+	if !config.LdapUserIncludeGroups.IsNull() && !config.LdapUserIncludeGroups.IsUnknown() {
+		paramsSiteUpdate["ldap_user_include_groups"] = config.LdapUserIncludeGroups.ValueString()
+	}
+	if !config.LdapGroupExclusion.IsNull() && !config.LdapGroupExclusion.IsUnknown() {
+		paramsSiteUpdate["ldap_group_exclusion"] = config.LdapGroupExclusion.ValueString()
+	}
+	if !config.LdapGroupInclusion.IsNull() && !config.LdapGroupInclusion.IsUnknown() {
+		paramsSiteUpdate["ldap_group_inclusion"] = config.LdapGroupInclusion.ValueString()
+	}
+	if !config.LdapBaseDn.IsNull() && !config.LdapBaseDn.IsUnknown() {
+		paramsSiteUpdate["ldap_base_dn"] = config.LdapBaseDn.ValueString()
+	}
+	if !config.UploadsViaEmailAuthentication.IsNull() && !config.UploadsViaEmailAuthentication.IsUnknown() {
+		paramsSiteUpdate["uploads_via_email_authentication"] = config.UploadsViaEmailAuthentication.ValueBool()
+	}
+	if !config.SessionExpiryMinutes.IsNull() && !config.SessionExpiryMinutes.IsUnknown() {
+		paramsSiteUpdate["session_expiry_minutes"] = config.SessionExpiryMinutes.ValueInt64()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	site, err := r.client.Update(paramsSiteUpdate, files_sdk.WithContext(ctx))
+	site, err := r.client.UpdateWithMap(paramsSiteUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files Site",

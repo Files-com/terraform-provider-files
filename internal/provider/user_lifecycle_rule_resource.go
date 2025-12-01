@@ -288,31 +288,49 @@ func (r *userLifecycleRuleResource) Update(ctx context.Context, req resource.Upd
 		return
 	}
 
-	paramsUserLifecycleRuleUpdate := files_sdk.UserLifecycleRuleUpdateParams{}
-	paramsUserLifecycleRuleUpdate.Id = plan.Id.ValueInt64()
-	paramsUserLifecycleRuleUpdate.Action = paramsUserLifecycleRuleUpdate.Action.Enum()[plan.Action.ValueString()]
-	paramsUserLifecycleRuleUpdate.AuthenticationMethod = paramsUserLifecycleRuleUpdate.AuthenticationMethod.Enum()[plan.AuthenticationMethod.ValueString()]
-	if !plan.GroupIds.IsNull() && !plan.GroupIds.IsUnknown() {
-		diags = plan.GroupIds.ElementsAs(ctx, &paramsUserLifecycleRuleUpdate.GroupIds, false)
+	paramsUserLifecycleRuleUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsUserLifecycleRuleUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.Action.IsNull() && !config.Action.IsUnknown() {
+		paramsUserLifecycleRuleUpdate["action"] = config.Action.ValueString()
+	}
+	if !config.AuthenticationMethod.IsNull() && !config.AuthenticationMethod.IsUnknown() {
+		paramsUserLifecycleRuleUpdate["authentication_method"] = config.AuthenticationMethod.ValueString()
+	}
+	if !config.GroupIds.IsNull() && !config.GroupIds.IsUnknown() {
+		var updateGroupIds []int64
+		diags = config.GroupIds.ElementsAs(ctx, &updateGroupIds, false)
 		resp.Diagnostics.Append(diags...)
+		paramsUserLifecycleRuleUpdate["group_ids"] = updateGroupIds
 	}
-	paramsUserLifecycleRuleUpdate.InactivityDays = plan.InactivityDays.ValueInt64()
-	if !plan.IncludeSiteAdmins.IsNull() && !plan.IncludeSiteAdmins.IsUnknown() {
-		paramsUserLifecycleRuleUpdate.IncludeSiteAdmins = plan.IncludeSiteAdmins.ValueBoolPointer()
+	if !config.InactivityDays.IsNull() && !config.InactivityDays.IsUnknown() {
+		paramsUserLifecycleRuleUpdate["inactivity_days"] = config.InactivityDays.ValueInt64()
 	}
-	if !plan.IncludeFolderAdmins.IsNull() && !plan.IncludeFolderAdmins.IsUnknown() {
-		paramsUserLifecycleRuleUpdate.IncludeFolderAdmins = plan.IncludeFolderAdmins.ValueBoolPointer()
+	if !config.IncludeSiteAdmins.IsNull() && !config.IncludeSiteAdmins.IsUnknown() {
+		paramsUserLifecycleRuleUpdate["include_site_admins"] = config.IncludeSiteAdmins.ValueBool()
 	}
-	paramsUserLifecycleRuleUpdate.Name = plan.Name.ValueString()
-	paramsUserLifecycleRuleUpdate.PartnerTag = plan.PartnerTag.ValueString()
-	paramsUserLifecycleRuleUpdate.UserState = paramsUserLifecycleRuleUpdate.UserState.Enum()[plan.UserState.ValueString()]
-	paramsUserLifecycleRuleUpdate.UserTag = plan.UserTag.ValueString()
+	if !config.IncludeFolderAdmins.IsNull() && !config.IncludeFolderAdmins.IsUnknown() {
+		paramsUserLifecycleRuleUpdate["include_folder_admins"] = config.IncludeFolderAdmins.ValueBool()
+	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsUserLifecycleRuleUpdate["name"] = config.Name.ValueString()
+	}
+	if !config.PartnerTag.IsNull() && !config.PartnerTag.IsUnknown() {
+		paramsUserLifecycleRuleUpdate["partner_tag"] = config.PartnerTag.ValueString()
+	}
+	if !config.UserState.IsNull() && !config.UserState.IsUnknown() {
+		paramsUserLifecycleRuleUpdate["user_state"] = config.UserState.ValueString()
+	}
+	if !config.UserTag.IsNull() && !config.UserTag.IsUnknown() {
+		paramsUserLifecycleRuleUpdate["user_tag"] = config.UserTag.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	userLifecycleRule, err := r.client.Update(paramsUserLifecycleRuleUpdate, files_sdk.WithContext(ctx))
+	userLifecycleRule, err := r.client.UpdateWithMap(paramsUserLifecycleRuleUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files UserLifecycleRule",

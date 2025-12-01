@@ -849,91 +849,217 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	paramsRemoteServerUpdate := files_sdk.RemoteServerUpdateParams{}
-	paramsRemoteServerUpdate.Id = plan.Id.ValueInt64()
-	paramsRemoteServerUpdate.Password = config.Password.ValueString()
-	paramsRemoteServerUpdate.PrivateKey = config.PrivateKey.ValueString()
-	paramsRemoteServerUpdate.PrivateKeyPassphrase = config.PrivateKeyPassphrase.ValueString()
+	paramsRemoteServerUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsRemoteServerUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.Password.IsNull() && !config.Password.IsUnknown() {
+		paramsRemoteServerUpdate["password"] = config.Password.ValueString()
+	}
+	if !config.PrivateKey.IsNull() && !config.PrivateKey.IsUnknown() {
+		paramsRemoteServerUpdate["private_key"] = config.PrivateKey.ValueString()
+	}
+	if !config.PrivateKeyPassphrase.IsNull() && !config.PrivateKeyPassphrase.IsUnknown() {
+		paramsRemoteServerUpdate["private_key_passphrase"] = config.PrivateKeyPassphrase.ValueString()
+	}
 	if !config.ResetAuthentication.IsNull() && !config.ResetAuthentication.IsUnknown() {
-		paramsRemoteServerUpdate.ResetAuthentication = config.ResetAuthentication.ValueBoolPointer()
+		paramsRemoteServerUpdate["reset_authentication"] = config.ResetAuthentication.ValueBool()
 	}
-	paramsRemoteServerUpdate.SslCertificate = config.SslCertificate.ValueString()
-	paramsRemoteServerUpdate.AwsSecretKey = config.AwsSecretKey.ValueString()
-	paramsRemoteServerUpdate.AzureBlobStorageAccessKey = config.AzureBlobStorageAccessKey.ValueString()
-	paramsRemoteServerUpdate.AzureBlobStorageSasToken = config.AzureBlobStorageSasToken.ValueString()
-	paramsRemoteServerUpdate.AzureFilesStorageAccessKey = config.AzureFilesStorageAccessKey.ValueString()
-	paramsRemoteServerUpdate.AzureFilesStorageSasToken = config.AzureFilesStorageSasToken.ValueString()
-	paramsRemoteServerUpdate.BackblazeB2ApplicationKey = config.BackblazeB2ApplicationKey.ValueString()
-	paramsRemoteServerUpdate.BackblazeB2KeyId = config.BackblazeB2KeyId.ValueString()
-	paramsRemoteServerUpdate.CloudflareSecretKey = config.CloudflareSecretKey.ValueString()
-	paramsRemoteServerUpdate.FilebaseSecretKey = config.FilebaseSecretKey.ValueString()
-	paramsRemoteServerUpdate.GoogleCloudStorageCredentialsJson = config.GoogleCloudStorageCredentialsJson.ValueString()
-	paramsRemoteServerUpdate.GoogleCloudStorageS3CompatibleSecretKey = config.GoogleCloudStorageS3CompatibleSecretKey.ValueString()
-	paramsRemoteServerUpdate.LinodeSecretKey = config.LinodeSecretKey.ValueString()
-	paramsRemoteServerUpdate.S3CompatibleSecretKey = config.S3CompatibleSecretKey.ValueString()
-	paramsRemoteServerUpdate.WasabiSecretKey = config.WasabiSecretKey.ValueString()
-	paramsRemoteServerUpdate.AwsAccessKey = plan.AwsAccessKey.ValueString()
-	paramsRemoteServerUpdate.AzureBlobStorageAccount = plan.AzureBlobStorageAccount.ValueString()
-	paramsRemoteServerUpdate.AzureBlobStorageContainer = plan.AzureBlobStorageContainer.ValueString()
-	paramsRemoteServerUpdate.AzureBlobStorageDnsSuffix = plan.AzureBlobStorageDnsSuffix.ValueString()
-	if !plan.AzureBlobStorageHierarchicalNamespace.IsNull() && !plan.AzureBlobStorageHierarchicalNamespace.IsUnknown() {
-		paramsRemoteServerUpdate.AzureBlobStorageHierarchicalNamespace = plan.AzureBlobStorageHierarchicalNamespace.ValueBoolPointer()
+	if !config.SslCertificate.IsNull() && !config.SslCertificate.IsUnknown() {
+		paramsRemoteServerUpdate["ssl_certificate"] = config.SslCertificate.ValueString()
 	}
-	paramsRemoteServerUpdate.AzureFilesStorageAccount = plan.AzureFilesStorageAccount.ValueString()
-	paramsRemoteServerUpdate.AzureFilesStorageDnsSuffix = plan.AzureFilesStorageDnsSuffix.ValueString()
-	paramsRemoteServerUpdate.AzureFilesStorageShareName = plan.AzureFilesStorageShareName.ValueString()
-	paramsRemoteServerUpdate.BackblazeB2Bucket = plan.BackblazeB2Bucket.ValueString()
-	paramsRemoteServerUpdate.BackblazeB2S3Endpoint = plan.BackblazeB2S3Endpoint.ValueString()
-	paramsRemoteServerUpdate.BufferUploads = paramsRemoteServerUpdate.BufferUploads.Enum()[plan.BufferUploads.ValueString()]
-	paramsRemoteServerUpdate.CloudflareAccessKey = plan.CloudflareAccessKey.ValueString()
-	paramsRemoteServerUpdate.CloudflareBucket = plan.CloudflareBucket.ValueString()
-	paramsRemoteServerUpdate.CloudflareEndpoint = plan.CloudflareEndpoint.ValueString()
-	paramsRemoteServerUpdate.Description = plan.Description.ValueString()
-	if !plan.DropboxTeams.IsNull() && !plan.DropboxTeams.IsUnknown() {
-		paramsRemoteServerUpdate.DropboxTeams = plan.DropboxTeams.ValueBoolPointer()
+	if !config.AwsSecretKey.IsNull() && !config.AwsSecretKey.IsUnknown() {
+		paramsRemoteServerUpdate["aws_secret_key"] = config.AwsSecretKey.ValueString()
 	}
-	if !plan.EnableDedicatedIps.IsNull() && !plan.EnableDedicatedIps.IsUnknown() {
-		paramsRemoteServerUpdate.EnableDedicatedIps = plan.EnableDedicatedIps.ValueBoolPointer()
+	if !config.AzureBlobStorageAccessKey.IsNull() && !config.AzureBlobStorageAccessKey.IsUnknown() {
+		paramsRemoteServerUpdate["azure_blob_storage_access_key"] = config.AzureBlobStorageAccessKey.ValueString()
 	}
-	paramsRemoteServerUpdate.FilebaseAccessKey = plan.FilebaseAccessKey.ValueString()
-	paramsRemoteServerUpdate.FilebaseBucket = plan.FilebaseBucket.ValueString()
-	paramsRemoteServerUpdate.FilesAgentPermissionSet = paramsRemoteServerUpdate.FilesAgentPermissionSet.Enum()[plan.FilesAgentPermissionSet.ValueString()]
-	paramsRemoteServerUpdate.FilesAgentRoot = plan.FilesAgentRoot.ValueString()
-	paramsRemoteServerUpdate.FilesAgentVersion = plan.FilesAgentVersion.ValueString()
-	paramsRemoteServerUpdate.GoogleCloudStorageBucket = plan.GoogleCloudStorageBucket.ValueString()
-	paramsRemoteServerUpdate.GoogleCloudStorageProjectId = plan.GoogleCloudStorageProjectId.ValueString()
-	paramsRemoteServerUpdate.GoogleCloudStorageS3CompatibleAccessKey = plan.GoogleCloudStorageS3CompatibleAccessKey.ValueString()
-	paramsRemoteServerUpdate.Hostname = plan.Hostname.ValueString()
-	paramsRemoteServerUpdate.LinodeAccessKey = plan.LinodeAccessKey.ValueString()
-	paramsRemoteServerUpdate.LinodeBucket = plan.LinodeBucket.ValueString()
-	paramsRemoteServerUpdate.LinodeRegion = plan.LinodeRegion.ValueString()
-	paramsRemoteServerUpdate.MaxConnections = plan.MaxConnections.ValueInt64()
-	paramsRemoteServerUpdate.Name = plan.Name.ValueString()
-	paramsRemoteServerUpdate.OneDriveAccountType = paramsRemoteServerUpdate.OneDriveAccountType.Enum()[plan.OneDriveAccountType.ValueString()]
-	if !plan.PinToSiteRegion.IsNull() && !plan.PinToSiteRegion.IsUnknown() {
-		paramsRemoteServerUpdate.PinToSiteRegion = plan.PinToSiteRegion.ValueBoolPointer()
+	if !config.AzureBlobStorageSasToken.IsNull() && !config.AzureBlobStorageSasToken.IsUnknown() {
+		paramsRemoteServerUpdate["azure_blob_storage_sas_token"] = config.AzureBlobStorageSasToken.ValueString()
 	}
-	paramsRemoteServerUpdate.Port = plan.Port.ValueInt64()
-	paramsRemoteServerUpdate.S3Bucket = plan.S3Bucket.ValueString()
-	paramsRemoteServerUpdate.S3CompatibleAccessKey = plan.S3CompatibleAccessKey.ValueString()
-	paramsRemoteServerUpdate.S3CompatibleBucket = plan.S3CompatibleBucket.ValueString()
-	paramsRemoteServerUpdate.S3CompatibleEndpoint = plan.S3CompatibleEndpoint.ValueString()
-	paramsRemoteServerUpdate.S3CompatibleRegion = plan.S3CompatibleRegion.ValueString()
-	paramsRemoteServerUpdate.S3Region = plan.S3Region.ValueString()
-	paramsRemoteServerUpdate.ServerCertificate = paramsRemoteServerUpdate.ServerCertificate.Enum()[plan.ServerCertificate.ValueString()]
-	paramsRemoteServerUpdate.ServerHostKey = plan.ServerHostKey.ValueString()
-	paramsRemoteServerUpdate.ServerType = paramsRemoteServerUpdate.ServerType.Enum()[plan.ServerType.ValueString()]
-	paramsRemoteServerUpdate.Ssl = paramsRemoteServerUpdate.Ssl.Enum()[plan.Ssl.ValueString()]
-	paramsRemoteServerUpdate.Username = plan.Username.ValueString()
-	paramsRemoteServerUpdate.WasabiAccessKey = plan.WasabiAccessKey.ValueString()
-	paramsRemoteServerUpdate.WasabiBucket = plan.WasabiBucket.ValueString()
-	paramsRemoteServerUpdate.WasabiRegion = plan.WasabiRegion.ValueString()
+	if !config.AzureFilesStorageAccessKey.IsNull() && !config.AzureFilesStorageAccessKey.IsUnknown() {
+		paramsRemoteServerUpdate["azure_files_storage_access_key"] = config.AzureFilesStorageAccessKey.ValueString()
+	}
+	if !config.AzureFilesStorageSasToken.IsNull() && !config.AzureFilesStorageSasToken.IsUnknown() {
+		paramsRemoteServerUpdate["azure_files_storage_sas_token"] = config.AzureFilesStorageSasToken.ValueString()
+	}
+	if !config.BackblazeB2ApplicationKey.IsNull() && !config.BackblazeB2ApplicationKey.IsUnknown() {
+		paramsRemoteServerUpdate["backblaze_b2_application_key"] = config.BackblazeB2ApplicationKey.ValueString()
+	}
+	if !config.BackblazeB2KeyId.IsNull() && !config.BackblazeB2KeyId.IsUnknown() {
+		paramsRemoteServerUpdate["backblaze_b2_key_id"] = config.BackblazeB2KeyId.ValueString()
+	}
+	if !config.CloudflareSecretKey.IsNull() && !config.CloudflareSecretKey.IsUnknown() {
+		paramsRemoteServerUpdate["cloudflare_secret_key"] = config.CloudflareSecretKey.ValueString()
+	}
+	if !config.FilebaseSecretKey.IsNull() && !config.FilebaseSecretKey.IsUnknown() {
+		paramsRemoteServerUpdate["filebase_secret_key"] = config.FilebaseSecretKey.ValueString()
+	}
+	if !config.GoogleCloudStorageCredentialsJson.IsNull() && !config.GoogleCloudStorageCredentialsJson.IsUnknown() {
+		paramsRemoteServerUpdate["google_cloud_storage_credentials_json"] = config.GoogleCloudStorageCredentialsJson.ValueString()
+	}
+	if !config.GoogleCloudStorageS3CompatibleSecretKey.IsNull() && !config.GoogleCloudStorageS3CompatibleSecretKey.IsUnknown() {
+		paramsRemoteServerUpdate["google_cloud_storage_s3_compatible_secret_key"] = config.GoogleCloudStorageS3CompatibleSecretKey.ValueString()
+	}
+	if !config.LinodeSecretKey.IsNull() && !config.LinodeSecretKey.IsUnknown() {
+		paramsRemoteServerUpdate["linode_secret_key"] = config.LinodeSecretKey.ValueString()
+	}
+	if !config.S3CompatibleSecretKey.IsNull() && !config.S3CompatibleSecretKey.IsUnknown() {
+		paramsRemoteServerUpdate["s3_compatible_secret_key"] = config.S3CompatibleSecretKey.ValueString()
+	}
+	if !config.WasabiSecretKey.IsNull() && !config.WasabiSecretKey.IsUnknown() {
+		paramsRemoteServerUpdate["wasabi_secret_key"] = config.WasabiSecretKey.ValueString()
+	}
+	if !config.AwsAccessKey.IsNull() && !config.AwsAccessKey.IsUnknown() {
+		paramsRemoteServerUpdate["aws_access_key"] = config.AwsAccessKey.ValueString()
+	}
+	if !config.AzureBlobStorageAccount.IsNull() && !config.AzureBlobStorageAccount.IsUnknown() {
+		paramsRemoteServerUpdate["azure_blob_storage_account"] = config.AzureBlobStorageAccount.ValueString()
+	}
+	if !config.AzureBlobStorageContainer.IsNull() && !config.AzureBlobStorageContainer.IsUnknown() {
+		paramsRemoteServerUpdate["azure_blob_storage_container"] = config.AzureBlobStorageContainer.ValueString()
+	}
+	if !config.AzureBlobStorageDnsSuffix.IsNull() && !config.AzureBlobStorageDnsSuffix.IsUnknown() {
+		paramsRemoteServerUpdate["azure_blob_storage_dns_suffix"] = config.AzureBlobStorageDnsSuffix.ValueString()
+	}
+	if !config.AzureBlobStorageHierarchicalNamespace.IsNull() && !config.AzureBlobStorageHierarchicalNamespace.IsUnknown() {
+		paramsRemoteServerUpdate["azure_blob_storage_hierarchical_namespace"] = config.AzureBlobStorageHierarchicalNamespace.ValueBool()
+	}
+	if !config.AzureFilesStorageAccount.IsNull() && !config.AzureFilesStorageAccount.IsUnknown() {
+		paramsRemoteServerUpdate["azure_files_storage_account"] = config.AzureFilesStorageAccount.ValueString()
+	}
+	if !config.AzureFilesStorageDnsSuffix.IsNull() && !config.AzureFilesStorageDnsSuffix.IsUnknown() {
+		paramsRemoteServerUpdate["azure_files_storage_dns_suffix"] = config.AzureFilesStorageDnsSuffix.ValueString()
+	}
+	if !config.AzureFilesStorageShareName.IsNull() && !config.AzureFilesStorageShareName.IsUnknown() {
+		paramsRemoteServerUpdate["azure_files_storage_share_name"] = config.AzureFilesStorageShareName.ValueString()
+	}
+	if !config.BackblazeB2Bucket.IsNull() && !config.BackblazeB2Bucket.IsUnknown() {
+		paramsRemoteServerUpdate["backblaze_b2_bucket"] = config.BackblazeB2Bucket.ValueString()
+	}
+	if !config.BackblazeB2S3Endpoint.IsNull() && !config.BackblazeB2S3Endpoint.IsUnknown() {
+		paramsRemoteServerUpdate["backblaze_b2_s3_endpoint"] = config.BackblazeB2S3Endpoint.ValueString()
+	}
+	if !config.BufferUploads.IsNull() && !config.BufferUploads.IsUnknown() {
+		paramsRemoteServerUpdate["buffer_uploads"] = config.BufferUploads.ValueString()
+	}
+	if !config.CloudflareAccessKey.IsNull() && !config.CloudflareAccessKey.IsUnknown() {
+		paramsRemoteServerUpdate["cloudflare_access_key"] = config.CloudflareAccessKey.ValueString()
+	}
+	if !config.CloudflareBucket.IsNull() && !config.CloudflareBucket.IsUnknown() {
+		paramsRemoteServerUpdate["cloudflare_bucket"] = config.CloudflareBucket.ValueString()
+	}
+	if !config.CloudflareEndpoint.IsNull() && !config.CloudflareEndpoint.IsUnknown() {
+		paramsRemoteServerUpdate["cloudflare_endpoint"] = config.CloudflareEndpoint.ValueString()
+	}
+	if !config.Description.IsNull() && !config.Description.IsUnknown() {
+		paramsRemoteServerUpdate["description"] = config.Description.ValueString()
+	}
+	if !config.DropboxTeams.IsNull() && !config.DropboxTeams.IsUnknown() {
+		paramsRemoteServerUpdate["dropbox_teams"] = config.DropboxTeams.ValueBool()
+	}
+	if !config.EnableDedicatedIps.IsNull() && !config.EnableDedicatedIps.IsUnknown() {
+		paramsRemoteServerUpdate["enable_dedicated_ips"] = config.EnableDedicatedIps.ValueBool()
+	}
+	if !config.FilebaseAccessKey.IsNull() && !config.FilebaseAccessKey.IsUnknown() {
+		paramsRemoteServerUpdate["filebase_access_key"] = config.FilebaseAccessKey.ValueString()
+	}
+	if !config.FilebaseBucket.IsNull() && !config.FilebaseBucket.IsUnknown() {
+		paramsRemoteServerUpdate["filebase_bucket"] = config.FilebaseBucket.ValueString()
+	}
+	if !config.FilesAgentPermissionSet.IsNull() && !config.FilesAgentPermissionSet.IsUnknown() {
+		paramsRemoteServerUpdate["files_agent_permission_set"] = config.FilesAgentPermissionSet.ValueString()
+	}
+	if !config.FilesAgentRoot.IsNull() && !config.FilesAgentRoot.IsUnknown() {
+		paramsRemoteServerUpdate["files_agent_root"] = config.FilesAgentRoot.ValueString()
+	}
+	if !config.FilesAgentVersion.IsNull() && !config.FilesAgentVersion.IsUnknown() {
+		paramsRemoteServerUpdate["files_agent_version"] = config.FilesAgentVersion.ValueString()
+	}
+	if !config.GoogleCloudStorageBucket.IsNull() && !config.GoogleCloudStorageBucket.IsUnknown() {
+		paramsRemoteServerUpdate["google_cloud_storage_bucket"] = config.GoogleCloudStorageBucket.ValueString()
+	}
+	if !config.GoogleCloudStorageProjectId.IsNull() && !config.GoogleCloudStorageProjectId.IsUnknown() {
+		paramsRemoteServerUpdate["google_cloud_storage_project_id"] = config.GoogleCloudStorageProjectId.ValueString()
+	}
+	if !config.GoogleCloudStorageS3CompatibleAccessKey.IsNull() && !config.GoogleCloudStorageS3CompatibleAccessKey.IsUnknown() {
+		paramsRemoteServerUpdate["google_cloud_storage_s3_compatible_access_key"] = config.GoogleCloudStorageS3CompatibleAccessKey.ValueString()
+	}
+	if !config.Hostname.IsNull() && !config.Hostname.IsUnknown() {
+		paramsRemoteServerUpdate["hostname"] = config.Hostname.ValueString()
+	}
+	if !config.LinodeAccessKey.IsNull() && !config.LinodeAccessKey.IsUnknown() {
+		paramsRemoteServerUpdate["linode_access_key"] = config.LinodeAccessKey.ValueString()
+	}
+	if !config.LinodeBucket.IsNull() && !config.LinodeBucket.IsUnknown() {
+		paramsRemoteServerUpdate["linode_bucket"] = config.LinodeBucket.ValueString()
+	}
+	if !config.LinodeRegion.IsNull() && !config.LinodeRegion.IsUnknown() {
+		paramsRemoteServerUpdate["linode_region"] = config.LinodeRegion.ValueString()
+	}
+	if !config.MaxConnections.IsNull() && !config.MaxConnections.IsUnknown() {
+		paramsRemoteServerUpdate["max_connections"] = config.MaxConnections.ValueInt64()
+	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsRemoteServerUpdate["name"] = config.Name.ValueString()
+	}
+	if !config.OneDriveAccountType.IsNull() && !config.OneDriveAccountType.IsUnknown() {
+		paramsRemoteServerUpdate["one_drive_account_type"] = config.OneDriveAccountType.ValueString()
+	}
+	if !config.PinToSiteRegion.IsNull() && !config.PinToSiteRegion.IsUnknown() {
+		paramsRemoteServerUpdate["pin_to_site_region"] = config.PinToSiteRegion.ValueBool()
+	}
+	if !config.Port.IsNull() && !config.Port.IsUnknown() {
+		paramsRemoteServerUpdate["port"] = config.Port.ValueInt64()
+	}
+	if !config.S3Bucket.IsNull() && !config.S3Bucket.IsUnknown() {
+		paramsRemoteServerUpdate["s3_bucket"] = config.S3Bucket.ValueString()
+	}
+	if !config.S3CompatibleAccessKey.IsNull() && !config.S3CompatibleAccessKey.IsUnknown() {
+		paramsRemoteServerUpdate["s3_compatible_access_key"] = config.S3CompatibleAccessKey.ValueString()
+	}
+	if !config.S3CompatibleBucket.IsNull() && !config.S3CompatibleBucket.IsUnknown() {
+		paramsRemoteServerUpdate["s3_compatible_bucket"] = config.S3CompatibleBucket.ValueString()
+	}
+	if !config.S3CompatibleEndpoint.IsNull() && !config.S3CompatibleEndpoint.IsUnknown() {
+		paramsRemoteServerUpdate["s3_compatible_endpoint"] = config.S3CompatibleEndpoint.ValueString()
+	}
+	if !config.S3CompatibleRegion.IsNull() && !config.S3CompatibleRegion.IsUnknown() {
+		paramsRemoteServerUpdate["s3_compatible_region"] = config.S3CompatibleRegion.ValueString()
+	}
+	if !config.S3Region.IsNull() && !config.S3Region.IsUnknown() {
+		paramsRemoteServerUpdate["s3_region"] = config.S3Region.ValueString()
+	}
+	if !config.ServerCertificate.IsNull() && !config.ServerCertificate.IsUnknown() {
+		paramsRemoteServerUpdate["server_certificate"] = config.ServerCertificate.ValueString()
+	}
+	if !config.ServerHostKey.IsNull() && !config.ServerHostKey.IsUnknown() {
+		paramsRemoteServerUpdate["server_host_key"] = config.ServerHostKey.ValueString()
+	}
+	if !config.ServerType.IsNull() && !config.ServerType.IsUnknown() {
+		paramsRemoteServerUpdate["server_type"] = config.ServerType.ValueString()
+	}
+	if !config.Ssl.IsNull() && !config.Ssl.IsUnknown() {
+		paramsRemoteServerUpdate["ssl"] = config.Ssl.ValueString()
+	}
+	if !config.Username.IsNull() && !config.Username.IsUnknown() {
+		paramsRemoteServerUpdate["username"] = config.Username.ValueString()
+	}
+	if !config.WasabiAccessKey.IsNull() && !config.WasabiAccessKey.IsUnknown() {
+		paramsRemoteServerUpdate["wasabi_access_key"] = config.WasabiAccessKey.ValueString()
+	}
+	if !config.WasabiBucket.IsNull() && !config.WasabiBucket.IsUnknown() {
+		paramsRemoteServerUpdate["wasabi_bucket"] = config.WasabiBucket.ValueString()
+	}
+	if !config.WasabiRegion.IsNull() && !config.WasabiRegion.IsUnknown() {
+		paramsRemoteServerUpdate["wasabi_region"] = config.WasabiRegion.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	remoteServer, err := r.client.Update(paramsRemoteServerUpdate, files_sdk.WithContext(ctx))
+	remoteServer, err := r.client.UpdateWithMap(paramsRemoteServerUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files RemoteServer",

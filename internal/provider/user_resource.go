@@ -865,32 +865,54 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		return
 	}
 
-	paramsUserUpdate := files_sdk.UserUpdateParams{}
-	paramsUserUpdate.Id = plan.Id.ValueInt64()
+	paramsUserUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsUserUpdate["id"] = plan.Id.ValueInt64()
+	}
 	if !config.AvatarDelete.IsNull() && !config.AvatarDelete.IsUnknown() {
-		paramsUserUpdate.AvatarDelete = config.AvatarDelete.ValueBoolPointer()
+		paramsUserUpdate["avatar_delete"] = config.AvatarDelete.ValueBool()
 	}
-	paramsUserUpdate.ChangePassword = config.ChangePassword.ValueString()
-	paramsUserUpdate.ChangePasswordConfirmation = config.ChangePasswordConfirmation.ValueString()
-	paramsUserUpdate.Email = plan.Email.ValueString()
-	paramsUserUpdate.GrantPermission = config.GrantPermission.ValueString()
-	paramsUserUpdate.GroupId = config.GroupId.ValueInt64()
-	paramsUserUpdate.GroupIds = plan.GroupIds.ValueString()
-	paramsUserUpdate.ImportedPasswordHash = config.ImportedPasswordHash.ValueString()
-	paramsUserUpdate.Password = config.Password.ValueString()
-	paramsUserUpdate.PasswordConfirmation = config.PasswordConfirmation.ValueString()
+	if !config.ChangePassword.IsNull() && !config.ChangePassword.IsUnknown() {
+		paramsUserUpdate["change_password"] = config.ChangePassword.ValueString()
+	}
+	if !config.ChangePasswordConfirmation.IsNull() && !config.ChangePasswordConfirmation.IsUnknown() {
+		paramsUserUpdate["change_password_confirmation"] = config.ChangePasswordConfirmation.ValueString()
+	}
+	if !config.Email.IsNull() && !config.Email.IsUnknown() {
+		paramsUserUpdate["email"] = config.Email.ValueString()
+	}
+	if !config.GrantPermission.IsNull() && !config.GrantPermission.IsUnknown() {
+		paramsUserUpdate["grant_permission"] = config.GrantPermission.ValueString()
+	}
+	if !config.GroupId.IsNull() && !config.GroupId.IsUnknown() {
+		paramsUserUpdate["group_id"] = config.GroupId.ValueInt64()
+	}
+	if !config.GroupIds.IsNull() && !config.GroupIds.IsUnknown() {
+		paramsUserUpdate["group_ids"] = config.GroupIds.ValueString()
+	}
+	if !config.ImportedPasswordHash.IsNull() && !config.ImportedPasswordHash.IsUnknown() {
+		paramsUserUpdate["imported_password_hash"] = config.ImportedPasswordHash.ValueString()
+	}
+	if !config.Password.IsNull() && !config.Password.IsUnknown() {
+		paramsUserUpdate["password"] = config.Password.ValueString()
+	}
+	if !config.PasswordConfirmation.IsNull() && !config.PasswordConfirmation.IsUnknown() {
+		paramsUserUpdate["password_confirmation"] = config.PasswordConfirmation.ValueString()
+	}
 	if !config.AnnouncementsRead.IsNull() && !config.AnnouncementsRead.IsUnknown() {
-		paramsUserUpdate.AnnouncementsRead = config.AnnouncementsRead.ValueBoolPointer()
+		paramsUserUpdate["announcements_read"] = config.AnnouncementsRead.ValueBool()
 	}
-	paramsUserUpdate.AllowedIps = plan.AllowedIps.ValueString()
-	if !plan.AttachmentsPermission.IsNull() && !plan.AttachmentsPermission.IsUnknown() {
-		paramsUserUpdate.AttachmentsPermission = plan.AttachmentsPermission.ValueBoolPointer()
+	if !config.AllowedIps.IsNull() && !config.AllowedIps.IsUnknown() {
+		paramsUserUpdate["allowed_ips"] = config.AllowedIps.ValueString()
 	}
-	if !plan.AuthenticateUntil.IsNull() {
-		if plan.AuthenticateUntil.ValueString() == "" {
-			paramsUserUpdate.AuthenticateUntil = new(time.Time)
+	if !config.AttachmentsPermission.IsNull() && !config.AttachmentsPermission.IsUnknown() {
+		paramsUserUpdate["attachments_permission"] = config.AttachmentsPermission.ValueBool()
+	}
+	if !config.AuthenticateUntil.IsNull() && !config.AuthenticateUntil.IsUnknown() {
+		if config.AuthenticateUntil.ValueString() == "" {
+			paramsUserUpdate["authenticate_until"] = new(time.Time)
 		} else {
-			updateAuthenticateUntil, err := time.Parse(time.RFC3339, plan.AuthenticateUntil.ValueString())
+			updateAuthenticateUntil, err := time.Parse(time.RFC3339, config.AuthenticateUntil.ValueString())
 			if err != nil {
 				resp.Diagnostics.AddAttributeError(
 					path.Root("authenticate_until"),
@@ -898,55 +920,75 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 					"Could not parse authenticate_until time: "+err.Error(),
 				)
 			} else {
-				paramsUserUpdate.AuthenticateUntil = &updateAuthenticateUntil
+				paramsUserUpdate["authenticate_until"] = &updateAuthenticateUntil
 			}
 		}
 	}
-	paramsUserUpdate.AuthenticationMethod = paramsUserUpdate.AuthenticationMethod.Enum()[plan.AuthenticationMethod.ValueString()]
-	if !plan.BillingPermission.IsNull() && !plan.BillingPermission.IsUnknown() {
-		paramsUserUpdate.BillingPermission = plan.BillingPermission.ValueBoolPointer()
+	if !config.AuthenticationMethod.IsNull() && !config.AuthenticationMethod.IsUnknown() {
+		paramsUserUpdate["authentication_method"] = config.AuthenticationMethod.ValueString()
 	}
-	if !plan.BypassUserLifecycleRules.IsNull() && !plan.BypassUserLifecycleRules.IsUnknown() {
-		paramsUserUpdate.BypassUserLifecycleRules = plan.BypassUserLifecycleRules.ValueBoolPointer()
+	if !config.BillingPermission.IsNull() && !config.BillingPermission.IsUnknown() {
+		paramsUserUpdate["billing_permission"] = config.BillingPermission.ValueBool()
 	}
-	if !plan.BypassSiteAllowedIps.IsNull() && !plan.BypassSiteAllowedIps.IsUnknown() {
-		paramsUserUpdate.BypassSiteAllowedIps = plan.BypassSiteAllowedIps.ValueBoolPointer()
+	if !config.BypassUserLifecycleRules.IsNull() && !config.BypassUserLifecycleRules.IsUnknown() {
+		paramsUserUpdate["bypass_user_lifecycle_rules"] = config.BypassUserLifecycleRules.ValueBool()
 	}
-	if !plan.DavPermission.IsNull() && !plan.DavPermission.IsUnknown() {
-		paramsUserUpdate.DavPermission = plan.DavPermission.ValueBoolPointer()
+	if !config.BypassSiteAllowedIps.IsNull() && !config.BypassSiteAllowedIps.IsUnknown() {
+		paramsUserUpdate["bypass_site_allowed_ips"] = config.BypassSiteAllowedIps.ValueBool()
 	}
-	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
-		paramsUserUpdate.Disabled = plan.Disabled.ValueBoolPointer()
+	if !config.DavPermission.IsNull() && !config.DavPermission.IsUnknown() {
+		paramsUserUpdate["dav_permission"] = config.DavPermission.ValueBool()
 	}
-	paramsUserUpdate.FilesystemLayout = paramsUserUpdate.FilesystemLayout.Enum()[plan.FilesystemLayout.ValueString()]
-	if !plan.FtpPermission.IsNull() && !plan.FtpPermission.IsUnknown() {
-		paramsUserUpdate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
+	if !config.Disabled.IsNull() && !config.Disabled.IsUnknown() {
+		paramsUserUpdate["disabled"] = config.Disabled.ValueBool()
 	}
-	paramsUserUpdate.HeaderText = plan.HeaderText.ValueString()
-	paramsUserUpdate.Language = plan.Language.ValueString()
-	paramsUserUpdate.NotificationDailySendTime = plan.NotificationDailySendTime.ValueInt64()
-	paramsUserUpdate.Name = plan.Name.ValueString()
-	paramsUserUpdate.Company = plan.Company.ValueString()
-	paramsUserUpdate.Notes = plan.Notes.ValueString()
-	if !plan.OfficeIntegrationEnabled.IsNull() && !plan.OfficeIntegrationEnabled.IsUnknown() {
-		paramsUserUpdate.OfficeIntegrationEnabled = plan.OfficeIntegrationEnabled.ValueBoolPointer()
+	if !config.FilesystemLayout.IsNull() && !config.FilesystemLayout.IsUnknown() {
+		paramsUserUpdate["filesystem_layout"] = config.FilesystemLayout.ValueString()
 	}
-	if !plan.PartnerAdmin.IsNull() && !plan.PartnerAdmin.IsUnknown() {
-		paramsUserUpdate.PartnerAdmin = plan.PartnerAdmin.ValueBoolPointer()
+	if !config.FtpPermission.IsNull() && !config.FtpPermission.IsUnknown() {
+		paramsUserUpdate["ftp_permission"] = config.FtpPermission.ValueBool()
 	}
-	paramsUserUpdate.PartnerId = plan.PartnerId.ValueInt64()
-	paramsUserUpdate.PasswordValidityDays = plan.PasswordValidityDays.ValueInt64()
-	if !plan.ReadonlySiteAdmin.IsNull() && !plan.ReadonlySiteAdmin.IsUnknown() {
-		paramsUserUpdate.ReadonlySiteAdmin = plan.ReadonlySiteAdmin.ValueBoolPointer()
+	if !config.HeaderText.IsNull() && !config.HeaderText.IsUnknown() {
+		paramsUserUpdate["header_text"] = config.HeaderText.ValueString()
 	}
-	if !plan.ReceiveAdminAlerts.IsNull() && !plan.ReceiveAdminAlerts.IsUnknown() {
-		paramsUserUpdate.ReceiveAdminAlerts = plan.ReceiveAdminAlerts.ValueBoolPointer()
+	if !config.Language.IsNull() && !config.Language.IsUnknown() {
+		paramsUserUpdate["language"] = config.Language.ValueString()
 	}
-	if !plan.RequireLoginBy.IsNull() {
-		if plan.RequireLoginBy.ValueString() == "" {
-			paramsUserUpdate.RequireLoginBy = new(time.Time)
+	if !config.NotificationDailySendTime.IsNull() && !config.NotificationDailySendTime.IsUnknown() {
+		paramsUserUpdate["notification_daily_send_time"] = config.NotificationDailySendTime.ValueInt64()
+	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsUserUpdate["name"] = config.Name.ValueString()
+	}
+	if !config.Company.IsNull() && !config.Company.IsUnknown() {
+		paramsUserUpdate["company"] = config.Company.ValueString()
+	}
+	if !config.Notes.IsNull() && !config.Notes.IsUnknown() {
+		paramsUserUpdate["notes"] = config.Notes.ValueString()
+	}
+	if !config.OfficeIntegrationEnabled.IsNull() && !config.OfficeIntegrationEnabled.IsUnknown() {
+		paramsUserUpdate["office_integration_enabled"] = config.OfficeIntegrationEnabled.ValueBool()
+	}
+	if !config.PartnerAdmin.IsNull() && !config.PartnerAdmin.IsUnknown() {
+		paramsUserUpdate["partner_admin"] = config.PartnerAdmin.ValueBool()
+	}
+	if !config.PartnerId.IsNull() && !config.PartnerId.IsUnknown() {
+		paramsUserUpdate["partner_id"] = config.PartnerId.ValueInt64()
+	}
+	if !config.PasswordValidityDays.IsNull() && !config.PasswordValidityDays.IsUnknown() {
+		paramsUserUpdate["password_validity_days"] = config.PasswordValidityDays.ValueInt64()
+	}
+	if !config.ReadonlySiteAdmin.IsNull() && !config.ReadonlySiteAdmin.IsUnknown() {
+		paramsUserUpdate["readonly_site_admin"] = config.ReadonlySiteAdmin.ValueBool()
+	}
+	if !config.ReceiveAdminAlerts.IsNull() && !config.ReceiveAdminAlerts.IsUnknown() {
+		paramsUserUpdate["receive_admin_alerts"] = config.ReceiveAdminAlerts.ValueBool()
+	}
+	if !config.RequireLoginBy.IsNull() && !config.RequireLoginBy.IsUnknown() {
+		if config.RequireLoginBy.ValueString() == "" {
+			paramsUserUpdate["require_login_by"] = new(time.Time)
 		} else {
-			updateRequireLoginBy, err := time.Parse(time.RFC3339, plan.RequireLoginBy.ValueString())
+			updateRequireLoginBy, err := time.Parse(time.RFC3339, config.RequireLoginBy.ValueString())
 			if err != nil {
 				resp.Diagnostics.AddAttributeError(
 					path.Root("require_login_by"),
@@ -954,45 +996,61 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 					"Could not parse require_login_by time: "+err.Error(),
 				)
 			} else {
-				paramsUserUpdate.RequireLoginBy = &updateRequireLoginBy
+				paramsUserUpdate["require_login_by"] = &updateRequireLoginBy
 			}
 		}
 	}
-	if !plan.RequirePasswordChange.IsNull() && !plan.RequirePasswordChange.IsUnknown() {
-		paramsUserUpdate.RequirePasswordChange = plan.RequirePasswordChange.ValueBoolPointer()
+	if !config.RequirePasswordChange.IsNull() && !config.RequirePasswordChange.IsUnknown() {
+		paramsUserUpdate["require_password_change"] = config.RequirePasswordChange.ValueBool()
 	}
-	if !plan.RestapiPermission.IsNull() && !plan.RestapiPermission.IsUnknown() {
-		paramsUserUpdate.RestapiPermission = plan.RestapiPermission.ValueBoolPointer()
+	if !config.RestapiPermission.IsNull() && !config.RestapiPermission.IsUnknown() {
+		paramsUserUpdate["restapi_permission"] = config.RestapiPermission.ValueBool()
 	}
-	if !plan.SelfManaged.IsNull() && !plan.SelfManaged.IsUnknown() {
-		paramsUserUpdate.SelfManaged = plan.SelfManaged.ValueBoolPointer()
+	if !config.SelfManaged.IsNull() && !config.SelfManaged.IsUnknown() {
+		paramsUserUpdate["self_managed"] = config.SelfManaged.ValueBool()
 	}
-	if !plan.SftpPermission.IsNull() && !plan.SftpPermission.IsUnknown() {
-		paramsUserUpdate.SftpPermission = plan.SftpPermission.ValueBoolPointer()
+	if !config.SftpPermission.IsNull() && !config.SftpPermission.IsUnknown() {
+		paramsUserUpdate["sftp_permission"] = config.SftpPermission.ValueBool()
 	}
-	if !plan.SiteAdmin.IsNull() && !plan.SiteAdmin.IsUnknown() {
-		paramsUserUpdate.SiteAdmin = plan.SiteAdmin.ValueBoolPointer()
+	if !config.SiteAdmin.IsNull() && !config.SiteAdmin.IsUnknown() {
+		paramsUserUpdate["site_admin"] = config.SiteAdmin.ValueBool()
 	}
-	if !plan.SkipWelcomeScreen.IsNull() && !plan.SkipWelcomeScreen.IsUnknown() {
-		paramsUserUpdate.SkipWelcomeScreen = plan.SkipWelcomeScreen.ValueBoolPointer()
+	if !config.SkipWelcomeScreen.IsNull() && !config.SkipWelcomeScreen.IsUnknown() {
+		paramsUserUpdate["skip_welcome_screen"] = config.SkipWelcomeScreen.ValueBool()
 	}
-	paramsUserUpdate.SslRequired = paramsUserUpdate.SslRequired.Enum()[plan.SslRequired.ValueString()]
-	paramsUserUpdate.SsoStrategyId = plan.SsoStrategyId.ValueInt64()
-	if !plan.SubscribeToNewsletter.IsNull() && !plan.SubscribeToNewsletter.IsUnknown() {
-		paramsUserUpdate.SubscribeToNewsletter = plan.SubscribeToNewsletter.ValueBoolPointer()
+	if !config.SslRequired.IsNull() && !config.SslRequired.IsUnknown() {
+		paramsUserUpdate["ssl_required"] = config.SslRequired.ValueString()
 	}
-	paramsUserUpdate.Require2fa = paramsUserUpdate.Require2fa.Enum()[plan.Require2fa.ValueString()]
-	paramsUserUpdate.Tags = plan.Tags.ValueString()
-	paramsUserUpdate.TimeZone = plan.TimeZone.ValueString()
-	paramsUserUpdate.UserRoot = plan.UserRoot.ValueString()
-	paramsUserUpdate.UserHome = plan.UserHome.ValueString()
-	paramsUserUpdate.Username = plan.Username.ValueString()
+	if !config.SsoStrategyId.IsNull() && !config.SsoStrategyId.IsUnknown() {
+		paramsUserUpdate["sso_strategy_id"] = config.SsoStrategyId.ValueInt64()
+	}
+	if !config.SubscribeToNewsletter.IsNull() && !config.SubscribeToNewsletter.IsUnknown() {
+		paramsUserUpdate["subscribe_to_newsletter"] = config.SubscribeToNewsletter.ValueBool()
+	}
+	if !config.Require2fa.IsNull() && !config.Require2fa.IsUnknown() {
+		paramsUserUpdate["require_2fa"] = config.Require2fa.ValueString()
+	}
+	if !config.Tags.IsNull() && !config.Tags.IsUnknown() {
+		paramsUserUpdate["tags"] = config.Tags.ValueString()
+	}
+	if !config.TimeZone.IsNull() && !config.TimeZone.IsUnknown() {
+		paramsUserUpdate["time_zone"] = config.TimeZone.ValueString()
+	}
+	if !config.UserRoot.IsNull() && !config.UserRoot.IsUnknown() {
+		paramsUserUpdate["user_root"] = config.UserRoot.ValueString()
+	}
+	if !config.UserHome.IsNull() && !config.UserHome.IsUnknown() {
+		paramsUserUpdate["user_home"] = config.UserHome.ValueString()
+	}
+	if !config.Username.IsNull() && !config.Username.IsUnknown() {
+		paramsUserUpdate["username"] = config.Username.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	user, err := r.client.Update(paramsUserUpdate, files_sdk.WithContext(ctx))
+	user, err := r.client.UpdateWithMap(paramsUserUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files User",

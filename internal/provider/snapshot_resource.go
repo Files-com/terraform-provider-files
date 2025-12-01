@@ -225,13 +225,15 @@ func (r *snapshotResource) Update(ctx context.Context, req resource.UpdateReques
 		return
 	}
 
-	paramsSnapshotUpdate := files_sdk.SnapshotUpdateParams{}
-	paramsSnapshotUpdate.Id = plan.Id.ValueInt64()
-	if !plan.ExpiresAt.IsNull() {
-		if plan.ExpiresAt.ValueString() == "" {
-			paramsSnapshotUpdate.ExpiresAt = new(time.Time)
+	paramsSnapshotUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsSnapshotUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.ExpiresAt.IsNull() && !config.ExpiresAt.IsUnknown() {
+		if config.ExpiresAt.ValueString() == "" {
+			paramsSnapshotUpdate["expires_at"] = new(time.Time)
 		} else {
-			updateExpiresAt, err := time.Parse(time.RFC3339, plan.ExpiresAt.ValueString())
+			updateExpiresAt, err := time.Parse(time.RFC3339, config.ExpiresAt.ValueString())
 			if err != nil {
 				resp.Diagnostics.AddAttributeError(
 					path.Root("expires_at"),
@@ -239,21 +241,25 @@ func (r *snapshotResource) Update(ctx context.Context, req resource.UpdateReques
 					"Could not parse expires_at time: "+err.Error(),
 				)
 			} else {
-				paramsSnapshotUpdate.ExpiresAt = &updateExpiresAt
+				paramsSnapshotUpdate["expires_at"] = &updateExpiresAt
 			}
 		}
 	}
-	paramsSnapshotUpdate.Name = plan.Name.ValueString()
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsSnapshotUpdate["name"] = config.Name.ValueString()
+	}
 	if !config.Paths.IsNull() && !config.Paths.IsUnknown() {
-		diags = config.Paths.ElementsAs(ctx, &paramsSnapshotUpdate.Paths, false)
+		var updatePaths []string
+		diags = config.Paths.ElementsAs(ctx, &updatePaths, false)
 		resp.Diagnostics.Append(diags...)
+		paramsSnapshotUpdate["paths"] = updatePaths
 	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	snapshot, err := r.client.Update(paramsSnapshotUpdate, files_sdk.WithContext(ctx))
+	snapshot, err := r.client.UpdateWithMap(paramsSnapshotUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files Snapshot",

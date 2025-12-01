@@ -407,44 +407,76 @@ func (r *syncResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		return
 	}
 
-	paramsSyncUpdate := files_sdk.SyncUpdateParams{}
-	paramsSyncUpdate.Id = plan.Id.ValueInt64()
-	paramsSyncUpdate.Name = plan.Name.ValueString()
-	paramsSyncUpdate.Description = plan.Description.ValueString()
-	paramsSyncUpdate.SrcPath = plan.SrcPath.ValueString()
-	paramsSyncUpdate.DestPath = plan.DestPath.ValueString()
-	paramsSyncUpdate.SrcRemoteServerId = plan.SrcRemoteServerId.ValueInt64()
-	paramsSyncUpdate.DestRemoteServerId = plan.DestRemoteServerId.ValueInt64()
-	if !plan.KeepAfterCopy.IsNull() && !plan.KeepAfterCopy.IsUnknown() {
-		paramsSyncUpdate.KeepAfterCopy = plan.KeepAfterCopy.ValueBoolPointer()
+	paramsSyncUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsSyncUpdate["id"] = plan.Id.ValueInt64()
 	}
-	if !plan.DeleteEmptyFolders.IsNull() && !plan.DeleteEmptyFolders.IsUnknown() {
-		paramsSyncUpdate.DeleteEmptyFolders = plan.DeleteEmptyFolders.ValueBoolPointer()
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsSyncUpdate["name"] = config.Name.ValueString()
 	}
-	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
-		paramsSyncUpdate.Disabled = plan.Disabled.ValueBoolPointer()
+	if !config.Description.IsNull() && !config.Description.IsUnknown() {
+		paramsSyncUpdate["description"] = config.Description.ValueString()
 	}
-	paramsSyncUpdate.Interval = plan.Interval.ValueString()
-	paramsSyncUpdate.Trigger = plan.Trigger.ValueString()
-	paramsSyncUpdate.TriggerFile = plan.TriggerFile.ValueString()
-	paramsSyncUpdate.HolidayRegion = plan.HolidayRegion.ValueString()
-	paramsSyncUpdate.SyncIntervalMinutes = plan.SyncIntervalMinutes.ValueInt64()
-	paramsSyncUpdate.RecurringDay = plan.RecurringDay.ValueInt64()
-	paramsSyncUpdate.ScheduleTimeZone = plan.ScheduleTimeZone.ValueString()
-	if !plan.ScheduleDaysOfWeek.IsNull() && !plan.ScheduleDaysOfWeek.IsUnknown() {
-		diags = plan.ScheduleDaysOfWeek.ElementsAs(ctx, &paramsSyncUpdate.ScheduleDaysOfWeek, false)
+	if !config.SrcPath.IsNull() && !config.SrcPath.IsUnknown() {
+		paramsSyncUpdate["src_path"] = config.SrcPath.ValueString()
+	}
+	if !config.DestPath.IsNull() && !config.DestPath.IsUnknown() {
+		paramsSyncUpdate["dest_path"] = config.DestPath.ValueString()
+	}
+	if !config.SrcRemoteServerId.IsNull() && !config.SrcRemoteServerId.IsUnknown() {
+		paramsSyncUpdate["src_remote_server_id"] = config.SrcRemoteServerId.ValueInt64()
+	}
+	if !config.DestRemoteServerId.IsNull() && !config.DestRemoteServerId.IsUnknown() {
+		paramsSyncUpdate["dest_remote_server_id"] = config.DestRemoteServerId.ValueInt64()
+	}
+	if !config.KeepAfterCopy.IsNull() && !config.KeepAfterCopy.IsUnknown() {
+		paramsSyncUpdate["keep_after_copy"] = config.KeepAfterCopy.ValueBool()
+	}
+	if !config.DeleteEmptyFolders.IsNull() && !config.DeleteEmptyFolders.IsUnknown() {
+		paramsSyncUpdate["delete_empty_folders"] = config.DeleteEmptyFolders.ValueBool()
+	}
+	if !config.Disabled.IsNull() && !config.Disabled.IsUnknown() {
+		paramsSyncUpdate["disabled"] = config.Disabled.ValueBool()
+	}
+	if !config.Interval.IsNull() && !config.Interval.IsUnknown() {
+		paramsSyncUpdate["interval"] = config.Interval.ValueString()
+	}
+	if !config.Trigger.IsNull() && !config.Trigger.IsUnknown() {
+		paramsSyncUpdate["trigger"] = config.Trigger.ValueString()
+	}
+	if !config.TriggerFile.IsNull() && !config.TriggerFile.IsUnknown() {
+		paramsSyncUpdate["trigger_file"] = config.TriggerFile.ValueString()
+	}
+	if !config.HolidayRegion.IsNull() && !config.HolidayRegion.IsUnknown() {
+		paramsSyncUpdate["holiday_region"] = config.HolidayRegion.ValueString()
+	}
+	if !config.SyncIntervalMinutes.IsNull() && !config.SyncIntervalMinutes.IsUnknown() {
+		paramsSyncUpdate["sync_interval_minutes"] = config.SyncIntervalMinutes.ValueInt64()
+	}
+	if !config.RecurringDay.IsNull() && !config.RecurringDay.IsUnknown() {
+		paramsSyncUpdate["recurring_day"] = config.RecurringDay.ValueInt64()
+	}
+	if !config.ScheduleTimeZone.IsNull() && !config.ScheduleTimeZone.IsUnknown() {
+		paramsSyncUpdate["schedule_time_zone"] = config.ScheduleTimeZone.ValueString()
+	}
+	if !config.ScheduleDaysOfWeek.IsNull() && !config.ScheduleDaysOfWeek.IsUnknown() {
+		var updateScheduleDaysOfWeek []int64
+		diags = config.ScheduleDaysOfWeek.ElementsAs(ctx, &updateScheduleDaysOfWeek, false)
 		resp.Diagnostics.Append(diags...)
+		paramsSyncUpdate["schedule_days_of_week"] = updateScheduleDaysOfWeek
 	}
-	if !plan.ScheduleTimesOfDay.IsNull() && !plan.ScheduleTimesOfDay.IsUnknown() {
-		diags = plan.ScheduleTimesOfDay.ElementsAs(ctx, &paramsSyncUpdate.ScheduleTimesOfDay, false)
+	if !config.ScheduleTimesOfDay.IsNull() && !config.ScheduleTimesOfDay.IsUnknown() {
+		var updateScheduleTimesOfDay []string
+		diags = config.ScheduleTimesOfDay.ElementsAs(ctx, &updateScheduleTimesOfDay, false)
 		resp.Diagnostics.Append(diags...)
+		paramsSyncUpdate["schedule_times_of_day"] = updateScheduleTimesOfDay
 	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	sync, err := r.client.Update(paramsSyncUpdate, files_sdk.WithContext(ctx))
+	sync, err := r.client.UpdateWithMap(paramsSyncUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files Sync",

@@ -278,15 +278,19 @@ func (r *publicKeyResource) Update(ctx context.Context, req resource.UpdateReque
 		return
 	}
 
-	paramsPublicKeyUpdate := files_sdk.PublicKeyUpdateParams{}
-	paramsPublicKeyUpdate.Id = plan.Id.ValueInt64()
-	paramsPublicKeyUpdate.Title = plan.Title.ValueString()
+	paramsPublicKeyUpdate := map[string]interface{}{}
+	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
+		paramsPublicKeyUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.Title.IsNull() && !config.Title.IsUnknown() {
+		paramsPublicKeyUpdate["title"] = config.Title.ValueString()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	publicKey, err := r.client.Update(paramsPublicKeyUpdate, files_sdk.WithContext(ctx))
+	publicKey, err := r.client.UpdateWithMap(paramsPublicKeyUpdate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files PublicKey",
