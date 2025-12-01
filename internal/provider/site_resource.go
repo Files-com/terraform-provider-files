@@ -178,6 +178,7 @@ type siteResourceModel struct {
 	UsersCanCreateApiKeys                    types.Bool    `tfsdk:"users_can_create_api_keys"`
 	UsersCanCreateSshKeys                    types.Bool    `tfsdk:"users_can_create_ssh_keys"`
 	WelcomeCustomText                        types.String  `tfsdk:"welcome_custom_text"`
+	EmailFooterCustomText                    types.String  `tfsdk:"email_footer_custom_text"`
 	WelcomeEmailCc                           types.String  `tfsdk:"welcome_email_cc"`
 	WelcomeEmailSubject                      types.String  `tfsdk:"welcome_email_subject"`
 	WelcomeEmailEnabled                      types.Bool    `tfsdk:"welcome_email_enabled"`
@@ -1383,6 +1384,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"email_footer_custom_text": schema.StringAttribute{
+				Description: "Custom footer text for system-generated emails. Supports standard strftime date/time patterns like %Y (4-digit year), %m (month), %d (day).",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"welcome_email_cc": schema.StringAttribute{
 				Description: "Include this email in welcome emails if enabled",
 				Computed:    true,
@@ -1882,6 +1891,7 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.UseDedicatedIpsForSmtp.IsNull() && !plan.UseDedicatedIpsForSmtp.IsUnknown() {
 		paramsSiteUpdate.UseDedicatedIpsForSmtp = plan.UseDedicatedIpsForSmtp.ValueBoolPointer()
 	}
+	paramsSiteUpdate.EmailFooterCustomText = plan.EmailFooterCustomText.ValueString()
 	paramsSiteUpdate.SmtpAddress = plan.SmtpAddress.ValueString()
 	paramsSiteUpdate.SmtpAuthentication = plan.SmtpAuthentication.ValueString()
 	paramsSiteUpdate.SmtpFrom = plan.SmtpFrom.ValueString()
@@ -2208,6 +2218,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.UsersCanCreateApiKeys = types.BoolPointerValue(site.UsersCanCreateApiKeys)
 	state.UsersCanCreateSshKeys = types.BoolPointerValue(site.UsersCanCreateSshKeys)
 	state.WelcomeCustomText = types.StringValue(site.WelcomeCustomText)
+	state.EmailFooterCustomText = types.StringValue(site.EmailFooterCustomText)
 	state.WelcomeEmailCc = types.StringValue(site.WelcomeEmailCc)
 	state.WelcomeEmailSubject = types.StringValue(site.WelcomeEmailSubject)
 	state.WelcomeEmailEnabled = types.BoolPointerValue(site.WelcomeEmailEnabled)

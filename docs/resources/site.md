@@ -145,6 +145,7 @@ resource "files_site" "example_site" {
   site_public_footer                            = "example"
   login_help_text                               = "Login page help text."
   use_dedicated_ips_for_smtp                    = false
+  email_footer_custom_text                      = "Copyright © %Y MyCompany Inc."
   smtp_address                                  = "smtp.my-mail-server.com"
   smtp_authentication                           = "plain"
   smtp_from                                     = "me@my-mail-server.com"
@@ -238,6 +239,7 @@ resource "files_site" "example_site" {
 - `domain_hsts_header` (Boolean) Send HSTS (HTTP Strict Transport Security) header when visitors access the site via a custom domain?
 - `domain_letsencrypt_chain` (String) Letsencrypt chain to use when registering SSL Certificate for domain.
 - `email` (String) Main email for this site
+- `email_footer_custom_text` (String) Custom footer text for system-generated emails. Supports standard strftime date/time patterns like %Y (4-digit year), %m (month), %d (day).
 - `folder_permissions_groups_only` (Boolean) If true, permissions for this site must be bound to a group (not a user).
 - `ftp_enabled` (Boolean) Is FTP enabled?
 - `group_admins_can_set_user_password` (Boolean) Allow group admins set password authentication method

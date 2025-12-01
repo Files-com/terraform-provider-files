@@ -125,6 +125,7 @@ resource "files_site" "example_site" {
   site_public_footer                            = "example"
   login_help_text                               = "Login page help text."
   use_dedicated_ips_for_smtp                    = false
+  email_footer_custom_text                      = "Copyright © %Y MyCompany Inc."
   smtp_address                                  = "smtp.my-mail-server.com"
   smtp_authentication                           = "plain"
   smtp_from                                     = "me@my-mail-server.com"
