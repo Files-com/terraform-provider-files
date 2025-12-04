@@ -75,6 +75,7 @@ type remoteServerResourceModel struct {
 	FilesAgentPermissionSet                 types.String `tfsdk:"files_agent_permission_set"`
 	FilesAgentRoot                          types.String `tfsdk:"files_agent_root"`
 	FilesAgentVersion                       types.String `tfsdk:"files_agent_version"`
+	OutboundAgentId                         types.Int64  `tfsdk:"outbound_agent_id"`
 	FilebaseBucket                          types.String `tfsdk:"filebase_bucket"`
 	FilebaseAccessKey                       types.String `tfsdk:"filebase_access_key"`
 	CloudflareBucket                        types.String `tfsdk:"cloudflare_bucket"`
@@ -471,6 +472,14 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"outbound_agent_id": schema.Int64Attribute{
+				Description: "Route traffic to outbound on a files-agent",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"filebase_bucket": schema.StringAttribute{
 				Description: "Filebase: Bucket name",
 				Computed:    true,
@@ -748,6 +757,7 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.FilesAgentPermissionSet = paramsRemoteServerCreate.FilesAgentPermissionSet.Enum()[plan.FilesAgentPermissionSet.ValueString()]
 	paramsRemoteServerCreate.FilesAgentRoot = plan.FilesAgentRoot.ValueString()
 	paramsRemoteServerCreate.FilesAgentVersion = plan.FilesAgentVersion.ValueString()
+	paramsRemoteServerCreate.OutboundAgentId = plan.OutboundAgentId.ValueInt64()
 	paramsRemoteServerCreate.GoogleCloudStorageBucket = plan.GoogleCloudStorageBucket.ValueString()
 	paramsRemoteServerCreate.GoogleCloudStorageProjectId = plan.GoogleCloudStorageProjectId.ValueString()
 	paramsRemoteServerCreate.GoogleCloudStorageS3CompatibleAccessKey = plan.GoogleCloudStorageS3CompatibleAccessKey.ValueString()
@@ -976,6 +986,9 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	if !config.FilesAgentVersion.IsNull() && !config.FilesAgentVersion.IsUnknown() {
 		paramsRemoteServerUpdate["files_agent_version"] = config.FilesAgentVersion.ValueString()
 	}
+	if !config.OutboundAgentId.IsNull() && !config.OutboundAgentId.IsUnknown() {
+		paramsRemoteServerUpdate["outbound_agent_id"] = config.OutboundAgentId.ValueInt64()
+	}
 	if !config.GoogleCloudStorageBucket.IsNull() && !config.GoogleCloudStorageBucket.IsUnknown() {
 		paramsRemoteServerUpdate["google_cloud_storage_bucket"] = config.GoogleCloudStorageBucket.ValueString()
 	}
@@ -1169,6 +1182,7 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.FilesAgentRoot = types.StringValue(remoteServer.FilesAgentRoot)
 	state.FilesAgentApiToken = types.StringValue(remoteServer.FilesAgentApiToken)
 	state.FilesAgentVersion = types.StringValue(remoteServer.FilesAgentVersion)
+	state.OutboundAgentId = types.Int64Value(remoteServer.OutboundAgentId)
 	state.FilebaseBucket = types.StringValue(remoteServer.FilebaseBucket)
 	state.FilebaseAccessKey = types.StringValue(remoteServer.FilebaseAccessKey)
 	state.CloudflareBucket = types.StringValue(remoteServer.CloudflareBucket)

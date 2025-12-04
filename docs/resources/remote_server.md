@@ -144,6 +144,7 @@ resource "files_remote_server" "example_remote_server" {
   files_agent_permission_set                    = "read_write"
   files_agent_root                              = "example"
   files_agent_version                           = "example"
+  outbound_agent_id                             = 1
   google_cloud_storage_bucket                   = "my-bucket"
   google_cloud_storage_project_id               = "my-project"
   google_cloud_storage_s3_compatible_access_key = "example"
@@ -224,6 +225,7 @@ resource "files_remote_server" "example_remote_server" {
 - `max_connections` (Number) Max number of parallel connections.  Ignored for S3 connections (we will parallelize these as much as possible).
 - `name` (String) Internal name for your reference
 - `one_drive_account_type` (String) OneDrive: Either personal or business_other account types
+- `outbound_agent_id` (Number) Route traffic to outbound on a files-agent
 - `password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password, if needed.
 - `pin_to_site_region` (Boolean) If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.
 - `port` (Number) Port for remote server.  Not needed for S3.

@@ -171,6 +171,7 @@ data "files_remote_server" "example_remote_server" {
 - `max_connections` (Number) Max number of parallel connections.  Ignored for S3 connections (we will parallelize these as much as possible).
 - `name` (String) Internal name for your reference
 - `one_drive_account_type` (String) OneDrive: Either personal or business_other account types
+- `outbound_agent_id` (Number) Route traffic to outbound on a files-agent
 - `pin_to_site_region` (Boolean) If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.
 - `pinned_region` (String) If set, all communications with this remote server are made through the provided region.
 - `port` (Number) Port for remote server.  Not needed for S3.

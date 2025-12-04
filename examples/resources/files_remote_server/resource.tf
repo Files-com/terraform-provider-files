@@ -22,6 +22,7 @@ resource "files_remote_server" "example_remote_server" {
   files_agent_permission_set                    = "read_write"
   files_agent_root                              = "example"
   files_agent_version                           = "example"
+  outbound_agent_id                             = 1
   google_cloud_storage_bucket                   = "my-bucket"
   google_cloud_storage_project_id               = "my-project"
   google_cloud_storage_s3_compatible_access_key = "example"

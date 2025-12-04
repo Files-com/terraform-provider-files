@@ -73,6 +73,7 @@ type remoteServerDataSourceModel struct {
 	FilesAgentRoot                          types.String `tfsdk:"files_agent_root"`
 	FilesAgentApiToken                      types.String `tfsdk:"files_agent_api_token"`
 	FilesAgentVersion                       types.String `tfsdk:"files_agent_version"`
+	OutboundAgentId                         types.Int64  `tfsdk:"outbound_agent_id"`
 	FilebaseBucket                          types.String `tfsdk:"filebase_bucket"`
 	FilebaseAccessKey                       types.String `tfsdk:"filebase_access_key"`
 	CloudflareBucket                        types.String `tfsdk:"cloudflare_bucket"`
@@ -300,6 +301,10 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Description: "Files Agent version",
 				Computed:    true,
 			},
+			"outbound_agent_id": schema.Int64Attribute{
+				Description: "Route traffic to outbound on a files-agent",
+				Computed:    true,
+			},
 			"filebase_bucket": schema.StringAttribute{
 				Description: "Filebase: Bucket name",
 				Computed:    true,
@@ -422,6 +427,7 @@ func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, re
 	state.FilesAgentRoot = types.StringValue(remoteServer.FilesAgentRoot)
 	state.FilesAgentApiToken = types.StringValue(remoteServer.FilesAgentApiToken)
 	state.FilesAgentVersion = types.StringValue(remoteServer.FilesAgentVersion)
+	state.OutboundAgentId = types.Int64Value(remoteServer.OutboundAgentId)
 	state.FilebaseBucket = types.StringValue(remoteServer.FilebaseBucket)
 	state.FilebaseAccessKey = types.StringValue(remoteServer.FilebaseAccessKey)
 	state.CloudflareBucket = types.StringValue(remoteServer.CloudflareBucket)
