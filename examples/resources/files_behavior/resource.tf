@@ -91,31 +91,6 @@ resource "files_behavior" "example_create_user_folders_behavior" {
   }
 }
 
-resource "files_behavior" "example_remote_server_sync_behavior" {
-  path     = "path"
-  behavior = "remote_server_sync"
-  value    = {
-    direction            = "two_way"
-    disabled             = false
-    keep_after_copy      = "keep"
-    remote_path          = ""
-    remote_sync_interval = 60
-    remote_server_id     = 1
-    trigger              = "daily"
-    interval             = "month"
-    recurring_day        = 25
-    schedule             = {
-      days_of_week = [0, 2, 4]
-      times_of_day = ["6:30", "14:30"]
-      time_zone    = "Eastern Time (US & Canada)"
-    }
-    delete_empty_folders = false
-    include_patterns     = ["Incoming/**", "AnotherIncoming/*.jpg", "**/*.png"]
-    exclude_patterns     = ["bin/", "**/*.bak"]
-    trigger_file         = "trigger-file.txt"
-  }
-}
-
 resource "files_behavior" "example_inbox_behavior" {
   path     = "path"
   behavior = "inbox"

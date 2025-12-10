@@ -36,7 +36,7 @@ data "files_file" "example_file" {
 - `created_by_id` (Number) User ID of the User who created the file/folder
 - `created_by_inbox_id` (Number) ID of the Inbox that created the file/folder
 - `created_by_remote_server_id` (Number) ID of the Remote Server that created the file/folder
-- `created_by_remote_server_sync_id` (Number) ID of the Remote Server Sync that created the file/folder
+- `created_by_sync_id` (Number) ID of the Sync that created the file/folder
 - `custom_metadata` (Dynamic) Custom metadata map of keys and values. Limited to 32 keys, 256 characters per key and 1024 characters per value.
 - `display_name` (String) File/Folder display name
 - `download_uri` (String) Link to download file. Provided only in response to a download request.
@@ -46,7 +46,7 @@ data "files_file" "example_file" {
 - `last_modified_by_bundle_registration_id` (Number) ID of the Bundle Registration that last modified the file/folder
 - `last_modified_by_id` (Number) User ID of the User who last modified the file/folder
 - `last_modified_by_remote_server_id` (Number) ID of the Remote Server that last modified the file/folder
-- `last_modified_by_remote_server_sync_id` (Number) ID of the Remote Server Sync that last modified the file/folder
+- `last_modified_by_sync_id` (Number) ID of the Sync that last modified the file/folder
 - `md5` (String) File MD5 checksum. This is sometimes delayed, so if you get a blank response, wait and try again.
 - `mime_type` (String) MIME Type.  This is determined by the filename extension and is not stored separately internally.
 - `mtime` (String) File last modified date/time, according to the server.  This is the timestamp of the last Files.com operation of the file, regardless of what modified timestamp was sent.

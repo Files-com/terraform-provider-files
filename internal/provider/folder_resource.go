@@ -50,7 +50,7 @@ type folderResourceModel struct {
 	CreatedByBundleRegistrationId      types.Int64   `tfsdk:"created_by_bundle_registration_id"`
 	CreatedByInboxId                   types.Int64   `tfsdk:"created_by_inbox_id"`
 	CreatedByRemoteServerId            types.Int64   `tfsdk:"created_by_remote_server_id"`
-	CreatedByRemoteServerSyncId        types.Int64   `tfsdk:"created_by_remote_server_sync_id"`
+	CreatedBySyncId                    types.Int64   `tfsdk:"created_by_sync_id"`
 	DisplayName                        types.String  `tfsdk:"display_name"`
 	Type                               types.String  `tfsdk:"type"`
 	Size                               types.Int64   `tfsdk:"size"`
@@ -60,7 +60,7 @@ type folderResourceModel struct {
 	LastModifiedByAutomationId         types.Int64   `tfsdk:"last_modified_by_automation_id"`
 	LastModifiedByBundleRegistrationId types.Int64   `tfsdk:"last_modified_by_bundle_registration_id"`
 	LastModifiedByRemoteServerId       types.Int64   `tfsdk:"last_modified_by_remote_server_id"`
-	LastModifiedByRemoteServerSyncId   types.Int64   `tfsdk:"last_modified_by_remote_server_sync_id"`
+	LastModifiedBySyncId               types.Int64   `tfsdk:"last_modified_by_sync_id"`
 	Mtime                              types.String  `tfsdk:"mtime"`
 	Crc32                              types.String  `tfsdk:"crc32"`
 	Md5                                types.String  `tfsdk:"md5"`
@@ -171,8 +171,8 @@ func (r *folderResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Description: "ID of the Remote Server that created the file/folder",
 				Computed:    true,
 			},
-			"created_by_remote_server_sync_id": schema.Int64Attribute{
-				Description: "ID of the Remote Server Sync that created the file/folder",
+			"created_by_sync_id": schema.Int64Attribute{
+				Description: "ID of the Sync that created the file/folder",
 				Computed:    true,
 			},
 			"display_name": schema.StringAttribute{
@@ -211,8 +211,8 @@ func (r *folderResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Description: "ID of the Remote Server that last modified the file/folder",
 				Computed:    true,
 			},
-			"last_modified_by_remote_server_sync_id": schema.Int64Attribute{
-				Description: "ID of the Remote Server Sync that last modified the file/folder",
+			"last_modified_by_sync_id": schema.Int64Attribute{
+				Description: "ID of the Sync that last modified the file/folder",
 				Computed:    true,
 			},
 			"mtime": schema.StringAttribute{
@@ -520,7 +520,7 @@ func (r *folderResource) populateResourceModel(ctx context.Context, folder files
 	state.CreatedByBundleRegistrationId = types.Int64Value(folder.CreatedByBundleRegistrationId)
 	state.CreatedByInboxId = types.Int64Value(folder.CreatedByInboxId)
 	state.CreatedByRemoteServerId = types.Int64Value(folder.CreatedByRemoteServerId)
-	state.CreatedByRemoteServerSyncId = types.Int64Value(folder.CreatedByRemoteServerSyncId)
+	state.CreatedBySyncId = types.Int64Value(folder.CreatedBySyncId)
 	state.CustomMetadata, propDiags = lib.ToDynamic(ctx, path.Root("custom_metadata"), folder.CustomMetadata, state.CustomMetadata.UnderlyingValue())
 	diags.Append(propDiags...)
 	state.DisplayName = types.StringValue(folder.DisplayName)
@@ -537,7 +537,7 @@ func (r *folderResource) populateResourceModel(ctx context.Context, folder files
 	state.LastModifiedByAutomationId = types.Int64Value(folder.LastModifiedByAutomationId)
 	state.LastModifiedByBundleRegistrationId = types.Int64Value(folder.LastModifiedByBundleRegistrationId)
 	state.LastModifiedByRemoteServerId = types.Int64Value(folder.LastModifiedByRemoteServerId)
-	state.LastModifiedByRemoteServerSyncId = types.Int64Value(folder.LastModifiedByRemoteServerSyncId)
+	state.LastModifiedBySyncId = types.Int64Value(folder.LastModifiedBySyncId)
 	if err := lib.TimeToStringType(ctx, path.Root("mtime"), folder.Mtime, &state.Mtime); err != nil {
 		diags.AddError(
 			"Error Creating Files Folder",
