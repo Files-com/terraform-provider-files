@@ -62,7 +62,7 @@ resource "files_site" "example_site" {
   legacy_checksums_mode                         = false
   migrate_remote_server_sync_to_sync            = false
   as2_message_retention_days                    = 1
-  session_expiry                                = 1.0
+  session_expiry_minutes                        = 1
   ssl_required                                  = false
   sftp_insecure_ciphers                         = false
   sftp_insecure_diffie_hellman                  = false
@@ -176,7 +176,6 @@ resource "files_site" "example_site" {
   bundle_watermark_attachment_delete            = false
   login_page_background_image_delete            = false
   disable_2fa_with_delay                        = false
-  session_expiry_minutes                        = 1
 }
 ```
 
@@ -293,7 +292,6 @@ resource "files_site" "example_site" {
 - `require_2fa_user_type` (String) What type of user is required to use two-factor authentication (when require_2fa is set to `true` for this site)?
 - `require_logout_from_bundles_and_inboxes` (Boolean) If true, we will hide the 'Remember Me' box on Inbox and Bundle registration pages, requiring that the user logout and log back in every time they visit the page.
 - `revoke_bundle_access_on_disable_or_delete` (Boolean) Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period.
-- `session_expiry` (String) Session expiry in hours
 - `session_expiry_minutes` (Number) Session expiry in minutes
 - `sftp_enabled` (Boolean) Is SFTP enabled?
 - `sftp_host_key_type` (String) Sftp Host Key Type

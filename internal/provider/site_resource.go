@@ -162,7 +162,6 @@ type siteResourceModel struct {
 	SmtpFrom                                 types.String  `tfsdk:"smtp_from"`
 	SmtpPort                                 types.Int64   `tfsdk:"smtp_port"`
 	SmtpUsername                             types.String  `tfsdk:"smtp_username"`
-	SessionExpiry                            types.String  `tfsdk:"session_expiry"`
 	SessionExpiryMinutes                     types.Int64   `tfsdk:"session_expiry_minutes"`
 	SnapshotSharingEnabled                   types.Bool    `tfsdk:"snapshot_sharing_enabled"`
 	SslRequired                              types.Bool    `tfsdk:"ssl_required"`
@@ -1256,14 +1255,6 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"session_expiry": schema.StringAttribute{
-				Description: "Session expiry in hours",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
 			"session_expiry_minutes": schema.Int64Attribute{
 				Description: "Session expiry in minutes",
 				Computed:    true,
@@ -1744,8 +1735,8 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.As2MessageRetentionDays.IsNull() && !config.As2MessageRetentionDays.IsUnknown() {
 		paramsSiteUpdate["as2_message_retention_days"] = config.As2MessageRetentionDays.ValueInt64()
 	}
-	if !config.SessionExpiry.IsNull() && !config.SessionExpiry.IsUnknown() {
-		paramsSiteUpdate["session_expiry"] = config.SessionExpiry.ValueString()
+	if !config.SessionExpiryMinutes.IsNull() && !config.SessionExpiryMinutes.IsUnknown() {
+		paramsSiteUpdate["session_expiry_minutes"] = config.SessionExpiryMinutes.ValueInt64()
 	}
 	if !config.SslRequired.IsNull() && !config.SslRequired.IsUnknown() {
 		paramsSiteUpdate["ssl_required"] = config.SslRequired.ValueBool()
@@ -2056,9 +2047,6 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.UploadsViaEmailAuthentication.IsNull() && !config.UploadsViaEmailAuthentication.IsUnknown() {
 		paramsSiteUpdate["uploads_via_email_authentication"] = config.UploadsViaEmailAuthentication.ValueBool()
 	}
-	if !config.SessionExpiryMinutes.IsNull() && !config.SessionExpiryMinutes.IsUnknown() {
-		paramsSiteUpdate["session_expiry_minutes"] = config.SessionExpiryMinutes.ValueInt64()
-	}
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -2319,7 +2307,6 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.SmtpFrom = types.StringValue(site.SmtpFrom)
 	state.SmtpPort = types.Int64Value(site.SmtpPort)
 	state.SmtpUsername = types.StringValue(site.SmtpUsername)
-	state.SessionExpiry = types.StringValue(site.SessionExpiry)
 	state.SessionExpiryMinutes = types.Int64Value(site.SessionExpiryMinutes)
 	state.SnapshotSharingEnabled = types.BoolPointerValue(site.SnapshotSharingEnabled)
 	state.SslRequired = types.BoolPointerValue(site.SslRequired)

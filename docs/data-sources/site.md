@@ -158,7 +158,6 @@ data "files_site" "example_site" {
 - `require_logout_from_bundles_and_inboxes` (Boolean) If true, we will hide the 'Remember Me' box on Inbox and Bundle registration pages, requiring that the user logout and log back in every time they visit the page.
 - `revoke_bundle_access_on_disable_or_delete` (Boolean) Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period.
 - `session` (String) Current session
-- `session_expiry` (String) Session expiry in hours
 - `session_expiry_minutes` (Number) Session expiry in minutes
 - `sftp_enabled` (Boolean) Is SFTP enabled?
 - `sftp_host_key_type` (String) Sftp Host Key Type

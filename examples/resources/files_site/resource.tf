@@ -42,7 +42,7 @@ resource "files_site" "example_site" {
   legacy_checksums_mode                         = false
   migrate_remote_server_sync_to_sync            = false
   as2_message_retention_days                    = 1
-  session_expiry                                = 1.0
+  session_expiry_minutes                        = 1
   ssl_required                                  = false
   sftp_insecure_ciphers                         = false
   sftp_insecure_diffie_hellman                  = false
@@ -156,6 +156,5 @@ resource "files_site" "example_site" {
   bundle_watermark_attachment_delete            = false
   login_page_background_image_delete            = false
   disable_2fa_with_delay                        = false
-  session_expiry_minutes                        = 1
 }
 
