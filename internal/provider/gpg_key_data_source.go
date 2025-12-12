@@ -69,15 +69,15 @@ func (r *gpgKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 		Description: "A GPGKey object on Files.com is used to securely store both the private and public keys associated with a GPG (GNU Privacy Guard) encryption key pair. This object enables the encryption and decryption of data using GPG, allowing you to protect sensitive information.\n\n\n\nThe private key is kept confidential and is used for decrypting data or signing messages to prove authenticity, while the public key is used to encrypt messages that only the owner of the private key can decrypt.\n\n\n\nBy storing both keys together in a GPGKey object, Files.com makes it easier to understand encryption operations, ensuring secure and efficient handling of encrypted data within the platform.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
-				Description: "Your GPG key ID.",
+				Description: "GPG key ID.",
 				Required:    true,
 			},
 			"expires_at": schema.StringAttribute{
-				Description: "Your GPG key expiration date.",
+				Description: "GPG key expiration date.",
 				Computed:    true,
 			},
 			"name": schema.StringAttribute{
-				Description: "Your GPG key name.",
+				Description: "GPG key name.",
 				Computed:    true,
 			},
 			"partner_id": schema.Int64Attribute{
@@ -93,23 +93,23 @@ func (r *gpgKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Computed:    true,
 			},
 			"public_key_md5": schema.StringAttribute{
-				Description: "MD5 hash of your GPG public key",
+				Description: "MD5 hash of the GPG public key",
 				Computed:    true,
 			},
 			"private_key_md5": schema.StringAttribute{
-				Description: "MD5 hash of your GPG private key.",
+				Description: "MD5 hash of the GPG private key.",
 				Computed:    true,
 			},
 			"generated_public_key": schema.StringAttribute{
-				Description: "Your GPG public key",
+				Description: "GPG public key",
 				Computed:    true,
 			},
 			"generated_private_key": schema.StringAttribute{
-				Description: "Your GPG private key.",
+				Description: "GPG private key.",
 				Computed:    true,
 			},
 			"private_key_password_md5": schema.StringAttribute{
-				Description: "Your GPG private key password. Only required for password protected keys.",
+				Description: "GPG private key password. Only required for password protected keys.",
 				Computed:    true,
 			},
 		},

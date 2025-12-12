@@ -84,7 +84,7 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 		Description: "A GPGKey object on Files.com is used to securely store both the private and public keys associated with a GPG (GNU Privacy Guard) encryption key pair. This object enables the encryption and decryption of data using GPG, allowing you to protect sensitive information.\n\n\n\nThe private key is kept confidential and is used for decrypting data or signing messages to prove authenticity, while the public key is used to encrypt messages that only the owner of the private key can decrypt.\n\n\n\nBy storing both keys together in a GPGKey object, Files.com makes it easier to understand encryption operations, ensuring secure and efficient handling of encrypted data within the platform.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "Your GPG key name.",
+				Description: "GPG key name.",
 				Required:    true,
 			},
 			"partner_id": schema.Int64Attribute{
@@ -105,17 +105,17 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				},
 			},
 			"public_key": schema.StringAttribute{
-				Description: "MD5 hash of your GPG public key",
+				Description: "The GPG public key",
 				Optional:    true,
 				WriteOnly:   true,
 			},
 			"private_key": schema.StringAttribute{
-				Description: "MD5 hash of your GPG private key.",
+				Description: "The GPG private key",
 				Optional:    true,
 				WriteOnly:   true,
 			},
 			"private_key_password": schema.StringAttribute{
-				Description: "Your GPG private key password. Only required for password protected keys.",
+				Description: "The GPG private key password",
 				Optional:    true,
 				WriteOnly:   true,
 			},
@@ -152,14 +152,14 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				},
 			},
 			"id": schema.Int64Attribute{
-				Description: "Your GPG key ID.",
+				Description: "GPG key ID.",
 				Computed:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"expires_at": schema.StringAttribute{
-				Description: "Your GPG key expiration date.",
+				Description: "GPG key expiration date.",
 				Computed:    true,
 			},
 			"partner_name": schema.StringAttribute{
@@ -167,23 +167,23 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Computed:    true,
 			},
 			"public_key_md5": schema.StringAttribute{
-				Description: "MD5 hash of your GPG public key",
+				Description: "MD5 hash of the GPG public key",
 				Computed:    true,
 			},
 			"private_key_md5": schema.StringAttribute{
-				Description: "MD5 hash of your GPG private key.",
+				Description: "MD5 hash of the GPG private key.",
 				Computed:    true,
 			},
 			"generated_public_key": schema.StringAttribute{
-				Description: "Your GPG public key",
+				Description: "GPG public key",
 				Computed:    true,
 			},
 			"generated_private_key": schema.StringAttribute{
-				Description: "Your GPG private key.",
+				Description: "GPG private key.",
 				Computed:    true,
 			},
 			"private_key_password_md5": schema.StringAttribute{
-				Description: "Your GPG private key password. Only required for password protected keys.",
+				Description: "GPG private key password. Only required for password protected keys.",
 				Computed:    true,
 			},
 		},
