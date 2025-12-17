@@ -38,6 +38,7 @@ type remoteServerDataSourceModel struct {
 	MaxConnections                          types.Int64  `tfsdk:"max_connections"`
 	PinToSiteRegion                         types.Bool   `tfsdk:"pin_to_site_region"`
 	PinnedRegion                            types.String `tfsdk:"pinned_region"`
+	RemoteServerCredentialId                types.Int64  `tfsdk:"remote_server_credential_id"`
 	S3Bucket                                types.String `tfsdk:"s3_bucket"`
 	S3Region                                types.String `tfsdk:"s3_region"`
 	AwsAccessKey                            types.String `tfsdk:"aws_access_key"`
@@ -142,7 +143,7 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Computed:    true,
 			},
 			"port": schema.Int64Attribute{
-				Description: "Port for remote server.  Not needed for S3.",
+				Description: "Port for remote server.",
 				Computed:    true,
 			},
 			"buffer_uploads": schema.StringAttribute{
@@ -159,6 +160,10 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			},
 			"pinned_region": schema.StringAttribute{
 				Description: "If set, all communications with this remote server are made through the provided region.",
+				Computed:    true,
+			},
+			"remote_server_credential_id": schema.Int64Attribute{
+				Description: "ID of Remote Server Credential, if applicable.",
 				Computed:    true,
 			},
 			"s3_bucket": schema.StringAttribute{
@@ -190,7 +195,7 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Computed:    true,
 			},
 			"username": schema.StringAttribute{
-				Description: "Remote server username.  Not needed for S3 buckets.",
+				Description: "Remote server username.",
 				Computed:    true,
 			},
 			"google_cloud_storage_bucket": schema.StringAttribute{
@@ -392,6 +397,7 @@ func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, re
 	state.MaxConnections = types.Int64Value(remoteServer.MaxConnections)
 	state.PinToSiteRegion = types.BoolPointerValue(remoteServer.PinToSiteRegion)
 	state.PinnedRegion = types.StringValue(remoteServer.PinnedRegion)
+	state.RemoteServerCredentialId = types.Int64Value(remoteServer.RemoteServerCredentialId)
 	state.S3Bucket = types.StringValue(remoteServer.S3Bucket)
 	state.S3Region = types.StringValue(remoteServer.S3Region)
 	state.AwsAccessKey = types.StringValue(remoteServer.AwsAccessKey)

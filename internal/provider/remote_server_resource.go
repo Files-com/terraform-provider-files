@@ -43,6 +43,7 @@ type remoteServerResourceModel struct {
 	BufferUploads                           types.String `tfsdk:"buffer_uploads"`
 	MaxConnections                          types.Int64  `tfsdk:"max_connections"`
 	PinToSiteRegion                         types.Bool   `tfsdk:"pin_to_site_region"`
+	RemoteServerCredentialId                types.Int64  `tfsdk:"remote_server_credential_id"`
 	S3Bucket                                types.String `tfsdk:"s3_bucket"`
 	S3Region                                types.String `tfsdk:"s3_region"`
 	AwsAccessKey                            types.String `tfsdk:"aws_access_key"`
@@ -167,7 +168,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"port": schema.Int64Attribute{
-				Description: "Port for remote server.  Not needed for S3.",
+				Description: "Port for remote server.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
@@ -199,6 +200,14 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"remote_server_credential_id": schema.Int64Attribute{
+				Description: "ID of Remote Server Credential, if applicable.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"s3_bucket": schema.StringAttribute{
@@ -267,7 +276,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"username": schema.StringAttribute{
-				Description: "Remote server username.  Not needed for S3 buckets.",
+				Description: "Remote server username.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -772,6 +781,7 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 		paramsRemoteServerCreate.PinToSiteRegion = plan.PinToSiteRegion.ValueBoolPointer()
 	}
 	paramsRemoteServerCreate.Port = plan.Port.ValueInt64()
+	paramsRemoteServerCreate.RemoteServerCredentialId = plan.RemoteServerCredentialId.ValueInt64()
 	paramsRemoteServerCreate.S3Bucket = plan.S3Bucket.ValueString()
 	paramsRemoteServerCreate.S3CompatibleAccessKey = plan.S3CompatibleAccessKey.ValueString()
 	paramsRemoteServerCreate.S3CompatibleBucket = plan.S3CompatibleBucket.ValueString()
@@ -1025,6 +1035,9 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	if !config.Port.IsNull() && !config.Port.IsUnknown() {
 		paramsRemoteServerUpdate["port"] = config.Port.ValueInt64()
 	}
+	if !config.RemoteServerCredentialId.IsNull() && !config.RemoteServerCredentialId.IsUnknown() {
+		paramsRemoteServerUpdate["remote_server_credential_id"] = config.RemoteServerCredentialId.ValueInt64()
+	}
 	if !config.S3Bucket.IsNull() && !config.S3Bucket.IsUnknown() {
 		paramsRemoteServerUpdate["s3_bucket"] = config.S3Bucket.ValueString()
 	}
@@ -1147,6 +1160,7 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.MaxConnections = types.Int64Value(remoteServer.MaxConnections)
 	state.PinToSiteRegion = types.BoolPointerValue(remoteServer.PinToSiteRegion)
 	state.PinnedRegion = types.StringValue(remoteServer.PinnedRegion)
+	state.RemoteServerCredentialId = types.Int64Value(remoteServer.RemoteServerCredentialId)
 	state.S3Bucket = types.StringValue(remoteServer.S3Bucket)
 	state.S3Region = types.StringValue(remoteServer.S3Region)
 	state.AwsAccessKey = types.StringValue(remoteServer.AwsAccessKey)

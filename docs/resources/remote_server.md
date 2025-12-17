@@ -157,6 +157,7 @@ resource "files_remote_server" "example_remote_server" {
   one_drive_account_type                        = "personal"
   pin_to_site_region                            = true
   port                                          = 1
+  remote_server_credential_id                   = 1
   s3_bucket                                     = "my-bucket"
   s3_compatible_access_key                      = "example"
   s3_compatible_bucket                          = "my-bucket"
@@ -228,9 +229,10 @@ resource "files_remote_server" "example_remote_server" {
 - `outbound_agent_id` (Number) Route traffic to outbound on a files-agent
 - `password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password, if needed.
 - `pin_to_site_region` (Boolean) If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.
-- `port` (Number) Port for remote server.  Not needed for S3.
+- `port` (Number) Port for remote server.
 - `private_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Private key, if needed.
 - `private_key_passphrase` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Passphrase for private key if needed.
+- `remote_server_credential_id` (Number) ID of Remote Server Credential, if applicable.
 - `reset_authentication` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Reset authenticated account?
 - `s3_bucket` (String) S3 bucket name
 - `s3_compatible_access_key` (String) S3-compatible: Access Key
@@ -244,7 +246,7 @@ resource "files_remote_server" "example_remote_server" {
 - `server_type` (String) Remote server type.
 - `ssl` (String) Should we require SSL?
 - `ssl_certificate` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) SSL client certificate.
-- `username` (String) Remote server username.  Not needed for S3 buckets.
+- `username` (String) Remote server username.
 - `wasabi_access_key` (String) Wasabi: Access Key.
 - `wasabi_bucket` (String) Wasabi: Bucket name
 - `wasabi_region` (String) Wasabi: Region
