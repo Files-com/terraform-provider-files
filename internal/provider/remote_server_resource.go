@@ -113,6 +113,8 @@ type remoteServerResourceModel struct {
 	AuthStatus                              types.String `tfsdk:"auth_status"`
 	AuthAccountName                         types.String `tfsdk:"auth_account_name"`
 	FilesAgentApiToken                      types.String `tfsdk:"files_agent_api_token"`
+	FilesAgentUpToDate                      types.Bool   `tfsdk:"files_agent_up_to_date"`
+	FilesAgentLatestVersion                 types.String `tfsdk:"files_agent_latest_version"`
 	SupportsVersioning                      types.Bool   `tfsdk:"supports_versioning"`
 }
 
@@ -694,6 +696,14 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				Description: "Files Agent API Token",
 				Computed:    true,
 			},
+			"files_agent_up_to_date": schema.BoolAttribute{
+				Description: "If true, the Files Agent is up to date.",
+				Computed:    true,
+			},
+			"files_agent_latest_version": schema.StringAttribute{
+				Description: "Latest available Files Agent version",
+				Computed:    true,
+			},
 			"supports_versioning": schema.BoolAttribute{
 				Description: "If true, this remote server supports file versioning. This value is determined automatically by Files.com.",
 				Computed:    true,
@@ -1196,6 +1206,8 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.FilesAgentRoot = types.StringValue(remoteServer.FilesAgentRoot)
 	state.FilesAgentApiToken = types.StringValue(remoteServer.FilesAgentApiToken)
 	state.FilesAgentVersion = types.StringValue(remoteServer.FilesAgentVersion)
+	state.FilesAgentUpToDate = types.BoolPointerValue(remoteServer.FilesAgentUpToDate)
+	state.FilesAgentLatestVersion = types.StringValue(remoteServer.FilesAgentLatestVersion)
 	state.OutboundAgentId = types.Int64Value(remoteServer.OutboundAgentId)
 	state.FilebaseBucket = types.StringValue(remoteServer.FilebaseBucket)
 	state.FilebaseAccessKey = types.StringValue(remoteServer.FilebaseAccessKey)

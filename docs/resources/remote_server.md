@@ -259,6 +259,8 @@ resource "files_remote_server" "example_remote_server" {
 - `authentication_method` (String) Type of authentication method
 - `disabled` (Boolean) If true, this server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.
 - `files_agent_api_token` (String) Files Agent API Token
+- `files_agent_latest_version` (String) Latest available Files Agent version
+- `files_agent_up_to_date` (Boolean) If true, the Files Agent is up to date.
 - `id` (Number) Remote server ID
 - `pinned_region` (String) If set, all communications with this remote server are made through the provided region.
 - `remote_home_path` (String) Initial home folder on remote server

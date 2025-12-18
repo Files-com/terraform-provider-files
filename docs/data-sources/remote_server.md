@@ -158,8 +158,10 @@ data "files_remote_server" "example_remote_server" {
 - `filebase_access_key` (String) Filebase: Access Key.
 - `filebase_bucket` (String) Filebase: Bucket name
 - `files_agent_api_token` (String) Files Agent API Token
+- `files_agent_latest_version` (String) Latest available Files Agent version
 - `files_agent_permission_set` (String) Local permissions for files agent. read_only, write_only, or read_write
 - `files_agent_root` (String) Agent local root path
+- `files_agent_up_to_date` (Boolean) If true, the Files Agent is up to date.
 - `files_agent_version` (String) Files Agent version
 - `google_cloud_storage_bucket` (String) Google Cloud Storage: Bucket Name
 - `google_cloud_storage_project_id` (String) Google Cloud Storage: Project ID
