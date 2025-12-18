@@ -263,7 +263,6 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
-					int64planmodifier.RequiresReplace(),
 				},
 			},
 			"clickwrap_id": schema.Int64Attribute{
@@ -649,6 +648,9 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 	}
 	if !config.SkipName.IsNull() && !config.SkipName.IsUnknown() {
 		paramsBundleUpdate["skip_name"] = config.SkipName.ValueBool()
+	}
+	if !config.UserId.IsNull() && !config.UserId.IsUnknown() {
+		paramsBundleUpdate["user_id"] = config.UserId.ValueInt64()
 	}
 
 	if resp.Diagnostics.HasError() {
