@@ -588,6 +588,7 @@ resource "files_automation" "example_automation" {
     limit = 1
   }
   recurring_day                        = 25
+  workspace_id                         = 0
   automation                           = "create_folder"
 }
 ```
@@ -633,6 +634,7 @@ resource "files_automation" "example_automation" {
 - `trigger_actions` (List of String) If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, read, update, destroy, move, archived_delete, copy
 - `user_ids` (List of Number) IDs of Users for the Automation (i.e. who to Request File from)
 - `value` (Dynamic) A Hash of attributes specific to the automation type.
+- `workspace_id` (Number) Workspace ID
 
 ### Read-Only
 

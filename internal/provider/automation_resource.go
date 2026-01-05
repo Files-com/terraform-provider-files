@@ -40,6 +40,7 @@ type automationResource struct {
 
 type automationResourceModel struct {
 	Automation                       types.String  `tfsdk:"automation"`
+	WorkspaceId                      types.Int64   `tfsdk:"workspace_id"`
 	AlwaysSerializeJobs              types.Bool    `tfsdk:"always_serialize_jobs"`
 	AlwaysOverwriteSizeMatchingFiles types.Bool    `tfsdk:"always_overwrite_size_matching_files"`
 	Description                      types.String  `tfsdk:"description"`
@@ -113,6 +114,14 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Required:    true,
 				Validators: []validator.String{
 					stringvalidator.OneOf("create_folder", "delete_file", "copy_file", "move_file", "as2_send", "run_sync", "import_file"),
+				},
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"always_serialize_jobs": schema.BoolAttribute{
@@ -497,6 +506,7 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 	resp.Diagnostics.Append(diags...)
 	paramsAutomationCreate.Value = createValue
 	paramsAutomationCreate.RecurringDay = plan.RecurringDay.ValueInt64()
+	paramsAutomationCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	paramsAutomationCreate.Automation = paramsAutomationCreate.Automation.Enum()[plan.Automation.ValueString()]
 
 	if resp.Diagnostics.HasError() {
@@ -693,6 +703,9 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 	if !config.RecurringDay.IsNull() && !config.RecurringDay.IsUnknown() {
 		paramsAutomationUpdate["recurring_day"] = config.RecurringDay.ValueInt64()
 	}
+	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
+		paramsAutomationUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
+	}
 	if !config.Automation.IsNull() && !config.Automation.IsUnknown() {
 		paramsAutomationUpdate["automation"] = config.Automation.ValueString()
 	}
@@ -767,6 +780,7 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	var propDiags diag.Diagnostics
 
 	state.Id = types.Int64Value(automation.Id)
+	state.WorkspaceId = types.Int64Value(automation.WorkspaceId)
 	state.AlwaysSerializeJobs = types.BoolPointerValue(automation.AlwaysSerializeJobs)
 	state.AlwaysOverwriteSizeMatchingFiles = types.BoolPointerValue(automation.AlwaysOverwriteSizeMatchingFiles)
 	state.Automation = types.StringValue(automation.Automation)

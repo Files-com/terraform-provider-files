@@ -17,5 +17,6 @@ resource "files_sync" "example_sync" {
   schedule_time_zone    = "Eastern Time (US & Canada)"
   schedule_days_of_week = [0, 2, 4]
   schedule_times_of_day = ["06:30", "14:30"]
+  workspace_id          = 1
 }
 

@@ -50,3 +50,4 @@ data "files_sync_run" "example_sync_run" {
 - `sync_id` (Number) ID of the Sync this run belongs to
 - `sync_name` (String) Name of the Sync this run belongs to
 - `updated_at` (String) When this run was last updated
+- `workspace_id` (Number) Workspace ID

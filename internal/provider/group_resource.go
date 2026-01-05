@@ -44,6 +44,7 @@ type groupResourceModel struct {
 	SftpPermission    types.Bool              `tfsdk:"sftp_permission"`
 	DavPermission     types.Bool              `tfsdk:"dav_permission"`
 	RestapiPermission types.Bool              `tfsdk:"restapi_permission"`
+	WorkspaceId       types.Int64             `tfsdk:"workspace_id"`
 	Id                types.Int64             `tfsdk:"id"`
 	Usernames         types.String            `tfsdk:"usernames"`
 	SiteId            types.Int64             `tfsdk:"site_id"`
@@ -146,6 +147,14 @@ func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"id": schema.Int64Attribute{
 				Description: "Group ID",
 				Computed:    true,
@@ -183,6 +192,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	paramsGroupCreate.Notes = plan.Notes.ValueString()
 	paramsGroupCreate.UserIds = plan.UserIds.ValueString()
 	paramsGroupCreate.AdminIds = plan.AdminIds.ValueString()
+	paramsGroupCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	if !plan.FtpPermission.IsNull() && !plan.FtpPermission.IsUnknown() {
 		paramsGroupCreate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
 	}
@@ -283,6 +293,9 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if !config.AdminIds.IsNull() && !config.AdminIds.IsUnknown() {
 		paramsGroupUpdate["admin_ids"] = config.AdminIds.ValueString()
 	}
+	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
+		paramsGroupUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
+	}
 	if !config.FtpPermission.IsNull() && !config.FtpPermission.IsUnknown() {
 		paramsGroupUpdate["ftp_permission"] = config.FtpPermission.ValueBool()
 	}
@@ -381,6 +394,7 @@ func (r *groupResource) populateResourceModel(ctx context.Context, group files_s
 	state.DavPermission = types.BoolPointerValue(group.DavPermission)
 	state.RestapiPermission = types.BoolPointerValue(group.RestapiPermission)
 	state.SiteId = types.Int64Value(group.SiteId)
+	state.WorkspaceId = types.Int64Value(group.WorkspaceId)
 
 	return
 }

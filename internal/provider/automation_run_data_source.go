@@ -30,6 +30,7 @@ type automationRunDataSource struct {
 type automationRunDataSourceModel struct {
 	Id                   types.Int64  `tfsdk:"id"`
 	AutomationId         types.Int64  `tfsdk:"automation_id"`
+	WorkspaceId          types.Int64  `tfsdk:"workspace_id"`
 	CompletedAt          types.String `tfsdk:"completed_at"`
 	CreatedAt            types.String `tfsdk:"created_at"`
 	RetryAt              types.String `tfsdk:"retry_at"`
@@ -76,6 +77,10 @@ func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaR
 			},
 			"automation_id": schema.Int64Attribute{
 				Description: "ID of the associated Automation.",
+				Computed:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID.",
 				Computed:    true,
 			},
 			"completed_at": schema.StringAttribute{
@@ -159,6 +164,7 @@ func (r *automationRunDataSource) Read(ctx context.Context, req datasource.ReadR
 func (r *automationRunDataSource) populateDataSourceModel(ctx context.Context, automationRun files_sdk.AutomationRun, state *automationRunDataSourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(automationRun.Id)
 	state.AutomationId = types.Int64Value(automationRun.AutomationId)
+	state.WorkspaceId = types.Int64Value(automationRun.WorkspaceId)
 	if err := lib.TimeToStringType(ctx, path.Root("completed_at"), automationRun.CompletedAt, &state.CompletedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files AutomationRun",

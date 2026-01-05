@@ -45,3 +45,4 @@ data "files_remote_server_credential" "example_remote_server_credential" {
 - `server_type` (String) Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server.
 - `username` (String) Remote server username.
 - `wasabi_access_key` (String) Wasabi: Access Key.
+- `workspace_id` (Number) Workspace ID (0 for default workspace)

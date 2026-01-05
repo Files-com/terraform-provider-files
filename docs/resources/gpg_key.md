@@ -26,6 +26,7 @@ By storing both keys together in a GPGKey object, Files.com makes it easier to u
 resource "files_gpg_key" "example_gpg_key" {
   user_id             = 1
   partner_id          = 1
+  workspace_id        = 0
   name                = "key name"
   generate_expires_at = "2025-06-19 12:00:00"
   generate_keypair    = false
@@ -54,6 +55,7 @@ resource "files_gpg_key" "example_gpg_key" {
 - `private_key_password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) The GPG private key password
 - `public_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) The GPG public key
 - `user_id` (Number) User ID who owns this GPG Key, if applicable.
+- `workspace_id` (Number) Workspace ID (0 for default workspace).
 
 ### Read-Only
 

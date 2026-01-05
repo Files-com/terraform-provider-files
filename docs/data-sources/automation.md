@@ -585,3 +585,4 @@ data "files_automation" "example_automation" {
 - `user_ids` (List of Number) IDs of Users for the Automation (i.e. who to Request File from)
 - `value` (Dynamic) A Hash of attributes specific to the automation type.
 - `webhook_url` (String) If trigger is `webhook`, this is the URL of the webhook to trigger the Automation.
+- `workspace_id` (Number) Workspace ID

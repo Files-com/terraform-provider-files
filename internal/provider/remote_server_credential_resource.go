@@ -35,6 +35,7 @@ type remoteServerCredentialResource struct {
 }
 
 type remoteServerCredentialResourceModel struct {
+	WorkspaceId                             types.Int64  `tfsdk:"workspace_id"`
 	Name                                    types.String `tfsdk:"name"`
 	Description                             types.String `tfsdk:"description"`
 	ServerType                              types.String `tfsdk:"server_type"`
@@ -95,6 +96,14 @@ func (r *remoteServerCredentialResource) Schema(_ context.Context, _ resource.Sc
 	resp.Schema = schema.Schema{
 		Description: "A RemoteServerCredential is a way to store a credential for Remote Servers in a centralized vault and then reference it from Remote Server definitions.\n\n\n\nThis allows you to manage your credentials in one place and avoid duplicating them across multiple Remote Server configurations. It also enhances security by allowing you to use Terraform or APIs for Remote Server management without having to worry about credential exposure.",
 		Attributes: map[string]schema.Attribute{
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID (0 for default workspace)",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"name": schema.StringAttribute{
 				Description: "Internal name for your reference",
 				Computed:    true,
@@ -313,6 +322,7 @@ func (r *remoteServerCredentialResource) Create(ctx context.Context, req resourc
 	}
 
 	paramsRemoteServerCredentialCreate := files_sdk.RemoteServerCredentialCreateParams{}
+	paramsRemoteServerCredentialCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	paramsRemoteServerCredentialCreate.Name = plan.Name.ValueString()
 	paramsRemoteServerCredentialCreate.Description = plan.Description.ValueString()
 	paramsRemoteServerCredentialCreate.ServerType = paramsRemoteServerCredentialCreate.ServerType.Enum()[plan.ServerType.ValueString()]
@@ -419,6 +429,9 @@ func (r *remoteServerCredentialResource) Update(ctx context.Context, req resourc
 	paramsRemoteServerCredentialUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
 		paramsRemoteServerCredentialUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
+		paramsRemoteServerCredentialUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
 		paramsRemoteServerCredentialUpdate["name"] = config.Name.ValueString()
@@ -579,6 +592,7 @@ func (r *remoteServerCredentialResource) ImportState(ctx context.Context, req re
 
 func (r *remoteServerCredentialResource) populateResourceModel(ctx context.Context, remoteServerCredential files_sdk.RemoteServerCredential, state *remoteServerCredentialResourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(remoteServerCredential.Id)
+	state.WorkspaceId = types.Int64Value(remoteServerCredential.WorkspaceId)
 	state.Name = types.StringValue(remoteServerCredential.Name)
 	state.Description = types.StringValue(remoteServerCredential.Description)
 	state.ServerType = types.StringValue(remoteServerCredential.ServerType)

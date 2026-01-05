@@ -59,3 +59,4 @@ data "files_sync" "example_sync" {
 - `two_way` (Boolean) Is this a two-way sync?
 - `updated_at` (String) When this sync was last updated
 - `user_id` (Number) User who created or owns this sync
+- `workspace_id` (Number) Workspace ID this sync belongs to

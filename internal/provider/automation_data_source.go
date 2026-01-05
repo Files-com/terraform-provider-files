@@ -29,6 +29,7 @@ type automationDataSource struct {
 
 type automationDataSourceModel struct {
 	Id                               types.Int64   `tfsdk:"id"`
+	WorkspaceId                      types.Int64   `tfsdk:"workspace_id"`
 	AlwaysSerializeJobs              types.Bool    `tfsdk:"always_serialize_jobs"`
 	AlwaysOverwriteSizeMatchingFiles types.Bool    `tfsdk:"always_overwrite_size_matching_files"`
 	Automation                       types.String  `tfsdk:"automation"`
@@ -100,6 +101,10 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			"id": schema.Int64Attribute{
 				Description: "Automation ID",
 				Required:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID",
+				Computed:    true,
 			},
 			"always_serialize_jobs": schema.BoolAttribute{
 				Description: "Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance.",
@@ -303,6 +308,7 @@ func (r *automationDataSource) populateDataSourceModel(ctx context.Context, auto
 	var propDiags diag.Diagnostics
 
 	state.Id = types.Int64Value(automation.Id)
+	state.WorkspaceId = types.Int64Value(automation.WorkspaceId)
 	state.AlwaysSerializeJobs = types.BoolPointerValue(automation.AlwaysSerializeJobs)
 	state.AlwaysOverwriteSizeMatchingFiles = types.BoolPointerValue(automation.AlwaysOverwriteSizeMatchingFiles)
 	state.Automation = types.StringValue(automation.Automation)

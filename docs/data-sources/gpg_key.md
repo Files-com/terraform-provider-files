@@ -47,3 +47,4 @@ data "files_gpg_key" "example_gpg_key" {
 - `private_key_password_md5` (String) GPG private key password. Only required for password protected keys.
 - `public_key_md5` (String) MD5 hash of the GPG public key
 - `user_id` (Number) User ID who owns this GPG Key, if applicable.
+- `workspace_id` (Number) Workspace ID (0 for default workspace).

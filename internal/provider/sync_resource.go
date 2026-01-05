@@ -41,6 +41,7 @@ type syncResource struct {
 type syncResourceModel struct {
 	Name                types.String `tfsdk:"name"`
 	Description         types.String `tfsdk:"description"`
+	WorkspaceId         types.Int64  `tfsdk:"workspace_id"`
 	SrcPath             types.String `tfsdk:"src_path"`
 	DestPath            types.String `tfsdk:"dest_path"`
 	SrcRemoteServerId   types.Int64  `tfsdk:"src_remote_server_id"`
@@ -109,6 +110,14 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID this sync belongs to",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"src_path": schema.StringAttribute{
@@ -334,6 +343,7 @@ func (r *syncResource) Create(ctx context.Context, req resource.CreateRequest, r
 		diags = plan.ScheduleTimesOfDay.ElementsAs(ctx, &paramsSyncCreate.ScheduleTimesOfDay, false)
 		resp.Diagnostics.Append(diags...)
 	}
+	paramsSyncCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -471,6 +481,9 @@ func (r *syncResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		resp.Diagnostics.Append(diags...)
 		paramsSyncUpdate["schedule_times_of_day"] = updateScheduleTimesOfDay
 	}
+	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
+		paramsSyncUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -545,6 +558,7 @@ func (r *syncResource) populateResourceModel(ctx context.Context, sync files_sdk
 	state.Name = types.StringValue(sync.Name)
 	state.Description = types.StringValue(sync.Description)
 	state.SiteId = types.Int64Value(sync.SiteId)
+	state.WorkspaceId = types.Int64Value(sync.WorkspaceId)
 	state.UserId = types.Int64Value(sync.UserId)
 	state.SrcPath = types.StringValue(sync.SrcPath)
 	state.DestPath = types.StringValue(sync.DestPath)

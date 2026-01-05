@@ -29,6 +29,7 @@ type gpgKeyDataSource struct {
 
 type gpgKeyDataSourceModel struct {
 	Id                    types.Int64  `tfsdk:"id"`
+	WorkspaceId           types.Int64  `tfsdk:"workspace_id"`
 	ExpiresAt             types.String `tfsdk:"expires_at"`
 	Name                  types.String `tfsdk:"name"`
 	PartnerId             types.Int64  `tfsdk:"partner_id"`
@@ -71,6 +72,10 @@ func (r *gpgKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			"id": schema.Int64Attribute{
 				Description: "GPG key ID.",
 				Required:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID (0 for default workspace).",
+				Computed:    true,
 			},
 			"expires_at": schema.StringAttribute{
 				Description: "GPG key expiration date.",
@@ -148,6 +153,7 @@ func (r *gpgKeyDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 
 func (r *gpgKeyDataSource) populateDataSourceModel(ctx context.Context, gpgKey files_sdk.GpgKey, state *gpgKeyDataSourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(gpgKey.Id)
+	state.WorkspaceId = types.Int64Value(gpgKey.WorkspaceId)
 	if err := lib.TimeToStringType(ctx, path.Root("expires_at"), gpgKey.ExpiresAt, &state.ExpiresAt); err != nil {
 		diags.AddError(
 			"Error Creating Files GpgKey",

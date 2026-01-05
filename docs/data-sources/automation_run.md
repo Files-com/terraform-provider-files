@@ -49,3 +49,4 @@ data "files_automation_run" "example_automation_run" {
 - `status` (String) The success status of the AutomationRun. One of `running`, `success`, `partial_failure`, or `failure`.
 - `status_messages_url` (String) Link to status messages log file.
 - `successful_operations` (Number) Count of successful operations.
+- `workspace_id` (Number) Workspace ID.

@@ -19,6 +19,7 @@ This allows you to manage your credentials in one place and avoid duplicating th
 
 ```terraform
 resource "files_remote_server_credential" "example_remote_server_credential" {
+  workspace_id                                  = 0
   name                                          = "My Credential"
   description                                   = "More information or notes about this credential."
   server_type                                   = "s3"
@@ -72,6 +73,7 @@ resource "files_remote_server_credential" "example_remote_server_credential" {
 - `username` (String) Remote server username.
 - `wasabi_access_key` (String) Wasabi: Access Key.
 - `wasabi_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Wasabi: Secret Key
+- `workspace_id` (Number) Workspace ID (0 for default workspace)
 
 ### Read-Only
 

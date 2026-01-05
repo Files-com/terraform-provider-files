@@ -2,6 +2,7 @@ resource "files_group" "example_group" {
   notes              = "example"
   user_ids           = 1
   admin_ids          = 1
+  workspace_id       = 0
   ftp_permission     = true
   sftp_permission    = true
   dav_permission     = true

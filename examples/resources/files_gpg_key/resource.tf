@@ -1,6 +1,7 @@
 resource "files_gpg_key" "example_gpg_key" {
   user_id             = 1
   partner_id          = 1
+  workspace_id        = 0
   name                = "key name"
   generate_expires_at = "2025-06-19 12:00:00"
   generate_keypair    = false

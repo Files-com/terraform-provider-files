@@ -48,3 +48,4 @@ data "files_group" "example_group" {
 - `site_id` (Number) Site ID
 - `user_ids` (String) Comma-delimited list of user IDs who belong to this group (separated by commas)
 - `usernames` (String) Comma-delimited list of usernames who belong to this group (separated by commas)
+- `workspace_id` (Number) Workspace ID

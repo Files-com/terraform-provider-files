@@ -1,4 +1,5 @@
 resource "files_remote_server_credential" "example_remote_server_credential" {
+  workspace_id                                  = 0
   name                                          = "My Credential"
   description                                   = "More information or notes about this credential."
   server_type                                   = "s3"

@@ -27,6 +27,7 @@ resource "files_group" "example_group" {
   notes              = "example"
   user_ids           = 1
   admin_ids          = 1
+  workspace_id       = 0
   ftp_permission     = true
   sftp_permission    = true
   dav_permission     = true
@@ -53,6 +54,7 @@ resource "files_group" "example_group" {
 - `restapi_permission` (Boolean) If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.
 - `sftp_permission` (Boolean) If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level.
 - `user_ids` (String) Comma-delimited list of user IDs who belong to this group (separated by commas)
+- `workspace_id` (Number) Workspace ID
 
 ### Read-Only
 

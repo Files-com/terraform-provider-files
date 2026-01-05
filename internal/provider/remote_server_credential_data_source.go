@@ -27,6 +27,7 @@ type remoteServerCredentialDataSource struct {
 
 type remoteServerCredentialDataSourceModel struct {
 	Id                                      types.Int64  `tfsdk:"id"`
+	WorkspaceId                             types.Int64  `tfsdk:"workspace_id"`
 	Name                                    types.String `tfsdk:"name"`
 	Description                             types.String `tfsdk:"description"`
 	ServerType                              types.String `tfsdk:"server_type"`
@@ -72,6 +73,10 @@ func (r *remoteServerCredentialDataSource) Schema(_ context.Context, _ datasourc
 			"id": schema.Int64Attribute{
 				Description: "Remote Server Credential ID",
 				Required:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID (0 for default workspace)",
+				Computed:    true,
 			},
 			"name": schema.StringAttribute{
 				Description: "Internal name for your reference",
@@ -161,6 +166,7 @@ func (r *remoteServerCredentialDataSource) Read(ctx context.Context, req datasou
 
 func (r *remoteServerCredentialDataSource) populateDataSourceModel(ctx context.Context, remoteServerCredential files_sdk.RemoteServerCredential, state *remoteServerCredentialDataSourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(remoteServerCredential.Id)
+	state.WorkspaceId = types.Int64Value(remoteServerCredential.WorkspaceId)
 	state.Name = types.StringValue(remoteServerCredential.Name)
 	state.Description = types.StringValue(remoteServerCredential.Description)
 	state.ServerType = types.StringValue(remoteServerCredential.ServerType)

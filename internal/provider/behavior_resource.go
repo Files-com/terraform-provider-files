@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -166,16 +165,7 @@ func (r *behaviorResource) Create(ctx context.Context, req resource.CreateReques
 	paramsBehaviorCreate := files_sdk.BehaviorCreateParams{}
 	createValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), plan.Value)
 	resp.Diagnostics.Append(diags...)
-	createValueBytes, err := json.Marshal(createValue)
-	if err != nil {
-		resp.Diagnostics.AddAttributeError(
-			path.Root("value"),
-			"Error Creating Files Behavior",
-			"Could not marshal value to JSON: "+err.Error(),
-		)
-	} else {
-		paramsBehaviorCreate.Value = string(createValueBytes)
-	}
+	paramsBehaviorCreate.Value = createValue
 	if !plan.DisableParentFolderBehavior.IsNull() && !plan.DisableParentFolderBehavior.IsUnknown() {
 		paramsBehaviorCreate.DisableParentFolderBehavior = plan.DisableParentFolderBehavior.ValueBoolPointer()
 	}
@@ -265,16 +255,7 @@ func (r *behaviorResource) Update(ctx context.Context, req resource.UpdateReques
 	}
 	updateValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), config.Value)
 	resp.Diagnostics.Append(diags...)
-	updateValueBytes, err := json.Marshal(updateValue)
-	if err != nil {
-		resp.Diagnostics.AddAttributeError(
-			path.Root("value"),
-			"Error Creating Files Behavior",
-			"Could not marshal value to JSON: "+err.Error(),
-		)
-	} else {
-		paramsBehaviorUpdate["value"] = string(updateValueBytes)
-	}
+	paramsBehaviorUpdate["value"] = updateValue
 	if !config.DisableParentFolderBehavior.IsNull() && !config.DisableParentFolderBehavior.IsUnknown() {
 		paramsBehaviorUpdate["disable_parent_folder_behavior"] = config.DisableParentFolderBehavior.ValueBool()
 	}

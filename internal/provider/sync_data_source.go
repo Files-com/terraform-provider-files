@@ -33,6 +33,7 @@ type syncDataSourceModel struct {
 	Name                types.String `tfsdk:"name"`
 	Description         types.String `tfsdk:"description"`
 	SiteId              types.Int64  `tfsdk:"site_id"`
+	WorkspaceId         types.Int64  `tfsdk:"workspace_id"`
 	UserId              types.Int64  `tfsdk:"user_id"`
 	SrcPath             types.String `tfsdk:"src_path"`
 	DestPath            types.String `tfsdk:"dest_path"`
@@ -99,6 +100,10 @@ func (r *syncDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"site_id": schema.Int64Attribute{
 				Description: "Site ID this sync belongs to",
+				Computed:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID this sync belongs to",
 				Computed:    true,
 			},
 			"user_id": schema.Int64Attribute{
@@ -238,6 +243,7 @@ func (r *syncDataSource) populateDataSourceModel(ctx context.Context, sync files
 	state.Name = types.StringValue(sync.Name)
 	state.Description = types.StringValue(sync.Description)
 	state.SiteId = types.Int64Value(sync.SiteId)
+	state.WorkspaceId = types.Int64Value(sync.WorkspaceId)
 	state.UserId = types.Int64Value(sync.UserId)
 	state.SrcPath = types.StringValue(sync.SrcPath)
 	state.DestPath = types.StringValue(sync.DestPath)

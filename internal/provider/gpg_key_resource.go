@@ -37,6 +37,7 @@ type gpgKeyResource struct {
 
 type gpgKeyResourceModel struct {
 	Name                  types.String `tfsdk:"name"`
+	WorkspaceId           types.Int64  `tfsdk:"workspace_id"`
 	PartnerId             types.Int64  `tfsdk:"partner_id"`
 	UserId                types.Int64  `tfsdk:"user_id"`
 	PublicKey             types.String `tfsdk:"public_key"`
@@ -86,6 +87,14 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			"name": schema.StringAttribute{
 				Description: "GPG key name.",
 				Required:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID (0 for default workspace).",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
 			},
 			"partner_id": schema.Int64Attribute{
 				Description: "Partner ID who owns this GPG Key, if applicable.",
@@ -207,6 +216,7 @@ func (r *gpgKeyResource) Create(ctx context.Context, req resource.CreateRequest,
 	paramsGpgKeyCreate := files_sdk.GpgKeyCreateParams{}
 	paramsGpgKeyCreate.UserId = plan.UserId.ValueInt64()
 	paramsGpgKeyCreate.PartnerId = plan.PartnerId.ValueInt64()
+	paramsGpgKeyCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	paramsGpgKeyCreate.PublicKey = config.PublicKey.ValueString()
 	paramsGpgKeyCreate.PrivateKey = config.PrivateKey.ValueString()
 	paramsGpgKeyCreate.PrivateKeyPassword = config.PrivateKeyPassword.ValueString()
@@ -312,6 +322,9 @@ func (r *gpgKeyResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if !config.PartnerId.IsNull() && !config.PartnerId.IsUnknown() {
 		paramsGpgKeyUpdate["partner_id"] = config.PartnerId.ValueInt64()
 	}
+	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
+		paramsGpgKeyUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
+	}
 	if !config.PublicKey.IsNull() && !config.PublicKey.IsUnknown() {
 		paramsGpgKeyUpdate["public_key"] = config.PublicKey.ValueString()
 	}
@@ -393,6 +406,7 @@ func (r *gpgKeyResource) ImportState(ctx context.Context, req resource.ImportSta
 
 func (r *gpgKeyResource) populateResourceModel(ctx context.Context, gpgKey files_sdk.GpgKey, state *gpgKeyResourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(gpgKey.Id)
+	state.WorkspaceId = types.Int64Value(gpgKey.WorkspaceId)
 	if err := lib.TimeToStringType(ctx, path.Root("expires_at"), gpgKey.ExpiresAt, &state.ExpiresAt); err != nil {
 		diags.AddError(
 			"Error Creating Files GpgKey",

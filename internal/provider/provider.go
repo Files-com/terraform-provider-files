@@ -227,6 +227,7 @@ func (p *filesProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewUserDataSource,
 		NewUserLifecycleRuleDataSource,
 		NewUserRequestDataSource,
+		NewWorkspaceDataSource,
 	}
 }
 
@@ -272,5 +273,6 @@ func (p *filesProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewUserResource,
 		NewUserLifecycleRuleResource,
 		NewUserRequestResource,
+		NewWorkspaceResource,
 	}
 }

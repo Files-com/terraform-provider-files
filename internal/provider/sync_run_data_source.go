@@ -43,6 +43,7 @@ type syncRunDataSourceModel struct {
 	LogUrl               types.String `tfsdk:"log_url"`
 	Runtime              types.String `tfsdk:"runtime"`
 	SiteId               types.Int64  `tfsdk:"site_id"`
+	WorkspaceId          types.Int64  `tfsdk:"workspace_id"`
 	SrcRemoteServerType  types.String `tfsdk:"src_remote_server_type"`
 	Status               types.String `tfsdk:"status"`
 	SuccessfulFiles      types.Int64  `tfsdk:"successful_files"`
@@ -139,6 +140,10 @@ func (r *syncRunDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Description: "Site ID",
 				Computed:    true,
 			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID",
+				Computed:    true,
+			},
 			"src_remote_server_type": schema.StringAttribute{
 				Description: "Source remote server type, if any",
 				Computed:    true,
@@ -226,6 +231,7 @@ func (r *syncRunDataSource) populateDataSourceModel(ctx context.Context, syncRun
 	state.LogUrl = types.StringValue(syncRun.LogUrl)
 	state.Runtime = types.StringValue(syncRun.Runtime)
 	state.SiteId = types.Int64Value(syncRun.SiteId)
+	state.WorkspaceId = types.Int64Value(syncRun.WorkspaceId)
 	state.SrcRemoteServerType = types.StringValue(syncRun.SrcRemoteServerType)
 	state.Status = types.StringValue(syncRun.Status)
 	state.SuccessfulFiles = types.Int64Value(syncRun.SuccessfulFiles)

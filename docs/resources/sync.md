@@ -38,6 +38,7 @@ resource "files_sync" "example_sync" {
   schedule_time_zone    = "Eastern Time (US & Canada)"
   schedule_days_of_week = [0, 2, 4]
   schedule_times_of_day = ["06:30", "14:30"]
+  workspace_id          = 1
 }
 ```
 
@@ -64,6 +65,7 @@ resource "files_sync" "example_sync" {
 - `sync_interval_minutes` (Number) Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.
 - `trigger` (String) Trigger type: daily, custom_schedule, or manual
 - `trigger_file` (String) Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.
+- `workspace_id` (Number) Workspace ID this sync belongs to
 
 ### Read-Only
 

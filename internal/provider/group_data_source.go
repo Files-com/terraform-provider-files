@@ -38,6 +38,7 @@ type groupDataSourceModel struct {
 	DavPermission     types.Bool   `tfsdk:"dav_permission"`
 	RestapiPermission types.Bool   `tfsdk:"restapi_permission"`
 	SiteId            types.Int64  `tfsdk:"site_id"`
+	WorkspaceId       types.Int64  `tfsdk:"workspace_id"`
 }
 
 func (r *groupDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -115,6 +116,10 @@ func (r *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				Description: "Site ID",
 				Computed:    true,
 			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID",
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -162,6 +167,7 @@ func (r *groupDataSource) populateDataSourceModel(ctx context.Context, group fil
 	state.DavPermission = types.BoolPointerValue(group.DavPermission)
 	state.RestapiPermission = types.BoolPointerValue(group.RestapiPermission)
 	state.SiteId = types.Int64Value(group.SiteId)
+	state.WorkspaceId = types.Int64Value(group.WorkspaceId)
 
 	return
 }
