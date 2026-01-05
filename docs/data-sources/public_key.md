@@ -57,3 +57,4 @@ data "files_public_key" "example_public_key" {
 - `title` (String) Public key title
 - `user_id` (Number) User ID this public key is associated with
 - `username` (String) Username of the user this public key is associated with
+- `workspace_id` (Number) Workspace ID (0 for default workspace).

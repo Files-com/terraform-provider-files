@@ -94,6 +94,7 @@ func (r *gpgKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
 				},
 			},
 			"partner_id": schema.Int64Attribute{
@@ -216,11 +217,11 @@ func (r *gpgKeyResource) Create(ctx context.Context, req resource.CreateRequest,
 	paramsGpgKeyCreate := files_sdk.GpgKeyCreateParams{}
 	paramsGpgKeyCreate.UserId = plan.UserId.ValueInt64()
 	paramsGpgKeyCreate.PartnerId = plan.PartnerId.ValueInt64()
-	paramsGpgKeyCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	paramsGpgKeyCreate.PublicKey = config.PublicKey.ValueString()
 	paramsGpgKeyCreate.PrivateKey = config.PrivateKey.ValueString()
 	paramsGpgKeyCreate.PrivateKeyPassword = config.PrivateKeyPassword.ValueString()
 	paramsGpgKeyCreate.Name = plan.Name.ValueString()
+	paramsGpgKeyCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	if !config.GenerateExpiresAt.IsNull() {
 		if config.GenerateExpiresAt.ValueString() == "" {
 			paramsGpgKeyCreate.GenerateExpiresAt = new(time.Time)
@@ -321,9 +322,6 @@ func (r *gpgKeyResource) Update(ctx context.Context, req resource.UpdateRequest,
 	}
 	if !config.PartnerId.IsNull() && !config.PartnerId.IsUnknown() {
 		paramsGpgKeyUpdate["partner_id"] = config.PartnerId.ValueInt64()
-	}
-	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
-		paramsGpgKeyUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
 	if !config.PublicKey.IsNull() && !config.PublicKey.IsUnknown() {
 		paramsGpgKeyUpdate["public_key"] = config.PublicKey.ValueString()

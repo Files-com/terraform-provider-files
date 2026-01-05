@@ -14,7 +14,8 @@ An AS2Station is a remote AS2 server that can send data into Files.com and recei
 
 ```terraform
 resource "files_as2_station" "example_as2_station" {
-  name               = "name"
+  name               = "AS2 Station Name"
+  workspace_id       = 1
   public_certificate = "public_certificate"
   private_key        = "private_key"
 }
@@ -36,6 +37,7 @@ resource "files_as2_station" "example_as2_station" {
 > **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
 
 - `private_key_password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments))
+- `workspace_id` (Number) ID of the Workspace associated with this AS2 Station.
 
 ### Read-Only
 

@@ -29,6 +29,7 @@ type publicKeyDataSource struct {
 
 type publicKeyDataSourceModel struct {
 	Id                  types.Int64  `tfsdk:"id"`
+	WorkspaceId         types.Int64  `tfsdk:"workspace_id"`
 	Title               types.String `tfsdk:"title"`
 	CreatedAt           types.String `tfsdk:"created_at"`
 	Fingerprint         types.String `tfsdk:"fingerprint"`
@@ -71,6 +72,10 @@ func (r *publicKeyDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 			"id": schema.Int64Attribute{
 				Description: "Public key ID",
 				Required:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID (0 for default workspace).",
+				Computed:    true,
 			},
 			"title": schema.StringAttribute{
 				Description: "Public key title",
@@ -148,6 +153,7 @@ func (r *publicKeyDataSource) Read(ctx context.Context, req datasource.ReadReque
 
 func (r *publicKeyDataSource) populateDataSourceModel(ctx context.Context, publicKey files_sdk.PublicKey, state *publicKeyDataSourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(publicKey.Id)
+	state.WorkspaceId = types.Int64Value(publicKey.WorkspaceId)
 	state.Title = types.StringValue(publicKey.Title)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), publicKey.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(

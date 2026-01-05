@@ -31,6 +31,7 @@ type partnerDataSourceModel struct {
 	AllowCredentialChanges    types.Bool   `tfsdk:"allow_credential_changes"`
 	AllowProvidingGpgKeys     types.Bool   `tfsdk:"allow_providing_gpg_keys"`
 	AllowUserCreation         types.Bool   `tfsdk:"allow_user_creation"`
+	WorkspaceId               types.Int64  `tfsdk:"workspace_id"`
 	Name                      types.String `tfsdk:"name"`
 	Notes                     types.String `tfsdk:"notes"`
 	PartnerAdminIds           types.List   `tfsdk:"partner_admin_ids"`
@@ -84,6 +85,10 @@ func (r *partnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 			},
 			"allow_user_creation": schema.BoolAttribute{
 				Description: "Allow Partner Admins to create users.",
+				Computed:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "ID of the Workspace associated with this Partner.",
 				Computed:    true,
 			},
 			"name": schema.StringAttribute{
@@ -154,6 +159,7 @@ func (r *partnerDataSource) populateDataSourceModel(ctx context.Context, partner
 	state.AllowProvidingGpgKeys = types.BoolPointerValue(partner.AllowProvidingGpgKeys)
 	state.AllowUserCreation = types.BoolPointerValue(partner.AllowUserCreation)
 	state.Id = types.Int64Value(partner.Id)
+	state.WorkspaceId = types.Int64Value(partner.WorkspaceId)
 	state.Name = types.StringValue(partner.Name)
 	state.Notes = types.StringValue(partner.Notes)
 	state.PartnerAdminIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, partner.PartnerAdminIds)

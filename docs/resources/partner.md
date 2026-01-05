@@ -22,6 +22,7 @@ resource "files_partner" "example_partner" {
   root_folder                  = "/AcmeCorp"
   tags                         = "example"
   name                         = "Acme Corp"
+  workspace_id                 = 1
 }
 ```
 
@@ -41,6 +42,7 @@ resource "files_partner" "example_partner" {
 - `notes` (String) Notes about this Partner.
 - `root_folder` (String) The root folder path for this Partner.
 - `tags` (String) Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.
+- `workspace_id` (Number) ID of the Workspace associated with this Partner.
 
 ### Read-Only
 

@@ -45,6 +45,7 @@ type remoteServerDataSourceModel struct {
 	ServerCertificate                       types.String `tfsdk:"server_certificate"`
 	ServerHostKey                           types.String `tfsdk:"server_host_key"`
 	ServerType                              types.String `tfsdk:"server_type"`
+	WorkspaceId                             types.Int64  `tfsdk:"workspace_id"`
 	Ssl                                     types.String `tfsdk:"ssl"`
 	Username                                types.String `tfsdk:"username"`
 	GoogleCloudStorageBucket                types.String `tfsdk:"google_cloud_storage_bucket"`
@@ -76,6 +77,7 @@ type remoteServerDataSourceModel struct {
 	FilesAgentVersion                       types.String `tfsdk:"files_agent_version"`
 	FilesAgentUpToDate                      types.Bool   `tfsdk:"files_agent_up_to_date"`
 	FilesAgentLatestVersion                 types.String `tfsdk:"files_agent_latest_version"`
+	FilesAgentSupportsPushUpdates           types.Bool   `tfsdk:"files_agent_supports_push_updates"`
 	OutboundAgentId                         types.Int64  `tfsdk:"outbound_agent_id"`
 	FilebaseBucket                          types.String `tfsdk:"filebase_bucket"`
 	FilebaseAccessKey                       types.String `tfsdk:"filebase_access_key"`
@@ -190,6 +192,10 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			},
 			"server_type": schema.StringAttribute{
 				Description: "Remote server type.",
+				Computed:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID (0 for default workspace)",
 				Computed:    true,
 			},
 			"ssl": schema.StringAttribute{
@@ -316,6 +322,10 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Description: "Latest available Files Agent version",
 				Computed:    true,
 			},
+			"files_agent_supports_push_updates": schema.BoolAttribute{
+				Description: "Files Agent supports receiving push updates",
+				Computed:    true,
+			},
 			"outbound_agent_id": schema.Int64Attribute{
 				Description: "Route traffic to outbound on a files-agent",
 				Computed:    true,
@@ -414,6 +424,7 @@ func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, re
 	state.ServerCertificate = types.StringValue(remoteServer.ServerCertificate)
 	state.ServerHostKey = types.StringValue(remoteServer.ServerHostKey)
 	state.ServerType = types.StringValue(remoteServer.ServerType)
+	state.WorkspaceId = types.Int64Value(remoteServer.WorkspaceId)
 	state.Ssl = types.StringValue(remoteServer.Ssl)
 	state.Username = types.StringValue(remoteServer.Username)
 	state.GoogleCloudStorageBucket = types.StringValue(remoteServer.GoogleCloudStorageBucket)
@@ -445,6 +456,7 @@ func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, re
 	state.FilesAgentVersion = types.StringValue(remoteServer.FilesAgentVersion)
 	state.FilesAgentUpToDate = types.BoolPointerValue(remoteServer.FilesAgentUpToDate)
 	state.FilesAgentLatestVersion = types.StringValue(remoteServer.FilesAgentLatestVersion)
+	state.FilesAgentSupportsPushUpdates = types.BoolPointerValue(remoteServer.FilesAgentSupportsPushUpdates)
 	state.OutboundAgentId = types.Int64Value(remoteServer.OutboundAgentId)
 	state.FilebaseBucket = types.StringValue(remoteServer.FilebaseBucket)
 	state.FilebaseAccessKey = types.StringValue(remoteServer.FilebaseAccessKey)

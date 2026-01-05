@@ -118,6 +118,7 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
 				},
 			},
 			"src_path": schema.StringAttribute{
@@ -480,9 +481,6 @@ func (r *syncResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		diags = config.ScheduleTimesOfDay.ElementsAs(ctx, &updateScheduleTimesOfDay, false)
 		resp.Diagnostics.Append(diags...)
 		paramsSyncUpdate["schedule_times_of_day"] = updateScheduleTimesOfDay
-	}
-	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
-		paramsSyncUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
 
 	if resp.Diagnostics.HasError() {

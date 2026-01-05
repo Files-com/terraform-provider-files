@@ -27,6 +27,7 @@ type as2StationDataSource struct {
 
 type as2StationDataSourceModel struct {
 	Id                         types.Int64  `tfsdk:"id"`
+	WorkspaceId                types.Int64  `tfsdk:"workspace_id"`
 	Name                       types.String `tfsdk:"name"`
 	Uri                        types.String `tfsdk:"uri"`
 	Domain                     types.String `tfsdk:"domain"`
@@ -72,6 +73,10 @@ func (r *as2StationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			"id": schema.Int64Attribute{
 				Description: "Id of the AS2 Station.",
 				Required:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "ID of the Workspace associated with this AS2 Station.",
+				Computed:    true,
 			},
 			"name": schema.StringAttribute{
 				Description: "The station's formal AS2 name.",
@@ -161,6 +166,7 @@ func (r *as2StationDataSource) Read(ctx context.Context, req datasource.ReadRequ
 
 func (r *as2StationDataSource) populateDataSourceModel(ctx context.Context, as2Station files_sdk.As2Station, state *as2StationDataSourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(as2Station.Id)
+	state.WorkspaceId = types.Int64Value(as2Station.WorkspaceId)
 	state.Name = types.StringValue(as2Station.Name)
 	state.Uri = types.StringValue(as2Station.Uri)
 	state.Domain = types.StringValue(as2Station.Domain)

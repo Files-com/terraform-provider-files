@@ -37,3 +37,4 @@ data "files_partner" "example_partner" {
 - `root_folder` (String) The root folder path for this Partner.
 - `tags` (String) Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.
 - `user_ids` (List of Number) Array of User IDs that belong to this Partner.
+- `workspace_id` (Number) ID of the Workspace associated with this Partner.

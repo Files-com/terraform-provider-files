@@ -43,5 +43,6 @@ resource "files_user" "example_user" {
   user_root                    = "example"
   user_home                    = "example"
   username                     = "user"
+  workspace_id                 = 1
 }
 

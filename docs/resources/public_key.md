@@ -72,6 +72,7 @@ resource "files_public_key" "example_public_key" {
 - `last_login_at` (String) Key's most recent login time via SFTP
 - `status` (String) Only returned when generating keys. Can be invalid, not_generated, generating, complete
 - `username` (String) Username of the user this public key is associated with
+- `workspace_id` (Number) Workspace ID (0 for default workspace).
 
 ## Import
 

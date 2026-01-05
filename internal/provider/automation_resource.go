@@ -122,6 +122,7 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
 				},
 			},
 			"always_serialize_jobs": schema.BoolAttribute{
@@ -506,8 +507,8 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 	resp.Diagnostics.Append(diags...)
 	paramsAutomationCreate.Value = createValue
 	paramsAutomationCreate.RecurringDay = plan.RecurringDay.ValueInt64()
-	paramsAutomationCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	paramsAutomationCreate.Automation = paramsAutomationCreate.Automation.Enum()[plan.Automation.ValueString()]
+	paramsAutomationCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -702,9 +703,6 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 	paramsAutomationUpdate["value"] = updateValue
 	if !config.RecurringDay.IsNull() && !config.RecurringDay.IsUnknown() {
 		paramsAutomationUpdate["recurring_day"] = config.RecurringDay.ValueInt64()
-	}
-	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
-		paramsAutomationUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
 	if !config.Automation.IsNull() && !config.Automation.IsUnknown() {
 		paramsAutomationUpdate["automation"] = config.Automation.ValueString()

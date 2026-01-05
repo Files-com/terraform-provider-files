@@ -7,5 +7,6 @@ resource "files_partner" "example_partner" {
   root_folder                  = "/AcmeCorp"
   tags                         = "example"
   name                         = "Acme Corp"
+  workspace_id                 = 1
 }
 

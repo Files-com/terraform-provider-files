@@ -40,3 +40,4 @@ data "files_as2_station" "example_as2_station" {
 - `public_certificate_serial` (String) Serial of public certificate used for message security.
 - `public_certificate_subject` (String) Subject of public certificate used for message security.
 - `uri` (String) Public URI for sending AS2 message to.
+- `workspace_id` (Number) ID of the Workspace associated with this AS2 Station.

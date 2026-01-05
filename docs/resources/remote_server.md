@@ -172,6 +172,7 @@ resource "files_remote_server" "example_remote_server" {
   wasabi_access_key                             = "example"
   wasabi_bucket                                 = "my-bucket"
   wasabi_region                                 = "us-west-1"
+  workspace_id                                  = 0
 }
 ```
 
@@ -251,6 +252,7 @@ resource "files_remote_server" "example_remote_server" {
 - `wasabi_bucket` (String) Wasabi: Bucket name
 - `wasabi_region` (String) Wasabi: Region
 - `wasabi_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Wasabi: Secret Key
+- `workspace_id` (Number) Workspace ID (0 for default workspace)
 
 ### Read-Only
 
@@ -260,6 +262,7 @@ resource "files_remote_server" "example_remote_server" {
 - `disabled` (Boolean) If true, this server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.
 - `files_agent_api_token` (String) Files Agent API Token
 - `files_agent_latest_version` (String) Latest available Files Agent version
+- `files_agent_supports_push_updates` (Boolean) Files Agent supports receiving push updates
 - `files_agent_up_to_date` (Boolean) If true, the Files Agent is up to date.
 - `id` (Number) Remote server ID
 - `pinned_region` (String) If set, all communications with this remote server are made through the provided region.

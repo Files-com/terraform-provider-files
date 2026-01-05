@@ -29,6 +29,7 @@ type as2PartnerDataSource struct {
 
 type as2PartnerDataSourceModel struct {
 	Id                         types.Int64   `tfsdk:"id"`
+	WorkspaceId                types.Int64   `tfsdk:"workspace_id"`
 	As2StationId               types.Int64   `tfsdk:"as2_station_id"`
 	Name                       types.String  `tfsdk:"name"`
 	Uri                        types.String  `tfsdk:"uri"`
@@ -79,6 +80,10 @@ func (r *as2PartnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			"id": schema.Int64Attribute{
 				Description: "ID of the AS2 Partner.",
 				Required:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "ID of the Workspace associated with this AS2 Partner.",
+				Computed:    true,
 			},
 			"as2_station_id": schema.Int64Attribute{
 				Description: "ID of the AS2 Station associated with this partner.",
@@ -190,6 +195,7 @@ func (r *as2PartnerDataSource) populateDataSourceModel(ctx context.Context, as2P
 	var propDiags diag.Diagnostics
 
 	state.Id = types.Int64Value(as2Partner.Id)
+	state.WorkspaceId = types.Int64Value(as2Partner.WorkspaceId)
 	state.As2StationId = types.Int64Value(as2Partner.As2StationId)
 	state.Name = types.StringValue(as2Partner.Name)
 	state.Uri = types.StringValue(as2Partner.Uri)

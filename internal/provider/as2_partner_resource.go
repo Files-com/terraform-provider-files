@@ -51,6 +51,7 @@ type as2PartnerResourceModel struct {
 	EnableDedicatedIps         types.Bool    `tfsdk:"enable_dedicated_ips"`
 	HttpAuthPassword           types.String  `tfsdk:"http_auth_password"`
 	Id                         types.Int64   `tfsdk:"id"`
+	WorkspaceId                types.Int64   `tfsdk:"workspace_id"`
 	HexPublicCertificateSerial types.String  `tfsdk:"hex_public_certificate_serial"`
 	PublicCertificateMd5       types.String  `tfsdk:"public_certificate_md5"`
 	PublicCertificateSubject   types.String  `tfsdk:"public_certificate_subject"`
@@ -182,6 +183,10 @@ func (r *as2PartnerResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "ID of the Workspace associated with this AS2 Partner.",
+				Computed:    true,
 			},
 			"hex_public_certificate_serial": schema.StringAttribute{
 				Description: "Serial of public certificate used for message security in hex format.",
@@ -427,6 +432,7 @@ func (r *as2PartnerResource) populateResourceModel(ctx context.Context, as2Partn
 	var propDiags diag.Diagnostics
 
 	state.Id = types.Int64Value(as2Partner.Id)
+	state.WorkspaceId = types.Int64Value(as2Partner.WorkspaceId)
 	state.As2StationId = types.Int64Value(as2Partner.As2StationId)
 	state.Name = types.StringValue(as2Partner.Name)
 	state.Uri = types.StringValue(as2Partner.Uri)

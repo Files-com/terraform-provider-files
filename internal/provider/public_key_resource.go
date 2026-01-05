@@ -45,6 +45,7 @@ type publicKeyResourceModel struct {
 	GenerateAlgorithm          types.String `tfsdk:"generate_algorithm"`
 	GenerateLength             types.Int64  `tfsdk:"generate_length"`
 	Id                         types.Int64  `tfsdk:"id"`
+	WorkspaceId                types.Int64  `tfsdk:"workspace_id"`
 	CreatedAt                  types.String `tfsdk:"created_at"`
 	Fingerprint                types.String `tfsdk:"fingerprint"`
 	FingerprintSha256          types.String `tfsdk:"fingerprint_sha256"`
@@ -141,6 +142,10 @@ func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID (0 for default workspace).",
+				Computed:    true,
 			},
 			"created_at": schema.StringAttribute{
 				Description: "Public key created at date/time",
@@ -354,6 +359,7 @@ func (r *publicKeyResource) ImportState(ctx context.Context, req resource.Import
 
 func (r *publicKeyResource) populateResourceModel(ctx context.Context, publicKey files_sdk.PublicKey, state *publicKeyResourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(publicKey.Id)
+	state.WorkspaceId = types.Int64Value(publicKey.WorkspaceId)
 	state.Title = types.StringValue(publicKey.Title)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), publicKey.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(

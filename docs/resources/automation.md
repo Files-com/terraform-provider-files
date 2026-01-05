@@ -588,8 +588,8 @@ resource "files_automation" "example_automation" {
     limit = 1
   }
   recurring_day                        = 25
-  workspace_id                         = 0
   automation                           = "create_folder"
+  workspace_id                         = 0
 }
 ```
 

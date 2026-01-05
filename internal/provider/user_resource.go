@@ -71,6 +71,7 @@ type userResourceModel struct {
 	SelfManaged                      types.Bool              `tfsdk:"self_managed"`
 	SftpPermission                   types.Bool              `tfsdk:"sftp_permission"`
 	SiteAdmin                        types.Bool              `tfsdk:"site_admin"`
+	WorkspaceId                      types.Int64             `tfsdk:"workspace_id"`
 	SkipWelcomeScreen                types.Bool              `tfsdk:"skip_welcome_screen"`
 	SslRequired                      types.String            `tfsdk:"ssl_required"`
 	SsoStrategyId                    types.Int64             `tfsdk:"sso_strategy_id"`
@@ -415,6 +416,15 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
 				},
 			},
 			"skip_welcome_screen": schema.BoolAttribute{
@@ -792,6 +802,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	paramsUserCreate.UserRoot = plan.UserRoot.ValueString()
 	paramsUserCreate.UserHome = plan.UserHome.ValueString()
 	paramsUserCreate.Username = plan.Username.ValueString()
+	paramsUserCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -1249,6 +1260,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.SftpPermission = types.BoolPointerValue(user.SftpPermission)
 	state.SiteAdmin = types.BoolPointerValue(user.SiteAdmin)
 	state.SiteId = types.Int64Value(user.SiteId)
+	state.WorkspaceId = types.Int64Value(user.WorkspaceId)
 	state.SkipWelcomeScreen = types.BoolPointerValue(user.SkipWelcomeScreen)
 	state.SslRequired = types.StringValue(user.SslRequired)
 	state.SsoStrategyId = types.Int64Value(user.SsoStrategyId)

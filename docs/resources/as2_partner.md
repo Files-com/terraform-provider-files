@@ -63,6 +63,7 @@ resource "files_as2_partner" "example_as2_partner" {
 - `public_certificate_not_before` (String) Not before value of public certificate used for message security.
 - `public_certificate_serial` (String) Serial of public certificate used for message security.
 - `public_certificate_subject` (String) Subject of public certificate used for message security.
+- `workspace_id` (Number) ID of the Workspace associated with this AS2 Partner.
 
 ## Import
 

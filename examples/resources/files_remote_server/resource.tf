@@ -50,5 +50,6 @@ resource "files_remote_server" "example_remote_server" {
   wasabi_access_key                             = "example"
   wasabi_bucket                                 = "my-bucket"
   wasabi_region                                 = "us-west-1"
+  workspace_id                                  = 0
 }
 

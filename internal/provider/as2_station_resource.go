@@ -35,6 +35,7 @@ type as2StationResourceModel struct {
 	Name                       types.String `tfsdk:"name"`
 	PublicCertificate          types.String `tfsdk:"public_certificate"`
 	PrivateKey                 types.String `tfsdk:"private_key"`
+	WorkspaceId                types.Int64  `tfsdk:"workspace_id"`
 	PrivateKeyPassword         types.String `tfsdk:"private_key_password"`
 	Id                         types.Int64  `tfsdk:"id"`
 	Uri                        types.String `tfsdk:"uri"`
@@ -88,6 +89,15 @@ func (r *as2StationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			"private_key": schema.StringAttribute{
 				Required:  true,
 				WriteOnly: true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "ID of the Workspace associated with this AS2 Station.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
+				},
 			},
 			"private_key_password": schema.StringAttribute{
 				Optional:  true,
@@ -164,6 +174,7 @@ func (r *as2StationResource) Create(ctx context.Context, req resource.CreateRequ
 
 	paramsAs2StationCreate := files_sdk.As2StationCreateParams{}
 	paramsAs2StationCreate.Name = plan.Name.ValueString()
+	paramsAs2StationCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	paramsAs2StationCreate.PublicCertificate = plan.PublicCertificate.ValueString()
 	paramsAs2StationCreate.PrivateKey = config.PrivateKey.ValueString()
 	paramsAs2StationCreate.PrivateKeyPassword = config.PrivateKeyPassword.ValueString()
@@ -325,6 +336,7 @@ func (r *as2StationResource) ImportState(ctx context.Context, req resource.Impor
 
 func (r *as2StationResource) populateResourceModel(ctx context.Context, as2Station files_sdk.As2Station, state *as2StationResourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(as2Station.Id)
+	state.WorkspaceId = types.Int64Value(as2Station.WorkspaceId)
 	state.Name = types.StringValue(as2Station.Name)
 	state.Uri = types.StringValue(as2Station.Uri)
 	state.Domain = types.StringValue(as2Station.Domain)

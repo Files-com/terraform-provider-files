@@ -45,3 +45,4 @@ data "files_as2_partner" "example_as2_partner" {
 - `server_certificate` (String) Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? (This only applies to Outgoing AS2 message from Files.com to a Partner.)
 - `signature_validation_level` (String) Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: Automatically set the correct value for this setting based on next message received.
 - `uri` (String) Public URI where we will send the AS2 messages (via HTTP/HTTPS).
+- `workspace_id` (Number) ID of the Workspace associated with this AS2 Partner.

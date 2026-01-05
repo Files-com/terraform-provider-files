@@ -50,6 +50,7 @@ type remoteServerResourceModel struct {
 	ServerCertificate                       types.String `tfsdk:"server_certificate"`
 	ServerHostKey                           types.String `tfsdk:"server_host_key"`
 	ServerType                              types.String `tfsdk:"server_type"`
+	WorkspaceId                             types.Int64  `tfsdk:"workspace_id"`
 	Ssl                                     types.String `tfsdk:"ssl"`
 	Username                                types.String `tfsdk:"username"`
 	GoogleCloudStorageBucket                types.String `tfsdk:"google_cloud_storage_bucket"`
@@ -115,6 +116,7 @@ type remoteServerResourceModel struct {
 	FilesAgentApiToken                      types.String `tfsdk:"files_agent_api_token"`
 	FilesAgentUpToDate                      types.Bool   `tfsdk:"files_agent_up_to_date"`
 	FilesAgentLatestVersion                 types.String `tfsdk:"files_agent_latest_version"`
+	FilesAgentSupportsPushUpdates           types.Bool   `tfsdk:"files_agent_supports_push_updates"`
 	SupportsVersioning                      types.Bool   `tfsdk:"supports_versioning"`
 }
 
@@ -264,6 +266,15 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID (0 for default workspace)",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
 				},
 			},
 			"ssl": schema.StringAttribute{
@@ -704,6 +715,10 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				Description: "Latest available Files Agent version",
 				Computed:    true,
 			},
+			"files_agent_supports_push_updates": schema.BoolAttribute{
+				Description: "Files Agent supports receiving push updates",
+				Computed:    true,
+			},
 			"supports_versioning": schema.BoolAttribute{
 				Description: "If true, this remote server supports file versioning. This value is determined automatically by Files.com.",
 				Computed:    true,
@@ -806,6 +821,7 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.WasabiAccessKey = plan.WasabiAccessKey.ValueString()
 	paramsRemoteServerCreate.WasabiBucket = plan.WasabiBucket.ValueString()
 	paramsRemoteServerCreate.WasabiRegion = plan.WasabiRegion.ValueString()
+	paramsRemoteServerCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -1177,6 +1193,7 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.ServerCertificate = types.StringValue(remoteServer.ServerCertificate)
 	state.ServerHostKey = types.StringValue(remoteServer.ServerHostKey)
 	state.ServerType = types.StringValue(remoteServer.ServerType)
+	state.WorkspaceId = types.Int64Value(remoteServer.WorkspaceId)
 	state.Ssl = types.StringValue(remoteServer.Ssl)
 	state.Username = types.StringValue(remoteServer.Username)
 	state.GoogleCloudStorageBucket = types.StringValue(remoteServer.GoogleCloudStorageBucket)
@@ -1208,6 +1225,7 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.FilesAgentVersion = types.StringValue(remoteServer.FilesAgentVersion)
 	state.FilesAgentUpToDate = types.BoolPointerValue(remoteServer.FilesAgentUpToDate)
 	state.FilesAgentLatestVersion = types.StringValue(remoteServer.FilesAgentLatestVersion)
+	state.FilesAgentSupportsPushUpdates = types.BoolPointerValue(remoteServer.FilesAgentSupportsPushUpdates)
 	state.OutboundAgentId = types.Int64Value(remoteServer.OutboundAgentId)
 	state.FilebaseBucket = types.StringValue(remoteServer.FilebaseBucket)
 	state.FilebaseAccessKey = types.StringValue(remoteServer.FilebaseAccessKey)

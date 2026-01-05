@@ -39,6 +39,7 @@ type partnerResourceModel struct {
 	AllowCredentialChanges    types.Bool   `tfsdk:"allow_credential_changes"`
 	AllowProvidingGpgKeys     types.Bool   `tfsdk:"allow_providing_gpg_keys"`
 	AllowUserCreation         types.Bool   `tfsdk:"allow_user_creation"`
+	WorkspaceId               types.Int64  `tfsdk:"workspace_id"`
 	Notes                     types.String `tfsdk:"notes"`
 	RootFolder                types.String `tfsdk:"root_folder"`
 	Tags                      types.String `tfsdk:"tags"`
@@ -108,6 +109,15 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "ID of the Workspace associated with this Partner.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
 				},
 			},
 			"notes": schema.StringAttribute{
@@ -186,6 +196,7 @@ func (r *partnerResource) Create(ctx context.Context, req resource.CreateRequest
 	paramsPartnerCreate.RootFolder = plan.RootFolder.ValueString()
 	paramsPartnerCreate.Tags = plan.Tags.ValueString()
 	paramsPartnerCreate.Name = plan.Name.ValueString()
+	paramsPartnerCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -362,6 +373,7 @@ func (r *partnerResource) populateResourceModel(ctx context.Context, partner fil
 	state.AllowProvidingGpgKeys = types.BoolPointerValue(partner.AllowProvidingGpgKeys)
 	state.AllowUserCreation = types.BoolPointerValue(partner.AllowUserCreation)
 	state.Id = types.Int64Value(partner.Id)
+	state.WorkspaceId = types.Int64Value(partner.WorkspaceId)
 	state.Name = types.StringValue(partner.Name)
 	state.Notes = types.StringValue(partner.Notes)
 	state.PartnerAdminIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, partner.PartnerAdminIds)

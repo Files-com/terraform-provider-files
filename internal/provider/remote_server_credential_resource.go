@@ -102,6 +102,7 @@ func (r *remoteServerCredentialResource) Schema(_ context.Context, _ resource.Sc
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
 				},
 			},
 			"name": schema.StringAttribute{
@@ -322,7 +323,6 @@ func (r *remoteServerCredentialResource) Create(ctx context.Context, req resourc
 	}
 
 	paramsRemoteServerCredentialCreate := files_sdk.RemoteServerCredentialCreateParams{}
-	paramsRemoteServerCredentialCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	paramsRemoteServerCredentialCreate.Name = plan.Name.ValueString()
 	paramsRemoteServerCredentialCreate.Description = plan.Description.ValueString()
 	paramsRemoteServerCredentialCreate.ServerType = paramsRemoteServerCredentialCreate.ServerType.Enum()[plan.ServerType.ValueString()]
@@ -353,6 +353,7 @@ func (r *remoteServerCredentialResource) Create(ctx context.Context, req resourc
 	paramsRemoteServerCredentialCreate.LinodeSecretKey = config.LinodeSecretKey.ValueString()
 	paramsRemoteServerCredentialCreate.S3CompatibleSecretKey = config.S3CompatibleSecretKey.ValueString()
 	paramsRemoteServerCredentialCreate.WasabiSecretKey = config.WasabiSecretKey.ValueString()
+	paramsRemoteServerCredentialCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -429,9 +430,6 @@ func (r *remoteServerCredentialResource) Update(ctx context.Context, req resourc
 	paramsRemoteServerCredentialUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
 		paramsRemoteServerCredentialUpdate["id"] = plan.Id.ValueInt64()
-	}
-	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
-		paramsRemoteServerCredentialUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
 		paramsRemoteServerCredentialUpdate["name"] = config.Name.ValueString()

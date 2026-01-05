@@ -153,6 +153,7 @@ func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
 				},
 			},
 			"id": schema.Int64Attribute{
@@ -192,7 +193,6 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	paramsGroupCreate.Notes = plan.Notes.ValueString()
 	paramsGroupCreate.UserIds = plan.UserIds.ValueString()
 	paramsGroupCreate.AdminIds = plan.AdminIds.ValueString()
-	paramsGroupCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	if !plan.FtpPermission.IsNull() && !plan.FtpPermission.IsUnknown() {
 		paramsGroupCreate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
 	}
@@ -207,6 +207,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	}
 	paramsGroupCreate.AllowedIps = plan.AllowedIps.ValueString()
 	paramsGroupCreate.Name = plan.Name.ValueString()
+	paramsGroupCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -292,9 +293,6 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	}
 	if !config.AdminIds.IsNull() && !config.AdminIds.IsUnknown() {
 		paramsGroupUpdate["admin_ids"] = config.AdminIds.ValueString()
-	}
-	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
-		paramsGroupUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
 	if !config.FtpPermission.IsNull() && !config.FtpPermission.IsUnknown() {
 		paramsGroupUpdate["ftp_permission"] = config.FtpPermission.ValueBool()

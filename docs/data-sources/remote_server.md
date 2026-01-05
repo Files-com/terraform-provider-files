@@ -161,6 +161,7 @@ data "files_remote_server" "example_remote_server" {
 - `files_agent_latest_version` (String) Latest available Files Agent version
 - `files_agent_permission_set` (String) Local permissions for files agent. read_only, write_only, or read_write
 - `files_agent_root` (String) Agent local root path
+- `files_agent_supports_push_updates` (Boolean) Files Agent supports receiving push updates
 - `files_agent_up_to_date` (Boolean) If true, the Files Agent is up to date.
 - `files_agent_version` (String) Files Agent version
 - `google_cloud_storage_bucket` (String) Google Cloud Storage: Bucket Name
@@ -194,3 +195,4 @@ data "files_remote_server" "example_remote_server" {
 - `wasabi_access_key` (String) Wasabi: Access Key.
 - `wasabi_bucket` (String) Wasabi: Bucket name
 - `wasabi_region` (String) Wasabi: Region
+- `workspace_id` (Number) Workspace ID (0 for default workspace)
