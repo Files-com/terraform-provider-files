@@ -42,6 +42,7 @@ resource "files_user" "example_user" {
   time_zone                    = "Pacific Time (US & Canada)"
   user_root                    = "example"
   user_home                    = "example"
+  workspace_admin              = true
   username                     = "user"
   workspace_id                 = 1
 }

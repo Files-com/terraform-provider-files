@@ -100,6 +100,7 @@ resource "files_user" "example_user" {
   time_zone                    = "Pacific Time (US & Canada)"
   user_root                    = "example"
   user_home                    = "example"
+  workspace_admin              = true
   username                     = "user"
   workspace_id                 = 1
 }
@@ -165,6 +166,7 @@ resource "files_user" "example_user" {
 - `time_zone` (String) User time zone
 - `user_home` (String) Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface.
 - `user_root` (String) Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface.
+- `workspace_admin` (Boolean) Is the user a Workspace administrator?  Applicable only to the workspace ID related to this user, if one is set.
 - `workspace_id` (Number) Workspace ID
 
 ### Read-Only

@@ -85,6 +85,7 @@ type userDataSourceModel struct {
 	SelfManaged                      types.Bool   `tfsdk:"self_managed"`
 	SftpPermission                   types.Bool   `tfsdk:"sftp_permission"`
 	SiteAdmin                        types.Bool   `tfsdk:"site_admin"`
+	WorkspaceAdmin                   types.Bool   `tfsdk:"workspace_admin"`
 	SiteId                           types.Int64  `tfsdk:"site_id"`
 	WorkspaceId                      types.Int64  `tfsdk:"workspace_id"`
 	SkipWelcomeScreen                types.Bool   `tfsdk:"skip_welcome_screen"`
@@ -358,6 +359,10 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Is the user an administrator for this site?",
 				Computed:    true,
 			},
+			"workspace_admin": schema.BoolAttribute{
+				Description: "Is the user a Workspace administrator?  Applicable only to the workspace ID related to this user, if one is set.",
+				Computed:    true,
+			},
 			"site_id": schema.Int64Attribute{
 				Description: "Site ID",
 				Computed:    true,
@@ -588,6 +593,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.SelfManaged = types.BoolPointerValue(user.SelfManaged)
 	state.SftpPermission = types.BoolPointerValue(user.SftpPermission)
 	state.SiteAdmin = types.BoolPointerValue(user.SiteAdmin)
+	state.WorkspaceAdmin = types.BoolPointerValue(user.WorkspaceAdmin)
 	state.SiteId = types.Int64Value(user.SiteId)
 	state.WorkspaceId = types.Int64Value(user.WorkspaceId)
 	state.SkipWelcomeScreen = types.BoolPointerValue(user.SkipWelcomeScreen)

@@ -140,4 +140,5 @@ data "files_user" "example_user" {
 - `user_home` (String) Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface.
 - `user_root` (String) Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface.
 - `username` (String) User's username
+- `workspace_admin` (Boolean) Is the user a Workspace administrator?  Applicable only to the workspace ID related to this user, if one is set.
 - `workspace_id` (Number) Workspace ID

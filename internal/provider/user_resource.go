@@ -71,6 +71,7 @@ type userResourceModel struct {
 	SelfManaged                      types.Bool              `tfsdk:"self_managed"`
 	SftpPermission                   types.Bool              `tfsdk:"sftp_permission"`
 	SiteAdmin                        types.Bool              `tfsdk:"site_admin"`
+	WorkspaceAdmin                   types.Bool              `tfsdk:"workspace_admin"`
 	WorkspaceId                      types.Int64             `tfsdk:"workspace_id"`
 	SkipWelcomeScreen                types.Bool              `tfsdk:"skip_welcome_screen"`
 	SslRequired                      types.String            `tfsdk:"ssl_required"`
@@ -412,6 +413,14 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"site_admin": schema.BoolAttribute{
 				Description: "Is the user an administrator for this site?",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"workspace_admin": schema.BoolAttribute{
+				Description: "Is the user a Workspace administrator?  Applicable only to the workspace ID related to this user, if one is set.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -801,6 +810,9 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	paramsUserCreate.TimeZone = plan.TimeZone.ValueString()
 	paramsUserCreate.UserRoot = plan.UserRoot.ValueString()
 	paramsUserCreate.UserHome = plan.UserHome.ValueString()
+	if !plan.WorkspaceAdmin.IsNull() && !plan.WorkspaceAdmin.IsUnknown() {
+		paramsUserCreate.WorkspaceAdmin = plan.WorkspaceAdmin.ValueBoolPointer()
+	}
 	paramsUserCreate.Username = plan.Username.ValueString()
 	paramsUserCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
@@ -1053,6 +1065,9 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.UserHome.IsNull() && !config.UserHome.IsUnknown() {
 		paramsUserUpdate["user_home"] = config.UserHome.ValueString()
 	}
+	if !config.WorkspaceAdmin.IsNull() && !config.WorkspaceAdmin.IsUnknown() {
+		paramsUserUpdate["workspace_admin"] = config.WorkspaceAdmin.ValueBool()
+	}
 	if !config.Username.IsNull() && !config.Username.IsUnknown() {
 		paramsUserUpdate["username"] = config.Username.ValueString()
 	}
@@ -1259,6 +1274,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.SelfManaged = types.BoolPointerValue(user.SelfManaged)
 	state.SftpPermission = types.BoolPointerValue(user.SftpPermission)
 	state.SiteAdmin = types.BoolPointerValue(user.SiteAdmin)
+	state.WorkspaceAdmin = types.BoolPointerValue(user.WorkspaceAdmin)
 	state.SiteId = types.Int64Value(user.SiteId)
 	state.WorkspaceId = types.Int64Value(user.WorkspaceId)
 	state.SkipWelcomeScreen = types.BoolPointerValue(user.SkipWelcomeScreen)
