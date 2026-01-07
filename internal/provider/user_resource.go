@@ -241,7 +241,7 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("site_root", "user_root", "partner_root", "integration_centric"),
+					stringvalidator.OneOf("site_root", "user_root", "partner_root", "integration_centric", "workspace_root"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
