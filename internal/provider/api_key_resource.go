@@ -121,6 +121,7 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"user_id": schema.Int64Attribute{
@@ -216,12 +217,12 @@ func (r *apiKeyResource) Create(ctx context.Context, req resource.CreateRequest,
 			}
 		}
 	}
-	paramsApiKeyCreate.PermissionSet = paramsApiKeyCreate.PermissionSet.Enum()[plan.PermissionSet.ValueString()]
 	paramsApiKeyCreate.Name = plan.Name.ValueString()
 	if !plan.AwsStyleCredentials.IsNull() && !plan.AwsStyleCredentials.IsUnknown() {
 		paramsApiKeyCreate.AwsStyleCredentials = plan.AwsStyleCredentials.ValueBoolPointer()
 	}
 	paramsApiKeyCreate.Path = config.Path.ValueString()
+	paramsApiKeyCreate.PermissionSet = paramsApiKeyCreate.PermissionSet.Enum()[plan.PermissionSet.ValueString()]
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -317,9 +318,6 @@ func (r *apiKeyResource) Update(ctx context.Context, req resource.UpdateRequest,
 				paramsApiKeyUpdate["expires_at"] = &updateExpiresAt
 			}
 		}
-	}
-	if !config.PermissionSet.IsNull() && !config.PermissionSet.IsUnknown() {
-		paramsApiKeyUpdate["permission_set"] = config.PermissionSet.ValueString()
 	}
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
 		paramsApiKeyUpdate["name"] = config.Name.ValueString()
