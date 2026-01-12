@@ -29,46 +29,47 @@ type bundleDataSource struct {
 }
 
 type bundleDataSourceModel struct {
-	Id                              types.Int64   `tfsdk:"id"`
-	Code                            types.String  `tfsdk:"code"`
-	ColorLeft                       types.String  `tfsdk:"color_left"`
-	ColorLink                       types.String  `tfsdk:"color_link"`
-	ColorText                       types.String  `tfsdk:"color_text"`
-	ColorTop                        types.String  `tfsdk:"color_top"`
-	ColorTopText                    types.String  `tfsdk:"color_top_text"`
-	Url                             types.String  `tfsdk:"url"`
-	Description                     types.String  `tfsdk:"description"`
-	ExpiresAt                       types.String  `tfsdk:"expires_at"`
-	PasswordProtected               types.Bool    `tfsdk:"password_protected"`
-	Permissions                     types.String  `tfsdk:"permissions"`
-	PreviewOnly                     types.Bool    `tfsdk:"preview_only"`
-	RequireRegistration             types.Bool    `tfsdk:"require_registration"`
-	RequireShareRecipient           types.Bool    `tfsdk:"require_share_recipient"`
-	RequireLogout                   types.Bool    `tfsdk:"require_logout"`
-	ClickwrapBody                   types.String  `tfsdk:"clickwrap_body"`
-	FormFieldSet                    types.String  `tfsdk:"form_field_set"`
-	SkipName                        types.Bool    `tfsdk:"skip_name"`
-	SkipEmail                       types.Bool    `tfsdk:"skip_email"`
-	StartAccessOnDate               types.String  `tfsdk:"start_access_on_date"`
-	SkipCompany                     types.Bool    `tfsdk:"skip_company"`
-	CreatedAt                       types.String  `tfsdk:"created_at"`
-	DontSeparateSubmissionsByFolder types.Bool    `tfsdk:"dont_separate_submissions_by_folder"`
-	MaxUses                         types.Int64   `tfsdk:"max_uses"`
-	Note                            types.String  `tfsdk:"note"`
-	PathTemplate                    types.String  `tfsdk:"path_template"`
-	PathTemplateTimeZone            types.String  `tfsdk:"path_template_time_zone"`
-	SendEmailReceiptToUploader      types.Bool    `tfsdk:"send_email_receipt_to_uploader"`
-	SnapshotId                      types.Int64   `tfsdk:"snapshot_id"`
-	UserId                          types.Int64   `tfsdk:"user_id"`
-	Username                        types.String  `tfsdk:"username"`
-	ClickwrapId                     types.Int64   `tfsdk:"clickwrap_id"`
-	InboxId                         types.Int64   `tfsdk:"inbox_id"`
-	WatermarkAttachment             types.String  `tfsdk:"watermark_attachment"`
-	WatermarkValue                  types.Dynamic `tfsdk:"watermark_value"`
-	HasInbox                        types.Bool    `tfsdk:"has_inbox"`
-	DontAllowFoldersInUploads       types.Bool    `tfsdk:"dont_allow_folders_in_uploads"`
-	Paths                           types.List    `tfsdk:"paths"`
-	Bundlepaths                     types.Dynamic `tfsdk:"bundlepaths"`
+	Id                                           types.Int64   `tfsdk:"id"`
+	Code                                         types.String  `tfsdk:"code"`
+	ColorLeft                                    types.String  `tfsdk:"color_left"`
+	ColorLink                                    types.String  `tfsdk:"color_link"`
+	ColorText                                    types.String  `tfsdk:"color_text"`
+	ColorTop                                     types.String  `tfsdk:"color_top"`
+	ColorTopText                                 types.String  `tfsdk:"color_top_text"`
+	Url                                          types.String  `tfsdk:"url"`
+	Description                                  types.String  `tfsdk:"description"`
+	ExpiresAt                                    types.String  `tfsdk:"expires_at"`
+	PasswordProtected                            types.Bool    `tfsdk:"password_protected"`
+	Permissions                                  types.String  `tfsdk:"permissions"`
+	PreviewOnly                                  types.Bool    `tfsdk:"preview_only"`
+	RequireRegistration                          types.Bool    `tfsdk:"require_registration"`
+	RequireShareRecipient                        types.Bool    `tfsdk:"require_share_recipient"`
+	RequireLogout                                types.Bool    `tfsdk:"require_logout"`
+	ClickwrapBody                                types.String  `tfsdk:"clickwrap_body"`
+	FormFieldSet                                 types.String  `tfsdk:"form_field_set"`
+	SkipName                                     types.Bool    `tfsdk:"skip_name"`
+	SkipEmail                                    types.Bool    `tfsdk:"skip_email"`
+	StartAccessOnDate                            types.String  `tfsdk:"start_access_on_date"`
+	SkipCompany                                  types.Bool    `tfsdk:"skip_company"`
+	CreatedAt                                    types.String  `tfsdk:"created_at"`
+	DontSeparateSubmissionsByFolder              types.Bool    `tfsdk:"dont_separate_submissions_by_folder"`
+	MaxUses                                      types.Int64   `tfsdk:"max_uses"`
+	Note                                         types.String  `tfsdk:"note"`
+	PathTemplate                                 types.String  `tfsdk:"path_template"`
+	PathTemplateTimeZone                         types.String  `tfsdk:"path_template_time_zone"`
+	SendEmailReceiptToUploader                   types.Bool    `tfsdk:"send_email_receipt_to_uploader"`
+	SnapshotId                                   types.Int64   `tfsdk:"snapshot_id"`
+	UserId                                       types.Int64   `tfsdk:"user_id"`
+	Username                                     types.String  `tfsdk:"username"`
+	ClickwrapId                                  types.Int64   `tfsdk:"clickwrap_id"`
+	InboxId                                      types.Int64   `tfsdk:"inbox_id"`
+	WatermarkAttachment                          types.String  `tfsdk:"watermark_attachment"`
+	WatermarkValue                               types.Dynamic `tfsdk:"watermark_value"`
+	SendOneTimePasswordToRecipientAtRegistration types.Bool    `tfsdk:"send_one_time_password_to_recipient_at_registration"`
+	HasInbox                                     types.Bool    `tfsdk:"has_inbox"`
+	DontAllowFoldersInUploads                    types.Bool    `tfsdk:"dont_allow_folders_in_uploads"`
+	Paths                                        types.List    `tfsdk:"paths"`
+	Bundlepaths                                  types.Dynamic `tfsdk:"bundlepaths"`
 }
 
 func (r *bundleDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -241,6 +242,10 @@ func (r *bundleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Description: "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value",
 				Computed:    true,
 			},
+			"send_one_time_password_to_recipient_at_registration": schema.BoolAttribute{
+				Description: "If true, require_share_recipient bundles will send a one-time password to the recipient when they register. Cannot be enabled if the bundle has a password set.",
+				Computed:    true,
+			},
 			"has_inbox": schema.BoolAttribute{
 				Description: "Does this bundle have an associated inbox?",
 				Computed:    true,
@@ -361,6 +366,7 @@ func (r *bundleDataSource) populateDataSourceModel(ctx context.Context, bundle f
 	state.WatermarkAttachment = types.StringValue(string(respWatermarkAttachment))
 	state.WatermarkValue, propDiags = lib.ToDynamic(ctx, path.Root("watermark_value"), bundle.WatermarkValue, state.WatermarkValue.UnderlyingValue())
 	diags.Append(propDiags...)
+	state.SendOneTimePasswordToRecipientAtRegistration = types.BoolPointerValue(bundle.SendOneTimePasswordToRecipientAtRegistration)
 	state.HasInbox = types.BoolPointerValue(bundle.HasInbox)
 	state.DontAllowFoldersInUploads = types.BoolPointerValue(bundle.DontAllowFoldersInUploads)
 	state.Paths, propDiags = types.ListValueFrom(ctx, types.StringType, bundle.Paths)

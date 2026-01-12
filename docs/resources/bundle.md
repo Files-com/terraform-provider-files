@@ -22,31 +22,32 @@ Please note that we very closely monitor the E-Mailing feature and any abuse wil
 
 ```terraform
 resource "files_bundle" "example_bundle" {
-  user_id                             = 1
-  paths                               = ["file.txt"]
-  password                            = "Password"
-  form_field_set_id                   = 1
-  create_snapshot                     = false
-  dont_separate_submissions_by_folder = true
-  expires_at                          = "2000-01-01T01:00:00Z"
-  finalize_snapshot                   = false
-  max_uses                            = 1
-  description                         = "The public description of the bundle."
-  note                                = "The internal note on the bundle."
-  code                                = "abc123"
-  path_template                       = "{{name}}_{{ip}}"
-  path_template_time_zone             = "Eastern Time (US & Canada)"
-  permissions                         = "read"
-  require_registration                = false
-  clickwrap_id                        = 1
-  inbox_id                            = 1
-  require_share_recipient             = false
-  send_email_receipt_to_uploader      = true
-  skip_email                          = true
-  skip_name                           = true
-  skip_company                        = true
-  start_access_on_date                = "2000-01-01T01:00:00Z"
-  snapshot_id                         = 1
+  user_id                                             = 1
+  paths                                               = ["file.txt"]
+  password                                            = "Password"
+  form_field_set_id                                   = 1
+  create_snapshot                                     = false
+  dont_separate_submissions_by_folder                 = true
+  expires_at                                          = "2000-01-01T01:00:00Z"
+  finalize_snapshot                                   = false
+  max_uses                                            = 1
+  description                                         = "The public description of the bundle."
+  note                                                = "The internal note on the bundle."
+  code                                                = "abc123"
+  path_template                                       = "{{name}}_{{ip}}"
+  path_template_time_zone                             = "Eastern Time (US & Canada)"
+  permissions                                         = "read"
+  require_registration                                = false
+  clickwrap_id                                        = 1
+  inbox_id                                            = 1
+  require_share_recipient                             = false
+  send_one_time_password_to_recipient_at_registration = true
+  send_email_receipt_to_uploader                      = true
+  skip_email                                          = true
+  skip_name                                           = true
+  skip_company                                        = true
+  start_access_on_date                                = "2000-01-01T01:00:00Z"
+  snapshot_id                                         = 1
 }
 ```
 
@@ -79,6 +80,7 @@ resource "files_bundle" "example_bundle" {
 - `require_registration` (Boolean) Show a registration page that captures the downloader's name and email address?
 - `require_share_recipient` (Boolean) Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?
 - `send_email_receipt_to_uploader` (Boolean) Send delivery receipt to the uploader. Note: For writable share only
+- `send_one_time_password_to_recipient_at_registration` (Boolean) If true, require_share_recipient bundles will send a one-time password to the recipient when they register. Cannot be enabled if the bundle has a password set.
 - `skip_company` (Boolean) BundleRegistrations can be saved without providing company?
 - `skip_email` (Boolean) BundleRegistrations can be saved without providing email?
 - `skip_name` (Boolean) BundleRegistrations can be saved without providing name?

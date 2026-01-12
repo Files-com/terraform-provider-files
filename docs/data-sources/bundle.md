@@ -64,6 +64,7 @@ data "files_bundle" "example_bundle" {
 - `require_registration` (Boolean) Show a registration page that captures the downloader's name and email address?
 - `require_share_recipient` (Boolean) Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?
 - `send_email_receipt_to_uploader` (Boolean) Send delivery receipt to the uploader. Note: For writable share only
+- `send_one_time_password_to_recipient_at_registration` (Boolean) If true, require_share_recipient bundles will send a one-time password to the recipient when they register. Cannot be enabled if the bundle has a password set.
 - `skip_company` (Boolean) BundleRegistrations can be saved without providing company?
 - `skip_email` (Boolean) BundleRegistrations can be saved without providing email?
 - `skip_name` (Boolean) BundleRegistrations can be saved without providing name?
