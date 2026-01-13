@@ -33,8 +33,6 @@ data "files_remote_server_credential" "example_remote_server_credential" {
 ### Read-Only
 
 - `aws_access_key` (String) AWS Access Key.
-- `azure_blob_storage_account` (String) Azure Blob Storage: Account name
-- `azure_files_storage_account` (String) Azure Files: Storage Account name
 - `cloudflare_access_key` (String) Cloudflare: Access Key.
 - `description` (String) Internal description for your reference
 - `filebase_access_key` (String) Filebase: Access Key.

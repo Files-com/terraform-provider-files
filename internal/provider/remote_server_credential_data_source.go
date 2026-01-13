@@ -34,8 +34,6 @@ type remoteServerCredentialDataSourceModel struct {
 	AwsAccessKey                            types.String `tfsdk:"aws_access_key"`
 	GoogleCloudStorageS3CompatibleAccessKey types.String `tfsdk:"google_cloud_storage_s3_compatible_access_key"`
 	WasabiAccessKey                         types.String `tfsdk:"wasabi_access_key"`
-	AzureBlobStorageAccount                 types.String `tfsdk:"azure_blob_storage_account"`
-	AzureFilesStorageAccount                types.String `tfsdk:"azure_files_storage_account"`
 	S3CompatibleAccessKey                   types.String `tfsdk:"s3_compatible_access_key"`
 	FilebaseAccessKey                       types.String `tfsdk:"filebase_access_key"`
 	CloudflareAccessKey                     types.String `tfsdk:"cloudflare_access_key"`
@@ -102,14 +100,6 @@ func (r *remoteServerCredentialDataSource) Schema(_ context.Context, _ datasourc
 				Description: "Wasabi: Access Key.",
 				Computed:    true,
 			},
-			"azure_blob_storage_account": schema.StringAttribute{
-				Description: "Azure Blob Storage: Account name",
-				Computed:    true,
-			},
-			"azure_files_storage_account": schema.StringAttribute{
-				Description: "Azure Files: Storage Account name",
-				Computed:    true,
-			},
 			"s3_compatible_access_key": schema.StringAttribute{
 				Description: "S3-compatible: Access Key",
 				Computed:    true,
@@ -173,8 +163,6 @@ func (r *remoteServerCredentialDataSource) populateDataSourceModel(ctx context.C
 	state.AwsAccessKey = types.StringValue(remoteServerCredential.AwsAccessKey)
 	state.GoogleCloudStorageS3CompatibleAccessKey = types.StringValue(remoteServerCredential.GoogleCloudStorageS3CompatibleAccessKey)
 	state.WasabiAccessKey = types.StringValue(remoteServerCredential.WasabiAccessKey)
-	state.AzureBlobStorageAccount = types.StringValue(remoteServerCredential.AzureBlobStorageAccount)
-	state.AzureFilesStorageAccount = types.StringValue(remoteServerCredential.AzureFilesStorageAccount)
 	state.S3CompatibleAccessKey = types.StringValue(remoteServerCredential.S3CompatibleAccessKey)
 	state.FilebaseAccessKey = types.StringValue(remoteServerCredential.FilebaseAccessKey)
 	state.CloudflareAccessKey = types.StringValue(remoteServerCredential.CloudflareAccessKey)

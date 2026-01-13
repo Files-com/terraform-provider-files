@@ -23,8 +23,6 @@ resource "files_remote_server_credential" "example_remote_server_credential" {
   description                                   = "More information or notes about this credential."
   server_type                                   = "s3"
   aws_access_key                                = "example"
-  azure_blob_storage_account                    = "storage-account-name"
-  azure_files_storage_account                   = "storage-account-name"
   cloudflare_access_key                         = "example"
   filebase_access_key                           = "example"
   google_cloud_storage_s3_compatible_access_key = "example"
@@ -46,10 +44,8 @@ resource "files_remote_server_credential" "example_remote_server_credential" {
 - `aws_access_key` (String) AWS Access Key.
 - `aws_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) AWS: secret key.
 - `azure_blob_storage_access_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Azure Blob Storage: Access Key
-- `azure_blob_storage_account` (String) Azure Blob Storage: Account name
 - `azure_blob_storage_sas_token` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Azure Blob Storage: Shared Access Signature (SAS) token
 - `azure_files_storage_access_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Azure File Storage: Access Key
-- `azure_files_storage_account` (String) Azure Files: Storage Account name
 - `azure_files_storage_sas_token` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Azure File Storage: Shared Access Signature (SAS) token
 - `backblaze_b2_application_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Backblaze B2 Cloud Storage: applicationKey
 - `backblaze_b2_key_id` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Backblaze B2 Cloud Storage: keyID
