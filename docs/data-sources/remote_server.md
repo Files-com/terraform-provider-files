@@ -130,13 +130,13 @@ data "files_remote_server" "example_remote_server" {
 
 ### Required
 
-- `id` (Number) Remote server ID
+- `id` (Number) Remote Server ID
 
 ### Read-Only
 
 - `auth_account_name` (String) Describes the authorized account
 - `auth_status` (String) Either `in_setup` or `complete`
-- `authentication_method` (String) Type of authentication method
+- `authentication_method` (String) Type of authentication method to use
 - `aws_access_key` (String) AWS Access Key.
 - `azure_blob_storage_account` (String) Azure Blob Storage: Account name
 - `azure_blob_storage_container` (String) Azure Blob Storage: Container name
@@ -152,7 +152,7 @@ data "files_remote_server" "example_remote_server" {
 - `cloudflare_bucket` (String) Cloudflare: Bucket name
 - `cloudflare_endpoint` (String) Cloudflare: endpoint
 - `description` (String) Internal description for your reference
-- `disabled` (Boolean) If true, this server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.
+- `disabled` (Boolean) If true, this Remote Server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.
 - `dropbox_teams` (Boolean) Dropbox: If true, list Team folders in root?
 - `enable_dedicated_ips` (Boolean) `true` if remote server only accepts connections from dedicated IPs
 - `filebase_access_key` (String) Filebase: Access Key.
@@ -191,6 +191,7 @@ data "files_remote_server" "example_remote_server" {
 - `server_type` (String) Remote server type.
 - `ssl` (String) Should we require SSL?
 - `supports_versioning` (Boolean) If true, this remote server supports file versioning. This value is determined automatically by Files.com.
+- `upload_staging_path` (String) Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP.
 - `username` (String) Remote server username.
 - `wasabi_access_key` (String) Wasabi: Access Key.
 - `wasabi_bucket` (String) Wasabi: Bucket name

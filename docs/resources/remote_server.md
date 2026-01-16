@@ -157,6 +157,7 @@ resource "files_remote_server" "example_remote_server" {
   one_drive_account_type                        = "personal"
   pin_to_site_region                            = true
   port                                          = 1
+  upload_staging_path                           = "/tmp/uploads"
   remote_server_credential_id                   = 1
   s3_bucket                                     = "my-bucket"
   s3_compatible_access_key                      = "example"
@@ -247,6 +248,7 @@ resource "files_remote_server" "example_remote_server" {
 - `server_type` (String) Remote server type.
 - `ssl` (String) Should we require SSL?
 - `ssl_certificate` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) SSL client certificate.
+- `upload_staging_path` (String) Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP.
 - `username` (String) Remote server username.
 - `wasabi_access_key` (String) Wasabi: Access Key.
 - `wasabi_bucket` (String) Wasabi: Bucket name
@@ -258,13 +260,13 @@ resource "files_remote_server" "example_remote_server" {
 
 - `auth_account_name` (String) Describes the authorized account
 - `auth_status` (String) Either `in_setup` or `complete`
-- `authentication_method` (String) Type of authentication method
-- `disabled` (Boolean) If true, this server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.
+- `authentication_method` (String) Type of authentication method to use
+- `disabled` (Boolean) If true, this Remote Server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.
 - `files_agent_api_token` (String) Files Agent API Token
 - `files_agent_latest_version` (String) Latest available Files Agent version
 - `files_agent_supports_push_updates` (Boolean) Files Agent supports receiving push updates
 - `files_agent_up_to_date` (Boolean) If true, the Files Agent is up to date.
-- `id` (Number) Remote server ID
+- `id` (Number) Remote Server ID
 - `pinned_region` (String) If set, all communications with this remote server are made through the provided region.
 - `remote_home_path` (String) Initial home folder on remote server
 - `supports_versioning` (Boolean) If true, this remote server supports file versioning. This value is determined automatically by Files.com.

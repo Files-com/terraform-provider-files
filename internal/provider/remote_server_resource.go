@@ -37,6 +37,7 @@ type remoteServerResource struct {
 
 type remoteServerResourceModel struct {
 	Hostname                                types.String `tfsdk:"hostname"`
+	UploadStagingPath                       types.String `tfsdk:"upload_staging_path"`
 	Name                                    types.String `tfsdk:"name"`
 	Description                             types.String `tfsdk:"description"`
 	Port                                    types.Int64  `tfsdk:"port"`
@@ -149,6 +150,14 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 		Attributes: map[string]schema.Attribute{
 			"hostname": schema.StringAttribute{
 				Description: "Hostname or IP address",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"upload_staging_path": schema.StringAttribute{
+				Description: "Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -670,18 +679,18 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				WriteOnly:   true,
 			},
 			"id": schema.Int64Attribute{
-				Description: "Remote server ID",
+				Description: "Remote Server ID",
 				Computed:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"disabled": schema.BoolAttribute{
-				Description: "If true, this server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.",
+				Description: "If true, this Remote Server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.",
 				Computed:    true,
 			},
 			"authentication_method": schema.StringAttribute{
-				Description: "Type of authentication method",
+				Description: "Type of authentication method to use",
 				Computed:    true,
 			},
 			"remote_home_path": schema.StringAttribute{
@@ -806,6 +815,7 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 		paramsRemoteServerCreate.PinToSiteRegion = plan.PinToSiteRegion.ValueBoolPointer()
 	}
 	paramsRemoteServerCreate.Port = plan.Port.ValueInt64()
+	paramsRemoteServerCreate.UploadStagingPath = plan.UploadStagingPath.ValueString()
 	paramsRemoteServerCreate.RemoteServerCredentialId = plan.RemoteServerCredentialId.ValueInt64()
 	paramsRemoteServerCreate.S3Bucket = plan.S3Bucket.ValueString()
 	paramsRemoteServerCreate.S3CompatibleAccessKey = plan.S3CompatibleAccessKey.ValueString()
@@ -1061,6 +1071,9 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	if !config.Port.IsNull() && !config.Port.IsUnknown() {
 		paramsRemoteServerUpdate["port"] = config.Port.ValueInt64()
 	}
+	if !config.UploadStagingPath.IsNull() && !config.UploadStagingPath.IsUnknown() {
+		paramsRemoteServerUpdate["upload_staging_path"] = config.UploadStagingPath.ValueString()
+	}
 	if !config.RemoteServerCredentialId.IsNull() && !config.RemoteServerCredentialId.IsUnknown() {
 		paramsRemoteServerUpdate["remote_server_credential_id"] = config.RemoteServerCredentialId.ValueInt64()
 	}
@@ -1179,6 +1192,7 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.AuthenticationMethod = types.StringValue(remoteServer.AuthenticationMethod)
 	state.Hostname = types.StringValue(remoteServer.Hostname)
 	state.RemoteHomePath = types.StringValue(remoteServer.RemoteHomePath)
+	state.UploadStagingPath = types.StringValue(remoteServer.UploadStagingPath)
 	state.Name = types.StringValue(remoteServer.Name)
 	state.Description = types.StringValue(remoteServer.Description)
 	state.Port = types.Int64Value(remoteServer.Port)
