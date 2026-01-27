@@ -52,6 +52,7 @@ type siemHttpDestinationResourceModel struct {
 	AzureOauthClientCredentialsTenantId           types.String  `tfsdk:"azure_oauth_client_credentials_tenant_id"`
 	AzureOauthClientCredentialsClientId           types.String  `tfsdk:"azure_oauth_client_credentials_client_id"`
 	QradarUsername                                types.String  `tfsdk:"qradar_username"`
+	ActionSendEnabled                             types.Bool    `tfsdk:"action_send_enabled"`
 	SftpActionSendEnabled                         types.Bool    `tfsdk:"sftp_action_send_enabled"`
 	FtpActionSendEnabled                          types.Bool    `tfsdk:"ftp_action_send_enabled"`
 	WebDavActionSendEnabled                       types.Bool    `tfsdk:"web_dav_action_send_enabled"`
@@ -76,6 +77,7 @@ type siemHttpDestinationResourceModel struct {
 	SolarWindsTokenMasked                         types.String  `tfsdk:"solar_winds_token_masked"`
 	NewRelicApiKeyMasked                          types.String  `tfsdk:"new_relic_api_key_masked"`
 	DatadogApiKeyMasked                           types.String  `tfsdk:"datadog_api_key_masked"`
+	ActionEntriesSent                             types.Int64   `tfsdk:"action_entries_sent"`
 	SftpActionEntriesSent                         types.Int64   `tfsdk:"sftp_action_entries_sent"`
 	FtpActionEntriesSent                          types.Int64   `tfsdk:"ftp_action_entries_sent"`
 	WebDavActionEntriesSent                       types.Int64   `tfsdk:"web_dav_action_entries_sent"`
@@ -242,6 +244,14 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"action_send_enabled": schema.BoolAttribute{
+				Description: "Whether or not sending is enabled for action logs.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"sftp_action_send_enabled": schema.BoolAttribute{
 				Description: "Whether or not sending is enabled for sftp_action logs.",
 				Computed:    true,
@@ -391,6 +401,10 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 				Description: "Applicable only for destination type: datadog. API key provided by Datadog.",
 				Computed:    true,
 			},
+			"action_entries_sent": schema.Int64Attribute{
+				Description: "Number of log entries sent for the lifetime of this destination.",
+				Computed:    true,
+			},
 			"sftp_action_entries_sent": schema.Int64Attribute{
 				Description: "Number of log entries sent for the lifetime of this destination.",
 				Computed:    true,
@@ -515,6 +529,9 @@ func (r *siemHttpDestinationResource) Create(ctx context.Context, req resource.C
 	paramsSiemHttpDestinationCreate.SolarWindsToken = config.SolarWindsToken.ValueString()
 	paramsSiemHttpDestinationCreate.NewRelicApiKey = config.NewRelicApiKey.ValueString()
 	paramsSiemHttpDestinationCreate.DatadogApiKey = config.DatadogApiKey.ValueString()
+	if !plan.ActionSendEnabled.IsNull() && !plan.ActionSendEnabled.IsUnknown() {
+		paramsSiemHttpDestinationCreate.ActionSendEnabled = plan.ActionSendEnabled.ValueBoolPointer()
+	}
 	if !plan.SftpActionSendEnabled.IsNull() && !plan.SftpActionSendEnabled.IsUnknown() {
 		paramsSiemHttpDestinationCreate.SftpActionSendEnabled = plan.SftpActionSendEnabled.ValueBoolPointer()
 	}
@@ -681,6 +698,9 @@ func (r *siemHttpDestinationResource) Update(ctx context.Context, req resource.U
 	if !config.DatadogApiKey.IsNull() && !config.DatadogApiKey.IsUnknown() {
 		paramsSiemHttpDestinationUpdate["datadog_api_key"] = config.DatadogApiKey.ValueString()
 	}
+	if !config.ActionSendEnabled.IsNull() && !config.ActionSendEnabled.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["action_send_enabled"] = config.ActionSendEnabled.ValueBool()
+	}
 	if !config.SftpActionSendEnabled.IsNull() && !config.SftpActionSendEnabled.IsUnknown() {
 		paramsSiemHttpDestinationUpdate["sftp_action_send_enabled"] = config.SftpActionSendEnabled.ValueBool()
 	}
@@ -812,6 +832,8 @@ func (r *siemHttpDestinationResource) populateResourceModel(ctx context.Context,
 	state.SolarWindsTokenMasked = types.StringValue(siemHttpDestination.SolarWindsTokenMasked)
 	state.NewRelicApiKeyMasked = types.StringValue(siemHttpDestination.NewRelicApiKeyMasked)
 	state.DatadogApiKeyMasked = types.StringValue(siemHttpDestination.DatadogApiKeyMasked)
+	state.ActionSendEnabled = types.BoolPointerValue(siemHttpDestination.ActionSendEnabled)
+	state.ActionEntriesSent = types.Int64Value(siemHttpDestination.ActionEntriesSent)
 	state.SftpActionSendEnabled = types.BoolPointerValue(siemHttpDestination.SftpActionSendEnabled)
 	state.SftpActionEntriesSent = types.Int64Value(siemHttpDestination.SftpActionEntriesSent)
 	state.FtpActionSendEnabled = types.BoolPointerValue(siemHttpDestination.FtpActionSendEnabled)

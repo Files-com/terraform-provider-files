@@ -130,25 +130,26 @@ resource "files_behavior" "example_inbox_behavior" {
   path     = "path"
   behavior = "inbox"
   value    = {
-    key                                            = "application-forms"
-    dont_separate_submissions_by_folder            = true
-    dont_allow_folders_in_uploads                  = false
-    require_inbox_recipient                        = false
-    show_on_login_page                             = true
-    title                                          = "Submit Your Job Applications Here"
-    description                                    = "Thanks for coming to the Files.com Job Application Page"
-    help_text                                      = "If you have trouble here, please contact your recruiter."
-    require_registration                           = true
-    password                                       = "foobar"
-    path_template                                  = "{{name}}_{{ip}}"
-    path_template_time_zone                        = "Eastern Time (US & Canada)"
-    enable_inbound_email_address                   = true
-    notify_senders_on_successful_uploads_via_email = true
-    notify_senders_on_successful_uploads_via_web   = true
-    allow_whitelisting                             = true
-    whitelist                                      = ["john@test.com", "mydomain.com"]
-    disable_web_upload                             = true
-    capture_email_body_filename                    = "_body.txt"
+    key                                                   = "application-forms"
+    dont_separate_submissions_by_folder                   = true
+    dont_separate_submissions_by_folder_for_inbound_email = true
+    dont_allow_folders_in_uploads                         = false
+    require_inbox_recipient                               = false
+    show_on_login_page                                    = true
+    title                                                 = "Submit Your Job Applications Here"
+    description                                           = "Thanks for coming to the Files.com Job Application Page"
+    help_text                                             = "If you have trouble here, please contact your recruiter."
+    require_registration                                  = true
+    password                                              = "foobar"
+    path_template                                         = "{{name}}_{{ip}}"
+    path_template_time_zone                               = "Eastern Time (US & Canada)"
+    enable_inbound_email_address                          = true
+    notify_senders_on_successful_uploads_via_email        = true
+    notify_senders_on_successful_uploads_via_web          = true
+    allow_whitelisting                                    = true
+    whitelist                                             = ["john@test.com", "mydomain.com"]
+    disable_web_upload                                    = true
+    capture_email_body_filename                           = "_body.txt"
   }
 }
 

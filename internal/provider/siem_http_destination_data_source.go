@@ -49,6 +49,8 @@ type siemHttpDestinationDataSourceModel struct {
 	SolarWindsTokenMasked                         types.String  `tfsdk:"solar_winds_token_masked"`
 	NewRelicApiKeyMasked                          types.String  `tfsdk:"new_relic_api_key_masked"`
 	DatadogApiKeyMasked                           types.String  `tfsdk:"datadog_api_key_masked"`
+	ActionSendEnabled                             types.Bool    `tfsdk:"action_send_enabled"`
+	ActionEntriesSent                             types.Int64   `tfsdk:"action_entries_sent"`
 	SftpActionSendEnabled                         types.Bool    `tfsdk:"sftp_action_send_enabled"`
 	SftpActionEntriesSent                         types.Int64   `tfsdk:"sftp_action_entries_sent"`
 	FtpActionSendEnabled                          types.Bool    `tfsdk:"ftp_action_send_enabled"`
@@ -191,6 +193,14 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 			},
 			"datadog_api_key_masked": schema.StringAttribute{
 				Description: "Applicable only for destination type: datadog. API key provided by Datadog.",
+				Computed:    true,
+			},
+			"action_send_enabled": schema.BoolAttribute{
+				Description: "Whether or not sending is enabled for action logs.",
+				Computed:    true,
+			},
+			"action_entries_sent": schema.Int64Attribute{
+				Description: "Number of log entries sent for the lifetime of this destination.",
 				Computed:    true,
 			},
 			"sftp_action_send_enabled": schema.BoolAttribute{
@@ -376,6 +386,8 @@ func (r *siemHttpDestinationDataSource) populateDataSourceModel(ctx context.Cont
 	state.SolarWindsTokenMasked = types.StringValue(siemHttpDestination.SolarWindsTokenMasked)
 	state.NewRelicApiKeyMasked = types.StringValue(siemHttpDestination.NewRelicApiKeyMasked)
 	state.DatadogApiKeyMasked = types.StringValue(siemHttpDestination.DatadogApiKeyMasked)
+	state.ActionSendEnabled = types.BoolPointerValue(siemHttpDestination.ActionSendEnabled)
+	state.ActionEntriesSent = types.Int64Value(siemHttpDestination.ActionEntriesSent)
 	state.SftpActionSendEnabled = types.BoolPointerValue(siemHttpDestination.SftpActionSendEnabled)
 	state.SftpActionEntriesSent = types.Int64Value(siemHttpDestination.SftpActionEntriesSent)
 	state.FtpActionSendEnabled = types.BoolPointerValue(siemHttpDestination.FtpActionSendEnabled)

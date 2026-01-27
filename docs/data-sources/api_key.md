@@ -52,5 +52,7 @@ data "files_api_key" "example_api_key" {
 - `name` (String) Internal name for the API Key.  For your use.
 - `permission_set` (String) Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.
 - `platform` (String) If this API key represents a Desktop app, what platform was it created on?
+- `site_id` (Number) Site ID
+- `site_name` (String) Site Name
 - `url` (String) URL for API host.
 - `user_id` (Number) User ID for the owner of this API Key.  May be blank for Site-wide API Keys.

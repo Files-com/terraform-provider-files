@@ -28,6 +28,7 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
   azure_oauth_client_credentials_tenant_id = "example"
   azure_oauth_client_credentials_client_id = "example"
   qradar_username                          = "example"
+  action_send_enabled                      = true
   sftp_action_send_enabled                 = true
   ftp_action_send_enabled                  = true
   web_dav_action_send_enabled              = true
@@ -55,6 +56,7 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
 
 > **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
 
+- `action_send_enabled` (Boolean) Whether or not sending is enabled for action logs.
 - `additional_headers` (Dynamic) Additional HTTP Headers included in calls to the destination URL
 - `api_request_send_enabled` (Boolean) Whether or not sending is enabled for api_request logs.
 - `automation_send_enabled` (Boolean) Whether or not sending is enabled for automation logs.
@@ -88,6 +90,7 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
 
 ### Read-Only
 
+- `action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `api_request_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `automation_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `azure_oauth_client_credentials_client_secret_masked` (String) Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Client Secret.

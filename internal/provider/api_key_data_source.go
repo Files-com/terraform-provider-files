@@ -41,6 +41,8 @@ type apiKeyDataSourceModel struct {
 	Name                types.String `tfsdk:"name"`
 	PermissionSet       types.String `tfsdk:"permission_set"`
 	Platform            types.String `tfsdk:"platform"`
+	SiteId              types.Int64  `tfsdk:"site_id"`
+	SiteName            types.String `tfsdk:"site_name"`
 	Url                 types.String `tfsdk:"url"`
 	UserId              types.Int64  `tfsdk:"user_id"`
 }
@@ -124,6 +126,14 @@ func (r *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Description: "If this API key represents a Desktop app, what platform was it created on?",
 				Computed:    true,
 			},
+			"site_id": schema.Int64Attribute{
+				Description: "Site ID",
+				Computed:    true,
+			},
+			"site_name": schema.StringAttribute{
+				Description: "Site Name",
+				Computed:    true,
+			},
 			"url": schema.StringAttribute{
 				Description: "URL for API host.",
 				Computed:    true,
@@ -195,6 +205,8 @@ func (r *apiKeyDataSource) populateDataSourceModel(ctx context.Context, apiKey f
 	state.Name = types.StringValue(apiKey.Name)
 	state.PermissionSet = types.StringValue(apiKey.PermissionSet)
 	state.Platform = types.StringValue(apiKey.Platform)
+	state.SiteId = types.Int64Value(apiKey.SiteId)
+	state.SiteName = types.StringValue(apiKey.SiteName)
 	state.Url = types.StringValue(apiKey.Url)
 	state.UserId = types.Int64Value(apiKey.UserId)
 

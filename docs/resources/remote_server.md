@@ -122,6 +122,7 @@ Linode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `l
 ```terraform
 resource "files_remote_server" "example_remote_server" {
   reset_authentication                          = false
+  allow_relative_paths                          = true
   aws_access_key                                = "example"
   azure_blob_storage_account                    = "storage-account-name"
   azure_blob_storage_container                  = "container-name"
@@ -184,6 +185,7 @@ resource "files_remote_server" "example_remote_server" {
 
 > **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
 
+- `allow_relative_paths` (Boolean) Allow relative paths in SFTP. If true, paths will not be forced to be absolute, allowing operations relative to the user's home directory.
 - `aws_access_key` (String) AWS Access Key.
 - `aws_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) AWS: secret key.
 - `azure_blob_storage_access_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Azure Blob Storage: Access Key

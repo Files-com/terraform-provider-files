@@ -38,6 +38,7 @@ type remoteServerResource struct {
 type remoteServerResourceModel struct {
 	Hostname                                types.String `tfsdk:"hostname"`
 	UploadStagingPath                       types.String `tfsdk:"upload_staging_path"`
+	AllowRelativePaths                      types.Bool   `tfsdk:"allow_relative_paths"`
 	Name                                    types.String `tfsdk:"name"`
 	Description                             types.String `tfsdk:"description"`
 	Port                                    types.Int64  `tfsdk:"port"`
@@ -162,6 +163,14 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"allow_relative_paths": schema.BoolAttribute{
+				Description: "Allow relative paths in SFTP. If true, paths will not be forced to be absolute, allowing operations relative to the user's home directory.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"name": schema.StringAttribute{
@@ -772,6 +781,9 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.LinodeSecretKey = config.LinodeSecretKey.ValueString()
 	paramsRemoteServerCreate.S3CompatibleSecretKey = config.S3CompatibleSecretKey.ValueString()
 	paramsRemoteServerCreate.WasabiSecretKey = config.WasabiSecretKey.ValueString()
+	if !plan.AllowRelativePaths.IsNull() && !plan.AllowRelativePaths.IsUnknown() {
+		paramsRemoteServerCreate.AllowRelativePaths = plan.AllowRelativePaths.ValueBoolPointer()
+	}
 	paramsRemoteServerCreate.AwsAccessKey = plan.AwsAccessKey.ValueString()
 	paramsRemoteServerCreate.AzureBlobStorageAccount = plan.AzureBlobStorageAccount.ValueString()
 	paramsRemoteServerCreate.AzureBlobStorageContainer = plan.AzureBlobStorageContainer.ValueString()
@@ -965,6 +977,9 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 	if !config.WasabiSecretKey.IsNull() && !config.WasabiSecretKey.IsUnknown() {
 		paramsRemoteServerUpdate["wasabi_secret_key"] = config.WasabiSecretKey.ValueString()
+	}
+	if !config.AllowRelativePaths.IsNull() && !config.AllowRelativePaths.IsUnknown() {
+		paramsRemoteServerUpdate["allow_relative_paths"] = config.AllowRelativePaths.ValueBool()
 	}
 	if !config.AwsAccessKey.IsNull() && !config.AwsAccessKey.IsUnknown() {
 		paramsRemoteServerUpdate["aws_access_key"] = config.AwsAccessKey.ValueString()
@@ -1193,6 +1208,7 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.Hostname = types.StringValue(remoteServer.Hostname)
 	state.RemoteHomePath = types.StringValue(remoteServer.RemoteHomePath)
 	state.UploadStagingPath = types.StringValue(remoteServer.UploadStagingPath)
+	state.AllowRelativePaths = types.BoolPointerValue(remoteServer.AllowRelativePaths)
 	state.Name = types.StringValue(remoteServer.Name)
 	state.Description = types.StringValue(remoteServer.Description)
 	state.Port = types.Int64Value(remoteServer.Port)

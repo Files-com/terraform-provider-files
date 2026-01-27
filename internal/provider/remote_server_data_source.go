@@ -32,6 +32,7 @@ type remoteServerDataSourceModel struct {
 	Hostname                                types.String `tfsdk:"hostname"`
 	RemoteHomePath                          types.String `tfsdk:"remote_home_path"`
 	UploadStagingPath                       types.String `tfsdk:"upload_staging_path"`
+	AllowRelativePaths                      types.Bool   `tfsdk:"allow_relative_paths"`
 	Name                                    types.String `tfsdk:"name"`
 	Description                             types.String `tfsdk:"description"`
 	Port                                    types.Int64  `tfsdk:"port"`
@@ -141,6 +142,10 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			},
 			"upload_staging_path": schema.StringAttribute{
 				Description: "Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP.",
+				Computed:    true,
+			},
+			"allow_relative_paths": schema.BoolAttribute{
+				Description: "Allow relative paths in SFTP. If true, paths will not be forced to be absolute, allowing operations relative to the user's home directory.",
 				Computed:    true,
 			},
 			"name": schema.StringAttribute{
@@ -416,6 +421,7 @@ func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, re
 	state.Hostname = types.StringValue(remoteServer.Hostname)
 	state.RemoteHomePath = types.StringValue(remoteServer.RemoteHomePath)
 	state.UploadStagingPath = types.StringValue(remoteServer.UploadStagingPath)
+	state.AllowRelativePaths = types.BoolPointerValue(remoteServer.AllowRelativePaths)
 	state.Name = types.StringValue(remoteServer.Name)
 	state.Description = types.StringValue(remoteServer.Description)
 	state.Port = types.Int64Value(remoteServer.Port)

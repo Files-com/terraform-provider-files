@@ -27,6 +27,8 @@ data "files_siem_http_destination" "example_siem_http_destination" {
 
 ### Read-Only
 
+- `action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+- `action_send_enabled` (Boolean) Whether or not sending is enabled for action logs.
 - `additional_headers` (Dynamic) Additional HTTP Headers included in calls to the destination URL
 - `api_request_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `api_request_send_enabled` (Boolean) Whether or not sending is enabled for api_request logs.

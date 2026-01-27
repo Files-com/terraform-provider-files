@@ -209,7 +209,7 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Computed:    true,
 			},
 			"human_readable_schedule": schema.StringAttribute{
-				Description: "If trigger is `custom_schedule`, Human readable Custom schedule description for when the automation should be run.",
+				Description: "If trigger is `custom_schedule` or `daily` with times, Human readable schedule description for when the automation should be run.",
 				Computed:    true,
 			},
 			"schedule_days_of_week": schema.ListAttribute{
@@ -218,12 +218,12 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				ElementType: types.Int64Type,
 			},
 			"schedule_times_of_day": schema.ListAttribute{
-				Description: "If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. Times of day in HH:MM format.",
+				Description: "Times of day to run in HH:MM format (24-hour). For `custom_schedule`, run at these times on specified days of week. For `daily`, run at these times on the scheduled interval date.",
 				Computed:    true,
 				ElementType: types.StringType,
 			},
 			"schedule_time_zone": schema.StringAttribute{
-				Description: "If trigger is `custom_schedule`, Custom schedule Time Zone for when the automation should be run.",
+				Description: "Time zone for scheduled times. If not set, times are interpreted as UTC.",
 				Computed:    true,
 			},
 			"source": schema.StringAttribute{
@@ -267,7 +267,7 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Computed:    true,
 			},
 			"holiday_region": schema.StringAttribute{
-				Description: "If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.",
+				Description: "Skip automation if there is a formal, observed holiday for this region.",
 				Computed:    true,
 			},
 		},

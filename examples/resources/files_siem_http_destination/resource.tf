@@ -13,6 +13,7 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
   azure_oauth_client_credentials_tenant_id = "example"
   azure_oauth_client_credentials_client_id = "example"
   qradar_username                          = "example"
+  action_send_enabled                      = true
   sftp_action_send_enabled                 = true
   ftp_action_send_enabled                  = true
   web_dav_action_send_enabled              = true

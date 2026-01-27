@@ -134,6 +134,7 @@ data "files_remote_server" "example_remote_server" {
 
 ### Read-Only
 
+- `allow_relative_paths` (Boolean) Allow relative paths in SFTP. If true, paths will not be forced to be absolute, allowing operations relative to the user's home directory.
 - `auth_account_name` (String) Describes the authorized account
 - `auth_status` (String) Either `in_setup` or `complete`
 - `authentication_method` (String) Type of authentication method to use

@@ -558,8 +558,8 @@ data "files_automation" "example_automation" {
 - `exclude_pattern` (String) If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.
 - `flatten_destination_structure` (Boolean) Normally copy and move automations that use globs will implicitly preserve the source folder structure in the destination.  If this flag is `true`, the source folder structure will be flattened in the destination.  This is useful for copying or moving files from multiple folders into a single destination folder.
 - `group_ids` (List of Number) IDs of Groups for the Automation (i.e. who to Request File from)
-- `holiday_region` (String) If trigger is `custom_schedule`, the Automation will check if there is a formal, observed holiday for the region, and if so, it will not run.
-- `human_readable_schedule` (String) If trigger is `custom_schedule`, Human readable Custom schedule description for when the automation should be run.
+- `holiday_region` (String) Skip automation if there is a formal, observed holiday for this region.
+- `human_readable_schedule` (String) If trigger is `custom_schedule` or `daily` with times, Human readable schedule description for when the automation should be run.
 - `ignore_locked_folders` (Boolean) If true, the Lock Folders behavior will be disregarded for automated actions.
 - `import_urls` (Dynamic) List of URLs to be imported and names to be used.
 - `interval` (String) If trigger is `daily`, this specifies how often to run this automation.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`
@@ -575,8 +575,8 @@ data "files_automation" "example_automation" {
 - `retry_on_failure_number_of_attempts` (Number) If the Automation fails, retry at most this many times.  Maximum allowed value: 10.  Set to null to disable.
 - `schedule` (Dynamic) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run in json format.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.
-- `schedule_time_zone` (String) If trigger is `custom_schedule`, Custom schedule Time Zone for when the automation should be run.
-- `schedule_times_of_day` (List of String) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. Times of day in HH:MM format.
+- `schedule_time_zone` (String) Time zone for scheduled times. If not set, times are interpreted as UTC.
+- `schedule_times_of_day` (List of String) Times of day to run in HH:MM format (24-hour). For `custom_schedule`, run at these times on specified days of week. For `daily`, run at these times on the scheduled interval date.
 - `source` (String) Source path/glob.  See Automation docs for exact description, but this is used to filter for files in the `path` to find files to operate on. Supports globs, except on remote mounts.
 - `sync_ids` (List of Number) IDs of syncs to run by this Automation. This is the new way to specify syncs, and it is recommended to use this instead of `legacy_sync_ids`.
 - `trigger` (String) How this automation is triggered to run.

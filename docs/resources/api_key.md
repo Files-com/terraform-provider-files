@@ -65,6 +65,8 @@ resource "files_api_key" "example_api_key" {
 - `key` (String) API Key actual key string
 - `last_use_at` (String) API Key last used - note this value is only updated once per 3 hour period, so the 'actual' time of last use may be up to 3 hours later than this timestamp.
 - `platform` (String) If this API key represents a Desktop app, what platform was it created on?
+- `site_id` (Number) Site ID
+- `site_name` (String) Site Name
 - `url` (String) URL for API host.
 
 ## Import

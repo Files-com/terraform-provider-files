@@ -1,5 +1,6 @@
 resource "files_remote_server" "example_remote_server" {
   reset_authentication                          = false
+  allow_relative_paths                          = true
   aws_access_key                                = "example"
   azure_blob_storage_account                    = "storage-account-name"
   azure_blob_storage_container                  = "container-name"

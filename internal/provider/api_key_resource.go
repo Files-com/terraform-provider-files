@@ -53,6 +53,8 @@ type apiKeyResourceModel struct {
 	AwsSecretKey        types.String `tfsdk:"aws_secret_key"`
 	LastUseAt           types.String `tfsdk:"last_use_at"`
 	Platform            types.String `tfsdk:"platform"`
+	SiteId              types.Int64  `tfsdk:"site_id"`
+	SiteName            types.String `tfsdk:"site_name"`
 	Url                 types.String `tfsdk:"url"`
 }
 
@@ -174,6 +176,14 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			},
 			"platform": schema.StringAttribute{
 				Description: "If this API key represents a Desktop app, what platform was it created on?",
+				Computed:    true,
+			},
+			"site_id": schema.Int64Attribute{
+				Description: "Site ID",
+				Computed:    true,
+			},
+			"site_name": schema.StringAttribute{
+				Description: "Site Name",
 				Computed:    true,
 			},
 			"url": schema.StringAttribute{
@@ -418,6 +428,8 @@ func (r *apiKeyResource) populateResourceModel(ctx context.Context, apiKey files
 	state.Name = types.StringValue(apiKey.Name)
 	state.PermissionSet = types.StringValue(apiKey.PermissionSet)
 	state.Platform = types.StringValue(apiKey.Platform)
+	state.SiteId = types.Int64Value(apiKey.SiteId)
+	state.SiteName = types.StringValue(apiKey.SiteName)
 	state.Url = types.StringValue(apiKey.Url)
 	state.UserId = types.Int64Value(apiKey.UserId)
 
