@@ -231,8 +231,30 @@ func (r *remoteMountBackendResource) Create(ctx context.Context, req resource.Cr
 	}
 	paramsRemoteMountBackendCreate.HealthCheckType = paramsRemoteMountBackendCreate.HealthCheckType.Enum()[plan.HealthCheckType.ValueString()]
 	paramsRemoteMountBackendCreate.Interval = plan.Interval.ValueInt64()
-	paramsRemoteMountBackendCreate.MinFreeCpu = plan.MinFreeCpu.ValueString()
-	paramsRemoteMountBackendCreate.MinFreeMem = plan.MinFreeMem.ValueString()
+	if !plan.MinFreeCpu.IsNull() && !plan.MinFreeCpu.IsUnknown() {
+		createMinFreeCpuFloat64, err := strconv.ParseFloat(plan.MinFreeCpu.ValueString(), 64)
+		if err != nil {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("min_free_cpu"),
+				"Error Parsing min_free_cpu Number",
+				"Could not parse min_free_cpu: "+err.Error(),
+			)
+		} else {
+			paramsRemoteMountBackendCreate.MinFreeCpu = createMinFreeCpuFloat64
+		}
+	}
+	if !plan.MinFreeMem.IsNull() && !plan.MinFreeMem.IsUnknown() {
+		createMinFreeMemFloat64, err := strconv.ParseFloat(plan.MinFreeMem.ValueString(), 64)
+		if err != nil {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("min_free_mem"),
+				"Error Parsing min_free_mem Number",
+				"Could not parse min_free_mem: "+err.Error(),
+			)
+		} else {
+			paramsRemoteMountBackendCreate.MinFreeMem = createMinFreeMemFloat64
+		}
+	}
 	paramsRemoteMountBackendCreate.Priority = plan.Priority.ValueInt64()
 	paramsRemoteMountBackendCreate.RemotePath = plan.RemotePath.ValueString()
 	paramsRemoteMountBackendCreate.Rise = plan.Rise.ValueInt64()
@@ -332,10 +354,28 @@ func (r *remoteMountBackendResource) Update(ctx context.Context, req resource.Up
 		paramsRemoteMountBackendUpdate["interval"] = config.Interval.ValueInt64()
 	}
 	if !config.MinFreeCpu.IsNull() && !config.MinFreeCpu.IsUnknown() {
-		paramsRemoteMountBackendUpdate["min_free_cpu"] = config.MinFreeCpu.ValueString()
+		updateMinFreeCpuFloat64, err := strconv.ParseFloat(config.MinFreeCpu.ValueString(), 64)
+		if err != nil {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("min_free_cpu"),
+				"Error Parsing min_free_cpu Number",
+				"Could not parse min_free_cpu: "+err.Error(),
+			)
+		} else {
+			paramsRemoteMountBackendUpdate["min_free_cpu"] = updateMinFreeCpuFloat64
+		}
 	}
 	if !config.MinFreeMem.IsNull() && !config.MinFreeMem.IsUnknown() {
-		paramsRemoteMountBackendUpdate["min_free_mem"] = config.MinFreeMem.ValueString()
+		updateMinFreeMemFloat64, err := strconv.ParseFloat(config.MinFreeMem.ValueString(), 64)
+		if err != nil {
+			resp.Diagnostics.AddAttributeError(
+				path.Root("min_free_mem"),
+				"Error Parsing min_free_mem Number",
+				"Could not parse min_free_mem: "+err.Error(),
+			)
+		} else {
+			paramsRemoteMountBackendUpdate["min_free_mem"] = updateMinFreeMemFloat64
+		}
 	}
 	if !config.Priority.IsNull() && !config.Priority.IsUnknown() {
 		paramsRemoteMountBackendUpdate["priority"] = config.Priority.ValueInt64()

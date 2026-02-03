@@ -28,20 +28,20 @@ type automationRunDataSource struct {
 }
 
 type automationRunDataSourceModel struct {
-	Id                   types.Int64  `tfsdk:"id"`
-	AutomationId         types.Int64  `tfsdk:"automation_id"`
-	WorkspaceId          types.Int64  `tfsdk:"workspace_id"`
-	CompletedAt          types.String `tfsdk:"completed_at"`
-	CreatedAt            types.String `tfsdk:"created_at"`
-	RetryAt              types.String `tfsdk:"retry_at"`
-	RetriedAt            types.String `tfsdk:"retried_at"`
-	RetriedInRunId       types.Int64  `tfsdk:"retried_in_run_id"`
-	RetryOfRunId         types.Int64  `tfsdk:"retry_of_run_id"`
-	Runtime              types.String `tfsdk:"runtime"`
-	Status               types.String `tfsdk:"status"`
-	SuccessfulOperations types.Int64  `tfsdk:"successful_operations"`
-	FailedOperations     types.Int64  `tfsdk:"failed_operations"`
-	StatusMessagesUrl    types.String `tfsdk:"status_messages_url"`
+	Id                   types.Int64   `tfsdk:"id"`
+	AutomationId         types.Int64   `tfsdk:"automation_id"`
+	WorkspaceId          types.Int64   `tfsdk:"workspace_id"`
+	CompletedAt          types.String  `tfsdk:"completed_at"`
+	CreatedAt            types.String  `tfsdk:"created_at"`
+	RetryAt              types.String  `tfsdk:"retry_at"`
+	RetriedAt            types.String  `tfsdk:"retried_at"`
+	RetriedInRunId       types.Int64   `tfsdk:"retried_in_run_id"`
+	RetryOfRunId         types.Int64   `tfsdk:"retry_of_run_id"`
+	Runtime              types.Float64 `tfsdk:"runtime"`
+	Status               types.String  `tfsdk:"status"`
+	SuccessfulOperations types.Int64   `tfsdk:"successful_operations"`
+	FailedOperations     types.Int64   `tfsdk:"failed_operations"`
+	StatusMessagesUrl    types.String  `tfsdk:"status_messages_url"`
 }
 
 func (r *automationRunDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -107,7 +107,7 @@ func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaR
 				Description: "ID of the original run that this run is retrying.",
 				Computed:    true,
 			},
-			"runtime": schema.StringAttribute{
+			"runtime": schema.Float64Attribute{
 				Description: "Automation run runtime.",
 				Computed:    true,
 			},
@@ -191,7 +191,7 @@ func (r *automationRunDataSource) populateDataSourceModel(ctx context.Context, a
 	}
 	state.RetriedInRunId = types.Int64Value(automationRun.RetriedInRunId)
 	state.RetryOfRunId = types.Int64Value(automationRun.RetryOfRunId)
-	state.Runtime = types.StringValue(automationRun.Runtime)
+	state.Runtime = types.Float64Value(automationRun.Runtime)
 	state.Status = types.StringValue(automationRun.Status)
 	state.SuccessfulOperations = types.Int64Value(automationRun.SuccessfulOperations)
 	state.FailedOperations = types.Int64Value(automationRun.FailedOperations)

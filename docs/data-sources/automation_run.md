@@ -45,7 +45,7 @@ data "files_automation_run" "example_automation_run" {
 - `retried_in_run_id` (Number) ID of the run that is or will be retrying this run.
 - `retry_at` (String) If set, this automation will be retried at this date/time due to `failure` or `partial_failure`.
 - `retry_of_run_id` (Number) ID of the original run that this run is retrying.
-- `runtime` (String) Automation run runtime.
+- `runtime` (Number) Automation run runtime.
 - `status` (String) The success status of the AutomationRun. One of `running`, `success`, `partial_failure`, or `failure`.
 - `status_messages_url` (String) Link to status messages log file.
 - `successful_operations` (Number) Count of successful operations.

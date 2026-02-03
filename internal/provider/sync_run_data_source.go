@@ -28,28 +28,28 @@ type syncRunDataSource struct {
 }
 
 type syncRunDataSourceModel struct {
-	Id                   types.Int64  `tfsdk:"id"`
-	Body                 types.String `tfsdk:"body"`
-	BytesSynced          types.Int64  `tfsdk:"bytes_synced"`
-	ComparedFiles        types.Int64  `tfsdk:"compared_files"`
-	ComparedFolders      types.Int64  `tfsdk:"compared_folders"`
-	CompletedAt          types.String `tfsdk:"completed_at"`
-	CreatedAt            types.String `tfsdk:"created_at"`
-	DestRemoteServerType types.String `tfsdk:"dest_remote_server_type"`
-	DryRun               types.Bool   `tfsdk:"dry_run"`
-	ErroredFiles         types.Int64  `tfsdk:"errored_files"`
-	EstimatedBytesCount  types.Int64  `tfsdk:"estimated_bytes_count"`
-	EventErrors          types.List   `tfsdk:"event_errors"`
-	LogUrl               types.String `tfsdk:"log_url"`
-	Runtime              types.String `tfsdk:"runtime"`
-	SiteId               types.Int64  `tfsdk:"site_id"`
-	WorkspaceId          types.Int64  `tfsdk:"workspace_id"`
-	SrcRemoteServerType  types.String `tfsdk:"src_remote_server_type"`
-	Status               types.String `tfsdk:"status"`
-	SuccessfulFiles      types.Int64  `tfsdk:"successful_files"`
-	SyncId               types.Int64  `tfsdk:"sync_id"`
-	SyncName             types.String `tfsdk:"sync_name"`
-	UpdatedAt            types.String `tfsdk:"updated_at"`
+	Id                   types.Int64   `tfsdk:"id"`
+	Body                 types.String  `tfsdk:"body"`
+	BytesSynced          types.Int64   `tfsdk:"bytes_synced"`
+	ComparedFiles        types.Int64   `tfsdk:"compared_files"`
+	ComparedFolders      types.Int64   `tfsdk:"compared_folders"`
+	CompletedAt          types.String  `tfsdk:"completed_at"`
+	CreatedAt            types.String  `tfsdk:"created_at"`
+	DestRemoteServerType types.String  `tfsdk:"dest_remote_server_type"`
+	DryRun               types.Bool    `tfsdk:"dry_run"`
+	ErroredFiles         types.Int64   `tfsdk:"errored_files"`
+	EstimatedBytesCount  types.Int64   `tfsdk:"estimated_bytes_count"`
+	EventErrors          types.List    `tfsdk:"event_errors"`
+	LogUrl               types.String  `tfsdk:"log_url"`
+	Runtime              types.Float64 `tfsdk:"runtime"`
+	SiteId               types.Int64   `tfsdk:"site_id"`
+	WorkspaceId          types.Int64   `tfsdk:"workspace_id"`
+	SrcRemoteServerType  types.String  `tfsdk:"src_remote_server_type"`
+	Status               types.String  `tfsdk:"status"`
+	SuccessfulFiles      types.Int64   `tfsdk:"successful_files"`
+	SyncId               types.Int64   `tfsdk:"sync_id"`
+	SyncName             types.String  `tfsdk:"sync_name"`
+	UpdatedAt            types.String  `tfsdk:"updated_at"`
 }
 
 func (r *syncRunDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -132,7 +132,7 @@ func (r *syncRunDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Description: "Link to external log file.",
 				Computed:    true,
 			},
-			"runtime": schema.StringAttribute{
+			"runtime": schema.Float64Attribute{
 				Description: "Total runtime in seconds",
 				Computed:    true,
 			},
@@ -229,7 +229,7 @@ func (r *syncRunDataSource) populateDataSourceModel(ctx context.Context, syncRun
 	state.EventErrors, propDiags = types.ListValueFrom(ctx, types.StringType, syncRun.EventErrors)
 	diags.Append(propDiags...)
 	state.LogUrl = types.StringValue(syncRun.LogUrl)
-	state.Runtime = types.StringValue(syncRun.Runtime)
+	state.Runtime = types.Float64Value(syncRun.Runtime)
 	state.SiteId = types.Int64Value(syncRun.SiteId)
 	state.WorkspaceId = types.Int64Value(syncRun.WorkspaceId)
 	state.SrcRemoteServerType = types.StringValue(syncRun.SrcRemoteServerType)

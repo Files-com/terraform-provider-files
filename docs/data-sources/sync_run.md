@@ -42,7 +42,7 @@ data "files_sync_run" "example_sync_run" {
 - `estimated_bytes_count` (Number) Estimated bytes count for this run
 - `event_errors` (List of String) Array of errors encountered during the run
 - `log_url` (String) Link to external log file.
-- `runtime` (String) Total runtime in seconds
+- `runtime` (Number) Total runtime in seconds
 - `site_id` (Number) Site ID
 - `src_remote_server_type` (String) Source remote server type, if any
 - `status` (String) Status of the sync run (success, failure, partial_failure, in_progress, skipped)
