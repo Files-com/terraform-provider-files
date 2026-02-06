@@ -32,6 +32,7 @@ type partnerSiteRequestDataSourceModel struct {
 	PartnerId    types.Int64  `tfsdk:"partner_id"`
 	LinkedSiteId types.Int64  `tfsdk:"linked_site_id"`
 	Status       types.String `tfsdk:"status"`
+	MainSiteName types.String `tfsdk:"main_site_name"`
 	PairingKey   types.String `tfsdk:"pairing_key"`
 	CreatedAt    types.String `tfsdk:"created_at"`
 	UpdatedAt    types.String `tfsdk:"updated_at"`
@@ -78,6 +79,10 @@ func (r *partnerSiteRequestDataSource) Schema(_ context.Context, _ datasource.Sc
 			},
 			"status": schema.StringAttribute{
 				Description: "Request status (pending, approved, rejected)",
+				Computed:    true,
+			},
+			"main_site_name": schema.StringAttribute{
+				Description: "Main Site Name",
 				Computed:    true,
 			},
 			"pairing_key": schema.StringAttribute{
@@ -154,6 +159,7 @@ func (r *partnerSiteRequestDataSource) populateDataSourceModel(ctx context.Conte
 	state.PartnerId = types.Int64Value(partnerSiteRequest.PartnerId)
 	state.LinkedSiteId = types.Int64Value(partnerSiteRequest.LinkedSiteId)
 	state.Status = types.StringValue(partnerSiteRequest.Status)
+	state.MainSiteName = types.StringValue(partnerSiteRequest.MainSiteName)
 	state.PairingKey = types.StringValue(partnerSiteRequest.PairingKey)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), partnerSiteRequest.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(

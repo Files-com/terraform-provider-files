@@ -41,6 +41,7 @@ type partnerSiteRequestResourceModel struct {
 	Id           types.Int64  `tfsdk:"id"`
 	LinkedSiteId types.Int64  `tfsdk:"linked_site_id"`
 	Status       types.String `tfsdk:"status"`
+	MainSiteName types.String `tfsdk:"main_site_name"`
 	PairingKey   types.String `tfsdk:"pairing_key"`
 	CreatedAt    types.String `tfsdk:"created_at"`
 	UpdatedAt    types.String `tfsdk:"updated_at"`
@@ -104,6 +105,10 @@ func (r *partnerSiteRequestResource) Schema(_ context.Context, _ resource.Schema
 				Validators: []validator.String{
 					stringvalidator.OneOf("pending", "approved", "rejected"),
 				},
+			},
+			"main_site_name": schema.StringAttribute{
+				Description: "Main Site Name",
+				Computed:    true,
 			},
 			"pairing_key": schema.StringAttribute{
 				Description: "Pairing key used to approve this request on the target site",
@@ -277,6 +282,7 @@ func (r *partnerSiteRequestResource) populateResourceModel(ctx context.Context, 
 	state.PartnerId = types.Int64Value(partnerSiteRequest.PartnerId)
 	state.LinkedSiteId = types.Int64Value(partnerSiteRequest.LinkedSiteId)
 	state.Status = types.StringValue(partnerSiteRequest.Status)
+	state.MainSiteName = types.StringValue(partnerSiteRequest.MainSiteName)
 	state.PairingKey = types.StringValue(partnerSiteRequest.PairingKey)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), partnerSiteRequest.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(

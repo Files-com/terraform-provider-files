@@ -37,6 +37,7 @@ resource "files_partner_site_request" "example_partner_site_request" {
 - `created_at` (String) Request creation date/time
 - `id` (Number) Partner Site Request ID
 - `linked_site_id` (Number) Linked Site ID
+- `main_site_name` (String) Main Site Name
 - `pairing_key` (String) Pairing key used to approve this request on the target site
 - `status` (String) Request status (pending, approved, rejected)
 - `updated_at` (String) Request last updated date/time
