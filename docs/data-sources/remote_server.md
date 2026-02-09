@@ -181,6 +181,9 @@ data "files_remote_server" "example_remote_server" {
 - `port` (Number) Port for remote server.
 - `remote_home_path` (String) Initial home folder on remote server
 - `remote_server_credential_id` (Number) ID of Remote Server Credential, if applicable.
+- `s3_assume_role_arn` (String) AWS IAM Role ARN for AssumeRole authentication.
+- `s3_assume_role_duration_seconds` (Number) Session duration in seconds for AssumeRole authentication (900-43200).
+- `s3_assume_role_external_id` (String) External ID for AssumeRole authentication.
 - `s3_bucket` (String) S3 bucket name
 - `s3_compatible_access_key` (String) S3-compatible: Access Key
 - `s3_compatible_bucket` (String) S3-compatible: Bucket name

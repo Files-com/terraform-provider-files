@@ -160,6 +160,8 @@ resource "files_remote_server" "example_remote_server" {
   port                                          = 1
   upload_staging_path                           = "/tmp/uploads"
   remote_server_credential_id                   = 1
+  s3_assume_role_arn                            = "example"
+  s3_assume_role_duration_seconds               = 1
   s3_bucket                                     = "my-bucket"
   s3_compatible_access_key                      = "example"
   s3_compatible_bucket                          = "my-bucket"
@@ -238,6 +240,8 @@ resource "files_remote_server" "example_remote_server" {
 - `private_key_passphrase` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Passphrase for private key if needed.
 - `remote_server_credential_id` (Number) ID of Remote Server Credential, if applicable.
 - `reset_authentication` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Reset authenticated account?
+- `s3_assume_role_arn` (String) AWS IAM Role ARN for AssumeRole authentication.
+- `s3_assume_role_duration_seconds` (Number) Session duration in seconds for AssumeRole authentication (900-43200).
 - `s3_bucket` (String) S3 bucket name
 - `s3_compatible_access_key` (String) S3-compatible: Access Key
 - `s3_compatible_bucket` (String) S3-compatible: Bucket name
@@ -271,6 +275,7 @@ resource "files_remote_server" "example_remote_server" {
 - `id` (Number) Remote Server ID
 - `pinned_region` (String) If set, all communications with this remote server are made through the provided region.
 - `remote_home_path` (String) Initial home folder on remote server
+- `s3_assume_role_external_id` (String) External ID for AssumeRole authentication.
 - `supports_versioning` (Boolean) If true, this remote server supports file versioning. This value is determined automatically by Files.com.
 
 ## Import

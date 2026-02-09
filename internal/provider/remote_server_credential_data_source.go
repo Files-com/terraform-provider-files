@@ -32,6 +32,9 @@ type remoteServerCredentialDataSourceModel struct {
 	Description                             types.String `tfsdk:"description"`
 	ServerType                              types.String `tfsdk:"server_type"`
 	AwsAccessKey                            types.String `tfsdk:"aws_access_key"`
+	S3AssumeRoleArn                         types.String `tfsdk:"s3_assume_role_arn"`
+	S3AssumeRoleDurationSeconds             types.Int64  `tfsdk:"s3_assume_role_duration_seconds"`
+	S3AssumeRoleExternalId                  types.String `tfsdk:"s3_assume_role_external_id"`
 	GoogleCloudStorageS3CompatibleAccessKey types.String `tfsdk:"google_cloud_storage_s3_compatible_access_key"`
 	WasabiAccessKey                         types.String `tfsdk:"wasabi_access_key"`
 	S3CompatibleAccessKey                   types.String `tfsdk:"s3_compatible_access_key"`
@@ -90,6 +93,18 @@ func (r *remoteServerCredentialDataSource) Schema(_ context.Context, _ datasourc
 			},
 			"aws_access_key": schema.StringAttribute{
 				Description: "AWS Access Key.",
+				Computed:    true,
+			},
+			"s3_assume_role_arn": schema.StringAttribute{
+				Description: "AWS IAM Role ARN for AssumeRole authentication.",
+				Computed:    true,
+			},
+			"s3_assume_role_duration_seconds": schema.Int64Attribute{
+				Description: "Session duration in seconds for AssumeRole authentication (900-43200).",
+				Computed:    true,
+			},
+			"s3_assume_role_external_id": schema.StringAttribute{
+				Description: "External ID for AssumeRole authentication.",
 				Computed:    true,
 			},
 			"google_cloud_storage_s3_compatible_access_key": schema.StringAttribute{
@@ -161,6 +176,9 @@ func (r *remoteServerCredentialDataSource) populateDataSourceModel(ctx context.C
 	state.Description = types.StringValue(remoteServerCredential.Description)
 	state.ServerType = types.StringValue(remoteServerCredential.ServerType)
 	state.AwsAccessKey = types.StringValue(remoteServerCredential.AwsAccessKey)
+	state.S3AssumeRoleArn = types.StringValue(remoteServerCredential.S3AssumeRoleArn)
+	state.S3AssumeRoleDurationSeconds = types.Int64Value(remoteServerCredential.S3AssumeRoleDurationSeconds)
+	state.S3AssumeRoleExternalId = types.StringValue(remoteServerCredential.S3AssumeRoleExternalId)
 	state.GoogleCloudStorageS3CompatibleAccessKey = types.StringValue(remoteServerCredential.GoogleCloudStorageS3CompatibleAccessKey)
 	state.WasabiAccessKey = types.StringValue(remoteServerCredential.WasabiAccessKey)
 	state.S3CompatibleAccessKey = types.StringValue(remoteServerCredential.S3CompatibleAccessKey)

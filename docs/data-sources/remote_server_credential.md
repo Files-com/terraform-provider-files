@@ -39,6 +39,9 @@ data "files_remote_server_credential" "example_remote_server_credential" {
 - `google_cloud_storage_s3_compatible_access_key` (String) Google Cloud Storage: S3-compatible Access Key.
 - `linode_access_key` (String) Linode: Access Key
 - `name` (String) Internal name for your reference
+- `s3_assume_role_arn` (String) AWS IAM Role ARN for AssumeRole authentication.
+- `s3_assume_role_duration_seconds` (Number) Session duration in seconds for AssumeRole authentication (900-43200).
+- `s3_assume_role_external_id` (String) External ID for AssumeRole authentication.
 - `s3_compatible_access_key` (String) S3-compatible: Access Key
 - `server_type` (String) Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server.
 - `username` (String) Remote server username.

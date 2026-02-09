@@ -38,6 +38,8 @@ resource "files_remote_server" "example_remote_server" {
   port                                          = 1
   upload_staging_path                           = "/tmp/uploads"
   remote_server_credential_id                   = 1
+  s3_assume_role_arn                            = "example"
+  s3_assume_role_duration_seconds               = 1
   s3_bucket                                     = "my-bucket"
   s3_compatible_access_key                      = "example"
   s3_compatible_bucket                          = "my-bucket"

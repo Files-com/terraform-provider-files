@@ -222,7 +222,7 @@ resource "files_behavior" "example_organize_files_into_subfolders_behavior" {
   path     = "path"
   behavior = "organize_files_into_subfolders"
   value    = {
-    subfolder_name_type = "regex, extension, created_at, :provided_modified_at"
+    subfolder_name_type = "regex, extension, created_at, provided_modified_at"
     regex               = "(?<=\\-)(.*?)(?=\\.)"
     strftime_format     = "%Y-%m-%d"
     time_zone           = "Eastern Time (US & Canada)"

@@ -23,6 +23,8 @@ resource "files_remote_server_credential" "example_remote_server_credential" {
   description                                   = "More information or notes about this credential."
   server_type                                   = "s3"
   aws_access_key                                = "example"
+  s3_assume_role_arn                            = "example"
+  s3_assume_role_duration_seconds               = 1
   cloudflare_access_key                         = "example"
   filebase_access_key                           = "example"
   google_cloud_storage_s3_compatible_access_key = "example"
@@ -63,6 +65,8 @@ resource "files_remote_server_credential" "example_remote_server_credential" {
 - `password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password, if needed.
 - `private_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Private key, if needed.
 - `private_key_passphrase` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Passphrase for private key if needed.
+- `s3_assume_role_arn` (String) AWS IAM Role ARN for AssumeRole authentication.
+- `s3_assume_role_duration_seconds` (Number) Session duration in seconds for AssumeRole authentication (900-43200).
 - `s3_compatible_access_key` (String) S3-compatible: Access Key
 - `s3_compatible_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) S3-compatible: Secret Key
 - `server_type` (String) Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server.
@@ -74,6 +78,7 @@ resource "files_remote_server_credential" "example_remote_server_credential" {
 ### Read-Only
 
 - `id` (Number) Remote Server Credential ID
+- `s3_assume_role_external_id` (String) External ID for AssumeRole authentication.
 
 ## Import
 

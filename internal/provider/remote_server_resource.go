@@ -49,6 +49,8 @@ type remoteServerResourceModel struct {
 	S3Bucket                                types.String `tfsdk:"s3_bucket"`
 	S3Region                                types.String `tfsdk:"s3_region"`
 	AwsAccessKey                            types.String `tfsdk:"aws_access_key"`
+	S3AssumeRoleArn                         types.String `tfsdk:"s3_assume_role_arn"`
+	S3AssumeRoleDurationSeconds             types.Int64  `tfsdk:"s3_assume_role_duration_seconds"`
 	ServerCertificate                       types.String `tfsdk:"server_certificate"`
 	ServerHostKey                           types.String `tfsdk:"server_host_key"`
 	ServerType                              types.String `tfsdk:"server_type"`
@@ -113,6 +115,7 @@ type remoteServerResourceModel struct {
 	AuthenticationMethod                    types.String `tfsdk:"authentication_method"`
 	RemoteHomePath                          types.String `tfsdk:"remote_home_path"`
 	PinnedRegion                            types.String `tfsdk:"pinned_region"`
+	S3AssumeRoleExternalId                  types.String `tfsdk:"s3_assume_role_external_id"`
 	AuthStatus                              types.String `tfsdk:"auth_status"`
 	AuthAccountName                         types.String `tfsdk:"auth_account_name"`
 	FilesAgentApiToken                      types.String `tfsdk:"files_agent_api_token"`
@@ -254,6 +257,22 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"s3_assume_role_arn": schema.StringAttribute{
+				Description: "AWS IAM Role ARN for AssumeRole authentication.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"s3_assume_role_duration_seconds": schema.Int64Attribute{
+				Description: "Session duration in seconds for AssumeRole authentication (900-43200).",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"server_certificate": schema.StringAttribute{
@@ -710,6 +729,10 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				Description: "If set, all communications with this remote server are made through the provided region.",
 				Computed:    true,
 			},
+			"s3_assume_role_external_id": schema.StringAttribute{
+				Description: "External ID for AssumeRole authentication.",
+				Computed:    true,
+			},
 			"auth_status": schema.StringAttribute{
 				Description: "Either `in_setup` or `complete`",
 				Computed:    true,
@@ -829,6 +852,8 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.Port = plan.Port.ValueInt64()
 	paramsRemoteServerCreate.UploadStagingPath = plan.UploadStagingPath.ValueString()
 	paramsRemoteServerCreate.RemoteServerCredentialId = plan.RemoteServerCredentialId.ValueInt64()
+	paramsRemoteServerCreate.S3AssumeRoleArn = plan.S3AssumeRoleArn.ValueString()
+	paramsRemoteServerCreate.S3AssumeRoleDurationSeconds = plan.S3AssumeRoleDurationSeconds.ValueInt64()
 	paramsRemoteServerCreate.S3Bucket = plan.S3Bucket.ValueString()
 	paramsRemoteServerCreate.S3CompatibleAccessKey = plan.S3CompatibleAccessKey.ValueString()
 	paramsRemoteServerCreate.S3CompatibleBucket = plan.S3CompatibleBucket.ValueString()
@@ -1092,6 +1117,12 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	if !config.RemoteServerCredentialId.IsNull() && !config.RemoteServerCredentialId.IsUnknown() {
 		paramsRemoteServerUpdate["remote_server_credential_id"] = config.RemoteServerCredentialId.ValueInt64()
 	}
+	if !config.S3AssumeRoleArn.IsNull() && !config.S3AssumeRoleArn.IsUnknown() {
+		paramsRemoteServerUpdate["s3_assume_role_arn"] = config.S3AssumeRoleArn.ValueString()
+	}
+	if !config.S3AssumeRoleDurationSeconds.IsNull() && !config.S3AssumeRoleDurationSeconds.IsUnknown() {
+		paramsRemoteServerUpdate["s3_assume_role_duration_seconds"] = config.S3AssumeRoleDurationSeconds.ValueInt64()
+	}
 	if !config.S3Bucket.IsNull() && !config.S3Bucket.IsUnknown() {
 		paramsRemoteServerUpdate["s3_bucket"] = config.S3Bucket.ValueString()
 	}
@@ -1220,6 +1251,9 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.S3Bucket = types.StringValue(remoteServer.S3Bucket)
 	state.S3Region = types.StringValue(remoteServer.S3Region)
 	state.AwsAccessKey = types.StringValue(remoteServer.AwsAccessKey)
+	state.S3AssumeRoleArn = types.StringValue(remoteServer.S3AssumeRoleArn)
+	state.S3AssumeRoleDurationSeconds = types.Int64Value(remoteServer.S3AssumeRoleDurationSeconds)
+	state.S3AssumeRoleExternalId = types.StringValue(remoteServer.S3AssumeRoleExternalId)
 	state.ServerCertificate = types.StringValue(remoteServer.ServerCertificate)
 	state.ServerHostKey = types.StringValue(remoteServer.ServerHostKey)
 	state.ServerType = types.StringValue(remoteServer.ServerType)

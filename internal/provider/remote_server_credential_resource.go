@@ -40,6 +40,8 @@ type remoteServerCredentialResourceModel struct {
 	Description                             types.String `tfsdk:"description"`
 	ServerType                              types.String `tfsdk:"server_type"`
 	AwsAccessKey                            types.String `tfsdk:"aws_access_key"`
+	S3AssumeRoleArn                         types.String `tfsdk:"s3_assume_role_arn"`
+	S3AssumeRoleDurationSeconds             types.Int64  `tfsdk:"s3_assume_role_duration_seconds"`
 	GoogleCloudStorageS3CompatibleAccessKey types.String `tfsdk:"google_cloud_storage_s3_compatible_access_key"`
 	WasabiAccessKey                         types.String `tfsdk:"wasabi_access_key"`
 	S3CompatibleAccessKey                   types.String `tfsdk:"s3_compatible_access_key"`
@@ -65,6 +67,7 @@ type remoteServerCredentialResourceModel struct {
 	S3CompatibleSecretKey                   types.String `tfsdk:"s3_compatible_secret_key"`
 	WasabiSecretKey                         types.String `tfsdk:"wasabi_secret_key"`
 	Id                                      types.Int64  `tfsdk:"id"`
+	S3AssumeRoleExternalId                  types.String `tfsdk:"s3_assume_role_external_id"`
 }
 
 func (r *remoteServerCredentialResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -136,6 +139,22 @@ func (r *remoteServerCredentialResource) Schema(_ context.Context, _ resource.Sc
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"s3_assume_role_arn": schema.StringAttribute{
+				Description: "AWS IAM Role ARN for AssumeRole authentication.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"s3_assume_role_duration_seconds": schema.Int64Attribute{
+				Description: "Session duration in seconds for AssumeRole authentication (900-43200).",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"google_cloud_storage_s3_compatible_access_key": schema.StringAttribute{
@@ -286,6 +305,10 @@ func (r *remoteServerCredentialResource) Schema(_ context.Context, _ resource.Sc
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"s3_assume_role_external_id": schema.StringAttribute{
+				Description: "External ID for AssumeRole authentication.",
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -309,6 +332,8 @@ func (r *remoteServerCredentialResource) Create(ctx context.Context, req resourc
 	paramsRemoteServerCredentialCreate.Description = plan.Description.ValueString()
 	paramsRemoteServerCredentialCreate.ServerType = paramsRemoteServerCredentialCreate.ServerType.Enum()[plan.ServerType.ValueString()]
 	paramsRemoteServerCredentialCreate.AwsAccessKey = plan.AwsAccessKey.ValueString()
+	paramsRemoteServerCredentialCreate.S3AssumeRoleArn = plan.S3AssumeRoleArn.ValueString()
+	paramsRemoteServerCredentialCreate.S3AssumeRoleDurationSeconds = plan.S3AssumeRoleDurationSeconds.ValueInt64()
 	paramsRemoteServerCredentialCreate.CloudflareAccessKey = plan.CloudflareAccessKey.ValueString()
 	paramsRemoteServerCredentialCreate.FilebaseAccessKey = plan.FilebaseAccessKey.ValueString()
 	paramsRemoteServerCredentialCreate.GoogleCloudStorageS3CompatibleAccessKey = plan.GoogleCloudStorageS3CompatibleAccessKey.ValueString()
@@ -422,6 +447,12 @@ func (r *remoteServerCredentialResource) Update(ctx context.Context, req resourc
 	}
 	if !config.AwsAccessKey.IsNull() && !config.AwsAccessKey.IsUnknown() {
 		paramsRemoteServerCredentialUpdate["aws_access_key"] = config.AwsAccessKey.ValueString()
+	}
+	if !config.S3AssumeRoleArn.IsNull() && !config.S3AssumeRoleArn.IsUnknown() {
+		paramsRemoteServerCredentialUpdate["s3_assume_role_arn"] = config.S3AssumeRoleArn.ValueString()
+	}
+	if !config.S3AssumeRoleDurationSeconds.IsNull() && !config.S3AssumeRoleDurationSeconds.IsUnknown() {
+		paramsRemoteServerCredentialUpdate["s3_assume_role_duration_seconds"] = config.S3AssumeRoleDurationSeconds.ValueInt64()
 	}
 	if !config.CloudflareAccessKey.IsNull() && !config.CloudflareAccessKey.IsUnknown() {
 		paramsRemoteServerCredentialUpdate["cloudflare_access_key"] = config.CloudflareAccessKey.ValueString()
@@ -569,6 +600,9 @@ func (r *remoteServerCredentialResource) populateResourceModel(ctx context.Conte
 	state.Description = types.StringValue(remoteServerCredential.Description)
 	state.ServerType = types.StringValue(remoteServerCredential.ServerType)
 	state.AwsAccessKey = types.StringValue(remoteServerCredential.AwsAccessKey)
+	state.S3AssumeRoleArn = types.StringValue(remoteServerCredential.S3AssumeRoleArn)
+	state.S3AssumeRoleDurationSeconds = types.Int64Value(remoteServerCredential.S3AssumeRoleDurationSeconds)
+	state.S3AssumeRoleExternalId = types.StringValue(remoteServerCredential.S3AssumeRoleExternalId)
 	state.GoogleCloudStorageS3CompatibleAccessKey = types.StringValue(remoteServerCredential.GoogleCloudStorageS3CompatibleAccessKey)
 	state.WasabiAccessKey = types.StringValue(remoteServerCredential.WasabiAccessKey)
 	state.S3CompatibleAccessKey = types.StringValue(remoteServerCredential.S3CompatibleAccessKey)

@@ -44,6 +44,9 @@ type remoteServerDataSourceModel struct {
 	S3Bucket                                types.String `tfsdk:"s3_bucket"`
 	S3Region                                types.String `tfsdk:"s3_region"`
 	AwsAccessKey                            types.String `tfsdk:"aws_access_key"`
+	S3AssumeRoleArn                         types.String `tfsdk:"s3_assume_role_arn"`
+	S3AssumeRoleDurationSeconds             types.Int64  `tfsdk:"s3_assume_role_duration_seconds"`
+	S3AssumeRoleExternalId                  types.String `tfsdk:"s3_assume_role_external_id"`
 	ServerCertificate                       types.String `tfsdk:"server_certificate"`
 	ServerHostKey                           types.String `tfsdk:"server_host_key"`
 	ServerType                              types.String `tfsdk:"server_type"`
@@ -190,6 +193,18 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			},
 			"aws_access_key": schema.StringAttribute{
 				Description: "AWS Access Key.",
+				Computed:    true,
+			},
+			"s3_assume_role_arn": schema.StringAttribute{
+				Description: "AWS IAM Role ARN for AssumeRole authentication.",
+				Computed:    true,
+			},
+			"s3_assume_role_duration_seconds": schema.Int64Attribute{
+				Description: "Session duration in seconds for AssumeRole authentication (900-43200).",
+				Computed:    true,
+			},
+			"s3_assume_role_external_id": schema.StringAttribute{
+				Description: "External ID for AssumeRole authentication.",
 				Computed:    true,
 			},
 			"server_certificate": schema.StringAttribute{
@@ -433,6 +448,9 @@ func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, re
 	state.S3Bucket = types.StringValue(remoteServer.S3Bucket)
 	state.S3Region = types.StringValue(remoteServer.S3Region)
 	state.AwsAccessKey = types.StringValue(remoteServer.AwsAccessKey)
+	state.S3AssumeRoleArn = types.StringValue(remoteServer.S3AssumeRoleArn)
+	state.S3AssumeRoleDurationSeconds = types.Int64Value(remoteServer.S3AssumeRoleDurationSeconds)
+	state.S3AssumeRoleExternalId = types.StringValue(remoteServer.S3AssumeRoleExternalId)
 	state.ServerCertificate = types.StringValue(remoteServer.ServerCertificate)
 	state.ServerHostKey = types.StringValue(remoteServer.ServerHostKey)
 	state.ServerType = types.StringValue(remoteServer.ServerType)
