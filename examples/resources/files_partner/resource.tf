@@ -4,9 +4,9 @@ resource "files_partner" "example_partner" {
   allow_providing_gpg_keys     = false
   allow_user_creation          = false
   notes                        = "This is a note about the partner."
-  root_folder                  = "/AcmeCorp"
   tags                         = "example"
   name                         = "Acme Corp"
+  root_folder                  = "/AcmeCorp"
   workspace_id                 = 1
 }
 

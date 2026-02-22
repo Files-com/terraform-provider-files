@@ -35,13 +35,13 @@ type partnerResource struct {
 
 type partnerResourceModel struct {
 	Name                      types.String `tfsdk:"name"`
+	RootFolder                types.String `tfsdk:"root_folder"`
 	AllowBypassing2faPolicies types.Bool   `tfsdk:"allow_bypassing_2fa_policies"`
 	AllowCredentialChanges    types.Bool   `tfsdk:"allow_credential_changes"`
 	AllowProvidingGpgKeys     types.Bool   `tfsdk:"allow_providing_gpg_keys"`
 	AllowUserCreation         types.Bool   `tfsdk:"allow_user_creation"`
 	WorkspaceId               types.Int64  `tfsdk:"workspace_id"`
 	Notes                     types.String `tfsdk:"notes"`
-	RootFolder                types.String `tfsdk:"root_folder"`
 	Tags                      types.String `tfsdk:"tags"`
 	Id                        types.Int64  `tfsdk:"id"`
 	PartnerAdminIds           types.List   `tfsdk:"partner_admin_ids"`
@@ -77,6 +77,10 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "The name of the Partner.",
+				Required:    true,
+			},
+			"root_folder": schema.StringAttribute{
+				Description: "The root folder path for this Partner.",
 				Required:    true,
 			},
 			"allow_bypassing_2fa_policies": schema.BoolAttribute{
@@ -122,14 +126,6 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 			},
 			"notes": schema.StringAttribute{
 				Description: "Notes about this Partner.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"root_folder": schema.StringAttribute{
-				Description: "The root folder path for this Partner.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -193,9 +189,9 @@ func (r *partnerResource) Create(ctx context.Context, req resource.CreateRequest
 		paramsPartnerCreate.AllowUserCreation = plan.AllowUserCreation.ValueBoolPointer()
 	}
 	paramsPartnerCreate.Notes = plan.Notes.ValueString()
-	paramsPartnerCreate.RootFolder = plan.RootFolder.ValueString()
 	paramsPartnerCreate.Tags = plan.Tags.ValueString()
 	paramsPartnerCreate.Name = plan.Name.ValueString()
+	paramsPartnerCreate.RootFolder = plan.RootFolder.ValueString()
 	paramsPartnerCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
@@ -289,14 +285,14 @@ func (r *partnerResource) Update(ctx context.Context, req resource.UpdateRequest
 	if !config.Notes.IsNull() && !config.Notes.IsUnknown() {
 		paramsPartnerUpdate["notes"] = config.Notes.ValueString()
 	}
-	if !config.RootFolder.IsNull() && !config.RootFolder.IsUnknown() {
-		paramsPartnerUpdate["root_folder"] = config.RootFolder.ValueString()
-	}
 	if !config.Tags.IsNull() && !config.Tags.IsUnknown() {
 		paramsPartnerUpdate["tags"] = config.Tags.ValueString()
 	}
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
 		paramsPartnerUpdate["name"] = config.Name.ValueString()
+	}
+	if !config.RootFolder.IsNull() && !config.RootFolder.IsUnknown() {
+		paramsPartnerUpdate["root_folder"] = config.RootFolder.ValueString()
 	}
 
 	if resp.Diagnostics.HasError() {

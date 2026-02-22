@@ -19,9 +19,9 @@ resource "files_partner" "example_partner" {
   allow_providing_gpg_keys     = false
   allow_user_creation          = false
   notes                        = "This is a note about the partner."
-  root_folder                  = "/AcmeCorp"
   tags                         = "example"
   name                         = "Acme Corp"
+  root_folder                  = "/AcmeCorp"
   workspace_id                 = 1
 }
 ```
@@ -32,6 +32,7 @@ resource "files_partner" "example_partner" {
 ### Required
 
 - `name` (String) The name of the Partner.
+- `root_folder` (String) The root folder path for this Partner.
 
 ### Optional
 
@@ -40,7 +41,6 @@ resource "files_partner" "example_partner" {
 - `allow_providing_gpg_keys` (Boolean) Allow Partner Admins to provide GPG keys.
 - `allow_user_creation` (Boolean) Allow Partner Admins to create users.
 - `notes` (String) Notes about this Partner.
-- `root_folder` (String) The root folder path for this Partner.
 - `tags` (String) Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.
 - `workspace_id` (Number) ID of the Workspace associated with this Partner.
 
