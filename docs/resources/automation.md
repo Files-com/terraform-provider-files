@@ -631,7 +631,7 @@ resource "files_automation" "example_automation" {
 - `source` (String) Source path/glob.  See Automation docs for exact description, but this is used to filter for files in the `path` to find files to operate on. Supports globs, except on remote mounts.
 - `sync_ids` (List of Number) IDs of syncs to run by this Automation. This is the new way to specify syncs, and it is recommended to use this instead of `legacy_sync_ids`.
 - `trigger` (String) How this automation is triggered to run.
-- `trigger_actions` (List of String) If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, read, update, destroy, move, archived_delete, copy
+- `trigger_actions` (List of String) If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, copy, move, archived_delete, update, read, destroy
 - `user_ids` (List of Number) IDs of Users for the Automation (i.e. who to Request File from)
 - `value` (Dynamic) A Hash of attributes specific to the automation type.
 - `workspace_id` (Number) Workspace ID

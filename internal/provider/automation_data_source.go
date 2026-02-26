@@ -241,7 +241,7 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				ElementType: types.Int64Type,
 			},
 			"trigger_actions": schema.ListAttribute{
-				Description: "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, read, update, destroy, move, archived_delete, copy",
+				Description: "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, copy, move, archived_delete, update, read, destroy",
 				Computed:    true,
 				ElementType: types.StringType,
 			},
