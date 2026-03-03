@@ -197,6 +197,8 @@ resource "files_behavior" "example_override_upload_filename_behavior" {
   behavior = "override_upload_filename"
   value    = {
     filename_override_pattern = "%Fb_addition5%Fe"
+    filename_replace_from     = null
+    filename_replace_to       = null
     time_zone                 = "Eastern Time (US & Canada)"
   }
 }
@@ -270,6 +272,8 @@ resource "files_behavior" "example_archive_overwritten_or_deleted_files_behavior
   behavior = "archive_overwritten_or_deleted_files"
   value    = {
     filename_override_pattern = "%Fb_addition5%Fe"
+    filename_replace_from     = null
+    filename_replace_to       = null
     time_zone                 = "Eastern Time (US & Canada)"
     archive_path              = "/Archive"
   }
