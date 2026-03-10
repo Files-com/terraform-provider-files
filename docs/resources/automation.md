@@ -534,16 +534,7 @@ Retrying of entire Automation Runs must be explicitly enabled by setting the `re
 ```terraform
 resource "files_automation" "example_automation" {
   source                               = "example"
-  destinations                         = [
-    "folder_a/file_a.txt",
-    {
-      folder_path = "folder_b"
-      file_path   = "file_b.txt"
-    },
-    {
-      folder_path = "folder_c"
-    }
-  ]
+  destinations                         = ["folder_a/file_a.txt", "folder_b/", "./relative-folder/"]
   destination_replace_from             = "example"
   destination_replace_to               = "example"
   interval                             = "year"
