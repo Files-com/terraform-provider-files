@@ -32,6 +32,9 @@ data "files_site" "example_site" {
 - `admin_user_id` (Number) User ID for the main site administrator
 - `admins_bypass_locked_subfolders` (Boolean) Allow admins to bypass the locked subfolders setting.
 - `allow_bundle_names` (Boolean) Are manual Bundle names allowed?
+- `allow_user_level_2fa_override` (Boolean) Allow the site-wide two-factor authentication requirement to be overriden on a per-user-basis?
+- `allow_user_level_allowed_ip_override` (Boolean) Allow the site-wide allowed IP restriction to be overriden on a per-user-basis?
+- `allow_user_level_ssl_override` (Boolean) Allow the site-wide FTP SSL requirement to be overriden on a per-user-basis?
 - `allowed_2fa_method_bypass_for_ftp_sftp_dav` (Boolean) Are users allowed to configure their two factor authentication to be bypassed for FTP/SFTP/WebDAV?
 - `allowed_2fa_method_email` (Boolean) Is OTP via email two factor authentication allowed?
 - `allowed_2fa_method_sms` (Boolean) Is SMS two factor authentication allowed?

@@ -54,6 +54,9 @@ resource "files_site" "example_site" {
   include_password_in_welcome_email             = false
   allowed_countries                             = "US,DE"
   allowed_ips                                   = "example"
+  allow_user_level_2fa_override                 = false
+  allow_user_level_allowed_ip_override          = false
+  allow_user_level_ssl_override                 = false
   disallowed_countries                          = "US,DE"
   days_to_retain_backups                        = 1
   max_prior_passwords                           = 1

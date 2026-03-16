@@ -42,6 +42,9 @@ type siteDataSourceModel struct {
 	AdminUserId                              types.Int64   `tfsdk:"admin_user_id"`
 	AdminsBypassLockedSubfolders             types.Bool    `tfsdk:"admins_bypass_locked_subfolders"`
 	AllowBundleNames                         types.Bool    `tfsdk:"allow_bundle_names"`
+	AllowUserLevel2faOverride                types.Bool    `tfsdk:"allow_user_level_2fa_override"`
+	AllowUserLevelAllowedIpOverride          types.Bool    `tfsdk:"allow_user_level_allowed_ip_override"`
+	AllowUserLevelSslOverride                types.Bool    `tfsdk:"allow_user_level_ssl_override"`
 	AllowedCountries                         types.String  `tfsdk:"allowed_countries"`
 	AllowedIps                               types.String  `tfsdk:"allowed_ips"`
 	AlwaysMkdirParents                       types.Bool    `tfsdk:"always_mkdir_parents"`
@@ -282,6 +285,18 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"allow_bundle_names": schema.BoolAttribute{
 				Description: "Are manual Bundle names allowed?",
+				Computed:    true,
+			},
+			"allow_user_level_2fa_override": schema.BoolAttribute{
+				Description: "Allow the site-wide two-factor authentication requirement to be overriden on a per-user-basis?",
+				Computed:    true,
+			},
+			"allow_user_level_allowed_ip_override": schema.BoolAttribute{
+				Description: "Allow the site-wide allowed IP restriction to be overriden on a per-user-basis?",
+				Computed:    true,
+			},
+			"allow_user_level_ssl_override": schema.BoolAttribute{
+				Description: "Allow the site-wide FTP SSL requirement to be overriden on a per-user-basis?",
 				Computed:    true,
 			},
 			"allowed_countries": schema.StringAttribute{
@@ -973,6 +988,9 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.AdminUserId = types.Int64Value(site.AdminUserId)
 	state.AdminsBypassLockedSubfolders = types.BoolPointerValue(site.AdminsBypassLockedSubfolders)
 	state.AllowBundleNames = types.BoolPointerValue(site.AllowBundleNames)
+	state.AllowUserLevel2faOverride = types.BoolPointerValue(site.AllowUserLevel2faOverride)
+	state.AllowUserLevelAllowedIpOverride = types.BoolPointerValue(site.AllowUserLevelAllowedIpOverride)
+	state.AllowUserLevelSslOverride = types.BoolPointerValue(site.AllowUserLevelSslOverride)
 	state.AllowedCountries = types.StringValue(site.AllowedCountries)
 	state.AllowedIps = types.StringValue(site.AllowedIps)
 	state.AlwaysMkdirParents = types.BoolPointerValue(site.AlwaysMkdirParents)

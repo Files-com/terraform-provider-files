@@ -49,6 +49,9 @@ type siteResourceModel struct {
 	Allowed2faMethodBypassForFtpSftpDav      types.Bool    `tfsdk:"allowed_2fa_method_bypass_for_ftp_sftp_dav"`
 	AdminsBypassLockedSubfolders             types.Bool    `tfsdk:"admins_bypass_locked_subfolders"`
 	AllowBundleNames                         types.Bool    `tfsdk:"allow_bundle_names"`
+	AllowUserLevel2faOverride                types.Bool    `tfsdk:"allow_user_level_2fa_override"`
+	AllowUserLevelAllowedIpOverride          types.Bool    `tfsdk:"allow_user_level_allowed_ip_override"`
+	AllowUserLevelSslOverride                types.Bool    `tfsdk:"allow_user_level_ssl_override"`
 	AllowedCountries                         types.String  `tfsdk:"allowed_countries"`
 	AllowedIps                               types.String  `tfsdk:"allowed_ips"`
 	AlwaysMkdirParents                       types.Bool    `tfsdk:"always_mkdir_parents"`
@@ -323,6 +326,30 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"allow_bundle_names": schema.BoolAttribute{
 				Description: "Are manual Bundle names allowed?",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"allow_user_level_2fa_override": schema.BoolAttribute{
+				Description: "Allow the site-wide two-factor authentication requirement to be overriden on a per-user-basis?",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"allow_user_level_allowed_ip_override": schema.BoolAttribute{
+				Description: "Allow the site-wide allowed IP restriction to be overriden on a per-user-basis?",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"allow_user_level_ssl_override": schema.BoolAttribute{
+				Description: "Allow the site-wide FTP SSL requirement to be overriden on a per-user-basis?",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -1771,6 +1798,15 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.AllowedIps.IsNull() && !config.AllowedIps.IsUnknown() {
 		paramsSiteUpdate["allowed_ips"] = config.AllowedIps.ValueString()
 	}
+	if !config.AllowUserLevel2faOverride.IsNull() && !config.AllowUserLevel2faOverride.IsUnknown() {
+		paramsSiteUpdate["allow_user_level_2fa_override"] = config.AllowUserLevel2faOverride.ValueBool()
+	}
+	if !config.AllowUserLevelAllowedIpOverride.IsNull() && !config.AllowUserLevelAllowedIpOverride.IsUnknown() {
+		paramsSiteUpdate["allow_user_level_allowed_ip_override"] = config.AllowUserLevelAllowedIpOverride.ValueBool()
+	}
+	if !config.AllowUserLevelSslOverride.IsNull() && !config.AllowUserLevelSslOverride.IsUnknown() {
+		paramsSiteUpdate["allow_user_level_ssl_override"] = config.AllowUserLevelSslOverride.ValueBool()
+	}
 	if !config.DisallowedCountries.IsNull() && !config.DisallowedCountries.IsUnknown() {
 		paramsSiteUpdate["disallowed_countries"] = config.DisallowedCountries.ValueString()
 	}
@@ -2099,6 +2135,9 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.AdminUserId = types.Int64Value(site.AdminUserId)
 	state.AdminsBypassLockedSubfolders = types.BoolPointerValue(site.AdminsBypassLockedSubfolders)
 	state.AllowBundleNames = types.BoolPointerValue(site.AllowBundleNames)
+	state.AllowUserLevel2faOverride = types.BoolPointerValue(site.AllowUserLevel2faOverride)
+	state.AllowUserLevelAllowedIpOverride = types.BoolPointerValue(site.AllowUserLevelAllowedIpOverride)
+	state.AllowUserLevelSslOverride = types.BoolPointerValue(site.AllowUserLevelSslOverride)
 	state.AllowedCountries = types.StringValue(site.AllowedCountries)
 	state.AllowedIps = types.StringValue(site.AllowedIps)
 	state.AlwaysMkdirParents = types.BoolPointerValue(site.AlwaysMkdirParents)

@@ -74,6 +74,9 @@ resource "files_site" "example_site" {
   include_password_in_welcome_email             = false
   allowed_countries                             = "US,DE"
   allowed_ips                                   = "example"
+  allow_user_level_2fa_override                 = false
+  allow_user_level_allowed_ip_override          = false
+  allow_user_level_ssl_override                 = false
   disallowed_countries                          = "US,DE"
   days_to_retain_backups                        = 1
   max_prior_passwords                           = 1
@@ -188,6 +191,9 @@ resource "files_site" "example_site" {
 - `additional_text_file_types` (List of String) Additional extensions that are considered text files
 - `admins_bypass_locked_subfolders` (Boolean) Allow admins to bypass the locked subfolders setting.
 - `allow_bundle_names` (Boolean) Are manual Bundle names allowed?
+- `allow_user_level_2fa_override` (Boolean) Allow the site-wide two-factor authentication requirement to be overriden on a per-user-basis?
+- `allow_user_level_allowed_ip_override` (Boolean) Allow the site-wide allowed IP restriction to be overriden on a per-user-basis?
+- `allow_user_level_ssl_override` (Boolean) Allow the site-wide FTP SSL requirement to be overriden on a per-user-basis?
 - `allowed_2fa_method_bypass_for_ftp_sftp_dav` (Boolean) Are users allowed to configure their two factor authentication to be bypassed for FTP/SFTP/WebDAV?
 - `allowed_2fa_method_email` (Boolean) Is OTP via email two factor authentication allowed?
 - `allowed_2fa_method_sms` (Boolean) Is SMS two factor authentication allowed?
