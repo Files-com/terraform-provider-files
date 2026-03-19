@@ -45,6 +45,7 @@ type userDataSourceModel struct {
 	DavPermission                    types.Bool   `tfsdk:"dav_permission"`
 	Disabled                         types.Bool   `tfsdk:"disabled"`
 	DisabledExpiredOrInactive        types.Bool   `tfsdk:"disabled_expired_or_inactive"`
+	DesktopConfigurationProfileId    types.Int64  `tfsdk:"desktop_configuration_profile_id"`
 	Email                            types.String `tfsdk:"email"`
 	FilesystemLayout                 types.String `tfsdk:"filesystem_layout"`
 	FirstLoginAt                     types.String `tfsdk:"first_login_at"`
@@ -197,6 +198,10 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"disabled_expired_or_inactive": schema.BoolAttribute{
 				Description: "Computed property that returns true if user disabled or expired or inactive.",
+				Computed:    true,
+			},
+			"desktop_configuration_profile_id": schema.Int64Attribute{
+				Description: "Desktop Configuration Profile ID assigned directly to this user, if any.",
 				Computed:    true,
 			},
 			"email": schema.StringAttribute{
@@ -488,6 +493,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.DavPermission = types.BoolPointerValue(user.DavPermission)
 	state.Disabled = types.BoolPointerValue(user.Disabled)
 	state.DisabledExpiredOrInactive = types.BoolPointerValue(user.DisabledExpiredOrInactive)
+	state.DesktopConfigurationProfileId = types.Int64Value(user.DesktopConfigurationProfileId)
 	state.Email = types.StringValue(user.Email)
 	state.FilesystemLayout = types.StringValue(user.FilesystemLayout)
 	if err := lib.TimeToStringType(ctx, path.Root("first_login_at"), user.FirstLoginAt, &state.FirstLoginAt); err != nil {

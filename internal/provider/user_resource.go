@@ -48,6 +48,7 @@ type userResourceModel struct {
 	BypassUserLifecycleRules         types.Bool              `tfsdk:"bypass_user_lifecycle_rules"`
 	DavPermission                    types.Bool              `tfsdk:"dav_permission"`
 	Disabled                         types.Bool              `tfsdk:"disabled"`
+	DesktopConfigurationProfileId    types.Int64             `tfsdk:"desktop_configuration_profile_id"`
 	Email                            types.String            `tfsdk:"email"`
 	FilesystemLayout                 types.String            `tfsdk:"filesystem_layout"`
 	FtpPermission                    types.Bool              `tfsdk:"ftp_permission"`
@@ -226,6 +227,14 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"desktop_configuration_profile_id": schema.Int64Attribute{
+				Description: "Desktop Configuration Profile ID assigned directly to this user, if any.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"email": schema.StringAttribute{
@@ -739,6 +748,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !plan.DavPermission.IsNull() && !plan.DavPermission.IsUnknown() {
 		paramsUserCreate.DavPermission = plan.DavPermission.ValueBoolPointer()
 	}
+	paramsUserCreate.DesktopConfigurationProfileId = plan.DesktopConfigurationProfileId.ValueInt64()
 	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
 		paramsUserCreate.Disabled = plan.Disabled.ValueBoolPointer()
 	}
@@ -962,6 +972,9 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.DavPermission.IsNull() && !config.DavPermission.IsUnknown() {
 		paramsUserUpdate["dav_permission"] = config.DavPermission.ValueBool()
 	}
+	if !config.DesktopConfigurationProfileId.IsNull() && !config.DesktopConfigurationProfileId.IsUnknown() {
+		paramsUserUpdate["desktop_configuration_profile_id"] = config.DesktopConfigurationProfileId.ValueInt64()
+	}
 	if !config.Disabled.IsNull() && !config.Disabled.IsUnknown() {
 		paramsUserUpdate["disabled"] = config.Disabled.ValueBool()
 	}
@@ -1169,6 +1182,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.DavPermission = types.BoolPointerValue(user.DavPermission)
 	state.Disabled = types.BoolPointerValue(user.Disabled)
 	state.DisabledExpiredOrInactive = types.BoolPointerValue(user.DisabledExpiredOrInactive)
+	state.DesktopConfigurationProfileId = types.Int64Value(user.DesktopConfigurationProfileId)
 	state.Email = types.StringValue(user.Email)
 	state.FilesystemLayout = types.StringValue(user.FilesystemLayout)
 	if err := lib.TimeToStringType(ctx, path.Root("first_login_at"), user.FirstLoginAt, &state.FirstLoginAt); err != nil {
