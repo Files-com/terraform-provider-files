@@ -94,6 +94,7 @@ resource "files_site" "example_site" {
   dav_enabled                                   = false
   ftp_enabled                                   = false
   sftp_enabled                                  = false
+  sftp_finalize_partial_uploads                 = false
   users_can_create_api_keys                     = false
   users_can_create_ssh_keys                     = false
   show_user_notifications_log_in_link           = false

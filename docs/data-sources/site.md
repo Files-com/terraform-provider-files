@@ -163,6 +163,7 @@ data "files_site" "example_site" {
 - `session` (String) Current session
 - `session_expiry_minutes` (Number) Session expiry in minutes
 - `sftp_enabled` (Boolean) Is SFTP enabled?
+- `sftp_finalize_partial_uploads` (Boolean) Finalize partial SFTP uploads from interrupted connections? Default: true.
 - `sftp_host_key_type` (String) Sftp Host Key Type
 - `sftp_insecure_ciphers` (Boolean) If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility.
 - `sftp_insecure_diffie_hellman` (Boolean) If true, we will allow weak Diffie Hellman parameters to be used within ciphers for SFTP that are otherwise on our secure list.  This has the effect of making the cipher weaker than our normal threshold for security, but is required to support certain legacy or broken SSH and MFT clients.  Enabling this weakens security, but not nearly as much as enabling the full `sftp_insecure_ciphers` option.

@@ -162,6 +162,7 @@ type siteDataSourceModel struct {
 	RequireLogoutFromBundlesAndInboxes       types.Bool    `tfsdk:"require_logout_from_bundles_and_inboxes"`
 	Session                                  types.String  `tfsdk:"session"`
 	SftpEnabled                              types.Bool    `tfsdk:"sftp_enabled"`
+	SftpFinalizePartialUploads               types.Bool    `tfsdk:"sftp_finalize_partial_uploads"`
 	SftpHostKeyType                          types.String  `tfsdk:"sftp_host_key_type"`
 	ActiveSftpHostKeyId                      types.Int64   `tfsdk:"active_sftp_host_key_id"`
 	SftpInsecureCiphers                      types.Bool    `tfsdk:"sftp_insecure_ciphers"`
@@ -768,6 +769,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Is SFTP enabled?",
 				Computed:    true,
 			},
+			"sftp_finalize_partial_uploads": schema.BoolAttribute{
+				Description: "Finalize partial SFTP uploads from interrupted connections? Default: true.",
+				Computed:    true,
+			},
 			"sftp_host_key_type": schema.StringAttribute{
 				Description: "Sftp Host Key Type",
 				Computed:    true,
@@ -1182,6 +1187,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	}
 	state.Session = types.StringValue(string(respSession))
 	state.SftpEnabled = types.BoolPointerValue(site.SftpEnabled)
+	state.SftpFinalizePartialUploads = types.BoolPointerValue(site.SftpFinalizePartialUploads)
 	state.SftpHostKeyType = types.StringValue(site.SftpHostKeyType)
 	state.ActiveSftpHostKeyId = types.Int64Value(site.ActiveSftpHostKeyId)
 	state.SftpInsecureCiphers = types.BoolPointerValue(site.SftpInsecureCiphers)
