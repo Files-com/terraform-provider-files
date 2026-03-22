@@ -33,9 +33,11 @@ type userLifecycleRuleDataSourceModel struct {
 	InactivityDays       types.Int64  `tfsdk:"inactivity_days"`
 	IncludeFolderAdmins  types.Bool   `tfsdk:"include_folder_admins"`
 	IncludeSiteAdmins    types.Bool   `tfsdk:"include_site_admins"`
+	ApplyToAllWorkspaces types.Bool   `tfsdk:"apply_to_all_workspaces"`
 	Name                 types.String `tfsdk:"name"`
 	PartnerTag           types.String `tfsdk:"partner_tag"`
 	SiteId               types.Int64  `tfsdk:"site_id"`
+	WorkspaceId          types.Int64  `tfsdk:"workspace_id"`
 	UserState            types.String `tfsdk:"user_state"`
 	UserTag              types.String `tfsdk:"user_tag"`
 }
@@ -96,6 +98,10 @@ func (r *userLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.Sch
 				Description: "If true, the rule will apply to site admins.",
 				Computed:    true,
 			},
+			"apply_to_all_workspaces": schema.BoolAttribute{
+				Description: "If true, a default-workspace rule also applies to users in all workspaces.",
+				Computed:    true,
+			},
 			"name": schema.StringAttribute{
 				Description: "User Lifecycle Rule name",
 				Computed:    true,
@@ -106,6 +112,10 @@ func (r *userLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.Sch
 			},
 			"site_id": schema.Int64Attribute{
 				Description: "Site ID",
+				Computed:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID. `0` means the default workspace.",
 				Computed:    true,
 			},
 			"user_state": schema.StringAttribute{
@@ -161,9 +171,11 @@ func (r *userLifecycleRuleDataSource) populateDataSourceModel(ctx context.Contex
 	state.InactivityDays = types.Int64Value(userLifecycleRule.InactivityDays)
 	state.IncludeFolderAdmins = types.BoolPointerValue(userLifecycleRule.IncludeFolderAdmins)
 	state.IncludeSiteAdmins = types.BoolPointerValue(userLifecycleRule.IncludeSiteAdmins)
+	state.ApplyToAllWorkspaces = types.BoolPointerValue(userLifecycleRule.ApplyToAllWorkspaces)
 	state.Name = types.StringValue(userLifecycleRule.Name)
 	state.PartnerTag = types.StringValue(userLifecycleRule.PartnerTag)
 	state.SiteId = types.Int64Value(userLifecycleRule.SiteId)
+	state.WorkspaceId = types.Int64Value(userLifecycleRule.WorkspaceId)
 	state.UserState = types.StringValue(userLifecycleRule.UserState)
 	state.UserTag = types.StringValue(userLifecycleRule.UserTag)
 

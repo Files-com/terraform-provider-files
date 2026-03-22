@@ -43,8 +43,10 @@ type userLifecycleRuleResourceModel struct {
 	InactivityDays       types.Int64  `tfsdk:"inactivity_days"`
 	IncludeFolderAdmins  types.Bool   `tfsdk:"include_folder_admins"`
 	IncludeSiteAdmins    types.Bool   `tfsdk:"include_site_admins"`
+	ApplyToAllWorkspaces types.Bool   `tfsdk:"apply_to_all_workspaces"`
 	Name                 types.String `tfsdk:"name"`
 	PartnerTag           types.String `tfsdk:"partner_tag"`
+	WorkspaceId          types.Int64  `tfsdk:"workspace_id"`
 	UserState            types.String `tfsdk:"user_state"`
 	UserTag              types.String `tfsdk:"user_tag"`
 	Id                   types.Int64  `tfsdk:"id"`
@@ -133,6 +135,14 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"apply_to_all_workspaces": schema.BoolAttribute{
+				Description: "If true, a default-workspace rule also applies to users in all workspaces.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"name": schema.StringAttribute{
 				Description: "User Lifecycle Rule name",
 				Computed:    true,
@@ -147,6 +157,14 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID. `0` means the default workspace.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"user_state": schema.StringAttribute{
@@ -199,6 +217,9 @@ func (r *userLifecycleRuleResource) Create(ctx context.Context, req resource.Cre
 
 	paramsUserLifecycleRuleCreate := files_sdk.UserLifecycleRuleCreateParams{}
 	paramsUserLifecycleRuleCreate.Action = paramsUserLifecycleRuleCreate.Action.Enum()[plan.Action.ValueString()]
+	if !plan.ApplyToAllWorkspaces.IsNull() && !plan.ApplyToAllWorkspaces.IsUnknown() {
+		paramsUserLifecycleRuleCreate.ApplyToAllWorkspaces = plan.ApplyToAllWorkspaces.ValueBoolPointer()
+	}
 	paramsUserLifecycleRuleCreate.AuthenticationMethod = paramsUserLifecycleRuleCreate.AuthenticationMethod.Enum()[plan.AuthenticationMethod.ValueString()]
 	if !plan.GroupIds.IsNull() && !plan.GroupIds.IsUnknown() {
 		diags = plan.GroupIds.ElementsAs(ctx, &paramsUserLifecycleRuleCreate.GroupIds, false)
@@ -215,6 +236,7 @@ func (r *userLifecycleRuleResource) Create(ctx context.Context, req resource.Cre
 	paramsUserLifecycleRuleCreate.PartnerTag = plan.PartnerTag.ValueString()
 	paramsUserLifecycleRuleCreate.UserState = paramsUserLifecycleRuleCreate.UserState.Enum()[plan.UserState.ValueString()]
 	paramsUserLifecycleRuleCreate.UserTag = plan.UserTag.ValueString()
+	paramsUserLifecycleRuleCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -295,6 +317,9 @@ func (r *userLifecycleRuleResource) Update(ctx context.Context, req resource.Upd
 	if !config.Action.IsNull() && !config.Action.IsUnknown() {
 		paramsUserLifecycleRuleUpdate["action"] = config.Action.ValueString()
 	}
+	if !config.ApplyToAllWorkspaces.IsNull() && !config.ApplyToAllWorkspaces.IsUnknown() {
+		paramsUserLifecycleRuleUpdate["apply_to_all_workspaces"] = config.ApplyToAllWorkspaces.ValueBool()
+	}
 	if !config.AuthenticationMethod.IsNull() && !config.AuthenticationMethod.IsUnknown() {
 		paramsUserLifecycleRuleUpdate["authentication_method"] = config.AuthenticationMethod.ValueString()
 	}
@@ -324,6 +349,9 @@ func (r *userLifecycleRuleResource) Update(ctx context.Context, req resource.Upd
 	}
 	if !config.UserTag.IsNull() && !config.UserTag.IsUnknown() {
 		paramsUserLifecycleRuleUpdate["user_tag"] = config.UserTag.ValueString()
+	}
+	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
+		paramsUserLifecycleRuleUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
 
 	if resp.Diagnostics.HasError() {
@@ -403,9 +431,11 @@ func (r *userLifecycleRuleResource) populateResourceModel(ctx context.Context, u
 	state.InactivityDays = types.Int64Value(userLifecycleRule.InactivityDays)
 	state.IncludeFolderAdmins = types.BoolPointerValue(userLifecycleRule.IncludeFolderAdmins)
 	state.IncludeSiteAdmins = types.BoolPointerValue(userLifecycleRule.IncludeSiteAdmins)
+	state.ApplyToAllWorkspaces = types.BoolPointerValue(userLifecycleRule.ApplyToAllWorkspaces)
 	state.Name = types.StringValue(userLifecycleRule.Name)
 	state.PartnerTag = types.StringValue(userLifecycleRule.PartnerTag)
 	state.SiteId = types.Int64Value(userLifecycleRule.SiteId)
+	state.WorkspaceId = types.Int64Value(userLifecycleRule.WorkspaceId)
 	state.UserState = types.StringValue(userLifecycleRule.UserState)
 	state.UserTag = types.StringValue(userLifecycleRule.UserTag)
 

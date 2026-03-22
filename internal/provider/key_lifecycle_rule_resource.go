@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -35,10 +36,12 @@ type keyLifecycleRuleResource struct {
 }
 
 type keyLifecycleRuleResourceModel struct {
-	KeyType        types.String `tfsdk:"key_type"`
-	InactivityDays types.Int64  `tfsdk:"inactivity_days"`
-	Name           types.String `tfsdk:"name"`
-	Id             types.Int64  `tfsdk:"id"`
+	KeyType              types.String `tfsdk:"key_type"`
+	InactivityDays       types.Int64  `tfsdk:"inactivity_days"`
+	ApplyToAllWorkspaces types.Bool   `tfsdk:"apply_to_all_workspaces"`
+	Name                 types.String `tfsdk:"name"`
+	WorkspaceId          types.Int64  `tfsdk:"workspace_id"`
+	Id                   types.Int64  `tfsdk:"id"`
 }
 
 func (r *keyLifecycleRuleResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -87,12 +90,28 @@ func (r *keyLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaRe
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"apply_to_all_workspaces": schema.BoolAttribute{
+				Description: "If true, a default-workspace rule also applies to keys in all workspaces.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"name": schema.StringAttribute{
 				Description: "Key Lifecycle Rule name",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID. `0` means the default workspace.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"id": schema.Int64Attribute{
@@ -121,9 +140,13 @@ func (r *keyLifecycleRuleResource) Create(ctx context.Context, req resource.Crea
 	}
 
 	paramsKeyLifecycleRuleCreate := files_sdk.KeyLifecycleRuleCreateParams{}
+	if !plan.ApplyToAllWorkspaces.IsNull() && !plan.ApplyToAllWorkspaces.IsUnknown() {
+		paramsKeyLifecycleRuleCreate.ApplyToAllWorkspaces = plan.ApplyToAllWorkspaces.ValueBoolPointer()
+	}
 	paramsKeyLifecycleRuleCreate.KeyType = paramsKeyLifecycleRuleCreate.KeyType.Enum()[plan.KeyType.ValueString()]
 	paramsKeyLifecycleRuleCreate.InactivityDays = plan.InactivityDays.ValueInt64()
 	paramsKeyLifecycleRuleCreate.Name = plan.Name.ValueString()
+	paramsKeyLifecycleRuleCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -201,6 +224,9 @@ func (r *keyLifecycleRuleResource) Update(ctx context.Context, req resource.Upda
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
 		paramsKeyLifecycleRuleUpdate["id"] = plan.Id.ValueInt64()
 	}
+	if !config.ApplyToAllWorkspaces.IsNull() && !config.ApplyToAllWorkspaces.IsUnknown() {
+		paramsKeyLifecycleRuleUpdate["apply_to_all_workspaces"] = config.ApplyToAllWorkspaces.ValueBool()
+	}
 	if !config.KeyType.IsNull() && !config.KeyType.IsUnknown() {
 		paramsKeyLifecycleRuleUpdate["key_type"] = config.KeyType.ValueString()
 	}
@@ -209,6 +235,9 @@ func (r *keyLifecycleRuleResource) Update(ctx context.Context, req resource.Upda
 	}
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
 		paramsKeyLifecycleRuleUpdate["name"] = config.Name.ValueString()
+	}
+	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
+		paramsKeyLifecycleRuleUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
 
 	if resp.Diagnostics.HasError() {
@@ -281,7 +310,9 @@ func (r *keyLifecycleRuleResource) populateResourceModel(ctx context.Context, ke
 	state.Id = types.Int64Value(keyLifecycleRule.Id)
 	state.KeyType = types.StringValue(keyLifecycleRule.KeyType)
 	state.InactivityDays = types.Int64Value(keyLifecycleRule.InactivityDays)
+	state.ApplyToAllWorkspaces = types.BoolPointerValue(keyLifecycleRule.ApplyToAllWorkspaces)
 	state.Name = types.StringValue(keyLifecycleRule.Name)
+	state.WorkspaceId = types.Int64Value(keyLifecycleRule.WorkspaceId)
 
 	return
 }

@@ -19,9 +19,11 @@ Keys that have been unused for the specified number of days will be deleted.
 
 ```terraform
 resource "files_key_lifecycle_rule" "example_key_lifecycle_rule" {
-  key_type        = "gpg"
-  inactivity_days = 12
-  name            = "inactive gpg keys"
+  apply_to_all_workspaces = true
+  key_type                = "gpg"
+  inactivity_days         = 12
+  name                    = "inactive gpg keys"
+  workspace_id            = 12
 }
 ```
 
@@ -30,9 +32,11 @@ resource "files_key_lifecycle_rule" "example_key_lifecycle_rule" {
 
 ### Optional
 
+- `apply_to_all_workspaces` (Boolean) If true, a default-workspace rule also applies to keys in all workspaces.
 - `inactivity_days` (Number) Number of days of inactivity before the rule applies.
 - `key_type` (String) Key type for which the rule will apply (gpg or ssh).
 - `name` (String) Key Lifecycle Rule name
+- `workspace_id` (Number) Workspace ID. `0` means the default workspace.
 
 ### Read-Only
 

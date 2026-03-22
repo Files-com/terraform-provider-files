@@ -26,10 +26,12 @@ type keyLifecycleRuleDataSource struct {
 }
 
 type keyLifecycleRuleDataSourceModel struct {
-	Id             types.Int64  `tfsdk:"id"`
-	KeyType        types.String `tfsdk:"key_type"`
-	InactivityDays types.Int64  `tfsdk:"inactivity_days"`
-	Name           types.String `tfsdk:"name"`
+	Id                   types.Int64  `tfsdk:"id"`
+	KeyType              types.String `tfsdk:"key_type"`
+	InactivityDays       types.Int64  `tfsdk:"inactivity_days"`
+	ApplyToAllWorkspaces types.Bool   `tfsdk:"apply_to_all_workspaces"`
+	Name                 types.String `tfsdk:"name"`
+	WorkspaceId          types.Int64  `tfsdk:"workspace_id"`
 }
 
 func (r *keyLifecycleRuleDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -71,8 +73,16 @@ func (r *keyLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.Sche
 				Description: "Number of days of inactivity before the rule applies.",
 				Computed:    true,
 			},
+			"apply_to_all_workspaces": schema.BoolAttribute{
+				Description: "If true, a default-workspace rule also applies to keys in all workspaces.",
+				Computed:    true,
+			},
 			"name": schema.StringAttribute{
 				Description: "Key Lifecycle Rule name",
+				Computed:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID. `0` means the default workspace.",
 				Computed:    true,
 			},
 		},
@@ -113,7 +123,9 @@ func (r *keyLifecycleRuleDataSource) populateDataSourceModel(ctx context.Context
 	state.Id = types.Int64Value(keyLifecycleRule.Id)
 	state.KeyType = types.StringValue(keyLifecycleRule.KeyType)
 	state.InactivityDays = types.Int64Value(keyLifecycleRule.InactivityDays)
+	state.ApplyToAllWorkspaces = types.BoolPointerValue(keyLifecycleRule.ApplyToAllWorkspaces)
 	state.Name = types.StringValue(keyLifecycleRule.Name)
+	state.WorkspaceId = types.Int64Value(keyLifecycleRule.WorkspaceId)
 
 	return
 }

@@ -43,6 +43,7 @@ data "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
 ### Read-Only
 
 - `action` (String) Action to take on inactive users (disable or delete)
+- `apply_to_all_workspaces` (Boolean) If true, a default-workspace rule also applies to users in all workspaces.
 - `authentication_method` (String) User authentication method for which the rule will apply.
 - `group_ids` (List of Number) Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users.
 - `inactivity_days` (Number) Number of days of inactivity before the rule applies
@@ -53,3 +54,4 @@ data "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
 - `site_id` (Number) Site ID
 - `user_state` (String) State of the users to apply the rule to (inactive or disabled)
 - `user_tag` (String) If provided, only users with this tag will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.
+- `workspace_id` (Number) Workspace ID. `0` means the default workspace.

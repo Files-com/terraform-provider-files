@@ -32,6 +32,8 @@ data "files_key_lifecycle_rule" "example_key_lifecycle_rule" {
 
 ### Read-Only
 
+- `apply_to_all_workspaces` (Boolean) If true, a default-workspace rule also applies to keys in all workspaces.
 - `inactivity_days` (Number) Number of days of inactivity before the rule applies.
 - `key_type` (String) Key type for which the rule will apply (gpg or ssh).
 - `name` (String) Key Lifecycle Rule name
+- `workspace_id` (Number) Workspace ID. `0` means the default workspace.

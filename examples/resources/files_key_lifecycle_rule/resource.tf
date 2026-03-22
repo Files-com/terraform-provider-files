@@ -1,6 +1,8 @@
 resource "files_key_lifecycle_rule" "example_key_lifecycle_rule" {
-  key_type        = "gpg"
-  inactivity_days = 12
-  name            = "inactive gpg keys"
+  apply_to_all_workspaces = true
+  key_type                = "gpg"
+  inactivity_days         = 12
+  name                    = "inactive gpg keys"
+  workspace_id            = 12
 }
 
