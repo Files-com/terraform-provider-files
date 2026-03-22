@@ -26,6 +26,7 @@ Once created, a form field set can then be associated with one or more bundle(s)
 resource "files_form_field_set" "example_form_field_set" {
   user_id      = 1
   title        = "Sample Form Title"
+  workspace_id = 1
   skip_email   = false
   skip_name    = false
   skip_company = false
@@ -56,6 +57,7 @@ resource "files_form_field_set" "example_form_field_set" {
 - `skip_name` (Boolean) Any associated InboxRegistrations or BundleRegistrations can be saved without providing name
 - `title` (String) Title to be displayed
 - `user_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) User ID.  Provide a value of `0` to operate the current session's user.
+- `workspace_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Workspace ID
 
 ### Read-Only
 

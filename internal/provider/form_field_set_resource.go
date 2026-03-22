@@ -42,6 +42,7 @@ type formFieldSetResourceModel struct {
 	SkipEmail   types.Bool    `tfsdk:"skip_email"`
 	SkipCompany types.Bool    `tfsdk:"skip_company"`
 	UserId      types.Int64   `tfsdk:"user_id"`
+	WorkspaceId types.Int64   `tfsdk:"workspace_id"`
 	Id          types.Int64   `tfsdk:"id"`
 	FormLayout  types.List    `tfsdk:"form_layout"`
 	InUse       types.Bool    `tfsdk:"in_use"`
@@ -122,6 +123,11 @@ func (r *formFieldSetResource) Schema(_ context.Context, _ resource.SchemaReques
 					int64planmodifier.RequiresReplace(),
 				},
 			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID",
+				Optional:    true,
+				WriteOnly:   true,
+			},
 			"id": schema.Int64Attribute{
 				Description: "Form field set id",
 				Computed:    true,
@@ -159,6 +165,7 @@ func (r *formFieldSetResource) Create(ctx context.Context, req resource.CreateRe
 	paramsFormFieldSetCreate := files_sdk.FormFieldSetCreateParams{}
 	paramsFormFieldSetCreate.UserId = config.UserId.ValueInt64()
 	paramsFormFieldSetCreate.Title = plan.Title.ValueString()
+	paramsFormFieldSetCreate.WorkspaceId = config.WorkspaceId.ValueInt64()
 	if !plan.SkipEmail.IsNull() && !plan.SkipEmail.IsUnknown() {
 		paramsFormFieldSetCreate.SkipEmail = plan.SkipEmail.ValueBoolPointer()
 	}
@@ -249,6 +256,9 @@ func (r *formFieldSetResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 	if !config.Title.IsNull() && !config.Title.IsUnknown() {
 		paramsFormFieldSetUpdate["title"] = config.Title.ValueString()
+	}
+	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
+		paramsFormFieldSetUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
 	if !config.SkipEmail.IsNull() && !config.SkipEmail.IsUnknown() {
 		paramsFormFieldSetUpdate["skip_email"] = config.SkipEmail.ValueBool()

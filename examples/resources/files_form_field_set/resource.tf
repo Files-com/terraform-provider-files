@@ -1,6 +1,7 @@
 resource "files_form_field_set" "example_form_field_set" {
   user_id      = 1
   title        = "Sample Form Title"
+  workspace_id = 1
   skip_email   = false
   skip_name    = false
   skip_company = false
