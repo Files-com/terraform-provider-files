@@ -39,6 +39,7 @@ type bundleNotificationResourceModel struct {
 	NotifyUserId         types.Int64 `tfsdk:"notify_user_id"`
 	UserId               types.Int64 `tfsdk:"user_id"`
 	Id                   types.Int64 `tfsdk:"id"`
+	WorkspaceId          types.Int64 `tfsdk:"workspace_id"`
 }
 
 func (r *bundleNotificationResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -114,6 +115,10 @@ func (r *bundleNotificationResource) Schema(_ context.Context, _ resource.Schema
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID. `0` means the default workspace.",
+				Computed:    true,
 			},
 		},
 	}
@@ -299,6 +304,7 @@ func (r *bundleNotificationResource) populateResourceModel(ctx context.Context, 
 	state.NotifyOnRegistration = types.BoolPointerValue(bundleNotification.NotifyOnRegistration)
 	state.NotifyOnUpload = types.BoolPointerValue(bundleNotification.NotifyOnUpload)
 	state.NotifyUserId = types.Int64Value(bundleNotification.NotifyUserId)
+	state.WorkspaceId = types.Int64Value(bundleNotification.WorkspaceId)
 
 	return
 }

@@ -41,6 +41,7 @@ resource "files_bundle_notification" "example_bundle_notification" {
 ### Read-Only
 
 - `id` (Number) Bundle Notification ID
+- `workspace_id` (Number) Workspace ID. `0` means the default workspace.
 
 ## Import
 

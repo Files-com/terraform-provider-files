@@ -25,5 +25,6 @@ resource "files_bundle" "example_bundle" {
   skip_company                                        = true
   start_access_on_date                                = "2000-01-01T01:00:00Z"
   snapshot_id                                         = 1
+  workspace_id                                        = 1
 }
 

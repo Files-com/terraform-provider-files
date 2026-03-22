@@ -66,6 +66,7 @@ type bundleDataSourceModel struct {
 	WatermarkAttachment                          types.String  `tfsdk:"watermark_attachment"`
 	WatermarkValue                               types.Dynamic `tfsdk:"watermark_value"`
 	SendOneTimePasswordToRecipientAtRegistration types.Bool    `tfsdk:"send_one_time_password_to_recipient_at_registration"`
+	WorkspaceId                                  types.Int64   `tfsdk:"workspace_id"`
 	HasInbox                                     types.Bool    `tfsdk:"has_inbox"`
 	DontAllowFoldersInUploads                    types.Bool    `tfsdk:"dont_allow_folders_in_uploads"`
 	Paths                                        types.List    `tfsdk:"paths"`
@@ -246,6 +247,10 @@ func (r *bundleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Description: "If true, require_share_recipient bundles will send a one-time password to the recipient when they register. Cannot be enabled if the bundle has a password set.",
 				Computed:    true,
 			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID. `0` means the default workspace.",
+				Computed:    true,
+			},
 			"has_inbox": schema.BoolAttribute{
 				Description: "Does this bundle have an associated inbox?",
 				Computed:    true,
@@ -367,6 +372,7 @@ func (r *bundleDataSource) populateDataSourceModel(ctx context.Context, bundle f
 	state.WatermarkValue, propDiags = lib.ToDynamic(ctx, path.Root("watermark_value"), bundle.WatermarkValue, state.WatermarkValue.UnderlyingValue())
 	diags.Append(propDiags...)
 	state.SendOneTimePasswordToRecipientAtRegistration = types.BoolPointerValue(bundle.SendOneTimePasswordToRecipientAtRegistration)
+	state.WorkspaceId = types.Int64Value(bundle.WorkspaceId)
 	state.HasInbox = types.BoolPointerValue(bundle.HasInbox)
 	state.DontAllowFoldersInUploads = types.BoolPointerValue(bundle.DontAllowFoldersInUploads)
 	state.Paths, propDiags = types.ListValueFrom(ctx, types.StringType, bundle.Paths)

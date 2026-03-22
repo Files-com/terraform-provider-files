@@ -31,6 +31,7 @@ type bundleNotificationDataSourceModel struct {
 	NotifyOnRegistration types.Bool  `tfsdk:"notify_on_registration"`
 	NotifyOnUpload       types.Bool  `tfsdk:"notify_on_upload"`
 	NotifyUserId         types.Int64 `tfsdk:"notify_user_id"`
+	WorkspaceId          types.Int64 `tfsdk:"workspace_id"`
 }
 
 func (r *bundleNotificationDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -80,6 +81,10 @@ func (r *bundleNotificationDataSource) Schema(_ context.Context, _ datasource.Sc
 				Description: "The id of the user to notify.",
 				Computed:    true,
 			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID. `0` means the default workspace.",
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -120,6 +125,7 @@ func (r *bundleNotificationDataSource) populateDataSourceModel(ctx context.Conte
 	state.NotifyOnRegistration = types.BoolPointerValue(bundleNotification.NotifyOnRegistration)
 	state.NotifyOnUpload = types.BoolPointerValue(bundleNotification.NotifyOnUpload)
 	state.NotifyUserId = types.Int64Value(bundleNotification.NotifyUserId)
+	state.WorkspaceId = types.Int64Value(bundleNotification.WorkspaceId)
 
 	return
 }

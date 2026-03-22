@@ -48,6 +48,7 @@ resource "files_bundle" "example_bundle" {
   skip_company                                        = true
   start_access_on_date                                = "2000-01-01T01:00:00Z"
   snapshot_id                                         = 1
+  workspace_id                                        = 1
 }
 ```
 
@@ -87,6 +88,7 @@ resource "files_bundle" "example_bundle" {
 - `snapshot_id` (Number) ID of the snapshot containing this bundle's contents.
 - `start_access_on_date` (String) Date when share will start to be accessible. If `nil` access granted right after create.
 - `user_id` (Number) Bundle creator user ID
+- `workspace_id` (Number) Workspace ID. `0` means the default workspace.
 
 ### Read-Only
 

@@ -75,3 +75,4 @@ data "files_bundle" "example_bundle" {
 - `username` (String) Bundle creator username
 - `watermark_attachment` (String) Preview watermark image applied to all bundle items.
 - `watermark_value` (Dynamic) Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value
+- `workspace_id` (Number) Workspace ID. `0` means the default workspace.

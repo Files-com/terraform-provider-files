@@ -61,6 +61,7 @@ type bundleResourceModel struct {
 	ClickwrapId                                  types.Int64   `tfsdk:"clickwrap_id"`
 	InboxId                                      types.Int64   `tfsdk:"inbox_id"`
 	SendOneTimePasswordToRecipientAtRegistration types.Bool    `tfsdk:"send_one_time_password_to_recipient_at_registration"`
+	WorkspaceId                                  types.Int64   `tfsdk:"workspace_id"`
 	Password                                     types.String  `tfsdk:"password"`
 	FormFieldSetId                               types.Int64   `tfsdk:"form_field_set_id"`
 	CreateSnapshot                               types.Bool    `tfsdk:"create_snapshot"`
@@ -290,6 +291,14 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID. `0` means the default workspace.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"password": schema.StringAttribute{
 				Description: "Password for this bundle.",
 				Optional:    true,
@@ -486,6 +495,7 @@ func (r *bundleResource) Create(ctx context.Context, req resource.CreateRequest,
 		}
 	}
 	paramsBundleCreate.SnapshotId = plan.SnapshotId.ValueInt64()
+	paramsBundleCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -664,6 +674,9 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if !config.SkipName.IsNull() && !config.SkipName.IsUnknown() {
 		paramsBundleUpdate["skip_name"] = config.SkipName.ValueBool()
 	}
+	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
+		paramsBundleUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
+	}
 	if !config.UserId.IsNull() && !config.UserId.IsUnknown() {
 		paramsBundleUpdate["user_id"] = config.UserId.ValueInt64()
 	}
@@ -804,6 +817,7 @@ func (r *bundleResource) populateResourceModel(ctx context.Context, bundle files
 	state.WatermarkValue, propDiags = lib.ToDynamic(ctx, path.Root("watermark_value"), bundle.WatermarkValue, state.WatermarkValue.UnderlyingValue())
 	diags.Append(propDiags...)
 	state.SendOneTimePasswordToRecipientAtRegistration = types.BoolPointerValue(bundle.SendOneTimePasswordToRecipientAtRegistration)
+	state.WorkspaceId = types.Int64Value(bundle.WorkspaceId)
 	state.HasInbox = types.BoolPointerValue(bundle.HasInbox)
 	state.DontAllowFoldersInUploads = types.BoolPointerValue(bundle.DontAllowFoldersInUploads)
 	state.Paths, propDiags = types.ListValueFrom(ctx, types.StringType, bundle.Paths)
