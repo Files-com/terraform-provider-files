@@ -147,7 +147,7 @@ func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("full", "readonly", "writeonly", "list", "history", "admin", "bundle", "site_admin", "readonly_site_admin"),
+					stringvalidator.OneOf("full", "readonly", "writeonly", "list", "history", "admin", "bundle", "site_admin", "readonly_site_admin", "previewonly"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
