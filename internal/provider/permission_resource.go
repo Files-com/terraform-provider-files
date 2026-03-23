@@ -8,6 +8,7 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	permission "github.com/Files-com/files-sdk-go/v3/permission"
+	"github.com/Files-com/terraform-provider-files/lib"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -15,6 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -41,11 +43,13 @@ type permissionResourceModel struct {
 	Username    types.String `tfsdk:"username"`
 	GroupId     types.Int64  `tfsdk:"group_id"`
 	GroupName   types.String `tfsdk:"group_name"`
+	GroupIds    types.List   `tfsdk:"group_ids"`
 	PartnerId   types.Int64  `tfsdk:"partner_id"`
 	Permission  types.String `tfsdk:"permission"`
 	Recursive   types.Bool   `tfsdk:"recursive"`
 	SiteId      types.Int64  `tfsdk:"site_id"`
 	Id          types.Int64  `tfsdk:"id"`
+	GroupNames  types.List   `tfsdk:"group_names"`
 	PartnerName types.String `tfsdk:"partner_name"`
 }
 
@@ -119,6 +123,16 @@ func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					stringplanmodifier.RequiresReplace(),
 				},
 			},
+			"group_ids": schema.ListAttribute{
+				Description: "Group IDs when this permission requires multiple groups",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.Int64Type,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.UseStateForUnknown(),
+					listplanmodifier.RequiresReplace(),
+				},
+			},
 			"partner_id": schema.Int64Attribute{
 				Description: "Partner ID (if applicable)",
 				Computed:    true,
@@ -165,6 +179,11 @@ func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"group_names": schema.ListAttribute{
+				Description: "Group names when this permission requires multiple groups",
+				Computed:    true,
+				ElementType: types.StringType,
+			},
 			"partner_name": schema.StringAttribute{
 				Description: "Partner name (if applicable)",
 				Computed:    true,
@@ -190,6 +209,8 @@ func (r *permissionResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsPermissionCreate := files_sdk.PermissionCreateParams{}
 	paramsPermissionCreate.Path = plan.Path.ValueString()
 	paramsPermissionCreate.GroupId = plan.GroupId.ValueInt64()
+	paramsPermissionCreate.GroupIds, diags = lib.ListValueToString(ctx, path.Root("group_ids"), plan.GroupIds, ",")
+	resp.Diagnostics.Append(diags...)
 	paramsPermissionCreate.Permission = plan.Permission.ValueString()
 	if !plan.Recursive.IsNull() && !plan.Recursive.IsUnknown() {
 		paramsPermissionCreate.Recursive = plan.Recursive.ValueBoolPointer()
@@ -334,12 +355,18 @@ func (r *permissionResource) ImportState(ctx context.Context, req resource.Impor
 }
 
 func (r *permissionResource) populateResourceModel(ctx context.Context, permission files_sdk.Permission, state *permissionResourceModel) (diags diag.Diagnostics) {
+	var propDiags diag.Diagnostics
+
 	state.Id = types.Int64Value(permission.Id)
 	state.Path = types.StringValue(permission.Path)
 	state.UserId = types.Int64Value(permission.UserId)
 	state.Username = types.StringValue(permission.Username)
 	state.GroupId = types.Int64Value(permission.GroupId)
 	state.GroupName = types.StringValue(permission.GroupName)
+	state.GroupIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, permission.GroupIds)
+	diags.Append(propDiags...)
+	state.GroupNames, propDiags = types.ListValueFrom(ctx, types.StringType, permission.GroupNames)
+	diags.Append(propDiags...)
 	state.PartnerId = types.Int64Value(permission.PartnerId)
 	state.PartnerName = types.StringValue(permission.PartnerName)
 	state.Permission = types.StringValue(permission.Permission)

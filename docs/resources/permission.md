@@ -66,6 +66,7 @@ The following table sets forth the available Permission types:
 resource "files_permission" "example_permission" {
   path       = "path"
   group_id   = 1
+  group_ids  = [1]
   permission = "full"
   recursive  = false
   partner_id = 1
@@ -86,6 +87,7 @@ resource "files_permission" "example_permission" {
 ### Optional
 
 - `group_id` (Number) Group ID
+- `group_ids` (List of Number) Group IDs when this permission requires multiple groups
 - `group_name` (String) Group name (if applicable)
 - `partner_id` (Number) Partner ID (if applicable)
 - `permission` (String) Permission type.  See the table referenced in the documentation for an explanation of each permission.
@@ -96,6 +98,7 @@ resource "files_permission" "example_permission" {
 
 ### Read-Only
 
+- `group_names` (List of String) Group names when this permission requires multiple groups
 - `id` (Number) Permission ID
 - `partner_name` (String) Partner name (if applicable)
 

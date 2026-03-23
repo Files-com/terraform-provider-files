@@ -32,6 +32,8 @@ type permissionDataSourceModel struct {
 	Username    types.String `tfsdk:"username"`
 	GroupId     types.Int64  `tfsdk:"group_id"`
 	GroupName   types.String `tfsdk:"group_name"`
+	GroupIds    types.List   `tfsdk:"group_ids"`
+	GroupNames  types.List   `tfsdk:"group_names"`
 	PartnerId   types.Int64  `tfsdk:"partner_id"`
 	PartnerName types.String `tfsdk:"partner_name"`
 	Permission  types.String `tfsdk:"permission"`
@@ -89,6 +91,16 @@ func (r *permissionDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			"group_name": schema.StringAttribute{
 				Description: "Group name (if applicable)",
 				Computed:    true,
+			},
+			"group_ids": schema.ListAttribute{
+				Description: "Group IDs when this permission requires multiple groups",
+				Computed:    true,
+				ElementType: types.Int64Type,
+			},
+			"group_names": schema.ListAttribute{
+				Description: "Group names when this permission requires multiple groups",
+				Computed:    true,
+				ElementType: types.StringType,
 			},
 			"partner_id": schema.Int64Attribute{
 				Description: "Partner ID (if applicable)",
@@ -168,12 +180,18 @@ func (r *permissionDataSource) Read(ctx context.Context, req datasource.ReadRequ
 }
 
 func (r *permissionDataSource) populateDataSourceModel(ctx context.Context, permission files_sdk.Permission, state *permissionDataSourceModel) (diags diag.Diagnostics) {
+	var propDiags diag.Diagnostics
+
 	state.Id = types.Int64Value(permission.Id)
 	state.Path = types.StringValue(permission.Path)
 	state.UserId = types.Int64Value(permission.UserId)
 	state.Username = types.StringValue(permission.Username)
 	state.GroupId = types.Int64Value(permission.GroupId)
 	state.GroupName = types.StringValue(permission.GroupName)
+	state.GroupIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, permission.GroupIds)
+	diags.Append(propDiags...)
+	state.GroupNames, propDiags = types.ListValueFrom(ctx, types.StringType, permission.GroupNames)
+	diags.Append(propDiags...)
 	state.PartnerId = types.Int64Value(permission.PartnerId)
 	state.PartnerName = types.StringValue(permission.PartnerName)
 	state.Permission = types.StringValue(permission.Permission)

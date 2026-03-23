@@ -1,6 +1,7 @@
 resource "files_permission" "example_permission" {
   path       = "path"
   group_id   = 1
+  group_ids  = [1]
   permission = "full"
   recursive  = false
   partner_id = 1

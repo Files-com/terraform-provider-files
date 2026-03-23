@@ -78,7 +78,9 @@ data "files_permission" "example_permission" {
 ### Read-Only
 
 - `group_id` (Number) Group ID
+- `group_ids` (List of Number) Group IDs when this permission requires multiple groups
 - `group_name` (String) Group name (if applicable)
+- `group_names` (List of String) Group names when this permission requires multiple groups
 - `partner_id` (Number) Partner ID (if applicable)
 - `partner_name` (String) Partner name (if applicable)
 - `path` (String) Path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
