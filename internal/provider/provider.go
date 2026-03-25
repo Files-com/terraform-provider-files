@@ -212,7 +212,6 @@ func (p *filesProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewPartnerSiteRequestDataSource,
 		NewPaymentDataSource,
 		NewPermissionDataSource,
-		NewPriorityDataSource,
 		NewProjectDataSource,
 		NewPublicKeyDataSource,
 		NewRemoteMountBackendDataSource,
