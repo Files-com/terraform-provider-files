@@ -52,6 +52,16 @@ description: |-
   Parent Folders
   To reference the parent folder of a source file, use %p1, %p2, %p3, etc. for the first, second, third, etc. parent folder, respectively.
   For example, if the source file is at accounts/file.txt, then the automation destination path/to/dest/%p1/some_file_name.txt will result in the actual destination being path/to/dest/accounts/some_file_name.txt.
+  Source File Name
+  To reference the name of the source file being processed, use the following tokens:
+  
+  %Ff : The name of the source file, with extension.
+  %Fb : The name of the source file, without extension.
+  %Fe : The extension of the source file.
+  %Fl : The name of the source file, with extension, converted to lowercase.
+  %Fn : The name of the source file, without non-alphanumeric characters, with extension.
+  %Fp : The name of the source file, with extension, spaces removed, lowercase, non-ASCII normalized.
+  For example, if the source file is Daily Report.xlsx and the destination is archive/%Y-%m-%d/%Fb.xlsx, the resolved destination will be archive/2024-01-15/Daily Report.xlsx.
   Dates and Times
   
   %Y : The current year (4 digits)
@@ -300,6 +310,32 @@ To reference the parent folder of a source file, use `%p1`, `%p2`, `%p3`, etc. f
 
 
 For example, if the source file is at `accounts/file.txt`, then the automation destination `path/to/dest/%p1/some_file_name.txt` will result in the actual destination being `path/to/dest/accounts/some_file_name.txt`.
+
+
+
+**Source File Name**
+
+
+
+To reference the name of the source file being processed, use the following tokens:
+
+
+
+* `%Ff` : The name of the source file, with extension.
+
+* `%Fb` : The name of the source file, without extension.
+
+* `%Fe` : The extension of the source file.
+
+* `%Fl` : The name of the source file, with extension, converted to lowercase.
+
+* `%Fn` : The name of the source file, without non-alphanumeric characters, with extension.
+
+* `%Fp` : The name of the source file, with extension, spaces removed, lowercase, non-ASCII normalized.
+
+
+
+For example, if the source file is `Daily Report.xlsx` and the destination is `archive/%Y-%m-%d/%Fb.xlsx`, the resolved destination will be `archive/2024-01-15/Daily Report.xlsx`.
 
 
 
