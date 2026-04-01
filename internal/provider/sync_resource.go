@@ -378,7 +378,7 @@ func (r *syncResource) Create(ctx context.Context, req resource.CreateRequest, r
 	paramsSyncCreate.SrcRemoteServerId = plan.SrcRemoteServerId.ValueInt64()
 	paramsSyncCreate.SrcSiteId = plan.SrcSiteId.ValueInt64()
 	paramsSyncCreate.SyncIntervalMinutes = plan.SyncIntervalMinutes.ValueInt64()
-	paramsSyncCreate.Trigger = paramsSyncCreate.Trigger.Enum()[plan.Trigger.ValueString()]
+	paramsSyncCreate.Trigger = plan.Trigger.ValueString()
 	paramsSyncCreate.TriggerFile = plan.TriggerFile.ValueString()
 	paramsSyncCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
