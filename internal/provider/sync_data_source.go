@@ -39,6 +39,8 @@ type syncDataSourceModel struct {
 	DestPath            types.String `tfsdk:"dest_path"`
 	SrcRemoteServerId   types.Int64  `tfsdk:"src_remote_server_id"`
 	DestRemoteServerId  types.Int64  `tfsdk:"dest_remote_server_id"`
+	SrcSiteId           types.Int64  `tfsdk:"src_site_id"`
+	DestSiteId          types.Int64  `tfsdk:"dest_site_id"`
 	TwoWay              types.Bool   `tfsdk:"two_way"`
 	KeepAfterCopy       types.Bool   `tfsdk:"keep_after_copy"`
 	DeleteEmptyFolders  types.Bool   `tfsdk:"delete_empty_folders"`
@@ -124,6 +126,14 @@ func (r *syncDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"dest_remote_server_id": schema.Int64Attribute{
 				Description: "Remote server ID for the destination (if remote)",
+				Computed:    true,
+			},
+			"src_site_id": schema.Int64Attribute{
+				Description: "Source site ID if syncing from a child or partner site",
+				Computed:    true,
+			},
+			"dest_site_id": schema.Int64Attribute{
+				Description: "Destination site ID if syncing to a child or partner site",
 				Computed:    true,
 			},
 			"two_way": schema.BoolAttribute{
@@ -249,6 +259,8 @@ func (r *syncDataSource) populateDataSourceModel(ctx context.Context, sync files
 	state.DestPath = types.StringValue(sync.DestPath)
 	state.SrcRemoteServerId = types.Int64Value(sync.SrcRemoteServerId)
 	state.DestRemoteServerId = types.Int64Value(sync.DestRemoteServerId)
+	state.SrcSiteId = types.Int64Value(sync.SrcSiteId)
+	state.DestSiteId = types.Int64Value(sync.DestSiteId)
 	state.TwoWay = types.BoolPointerValue(sync.TwoWay)
 	state.KeepAfterCopy = types.BoolPointerValue(sync.KeepAfterCopy)
 	state.DeleteEmptyFolders = types.BoolPointerValue(sync.DeleteEmptyFolders)

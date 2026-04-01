@@ -46,11 +46,15 @@ type syncResourceModel struct {
 	DestPath            types.String `tfsdk:"dest_path"`
 	SrcRemoteServerId   types.Int64  `tfsdk:"src_remote_server_id"`
 	DestRemoteServerId  types.Int64  `tfsdk:"dest_remote_server_id"`
+	SrcSiteId           types.Int64  `tfsdk:"src_site_id"`
+	DestSiteId          types.Int64  `tfsdk:"dest_site_id"`
 	KeepAfterCopy       types.Bool   `tfsdk:"keep_after_copy"`
 	DeleteEmptyFolders  types.Bool   `tfsdk:"delete_empty_folders"`
 	Disabled            types.Bool   `tfsdk:"disabled"`
 	Trigger             types.String `tfsdk:"trigger"`
 	TriggerFile         types.String `tfsdk:"trigger_file"`
+	IncludePatterns     types.List   `tfsdk:"include_patterns"`
+	ExcludePatterns     types.List   `tfsdk:"exclude_patterns"`
 	SyncIntervalMinutes types.Int64  `tfsdk:"sync_interval_minutes"`
 	Interval            types.String `tfsdk:"interval"`
 	RecurringDay        types.Int64  `tfsdk:"recurring_day"`
@@ -62,8 +66,6 @@ type syncResourceModel struct {
 	SiteId              types.Int64  `tfsdk:"site_id"`
 	UserId              types.Int64  `tfsdk:"user_id"`
 	TwoWay              types.Bool   `tfsdk:"two_way"`
-	IncludePatterns     types.List   `tfsdk:"include_patterns"`
-	ExcludePatterns     types.List   `tfsdk:"exclude_patterns"`
 	CreatedAt           types.String `tfsdk:"created_at"`
 	UpdatedAt           types.String `tfsdk:"updated_at"`
 	LatestSyncRun       types.String `tfsdk:"latest_sync_run"`
@@ -153,6 +155,22 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"src_site_id": schema.Int64Attribute{
+				Description: "Source site ID if syncing from a child or partner site",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"dest_site_id": schema.Int64Attribute{
+				Description: "Destination site ID if syncing to a child or partner site",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"keep_after_copy": schema.BoolAttribute{
 				Description: "Keep files after copying?",
 				Computed:    true,
@@ -194,6 +212,24 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"include_patterns": schema.ListAttribute{
+				Description: "Array of glob patterns to include",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.StringType,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"exclude_patterns": schema.ListAttribute{
+				Description: "Array of glob patterns to exclude",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.StringType,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"sync_interval_minutes": schema.Int64Attribute{
@@ -273,16 +309,6 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "Is this a two-way sync?",
 				Computed:    true,
 			},
-			"include_patterns": schema.ListAttribute{
-				Description: "Array of glob patterns to include",
-				Computed:    true,
-				ElementType: types.StringType,
-			},
-			"exclude_patterns": schema.ListAttribute{
-				Description: "Array of glob patterns to exclude",
-				Computed:    true,
-				ElementType: types.StringType,
-			},
 			"created_at": schema.StringAttribute{
 				Description: "When this sync was created",
 				Computed:    true,
@@ -314,36 +340,46 @@ func (r *syncResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	paramsSyncCreate := files_sdk.SyncCreateParams{}
-	paramsSyncCreate.Name = plan.Name.ValueString()
-	paramsSyncCreate.Description = plan.Description.ValueString()
-	paramsSyncCreate.SrcPath = plan.SrcPath.ValueString()
-	paramsSyncCreate.DestPath = plan.DestPath.ValueString()
-	paramsSyncCreate.SrcRemoteServerId = plan.SrcRemoteServerId.ValueInt64()
-	paramsSyncCreate.DestRemoteServerId = plan.DestRemoteServerId.ValueInt64()
-	if !plan.KeepAfterCopy.IsNull() && !plan.KeepAfterCopy.IsUnknown() {
-		paramsSyncCreate.KeepAfterCopy = plan.KeepAfterCopy.ValueBoolPointer()
-	}
 	if !plan.DeleteEmptyFolders.IsNull() && !plan.DeleteEmptyFolders.IsUnknown() {
 		paramsSyncCreate.DeleteEmptyFolders = plan.DeleteEmptyFolders.ValueBoolPointer()
 	}
+	paramsSyncCreate.Description = plan.Description.ValueString()
+	paramsSyncCreate.DestPath = plan.DestPath.ValueString()
+	paramsSyncCreate.DestRemoteServerId = plan.DestRemoteServerId.ValueInt64()
+	paramsSyncCreate.DestSiteId = plan.DestSiteId.ValueInt64()
 	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
 		paramsSyncCreate.Disabled = plan.Disabled.ValueBoolPointer()
 	}
-	paramsSyncCreate.Interval = plan.Interval.ValueString()
-	paramsSyncCreate.Trigger = plan.Trigger.ValueString()
-	paramsSyncCreate.TriggerFile = plan.TriggerFile.ValueString()
+	if !plan.ExcludePatterns.IsNull() && !plan.ExcludePatterns.IsUnknown() {
+		diags = plan.ExcludePatterns.ElementsAs(ctx, &paramsSyncCreate.ExcludePatterns, false)
+		resp.Diagnostics.Append(diags...)
+	}
 	paramsSyncCreate.HolidayRegion = plan.HolidayRegion.ValueString()
-	paramsSyncCreate.SyncIntervalMinutes = plan.SyncIntervalMinutes.ValueInt64()
+	if !plan.IncludePatterns.IsNull() && !plan.IncludePatterns.IsUnknown() {
+		diags = plan.IncludePatterns.ElementsAs(ctx, &paramsSyncCreate.IncludePatterns, false)
+		resp.Diagnostics.Append(diags...)
+	}
+	paramsSyncCreate.Interval = plan.Interval.ValueString()
+	if !plan.KeepAfterCopy.IsNull() && !plan.KeepAfterCopy.IsUnknown() {
+		paramsSyncCreate.KeepAfterCopy = plan.KeepAfterCopy.ValueBoolPointer()
+	}
+	paramsSyncCreate.Name = plan.Name.ValueString()
 	paramsSyncCreate.RecurringDay = plan.RecurringDay.ValueInt64()
-	paramsSyncCreate.ScheduleTimeZone = plan.ScheduleTimeZone.ValueString()
 	if !plan.ScheduleDaysOfWeek.IsNull() && !plan.ScheduleDaysOfWeek.IsUnknown() {
 		diags = plan.ScheduleDaysOfWeek.ElementsAs(ctx, &paramsSyncCreate.ScheduleDaysOfWeek, false)
 		resp.Diagnostics.Append(diags...)
 	}
+	paramsSyncCreate.ScheduleTimeZone = plan.ScheduleTimeZone.ValueString()
 	if !plan.ScheduleTimesOfDay.IsNull() && !plan.ScheduleTimesOfDay.IsUnknown() {
 		diags = plan.ScheduleTimesOfDay.ElementsAs(ctx, &paramsSyncCreate.ScheduleTimesOfDay, false)
 		resp.Diagnostics.Append(diags...)
 	}
+	paramsSyncCreate.SrcPath = plan.SrcPath.ValueString()
+	paramsSyncCreate.SrcRemoteServerId = plan.SrcRemoteServerId.ValueInt64()
+	paramsSyncCreate.SrcSiteId = plan.SrcSiteId.ValueInt64()
+	paramsSyncCreate.SyncIntervalMinutes = plan.SyncIntervalMinutes.ValueInt64()
+	paramsSyncCreate.Trigger = paramsSyncCreate.Trigger.Enum()[plan.Trigger.ValueString()]
+	paramsSyncCreate.TriggerFile = plan.TriggerFile.ValueString()
 	paramsSyncCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
@@ -422,53 +458,50 @@ func (r *syncResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
 		paramsSyncUpdate["id"] = plan.Id.ValueInt64()
 	}
-	if !config.Name.IsNull() && !config.Name.IsUnknown() {
-		paramsSyncUpdate["name"] = config.Name.ValueString()
+	if !config.DeleteEmptyFolders.IsNull() && !config.DeleteEmptyFolders.IsUnknown() {
+		paramsSyncUpdate["delete_empty_folders"] = config.DeleteEmptyFolders.ValueBool()
 	}
 	if !config.Description.IsNull() && !config.Description.IsUnknown() {
 		paramsSyncUpdate["description"] = config.Description.ValueString()
 	}
-	if !config.SrcPath.IsNull() && !config.SrcPath.IsUnknown() {
-		paramsSyncUpdate["src_path"] = config.SrcPath.ValueString()
-	}
 	if !config.DestPath.IsNull() && !config.DestPath.IsUnknown() {
 		paramsSyncUpdate["dest_path"] = config.DestPath.ValueString()
-	}
-	if !config.SrcRemoteServerId.IsNull() && !config.SrcRemoteServerId.IsUnknown() {
-		paramsSyncUpdate["src_remote_server_id"] = config.SrcRemoteServerId.ValueInt64()
 	}
 	if !config.DestRemoteServerId.IsNull() && !config.DestRemoteServerId.IsUnknown() {
 		paramsSyncUpdate["dest_remote_server_id"] = config.DestRemoteServerId.ValueInt64()
 	}
-	if !config.KeepAfterCopy.IsNull() && !config.KeepAfterCopy.IsUnknown() {
-		paramsSyncUpdate["keep_after_copy"] = config.KeepAfterCopy.ValueBool()
-	}
-	if !config.DeleteEmptyFolders.IsNull() && !config.DeleteEmptyFolders.IsUnknown() {
-		paramsSyncUpdate["delete_empty_folders"] = config.DeleteEmptyFolders.ValueBool()
+	if !config.DestSiteId.IsNull() && !config.DestSiteId.IsUnknown() {
+		paramsSyncUpdate["dest_site_id"] = config.DestSiteId.ValueInt64()
 	}
 	if !config.Disabled.IsNull() && !config.Disabled.IsUnknown() {
 		paramsSyncUpdate["disabled"] = config.Disabled.ValueBool()
 	}
-	if !config.Interval.IsNull() && !config.Interval.IsUnknown() {
-		paramsSyncUpdate["interval"] = config.Interval.ValueString()
-	}
-	if !config.Trigger.IsNull() && !config.Trigger.IsUnknown() {
-		paramsSyncUpdate["trigger"] = config.Trigger.ValueString()
-	}
-	if !config.TriggerFile.IsNull() && !config.TriggerFile.IsUnknown() {
-		paramsSyncUpdate["trigger_file"] = config.TriggerFile.ValueString()
+	if !config.ExcludePatterns.IsNull() && !config.ExcludePatterns.IsUnknown() {
+		var updateExcludePatterns []string
+		diags = config.ExcludePatterns.ElementsAs(ctx, &updateExcludePatterns, false)
+		resp.Diagnostics.Append(diags...)
+		paramsSyncUpdate["exclude_patterns"] = updateExcludePatterns
 	}
 	if !config.HolidayRegion.IsNull() && !config.HolidayRegion.IsUnknown() {
 		paramsSyncUpdate["holiday_region"] = config.HolidayRegion.ValueString()
 	}
-	if !config.SyncIntervalMinutes.IsNull() && !config.SyncIntervalMinutes.IsUnknown() {
-		paramsSyncUpdate["sync_interval_minutes"] = config.SyncIntervalMinutes.ValueInt64()
+	if !config.IncludePatterns.IsNull() && !config.IncludePatterns.IsUnknown() {
+		var updateIncludePatterns []string
+		diags = config.IncludePatterns.ElementsAs(ctx, &updateIncludePatterns, false)
+		resp.Diagnostics.Append(diags...)
+		paramsSyncUpdate["include_patterns"] = updateIncludePatterns
+	}
+	if !config.Interval.IsNull() && !config.Interval.IsUnknown() {
+		paramsSyncUpdate["interval"] = config.Interval.ValueString()
+	}
+	if !config.KeepAfterCopy.IsNull() && !config.KeepAfterCopy.IsUnknown() {
+		paramsSyncUpdate["keep_after_copy"] = config.KeepAfterCopy.ValueBool()
+	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsSyncUpdate["name"] = config.Name.ValueString()
 	}
 	if !config.RecurringDay.IsNull() && !config.RecurringDay.IsUnknown() {
 		paramsSyncUpdate["recurring_day"] = config.RecurringDay.ValueInt64()
-	}
-	if !config.ScheduleTimeZone.IsNull() && !config.ScheduleTimeZone.IsUnknown() {
-		paramsSyncUpdate["schedule_time_zone"] = config.ScheduleTimeZone.ValueString()
 	}
 	if !config.ScheduleDaysOfWeek.IsNull() && !config.ScheduleDaysOfWeek.IsUnknown() {
 		var updateScheduleDaysOfWeek []int64
@@ -476,11 +509,32 @@ func (r *syncResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		resp.Diagnostics.Append(diags...)
 		paramsSyncUpdate["schedule_days_of_week"] = updateScheduleDaysOfWeek
 	}
+	if !config.ScheduleTimeZone.IsNull() && !config.ScheduleTimeZone.IsUnknown() {
+		paramsSyncUpdate["schedule_time_zone"] = config.ScheduleTimeZone.ValueString()
+	}
 	if !config.ScheduleTimesOfDay.IsNull() && !config.ScheduleTimesOfDay.IsUnknown() {
 		var updateScheduleTimesOfDay []string
 		diags = config.ScheduleTimesOfDay.ElementsAs(ctx, &updateScheduleTimesOfDay, false)
 		resp.Diagnostics.Append(diags...)
 		paramsSyncUpdate["schedule_times_of_day"] = updateScheduleTimesOfDay
+	}
+	if !config.SrcPath.IsNull() && !config.SrcPath.IsUnknown() {
+		paramsSyncUpdate["src_path"] = config.SrcPath.ValueString()
+	}
+	if !config.SrcRemoteServerId.IsNull() && !config.SrcRemoteServerId.IsUnknown() {
+		paramsSyncUpdate["src_remote_server_id"] = config.SrcRemoteServerId.ValueInt64()
+	}
+	if !config.SrcSiteId.IsNull() && !config.SrcSiteId.IsUnknown() {
+		paramsSyncUpdate["src_site_id"] = config.SrcSiteId.ValueInt64()
+	}
+	if !config.SyncIntervalMinutes.IsNull() && !config.SyncIntervalMinutes.IsUnknown() {
+		paramsSyncUpdate["sync_interval_minutes"] = config.SyncIntervalMinutes.ValueInt64()
+	}
+	if !config.Trigger.IsNull() && !config.Trigger.IsUnknown() {
+		paramsSyncUpdate["trigger"] = config.Trigger.ValueString()
+	}
+	if !config.TriggerFile.IsNull() && !config.TriggerFile.IsUnknown() {
+		paramsSyncUpdate["trigger_file"] = config.TriggerFile.ValueString()
 	}
 
 	if resp.Diagnostics.HasError() {
@@ -562,6 +616,8 @@ func (r *syncResource) populateResourceModel(ctx context.Context, sync files_sdk
 	state.DestPath = types.StringValue(sync.DestPath)
 	state.SrcRemoteServerId = types.Int64Value(sync.SrcRemoteServerId)
 	state.DestRemoteServerId = types.Int64Value(sync.DestRemoteServerId)
+	state.SrcSiteId = types.Int64Value(sync.SrcSiteId)
+	state.DestSiteId = types.Int64Value(sync.DestSiteId)
 	state.TwoWay = types.BoolPointerValue(sync.TwoWay)
 	state.KeepAfterCopy = types.BoolPointerValue(sync.KeepAfterCopy)
 	state.DeleteEmptyFolders = types.BoolPointerValue(sync.DeleteEmptyFolders)

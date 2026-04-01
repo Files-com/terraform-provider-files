@@ -1,4 +1,4 @@
 data "files_lock" "example_lock" {
-  path  = "path"
+  path  = "locked_file"
   token = "token"
 }

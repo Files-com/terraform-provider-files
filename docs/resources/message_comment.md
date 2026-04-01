@@ -15,7 +15,7 @@ A MessageComment is a comment made by a user on a message.
 ```terraform
 resource "files_message_comment" "example_message_comment" {
   user_id = 1
-  body    = "body"
+  body    = "What a great idea, thank you!"
 }
 ```
 

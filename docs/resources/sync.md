@@ -20,24 +20,28 @@ Syncs track their runs, status, and configuration.
 
 ```terraform
 resource "files_sync" "example_sync" {
-  name                  = "example"
+  delete_empty_folders  = true
   description           = "example"
-  src_path              = "example"
   dest_path             = "example"
-  src_remote_server_id  = 1
   dest_remote_server_id = 1
-  keep_after_copy       = false
-  delete_empty_folders  = false
-  disabled              = false
+  dest_site_id          = 1
+  disabled              = true
+  exclude_patterns      = ["example"]
+  holiday_region        = "us_dc"
+  include_patterns      = ["example"]
   interval              = "week"
+  keep_after_copy       = true
+  name                  = "example"
+  recurring_day         = 25
+  schedule_days_of_week = [0, 2, 4]
+  schedule_time_zone    = "Eastern Time (US & Canada)"
+  schedule_times_of_day = ["06:30", "14:30"]
+  src_path              = "example"
+  src_remote_server_id  = 1
+  src_site_id           = 1
+  sync_interval_minutes = 1
   trigger               = "example"
   trigger_file          = "example"
-  holiday_region        = "us_dc"
-  sync_interval_minutes = 1
-  recurring_day         = 25
-  schedule_time_zone    = "Eastern Time (US & Canada)"
-  schedule_days_of_week = [0, 2, 4]
-  schedule_times_of_day = ["06:30", "14:30"]
   workspace_id          = 1
 }
 ```
@@ -51,8 +55,11 @@ resource "files_sync" "example_sync" {
 - `description` (String) Description for this sync job
 - `dest_path` (String) Absolute destination path for the sync
 - `dest_remote_server_id` (Number) Remote server ID for the destination (if remote)
+- `dest_site_id` (Number) Destination site ID if syncing to a child or partner site
 - `disabled` (Boolean) Is this sync disabled?
+- `exclude_patterns` (List of String) Array of glob patterns to exclude
 - `holiday_region` (String) If trigger is `custom_schedule`, the sync will check if there is a formal, observed holiday for the region, and if so, it will not run.
+- `include_patterns` (List of String) Array of glob patterns to include
 - `interval` (String) If trigger is `daily`, this specifies how often to run this sync.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`
 - `keep_after_copy` (Boolean) Keep files after copying?
 - `name` (String) Name for this sync job
@@ -62,6 +69,7 @@ resource "files_sync" "example_sync" {
 - `schedule_times_of_day` (List of String) If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. Times of day in HH:MM format.
 - `src_path` (String) Absolute source path for the sync
 - `src_remote_server_id` (Number) Remote server ID for the source (if remote)
+- `src_site_id` (Number) Source site ID if syncing from a child or partner site
 - `sync_interval_minutes` (Number) Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.
 - `trigger` (String) Trigger type: daily, custom_schedule, or manual
 - `trigger_file` (String) Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.
@@ -70,9 +78,7 @@ resource "files_sync" "example_sync" {
 ### Read-Only
 
 - `created_at` (String) When this sync was created
-- `exclude_patterns` (List of String) Array of glob patterns to exclude
 - `id` (Number) Sync ID
-- `include_patterns` (List of String) Array of glob patterns to include
 - `latest_sync_run` (String) The latest run of this sync
 - `site_id` (Number) Site ID this sync belongs to
 - `two_way` (Boolean) Is this a two-way sync?

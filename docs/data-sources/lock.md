@@ -24,7 +24,7 @@ Files.com's WebDAV offering and desktop app leverage this locking API to manage 
 
 ```terraform
 data "files_lock" "example_lock" {
-  path  = "path"
+  path  = "locked_file"
   token = "token"
 }
 ```

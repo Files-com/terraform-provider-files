@@ -1,5 +1,5 @@
 resource "files_lock" "example_lock" {
-  path                     = "path"
+  path                     = "locked_file"
   allow_access_by_any_user = false
   exclusive                = false
   recursive                = true
