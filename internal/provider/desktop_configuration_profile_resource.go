@@ -73,7 +73,7 @@ func (r *desktopConfigurationProfileResource) Schema(_ context.Context, _ resour
 				Required:    true,
 			},
 			"mount_mappings": schema.DynamicAttribute{
-				Description: "Mount point mappings for the desktop app. Keys are mount points (e.g. drive letters) and values are paths in Files.com that the mount points map to.",
+				Description: "Mount point mappings for the desktop app. Keys must be a single uppercase Windows drive letter other than A, B, or C, and values are Files.com paths to mount there.",
 				Required:    true,
 			},
 			"workspace_id": schema.Int64Attribute{

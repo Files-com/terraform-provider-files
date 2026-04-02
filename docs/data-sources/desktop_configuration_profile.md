@@ -27,7 +27,7 @@ data "files_desktop_configuration_profile" "example_desktop_configuration_profil
 
 ### Read-Only
 
-- `mount_mappings` (Dynamic) Mount point mappings for the desktop app. Keys are mount points (e.g. drive letters) and values are paths in Files.com that the mount points map to.
+- `mount_mappings` (Dynamic) Mount point mappings for the desktop app. Keys must be a single uppercase Windows drive letter other than A, B, or C, and values are Files.com paths to mount there.
 - `name` (String) Profile name
 - `use_for_all_users` (Boolean) Whether this profile applies to all users in the Workspace by default
 - `workspace_id` (Number) Workspace ID
