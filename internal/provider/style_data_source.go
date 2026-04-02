@@ -27,10 +27,11 @@ type styleDataSource struct {
 }
 
 type styleDataSourceModel struct {
-	Path      types.String `tfsdk:"path"`
-	Id        types.Int64  `tfsdk:"id"`
-	Logo      types.String `tfsdk:"logo"`
-	Thumbnail types.String `tfsdk:"thumbnail"`
+	Path          types.String `tfsdk:"path"`
+	Id            types.Int64  `tfsdk:"id"`
+	Logo          types.String `tfsdk:"logo"`
+	LogoClickHref types.String `tfsdk:"logo_click_href"`
+	Thumbnail     types.String `tfsdk:"thumbnail"`
 }
 
 func (r *styleDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -58,7 +59,7 @@ func (r *styleDataSource) Metadata(_ context.Context, req datasource.MetadataReq
 
 func (r *styleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Style is a custom set of branding that can be applied on a per-folder basis.\n\nCurrently these only support Logos per folder, but in the future we may extend these to also support colors.\n\nIf you want to see that, please let us know so we can add your vote to the list.",
+		Description: "A Style is a custom set of branding that can be applied on a per-folder basis.\n\nCurrently these support a logo per folder and an optional click-through URL for public visitors.\n\nIn the future we may extend these to also support colors.\n\nIf you want to see that, please let us know so we can add your vote to the list.",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
 				Description: "Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
@@ -70,6 +71,10 @@ func (r *styleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 			},
 			"logo": schema.StringAttribute{
 				Description: "Logo",
+				Computed:    true,
+			},
+			"logo_click_href": schema.StringAttribute{
+				Description: "URL to open when a public visitor clicks the logo",
 				Computed:    true,
 			},
 			"thumbnail": schema.StringAttribute{
@@ -121,6 +126,7 @@ func (r *styleDataSource) populateDataSourceModel(ctx context.Context, style fil
 		)
 	}
 	state.Logo = types.StringValue(string(respLogo))
+	state.LogoClickHref = types.StringValue(style.LogoClickHref)
 	respThumbnail, err := json.Marshal(style.Thumbnail)
 	if err != nil {
 		diags.AddError(

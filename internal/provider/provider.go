@@ -276,6 +276,7 @@ func (p *filesProvider) Resources(_ context.Context) []func() resource.Resource 
 		NewSiemHttpDestinationResource,
 		NewSiteResource,
 		NewSnapshotResource,
+		NewStyleResource,
 		NewSyncResource,
 		NewUserResource,
 		NewUserLifecycleRuleResource,
