@@ -46,8 +46,6 @@ type syncResourceModel struct {
 	DestPath            types.String `tfsdk:"dest_path"`
 	SrcRemoteServerId   types.Int64  `tfsdk:"src_remote_server_id"`
 	DestRemoteServerId  types.Int64  `tfsdk:"dest_remote_server_id"`
-	SrcSiteId           types.Int64  `tfsdk:"src_site_id"`
-	DestSiteId          types.Int64  `tfsdk:"dest_site_id"`
 	KeepAfterCopy       types.Bool   `tfsdk:"keep_after_copy"`
 	DeleteEmptyFolders  types.Bool   `tfsdk:"delete_empty_folders"`
 	Disabled            types.Bool   `tfsdk:"disabled"`
@@ -65,6 +63,8 @@ type syncResourceModel struct {
 	Id                  types.Int64  `tfsdk:"id"`
 	SiteId              types.Int64  `tfsdk:"site_id"`
 	UserId              types.Int64  `tfsdk:"user_id"`
+	SrcSiteId           types.Int64  `tfsdk:"src_site_id"`
+	DestSiteId          types.Int64  `tfsdk:"dest_site_id"`
 	TwoWay              types.Bool   `tfsdk:"two_way"`
 	CreatedAt           types.String `tfsdk:"created_at"`
 	UpdatedAt           types.String `tfsdk:"updated_at"`
@@ -149,22 +149,6 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"dest_remote_server_id": schema.Int64Attribute{
 				Description: "Remote server ID for the destination (if remote)",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
-			"src_site_id": schema.Int64Attribute{
-				Description: "Source site ID if syncing from a child or partner site",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
-			"dest_site_id": schema.Int64Attribute{
-				Description: "Destination site ID if syncing to a child or partner site",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
@@ -305,6 +289,14 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "User who created or owns this sync",
 				Computed:    true,
 			},
+			"src_site_id": schema.Int64Attribute{
+				Description: "Source site ID if syncing from a child or partner site",
+				Computed:    true,
+			},
+			"dest_site_id": schema.Int64Attribute{
+				Description: "Destination site ID if syncing to a child or partner site",
+				Computed:    true,
+			},
 			"two_way": schema.BoolAttribute{
 				Description: "Is this a two-way sync?",
 				Computed:    true,
@@ -346,7 +338,6 @@ func (r *syncResource) Create(ctx context.Context, req resource.CreateRequest, r
 	paramsSyncCreate.Description = plan.Description.ValueString()
 	paramsSyncCreate.DestPath = plan.DestPath.ValueString()
 	paramsSyncCreate.DestRemoteServerId = plan.DestRemoteServerId.ValueInt64()
-	paramsSyncCreate.DestSiteId = plan.DestSiteId.ValueInt64()
 	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
 		paramsSyncCreate.Disabled = plan.Disabled.ValueBoolPointer()
 	}
@@ -376,7 +367,6 @@ func (r *syncResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 	paramsSyncCreate.SrcPath = plan.SrcPath.ValueString()
 	paramsSyncCreate.SrcRemoteServerId = plan.SrcRemoteServerId.ValueInt64()
-	paramsSyncCreate.SrcSiteId = plan.SrcSiteId.ValueInt64()
 	paramsSyncCreate.SyncIntervalMinutes = plan.SyncIntervalMinutes.ValueInt64()
 	paramsSyncCreate.Trigger = paramsSyncCreate.Trigger.Enum()[plan.Trigger.ValueString()]
 	paramsSyncCreate.TriggerFile = plan.TriggerFile.ValueString()
@@ -470,9 +460,6 @@ func (r *syncResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.DestRemoteServerId.IsNull() && !config.DestRemoteServerId.IsUnknown() {
 		paramsSyncUpdate["dest_remote_server_id"] = config.DestRemoteServerId.ValueInt64()
 	}
-	if !config.DestSiteId.IsNull() && !config.DestSiteId.IsUnknown() {
-		paramsSyncUpdate["dest_site_id"] = config.DestSiteId.ValueInt64()
-	}
 	if !config.Disabled.IsNull() && !config.Disabled.IsUnknown() {
 		paramsSyncUpdate["disabled"] = config.Disabled.ValueBool()
 	}
@@ -523,9 +510,6 @@ func (r *syncResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 	if !config.SrcRemoteServerId.IsNull() && !config.SrcRemoteServerId.IsUnknown() {
 		paramsSyncUpdate["src_remote_server_id"] = config.SrcRemoteServerId.ValueInt64()
-	}
-	if !config.SrcSiteId.IsNull() && !config.SrcSiteId.IsUnknown() {
-		paramsSyncUpdate["src_site_id"] = config.SrcSiteId.ValueInt64()
 	}
 	if !config.SyncIntervalMinutes.IsNull() && !config.SyncIntervalMinutes.IsUnknown() {
 		paramsSyncUpdate["sync_interval_minutes"] = config.SyncIntervalMinutes.ValueInt64()

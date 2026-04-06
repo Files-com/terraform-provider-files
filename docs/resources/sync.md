@@ -24,7 +24,6 @@ resource "files_sync" "example_sync" {
   description           = "example"
   dest_path             = "example"
   dest_remote_server_id = 1
-  dest_site_id          = 1
   disabled              = true
   exclude_patterns      = ["example"]
   holiday_region        = "us_dc"
@@ -38,7 +37,6 @@ resource "files_sync" "example_sync" {
   schedule_times_of_day = ["06:30", "14:30"]
   src_path              = "example"
   src_remote_server_id  = 1
-  src_site_id           = 1
   sync_interval_minutes = 1
   trigger               = "example"
   trigger_file          = "example"
@@ -55,7 +53,6 @@ resource "files_sync" "example_sync" {
 - `description` (String) Description for this sync job
 - `dest_path` (String) Absolute destination path for the sync
 - `dest_remote_server_id` (Number) Remote server ID for the destination (if remote)
-- `dest_site_id` (Number) Destination site ID if syncing to a child or partner site
 - `disabled` (Boolean) Is this sync disabled?
 - `exclude_patterns` (List of String) Array of glob patterns to exclude
 - `holiday_region` (String) If trigger is `custom_schedule`, the sync will check if there is a formal, observed holiday for the region, and if so, it will not run.
@@ -69,7 +66,6 @@ resource "files_sync" "example_sync" {
 - `schedule_times_of_day` (List of String) If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. Times of day in HH:MM format.
 - `src_path` (String) Absolute source path for the sync
 - `src_remote_server_id` (Number) Remote server ID for the source (if remote)
-- `src_site_id` (Number) Source site ID if syncing from a child or partner site
 - `sync_interval_minutes` (Number) Frequency in minutes between syncs. If set, this value must be greater than or equal to the `remote_sync_interval` value for the site's plan. If left blank, the plan's `remote_sync_interval` will be used. This setting is only used if `trigger` is empty.
 - `trigger` (String) Trigger type: daily, custom_schedule, or manual
 - `trigger_file` (String) Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.
@@ -78,9 +74,11 @@ resource "files_sync" "example_sync" {
 ### Read-Only
 
 - `created_at` (String) When this sync was created
+- `dest_site_id` (Number) Destination site ID if syncing to a child or partner site
 - `id` (Number) Sync ID
 - `latest_sync_run` (String) The latest run of this sync
 - `site_id` (Number) Site ID this sync belongs to
+- `src_site_id` (Number) Source site ID if syncing from a child or partner site
 - `two_way` (Boolean) Is this a two-way sync?
 - `updated_at` (String) When this sync was last updated
 - `user_id` (Number) User who created or owns this sync
