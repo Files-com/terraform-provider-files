@@ -41,6 +41,7 @@ data "files_sync_run" "example_sync_run" {
 - `errored_files` (Number) Number of files that errored
 - `estimated_bytes_count` (Number) Estimated bytes count for this run
 - `event_errors` (List of String) Array of errors encountered during the run
+- `live_transfers` (Dynamic) Array of in-progress file transfers with progress data. Only present when the sync run status is in_progress.
 - `log_url` (String) Link to external log file.
 - `runtime` (Number) Total runtime in seconds
 - `site_id` (Number) Site ID

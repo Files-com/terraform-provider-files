@@ -50,6 +50,7 @@ type syncRunDataSourceModel struct {
 	SyncId               types.Int64   `tfsdk:"sync_id"`
 	SyncName             types.String  `tfsdk:"sync_name"`
 	UpdatedAt            types.String  `tfsdk:"updated_at"`
+	LiveTransfers        types.Dynamic `tfsdk:"live_transfers"`
 }
 
 func (r *syncRunDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -168,6 +169,10 @@ func (r *syncRunDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Description: "When this run was last updated",
 				Computed:    true,
 			},
+			"live_transfers": schema.DynamicAttribute{
+				Description: "Array of in-progress file transfers with progress data. Only present when the sync run status is in_progress.",
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -243,6 +248,8 @@ func (r *syncRunDataSource) populateDataSourceModel(ctx context.Context, syncRun
 			"Could not convert state updated_at to string: "+err.Error(),
 		)
 	}
+	state.LiveTransfers, propDiags = lib.ToDynamic(ctx, path.Root("live_transfers"), syncRun.LiveTransfers, state.LiveTransfers.UnderlyingValue())
+	diags.Append(propDiags...)
 
 	return
 }
