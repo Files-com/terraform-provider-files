@@ -205,3 +205,25 @@ func TestListValueToString(t *testing.T) {
 		assert.Equal(t, c.expected, result, c.message)
 	}
 }
+
+func TestMapValueFrom(t *testing.T) {
+	stringMap, diags := types.MapValueFrom(context.Background(), types.StringType, map[string]string{"foo": "bar", "baz": "qux"})
+	assert.False(t, diags.HasError(), "typed string map should convert to types.Map")
+
+	var stringMapResult map[string]string
+	diags = stringMap.ElementsAs(context.Background(), &stringMapResult, false)
+	assert.False(t, diags.HasError(), "typed string map should round-trip from types.Map")
+	assert.Equal(t, map[string]string{"foo": "bar", "baz": "qux"}, stringMapResult)
+
+	listMap, diags := types.MapValueFrom(
+		context.Background(),
+		types.ListType{ElemType: types.StringType},
+		map[string][]string{"foo": {"bar", "baz"}, "empty": {}},
+	)
+	assert.False(t, diags.HasError(), "typed string slice map should convert to types.Map")
+
+	var listMapResult map[string][]string
+	diags = listMap.ElementsAs(context.Background(), &listMapResult, false)
+	assert.False(t, diags.HasError(), "typed string slice map should round-trip from types.Map")
+	assert.Equal(t, map[string][]string{"foo": {"bar", "baz"}, "empty": {}}, listMapResult)
+}
