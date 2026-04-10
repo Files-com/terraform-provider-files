@@ -30,6 +30,8 @@ type notificationDataSourceModel struct {
 	Path                     types.String `tfsdk:"path"`
 	GroupId                  types.Int64  `tfsdk:"group_id"`
 	GroupName                types.String `tfsdk:"group_name"`
+	GroupIds                 types.List   `tfsdk:"group_ids"`
+	GroupNames               types.List   `tfsdk:"group_names"`
 	TriggeringGroupIds       types.List   `tfsdk:"triggering_group_ids"`
 	TriggeringUserIds        types.List   `tfsdk:"triggering_user_ids"`
 	TriggerByShareRecipients types.Bool   `tfsdk:"trigger_by_share_recipients"`
@@ -92,6 +94,16 @@ func (r *notificationDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			"group_name": schema.StringAttribute{
 				Description: "Group name, if a Group ID is set",
 				Computed:    true,
+			},
+			"group_ids": schema.ListAttribute{
+				Description: "Group IDs when the notification requires multiple groups",
+				Computed:    true,
+				ElementType: types.Int64Type,
+			},
+			"group_names": schema.ListAttribute{
+				Description: "Group names when the notification requires multiple groups",
+				Computed:    true,
+				ElementType: types.StringType,
 			},
 			"triggering_group_ids": schema.ListAttribute{
 				Description: "If set, will only notify on actions made by a member of one of the specified groups",
@@ -209,6 +221,10 @@ func (r *notificationDataSource) populateDataSourceModel(ctx context.Context, no
 	state.Path = types.StringValue(notification.Path)
 	state.GroupId = types.Int64Value(notification.GroupId)
 	state.GroupName = types.StringValue(notification.GroupName)
+	state.GroupIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, notification.GroupIds)
+	diags.Append(propDiags...)
+	state.GroupNames, propDiags = types.ListValueFrom(ctx, types.StringType, notification.GroupNames)
+	diags.Append(propDiags...)
 	state.TriggeringGroupIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, notification.TriggeringGroupIds)
 	diags.Append(propDiags...)
 	state.TriggeringUserIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, notification.TriggeringUserIds)

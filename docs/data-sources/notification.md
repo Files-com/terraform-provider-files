@@ -33,7 +33,9 @@ data "files_notification" "example_notification" {
 ### Read-Only
 
 - `group_id` (Number) ID of Group to receive notifications
+- `group_ids` (List of Number) Group IDs when the notification requires multiple groups
 - `group_name` (String) Group name, if a Group ID is set
+- `group_names` (List of String) Group names when the notification requires multiple groups
 - `message` (String) Custom message to include in notification emails
 - `notify_on_copy` (Boolean) Trigger on files copied to this path?
 - `notify_on_delete` (Boolean) Trigger on files deleted in this path?

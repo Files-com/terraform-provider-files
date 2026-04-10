@@ -34,6 +34,7 @@ resource "files_notification" "example_notification" {
   triggering_user_ids         = [1]
   trigger_by_share_recipients = true
   group_id                    = 1
+  group_ids                   = [1]
   username                    = "User"
 }
 ```
@@ -44,6 +45,7 @@ resource "files_notification" "example_notification" {
 ### Optional
 
 - `group_id` (Number) ID of Group to receive notifications
+- `group_ids` (List of Number) Group IDs when the notification requires multiple groups
 - `message` (String) Custom message to include in notification emails
 - `notify_on_copy` (Boolean) Trigger on files copied to this path?
 - `notify_on_delete` (Boolean) Trigger on files deleted in this path?
@@ -64,6 +66,7 @@ resource "files_notification" "example_notification" {
 ### Read-Only
 
 - `group_name` (String) Group name, if a Group ID is set
+- `group_names` (List of String) Group names when the notification requires multiple groups
 - `id` (Number) Notification ID
 - `suppressed_email` (Boolean) If true, it means that the recipient at this user's email address has manually unsubscribed from all emails, or had their email "hard bounce", which means that we are unable to send mail to this user's current email address. Notifications will resume if the user changes their email address.
 - `unsubscribed` (Boolean) Is the user unsubscribed from this notification?

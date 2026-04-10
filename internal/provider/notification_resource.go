@@ -8,6 +8,7 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	notification "github.com/Files-com/files-sdk-go/v3/notification"
+	"github.com/Files-com/terraform-provider-files/lib"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -39,6 +40,7 @@ type notificationResource struct {
 type notificationResourceModel struct {
 	Path                     types.String `tfsdk:"path"`
 	GroupId                  types.Int64  `tfsdk:"group_id"`
+	GroupIds                 types.List   `tfsdk:"group_ids"`
 	TriggeringGroupIds       types.List   `tfsdk:"triggering_group_ids"`
 	TriggeringUserIds        types.List   `tfsdk:"triggering_user_ids"`
 	TriggerByShareRecipients types.Bool   `tfsdk:"trigger_by_share_recipients"`
@@ -56,6 +58,7 @@ type notificationResourceModel struct {
 	Username                 types.String `tfsdk:"username"`
 	Id                       types.Int64  `tfsdk:"id"`
 	GroupName                types.String `tfsdk:"group_name"`
+	GroupNames               types.List   `tfsdk:"group_names"`
 	Unsubscribed             types.Bool   `tfsdk:"unsubscribed"`
 	UnsubscribedReason       types.String `tfsdk:"unsubscribed_reason"`
 	SuppressedEmail          types.Bool   `tfsdk:"suppressed_email"`
@@ -104,6 +107,16 @@ func (r *notificationResource) Schema(_ context.Context, _ resource.SchemaReques
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 					int64planmodifier.RequiresReplace(),
+				},
+			},
+			"group_ids": schema.ListAttribute{
+				Description: "Group IDs when the notification requires multiple groups",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.Int64Type,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.UseStateForUnknown(),
+					listplanmodifier.RequiresReplace(),
 				},
 			},
 			"triggering_group_ids": schema.ListAttribute{
@@ -245,6 +258,11 @@ func (r *notificationResource) Schema(_ context.Context, _ resource.SchemaReques
 				Description: "Group name, if a Group ID is set",
 				Computed:    true,
 			},
+			"group_names": schema.ListAttribute{
+				Description: "Group names when the notification requires multiple groups",
+				Computed:    true,
+				ElementType: types.StringType,
+			},
 			"unsubscribed": schema.BoolAttribute{
 				Description: "Is the user unsubscribed from this notification?",
 				Computed:    true,
@@ -319,6 +337,8 @@ func (r *notificationResource) Create(ctx context.Context, req resource.CreateRe
 		paramsNotificationCreate.TriggerByShareRecipients = plan.TriggerByShareRecipients.ValueBoolPointer()
 	}
 	paramsNotificationCreate.GroupId = plan.GroupId.ValueInt64()
+	paramsNotificationCreate.GroupIds, diags = lib.ListValueToString(ctx, path.Root("group_ids"), plan.GroupIds, ",")
+	resp.Diagnostics.Append(diags...)
 	paramsNotificationCreate.Path = plan.Path.ValueString()
 	paramsNotificationCreate.Username = plan.Username.ValueString()
 
@@ -520,6 +540,10 @@ func (r *notificationResource) populateResourceModel(ctx context.Context, notifi
 	state.Path = types.StringValue(notification.Path)
 	state.GroupId = types.Int64Value(notification.GroupId)
 	state.GroupName = types.StringValue(notification.GroupName)
+	state.GroupIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, notification.GroupIds)
+	diags.Append(propDiags...)
+	state.GroupNames, propDiags = types.ListValueFrom(ctx, types.StringType, notification.GroupNames)
+	diags.Append(propDiags...)
 	state.TriggeringGroupIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, notification.TriggeringGroupIds)
 	diags.Append(propDiags...)
 	state.TriggeringUserIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, notification.TriggeringUserIds)

@@ -292,3 +292,11 @@ resource "files_behavior" "example_auto_recrypt_behavior" {
     armor                      = false
   }
 }
+
+resource "files_behavior" "example_metadata_category_behavior" {
+  path     = "path"
+  behavior = "metadata_category"
+  value    = {
+    metadata_category_id = 1
+  }
+}
