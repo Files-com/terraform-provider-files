@@ -14,6 +14,7 @@ A Partner is a first-class entity that cleanly represents an external organizati
 
 ```terraform
 resource "files_partner" "example_partner" {
+  allowed_ips                  = "10.0.0.0/8\n127.0.0.1"
   allow_bypassing_2fa_policies = false
   allow_credential_changes     = false
   allow_providing_gpg_keys     = false
@@ -40,6 +41,7 @@ resource "files_partner" "example_partner" {
 - `allow_credential_changes` (Boolean) Allow Partner Admins to change or reset credentials for users belonging to this Partner.
 - `allow_providing_gpg_keys` (Boolean) Allow Partner Admins to provide GPG keys.
 - `allow_user_creation` (Boolean) Allow Partner Admins to create users.
+- `allowed_ips` (String) A list of allowed IPs for this Partner. Newline delimited. Partner User IP access is allowed when the IP matches the Partner, User, or Site allowed IP lists.
 - `notes` (String) Notes about this Partner.
 - `tags` (String) Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.
 - `workspace_id` (Number) ID of the Workspace associated with this Partner.

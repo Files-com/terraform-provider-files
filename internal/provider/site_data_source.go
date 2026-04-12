@@ -104,6 +104,12 @@ type siteDataSourceModel struct {
 	NonSsoGroupsAllowed                      types.Bool    `tfsdk:"non_sso_groups_allowed"`
 	NonSsoUsersAllowed                       types.Bool    `tfsdk:"non_sso_users_allowed"`
 	FolderPermissionsGroupsOnly              types.Bool    `tfsdk:"folder_permissions_groups_only"`
+	GroupAdminsCanAddUsers                   types.Bool    `tfsdk:"group_admins_can_add_users"`
+	GroupAdminsCanDeleteUsers                types.Bool    `tfsdk:"group_admins_can_delete_users"`
+	GroupAdminsCanEnableDisableUsers         types.Bool    `tfsdk:"group_admins_can_enable_disable_users"`
+	GroupAdminsCanModifyUsers                types.Bool    `tfsdk:"group_admins_can_modify_users"`
+	GroupAdminsCanResetPasswords             types.Bool    `tfsdk:"group_admins_can_reset_passwords"`
+	GroupAdminsCanSetUserPassword            types.Bool    `tfsdk:"group_admins_can_set_user_password"`
 	Hipaa                                    types.Bool    `tfsdk:"hipaa"`
 	Icon128                                  types.String  `tfsdk:"icon128"`
 	Icon16                                   types.String  `tfsdk:"icon16"`
@@ -205,7 +211,6 @@ type siteDataSourceModel struct {
 	WelcomeEmailEnabled                      types.Bool    `tfsdk:"welcome_email_enabled"`
 	WelcomeScreen                            types.String  `tfsdk:"welcome_screen"`
 	WindowsModeFtp                           types.Bool    `tfsdk:"windows_mode_ftp"`
-	GroupAdminsCanSetUserPassword            types.Bool    `tfsdk:"group_admins_can_set_user_password"`
 }
 
 func (r *siteDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -535,6 +540,30 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"folder_permissions_groups_only": schema.BoolAttribute{
 				Description: "If true, permissions for this site must be bound to a group (not a user).",
+				Computed:    true,
+			},
+			"group_admins_can_add_users": schema.BoolAttribute{
+				Description: "Allow group admins to create users in their groups",
+				Computed:    true,
+			},
+			"group_admins_can_delete_users": schema.BoolAttribute{
+				Description: "Allow group admins to delete users in their groups",
+				Computed:    true,
+			},
+			"group_admins_can_enable_disable_users": schema.BoolAttribute{
+				Description: "Allow group admins to enable or disable users in their groups",
+				Computed:    true,
+			},
+			"group_admins_can_modify_users": schema.BoolAttribute{
+				Description: "Allow group admins to modify users in their groups",
+				Computed:    true,
+			},
+			"group_admins_can_reset_passwords": schema.BoolAttribute{
+				Description: "Allow group admins to reset passwords for users in their groups",
+				Computed:    true,
+			},
+			"group_admins_can_set_user_password": schema.BoolAttribute{
+				Description: "Allow group admins to set password authentication method",
 				Computed:    true,
 			},
 			"hipaa": schema.BoolAttribute{
@@ -941,10 +970,6 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Does FTP user Windows emulation mode?",
 				Computed:    true,
 			},
-			"group_admins_can_set_user_password": schema.BoolAttribute{
-				Description: "Allow group admins set password authentication method",
-				Computed:    true,
-			},
 		},
 	}
 }
@@ -1069,6 +1094,12 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.NonSsoGroupsAllowed = types.BoolPointerValue(site.NonSsoGroupsAllowed)
 	state.NonSsoUsersAllowed = types.BoolPointerValue(site.NonSsoUsersAllowed)
 	state.FolderPermissionsGroupsOnly = types.BoolPointerValue(site.FolderPermissionsGroupsOnly)
+	state.GroupAdminsCanAddUsers = types.BoolPointerValue(site.GroupAdminsCanAddUsers)
+	state.GroupAdminsCanDeleteUsers = types.BoolPointerValue(site.GroupAdminsCanDeleteUsers)
+	state.GroupAdminsCanEnableDisableUsers = types.BoolPointerValue(site.GroupAdminsCanEnableDisableUsers)
+	state.GroupAdminsCanModifyUsers = types.BoolPointerValue(site.GroupAdminsCanModifyUsers)
+	state.GroupAdminsCanResetPasswords = types.BoolPointerValue(site.GroupAdminsCanResetPasswords)
+	state.GroupAdminsCanSetUserPassword = types.BoolPointerValue(site.GroupAdminsCanSetUserPassword)
 	state.Hipaa = types.BoolPointerValue(site.Hipaa)
 	respIcon128, err := json.Marshal(site.Icon128)
 	if err != nil {
@@ -1247,7 +1278,6 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.WelcomeEmailEnabled = types.BoolPointerValue(site.WelcomeEmailEnabled)
 	state.WelcomeScreen = types.StringValue(site.WelcomeScreen)
 	state.WindowsModeFtp = types.BoolPointerValue(site.WindowsModeFtp)
-	state.GroupAdminsCanSetUserPassword = types.BoolPointerValue(site.GroupAdminsCanSetUserPassword)
 
 	return
 }

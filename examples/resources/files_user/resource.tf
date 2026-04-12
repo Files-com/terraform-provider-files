@@ -26,6 +26,7 @@ resource "files_user" "example_user" {
   partner_admin                    = true
   partner_id                       = 1
   password_validity_days           = 1
+  primary_group_id                 = 1
   readonly_site_admin              = true
   receive_admin_alerts             = true
   require_login_by                 = "2000-01-01T01:00:00Z"

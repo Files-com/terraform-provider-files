@@ -119,6 +119,7 @@ data "files_user" "example_user" {
 - `password_expired` (Boolean) Is user's password expired?
 - `password_set_at` (String) Last time the user's password was set
 - `password_validity_days` (Number) Number of days to allow user to use the same password
+- `primary_group_id` (Number) Primary group ID for Group Admin scoping
 - `public_keys_count` (Number) Number of public keys associated with this user
 - `readonly_site_admin` (Boolean) Is the user an allowed to view all (non-billing) site configuration for this site?
 - `receive_admin_alerts` (Boolean) Should the user receive admin alerts such a certificate expiration notifications and overages?

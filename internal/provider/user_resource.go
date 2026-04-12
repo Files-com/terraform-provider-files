@@ -63,6 +63,7 @@ type userResourceModel struct {
 	PartnerAdmin                     types.Bool              `tfsdk:"partner_admin"`
 	PartnerId                        types.Int64             `tfsdk:"partner_id"`
 	PasswordValidityDays             types.Int64             `tfsdk:"password_validity_days"`
+	PrimaryGroupId                   types.Int64             `tfsdk:"primary_group_id"`
 	ReceiveAdminAlerts               types.Bool              `tfsdk:"receive_admin_alerts"`
 	Require2fa                       types.String            `tfsdk:"require_2fa"`
 	RequireLoginBy                   types.String            `tfsdk:"require_login_by"`
@@ -347,6 +348,14 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"password_validity_days": schema.Int64Attribute{
 				Description: "Number of days to allow user to use the same password",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"primary_group_id": schema.Int64Attribute{
+				Description: "Primary group ID for Group Admin scoping",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
@@ -770,6 +779,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 	paramsUserCreate.PartnerId = plan.PartnerId.ValueInt64()
 	paramsUserCreate.PasswordValidityDays = plan.PasswordValidityDays.ValueInt64()
+	paramsUserCreate.PrimaryGroupId = plan.PrimaryGroupId.ValueInt64()
 	if !plan.ReadonlySiteAdmin.IsNull() && !plan.ReadonlySiteAdmin.IsUnknown() {
 		paramsUserCreate.ReadonlySiteAdmin = plan.ReadonlySiteAdmin.ValueBoolPointer()
 	}
@@ -1013,6 +1023,9 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 	if !config.PasswordValidityDays.IsNull() && !config.PasswordValidityDays.IsUnknown() {
 		paramsUserUpdate["password_validity_days"] = config.PasswordValidityDays.ValueInt64()
+	}
+	if !config.PrimaryGroupId.IsNull() && !config.PrimaryGroupId.IsUnknown() {
+		paramsUserUpdate["primary_group_id"] = config.PrimaryGroupId.ValueInt64()
 	}
 	if !config.ReadonlySiteAdmin.IsNull() && !config.ReadonlySiteAdmin.IsUnknown() {
 		paramsUserUpdate["readonly_site_admin"] = config.ReadonlySiteAdmin.ValueBool()
@@ -1271,6 +1284,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 		)
 	}
 	state.PasswordValidityDays = types.Int64Value(user.PasswordValidityDays)
+	state.PrimaryGroupId = types.Int64Value(user.PrimaryGroupId)
 	state.PublicKeysCount = types.Int64Value(user.PublicKeysCount)
 	state.ReceiveAdminAlerts = types.BoolPointerValue(user.ReceiveAdminAlerts)
 	state.Require2fa = types.StringValue(user.Require2fa)

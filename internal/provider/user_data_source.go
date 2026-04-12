@@ -74,6 +74,7 @@ type userDataSourceModel struct {
 	PartnerName                      types.String `tfsdk:"partner_name"`
 	PasswordSetAt                    types.String `tfsdk:"password_set_at"`
 	PasswordValidityDays             types.Int64  `tfsdk:"password_validity_days"`
+	PrimaryGroupId                   types.Int64  `tfsdk:"primary_group_id"`
 	PublicKeysCount                  types.Int64  `tfsdk:"public_keys_count"`
 	ReceiveAdminAlerts               types.Bool   `tfsdk:"receive_admin_alerts"`
 	Require2fa                       types.String `tfsdk:"require_2fa"`
@@ -314,6 +315,10 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"password_validity_days": schema.Int64Attribute{
 				Description: "Number of days to allow user to use the same password",
+				Computed:    true,
+			},
+			"primary_group_id": schema.Int64Attribute{
+				Description: "Primary group ID for Group Admin scoping",
 				Computed:    true,
 			},
 			"public_keys_count": schema.Int64Attribute{
@@ -582,6 +587,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 		)
 	}
 	state.PasswordValidityDays = types.Int64Value(user.PasswordValidityDays)
+	state.PrimaryGroupId = types.Int64Value(user.PrimaryGroupId)
 	state.PublicKeysCount = types.Int64Value(user.PublicKeysCount)
 	state.ReceiveAdminAlerts = types.BoolPointerValue(user.ReceiveAdminAlerts)
 	state.Require2fa = types.StringValue(user.Require2fa)

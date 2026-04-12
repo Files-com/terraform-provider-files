@@ -105,6 +105,11 @@ resource "files_site" "example_site" {
   bundle_watermark_value                        = {
     key = "example value"
   }
+  group_admins_can_add_users                    = false
+  group_admins_can_delete_users                 = false
+  group_admins_can_enable_disable_users         = false
+  group_admins_can_modify_users                 = false
+  group_admins_can_reset_passwords              = false
   group_admins_can_set_user_password            = false
   bundle_recipient_blacklist_free_email_domains = false
   bundle_recipient_blacklist_domains            = ["example"]

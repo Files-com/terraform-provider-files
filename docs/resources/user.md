@@ -84,6 +84,7 @@ resource "files_user" "example_user" {
   partner_admin                    = true
   partner_id                       = 1
   password_validity_days           = 1
+  primary_group_id                 = 1
   readonly_site_admin              = true
   receive_admin_alerts             = true
   require_login_by                 = "2000-01-01T01:00:00Z"
@@ -151,6 +152,7 @@ resource "files_user" "example_user" {
 - `password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) User password.
 - `password_confirmation` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Optional, but if provided, we will ensure that it matches the value sent in `password`.
 - `password_validity_days` (Number) Number of days to allow user to use the same password
+- `primary_group_id` (Number) Primary group ID for Group Admin scoping
 - `readonly_site_admin` (Boolean) Is the user an allowed to view all (non-billing) site configuration for this site?
 - `receive_admin_alerts` (Boolean) Should the user receive admin alerts such a certificate expiration notifications and overages?
 - `require_2fa` (String) 2FA required setting

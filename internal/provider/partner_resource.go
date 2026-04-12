@@ -37,6 +37,7 @@ type partnerResourceModel struct {
 	Name                      types.String `tfsdk:"name"`
 	RootFolder                types.String `tfsdk:"root_folder"`
 	AllowBypassing2faPolicies types.Bool   `tfsdk:"allow_bypassing_2fa_policies"`
+	AllowedIps                types.String `tfsdk:"allowed_ips"`
 	AllowCredentialChanges    types.Bool   `tfsdk:"allow_credential_changes"`
 	AllowProvidingGpgKeys     types.Bool   `tfsdk:"allow_providing_gpg_keys"`
 	AllowUserCreation         types.Bool   `tfsdk:"allow_user_creation"`
@@ -89,6 +90,14 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"allowed_ips": schema.StringAttribute{
+				Description: "A list of allowed IPs for this Partner. Newline delimited. Partner User IP access is allowed when the IP matches the Partner, User, or Site allowed IP lists.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"allow_credential_changes": schema.BoolAttribute{
@@ -176,6 +185,7 @@ func (r *partnerResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	paramsPartnerCreate := files_sdk.PartnerCreateParams{}
+	paramsPartnerCreate.AllowedIps = plan.AllowedIps.ValueString()
 	if !plan.AllowBypassing2faPolicies.IsNull() && !plan.AllowBypassing2faPolicies.IsUnknown() {
 		paramsPartnerCreate.AllowBypassing2faPolicies = plan.AllowBypassing2faPolicies.ValueBoolPointer()
 	}
@@ -269,6 +279,9 @@ func (r *partnerResource) Update(ctx context.Context, req resource.UpdateRequest
 	paramsPartnerUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
 		paramsPartnerUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.AllowedIps.IsNull() && !config.AllowedIps.IsUnknown() {
+		paramsPartnerUpdate["allowed_ips"] = config.AllowedIps.ValueString()
 	}
 	if !config.AllowBypassing2faPolicies.IsNull() && !config.AllowBypassing2faPolicies.IsUnknown() {
 		paramsPartnerUpdate["allow_bypassing_2fa_policies"] = config.AllowBypassing2faPolicies.ValueBool()
@@ -365,6 +378,7 @@ func (r *partnerResource) populateResourceModel(ctx context.Context, partner fil
 	var propDiags diag.Diagnostics
 
 	state.AllowBypassing2faPolicies = types.BoolPointerValue(partner.AllowBypassing2faPolicies)
+	state.AllowedIps = types.StringValue(partner.AllowedIps)
 	state.AllowCredentialChanges = types.BoolPointerValue(partner.AllowCredentialChanges)
 	state.AllowProvidingGpgKeys = types.BoolPointerValue(partner.AllowProvidingGpgKeys)
 	state.AllowUserCreation = types.BoolPointerValue(partner.AllowUserCreation)

@@ -106,6 +106,12 @@ type siteResourceModel struct {
 	NonSsoGroupsAllowed                      types.Bool    `tfsdk:"non_sso_groups_allowed"`
 	NonSsoUsersAllowed                       types.Bool    `tfsdk:"non_sso_users_allowed"`
 	FolderPermissionsGroupsOnly              types.Bool    `tfsdk:"folder_permissions_groups_only"`
+	GroupAdminsCanAddUsers                   types.Bool    `tfsdk:"group_admins_can_add_users"`
+	GroupAdminsCanDeleteUsers                types.Bool    `tfsdk:"group_admins_can_delete_users"`
+	GroupAdminsCanEnableDisableUsers         types.Bool    `tfsdk:"group_admins_can_enable_disable_users"`
+	GroupAdminsCanModifyUsers                types.Bool    `tfsdk:"group_admins_can_modify_users"`
+	GroupAdminsCanResetPasswords             types.Bool    `tfsdk:"group_admins_can_reset_passwords"`
+	GroupAdminsCanSetUserPassword            types.Bool    `tfsdk:"group_admins_can_set_user_password"`
 	IncludePasswordInWelcomeEmail            types.Bool    `tfsdk:"include_password_in_welcome_email"`
 	Language                                 types.String  `tfsdk:"language"`
 	LdapBaseDn                               types.String  `tfsdk:"ldap_base_dn"`
@@ -187,7 +193,6 @@ type siteResourceModel struct {
 	WelcomeEmailEnabled                      types.Bool    `tfsdk:"welcome_email_enabled"`
 	WelcomeScreen                            types.String  `tfsdk:"welcome_screen"`
 	WindowsModeFtp                           types.Bool    `tfsdk:"windows_mode_ftp"`
-	GroupAdminsCanSetUserPassword            types.Bool    `tfsdk:"group_admins_can_set_user_password"`
 	Id                                       types.Int64   `tfsdk:"id"`
 	AdminUserId                              types.Int64   `tfsdk:"admin_user_id"`
 	BundleWatermarkAttachment                types.String  `tfsdk:"bundle_watermark_attachment"`
@@ -796,6 +801,54 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"folder_permissions_groups_only": schema.BoolAttribute{
 				Description: "If true, permissions for this site must be bound to a group (not a user).",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"group_admins_can_add_users": schema.BoolAttribute{
+				Description: "Allow group admins to create users in their groups",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"group_admins_can_delete_users": schema.BoolAttribute{
+				Description: "Allow group admins to delete users in their groups",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"group_admins_can_enable_disable_users": schema.BoolAttribute{
+				Description: "Allow group admins to enable or disable users in their groups",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"group_admins_can_modify_users": schema.BoolAttribute{
+				Description: "Allow group admins to modify users in their groups",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"group_admins_can_reset_passwords": schema.BoolAttribute{
+				Description: "Allow group admins to reset passwords for users in their groups",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"group_admins_can_set_user_password": schema.BoolAttribute{
+				Description: "Allow group admins to set password authentication method",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -1462,14 +1515,6 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"group_admins_can_set_user_password": schema.BoolAttribute{
-				Description: "Allow group admins set password authentication method",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
-				},
-			},
 			"id": schema.Int64Attribute{
 				Description: "Site Id",
 				Computed:    true,
@@ -1951,6 +1996,21 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	updateBundleWatermarkValue, diags := lib.DynamicToInterface(ctx, path.Root("bundle_watermark_value"), config.BundleWatermarkValue)
 	resp.Diagnostics.Append(diags...)
 	paramsSiteUpdate["bundle_watermark_value"] = updateBundleWatermarkValue
+	if !config.GroupAdminsCanAddUsers.IsNull() && !config.GroupAdminsCanAddUsers.IsUnknown() {
+		paramsSiteUpdate["group_admins_can_add_users"] = config.GroupAdminsCanAddUsers.ValueBool()
+	}
+	if !config.GroupAdminsCanDeleteUsers.IsNull() && !config.GroupAdminsCanDeleteUsers.IsUnknown() {
+		paramsSiteUpdate["group_admins_can_delete_users"] = config.GroupAdminsCanDeleteUsers.ValueBool()
+	}
+	if !config.GroupAdminsCanEnableDisableUsers.IsNull() && !config.GroupAdminsCanEnableDisableUsers.IsUnknown() {
+		paramsSiteUpdate["group_admins_can_enable_disable_users"] = config.GroupAdminsCanEnableDisableUsers.ValueBool()
+	}
+	if !config.GroupAdminsCanModifyUsers.IsNull() && !config.GroupAdminsCanModifyUsers.IsUnknown() {
+		paramsSiteUpdate["group_admins_can_modify_users"] = config.GroupAdminsCanModifyUsers.ValueBool()
+	}
+	if !config.GroupAdminsCanResetPasswords.IsNull() && !config.GroupAdminsCanResetPasswords.IsUnknown() {
+		paramsSiteUpdate["group_admins_can_reset_passwords"] = config.GroupAdminsCanResetPasswords.ValueBool()
+	}
 	if !config.GroupAdminsCanSetUserPassword.IsNull() && !config.GroupAdminsCanSetUserPassword.IsUnknown() {
 		paramsSiteUpdate["group_admins_can_set_user_password"] = config.GroupAdminsCanSetUserPassword.ValueBool()
 	}
@@ -2223,6 +2283,12 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.NonSsoGroupsAllowed = types.BoolPointerValue(site.NonSsoGroupsAllowed)
 	state.NonSsoUsersAllowed = types.BoolPointerValue(site.NonSsoUsersAllowed)
 	state.FolderPermissionsGroupsOnly = types.BoolPointerValue(site.FolderPermissionsGroupsOnly)
+	state.GroupAdminsCanAddUsers = types.BoolPointerValue(site.GroupAdminsCanAddUsers)
+	state.GroupAdminsCanDeleteUsers = types.BoolPointerValue(site.GroupAdminsCanDeleteUsers)
+	state.GroupAdminsCanEnableDisableUsers = types.BoolPointerValue(site.GroupAdminsCanEnableDisableUsers)
+	state.GroupAdminsCanModifyUsers = types.BoolPointerValue(site.GroupAdminsCanModifyUsers)
+	state.GroupAdminsCanResetPasswords = types.BoolPointerValue(site.GroupAdminsCanResetPasswords)
+	state.GroupAdminsCanSetUserPassword = types.BoolPointerValue(site.GroupAdminsCanSetUserPassword)
 	state.Hipaa = types.BoolPointerValue(site.Hipaa)
 	respIcon128, err := json.Marshal(site.Icon128)
 	if err != nil {
@@ -2401,7 +2467,6 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.WelcomeEmailEnabled = types.BoolPointerValue(site.WelcomeEmailEnabled)
 	state.WelcomeScreen = types.StringValue(site.WelcomeScreen)
 	state.WindowsModeFtp = types.BoolPointerValue(site.WindowsModeFtp)
-	state.GroupAdminsCanSetUserPassword = types.BoolPointerValue(site.GroupAdminsCanSetUserPassword)
 
 	return
 }

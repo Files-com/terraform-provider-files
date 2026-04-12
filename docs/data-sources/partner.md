@@ -31,6 +31,7 @@ data "files_partner" "example_partner" {
 - `allow_credential_changes` (Boolean) Allow Partner Admins to change or reset credentials for users belonging to this Partner.
 - `allow_providing_gpg_keys` (Boolean) Allow Partner Admins to provide GPG keys.
 - `allow_user_creation` (Boolean) Allow Partner Admins to create users.
+- `allowed_ips` (String) A list of allowed IPs for this Partner. Newline delimited. Partner User IP access is allowed when the IP matches the Partner, User, or Site allowed IP lists.
 - `name` (String) The name of the Partner.
 - `notes` (String) Notes about this Partner.
 - `partner_admin_ids` (List of Number) Array of User IDs that are Partner Admins for this Partner.

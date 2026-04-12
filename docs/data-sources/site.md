@@ -93,7 +93,12 @@ data "files_site" "example_site" {
 - `email_footer_custom_text` (String) Custom footer text for system-generated emails. Supports standard strftime date/time patterns like %Y (4-digit year), %m (month), %d (day).
 - `folder_permissions_groups_only` (Boolean) If true, permissions for this site must be bound to a group (not a user).
 - `ftp_enabled` (Boolean) Is FTP enabled?
-- `group_admins_can_set_user_password` (Boolean) Allow group admins set password authentication method
+- `group_admins_can_add_users` (Boolean) Allow group admins to create users in their groups
+- `group_admins_can_delete_users` (Boolean) Allow group admins to delete users in their groups
+- `group_admins_can_enable_disable_users` (Boolean) Allow group admins to enable or disable users in their groups
+- `group_admins_can_modify_users` (Boolean) Allow group admins to modify users in their groups
+- `group_admins_can_reset_passwords` (Boolean) Allow group admins to reset passwords for users in their groups
+- `group_admins_can_set_user_password` (Boolean) Allow group admins to set password authentication method
 - `hipaa` (Boolean) Is there a signed HIPAA BAA between Files.com and this site?
 - `icon128` (String) Branded icon 128x128
 - `icon16` (String) Branded icon 16x16
