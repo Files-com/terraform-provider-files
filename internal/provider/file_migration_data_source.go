@@ -26,15 +26,16 @@ type fileMigrationDataSource struct {
 }
 
 type fileMigrationDataSourceModel struct {
-	Id         types.Int64  `tfsdk:"id"`
-	Path       types.String `tfsdk:"path"`
-	DestPath   types.String `tfsdk:"dest_path"`
-	FilesMoved types.Int64  `tfsdk:"files_moved"`
-	FilesTotal types.Int64  `tfsdk:"files_total"`
-	Operation  types.String `tfsdk:"operation"`
-	Region     types.String `tfsdk:"region"`
-	Status     types.String `tfsdk:"status"`
-	LogUrl     types.String `tfsdk:"log_url"`
+	Id             types.Int64  `tfsdk:"id"`
+	Path           types.String `tfsdk:"path"`
+	DestPath       types.String `tfsdk:"dest_path"`
+	FailureMessage types.String `tfsdk:"failure_message"`
+	FilesMoved     types.Int64  `tfsdk:"files_moved"`
+	FilesTotal     types.Int64  `tfsdk:"files_total"`
+	Operation      types.String `tfsdk:"operation"`
+	Region         types.String `tfsdk:"region"`
+	Status         types.String `tfsdk:"status"`
+	LogUrl         types.String `tfsdk:"log_url"`
 }
 
 func (r *fileMigrationDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -74,6 +75,10 @@ func (r *fileMigrationDataSource) Schema(_ context.Context, _ datasource.SchemaR
 			},
 			"dest_path": schema.StringAttribute{
 				Description: "Destination path",
+				Computed:    true,
+			},
+			"failure_message": schema.StringAttribute{
+				Description: "Reason for the failure, if applicable.",
 				Computed:    true,
 			},
 			"files_moved": schema.Int64Attribute{
@@ -137,6 +142,7 @@ func (r *fileMigrationDataSource) populateDataSourceModel(ctx context.Context, f
 	state.Id = types.Int64Value(fileMigration.Id)
 	state.Path = types.StringValue(fileMigration.Path)
 	state.DestPath = types.StringValue(fileMigration.DestPath)
+	state.FailureMessage = types.StringValue(fileMigration.FailureMessage)
 	state.FilesMoved = types.Int64Value(fileMigration.FilesMoved)
 	state.FilesTotal = types.Int64Value(fileMigration.FilesTotal)
 	state.Operation = types.StringValue(fileMigration.Operation)

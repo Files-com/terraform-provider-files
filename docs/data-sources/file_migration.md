@@ -33,6 +33,7 @@ data "files_file_migration" "example_file_migration" {
 ### Read-Only
 
 - `dest_path` (String) Destination path
+- `failure_message` (String) Reason for the failure, if applicable.
 - `files_moved` (Number) Number of files processed
 - `files_total` (Number)
 - `log_url` (String) Link to download the log file for this migration.
