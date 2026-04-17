@@ -1,6 +1,6 @@
 resource "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
   apply_to_all_workspaces = true
-  authentication_method   = "password"
+  authentication_method   = "all_non_sso"
   group_ids               = [1, 2, 3]
   inactivity_days         = 12
   include_site_admins     = true

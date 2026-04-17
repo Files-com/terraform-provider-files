@@ -78,14 +78,14 @@ func (r *userLifecycleRuleResource) Metadata(_ context.Context, req resource.Met
 
 func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A UserLifecycleRule represents a rule that applies to users based on their inactivity, state and authentication method.\n\n\n\nThe rule either disable or delete users who have been inactive or disabled for a specified number of days.\n\n\n\nThe authentication_method property specifies the authentication method for the rule, which can be set to \"all\" or other specific methods.\n\n\n\nThe rule can also include or exclude site and folder admins from the action.",
+		Description: "A UserLifecycleRule represents a rule that applies to users based on their inactivity, state and authentication method.\n\n\n\nThe rule either disable or delete users who have been inactive or disabled for a specified number of days.\n\n\n\nThe authentication_method property specifies the authentication method for the rule, which can be set to \"all\", \"all_non_sso\", or a specific authentication method.\n\n\n\nThe rule can also include or exclude site and folder admins from the action.",
 		Attributes: map[string]schema.Attribute{
 			"authentication_method": schema.StringAttribute{
-				Description: "User authentication method for which the rule will apply.",
+				Description: "User authentication method for which the rule will apply. Use `all_non_sso` to target every non-SSO authentication method with one rule.",
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("all", "password", "sso", "none", "email_signup", "password_with_imported_hash", "password_and_ssh_key"),
+					stringvalidator.OneOf("all", "password", "sso", "none", "email_signup", "password_with_imported_hash", "password_and_ssh_key", "all_non_sso"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),

@@ -5,7 +5,7 @@ subcategory: ""
 description: |-
   A UserLifecycleRule represents a rule that applies to users based on their inactivity, state and authentication method.
   The rule either disable or delete users who have been inactive or disabled for a specified number of days.
-  The authentication_method property specifies the authentication method for the rule, which can be set to "all" or other specific methods.
+  The authentication_method property specifies the authentication method for the rule, which can be set to "all", "all_non_sso", or a specific authentication method.
   The rule can also include or exclude site and folder admins from the action.
 ---
 
@@ -19,7 +19,7 @@ The rule either disable or delete users who have been inactive or disabled for a
 
 
 
-The authentication_method property specifies the authentication method for the rule, which can be set to "all" or other specific methods.
+The authentication_method property specifies the authentication method for the rule, which can be set to "all", "all_non_sso", or a specific authentication method.
 
 
 
@@ -44,7 +44,7 @@ data "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
 
 - `action` (String) Action to take on inactive users (disable or delete)
 - `apply_to_all_workspaces` (Boolean) If true, a default-workspace rule also applies to users in all workspaces.
-- `authentication_method` (String) User authentication method for which the rule will apply.
+- `authentication_method` (String) User authentication method for which the rule will apply. Use `all_non_sso` to target every non-SSO authentication method with one rule.
 - `group_ids` (List of Number) Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users.
 - `inactivity_days` (Number) Number of days of inactivity before the rule applies
 - `include_folder_admins` (Boolean) If true, the rule will apply to folder admins.
