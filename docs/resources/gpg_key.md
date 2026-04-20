@@ -72,6 +72,8 @@ resource "files_gpg_key" "example_gpg_key" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Gpg Keys can be imported by specifying the id.
 terraform import files_gpg_key.example_gpg_key 1

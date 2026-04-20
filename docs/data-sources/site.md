@@ -94,6 +94,7 @@ data "files_site" "example_site" {
 - `folder_permissions_groups_only` (Boolean) If true, permissions for this site must be bound to a group (not a user).
 - `ftp_enabled` (Boolean) Is FTP enabled?
 - `group_admins_can_add_users` (Boolean) Allow group admins to create users in their groups
+- `group_admins_can_bypass_user_lifecycle_rules` (Boolean) Allow group admins to exempt users in their groups from lifecycle rules
 - `group_admins_can_delete_users` (Boolean) Allow group admins to delete users in their groups
 - `group_admins_can_enable_disable_users` (Boolean) Allow group admins to enable or disable users in their groups
 - `group_admins_can_modify_users` (Boolean) Allow group admins to modify users in their groups

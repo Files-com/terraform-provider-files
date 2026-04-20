@@ -52,6 +52,8 @@ resource "files_group_user" "example_group_user" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Group Users can be imported by specifying the group_id and user_id.
 terraform import files_group_user.example_group_user 1,1

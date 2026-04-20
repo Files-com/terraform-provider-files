@@ -8,6 +8,7 @@ resource "files_notification" "example_notification" {
   notify_user_actions         = false
   recursive                   = false
   send_interval               = "daily"
+  subject                     = "Vendor A CSV Activity"
   message                     = "custom notification email message"
   triggering_filenames        = ["*.jpg", "notify_file.txt"]
   triggering_group_ids        = [1]

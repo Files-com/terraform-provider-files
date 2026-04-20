@@ -49,6 +49,8 @@ resource "files_style" "example_style" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Styles can be imported by specifying the path.
 terraform import files_style.example_style path

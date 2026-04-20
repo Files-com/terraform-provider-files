@@ -87,11 +87,11 @@ func (r *clickwrapResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				},
 			},
 			"use_with_users": schema.StringAttribute{
-				Description: "Use this Clickwrap for User Registrations?  Note: This only applies to User Registrations where the User is invited to your Files.com site using an E-Mail invitation process where they then set their own password.",
+				Description: "Use this Clickwrap for Users?  Values: `none`, `require` (new user signup via email invitation only), `require_all_users_once` (show to all users at their next web login; once accepted, not shown again), `require_all_users_always` (show to all users on every web login).",
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("none", "require"),
+					stringvalidator.OneOf("none", "require", "require_all_users_once", "require_all_users_always"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),

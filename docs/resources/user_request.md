@@ -42,6 +42,8 @@ resource "files_user_request" "example_user_request" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # User Requests can be imported by specifying the id.
 terraform import files_user_request.example_user_request 1

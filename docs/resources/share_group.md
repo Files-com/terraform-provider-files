@@ -48,6 +48,8 @@ resource "files_share_group" "example_share_group" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Share Groups can be imported by specifying the id.
 terraform import files_share_group.example_share_group 1

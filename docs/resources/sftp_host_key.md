@@ -43,6 +43,8 @@ resource "files_sftp_host_key" "example_sftp_host_key" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Sftp Host Keys can be imported by specifying the id.
 terraform import files_sftp_host_key.example_sftp_host_key 1

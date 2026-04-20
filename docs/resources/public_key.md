@@ -78,6 +78,8 @@ resource "files_public_key" "example_public_key" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Public Keys can be imported by specifying the id.
 terraform import files_public_key.example_public_key 1

@@ -110,6 +110,7 @@ type siteResourceModel struct {
 	GroupAdminsCanDeleteUsers                types.Bool    `tfsdk:"group_admins_can_delete_users"`
 	GroupAdminsCanEnableDisableUsers         types.Bool    `tfsdk:"group_admins_can_enable_disable_users"`
 	GroupAdminsCanModifyUsers                types.Bool    `tfsdk:"group_admins_can_modify_users"`
+	GroupAdminsCanBypassUserLifecycleRules   types.Bool    `tfsdk:"group_admins_can_bypass_user_lifecycle_rules"`
 	GroupAdminsCanResetPasswords             types.Bool    `tfsdk:"group_admins_can_reset_passwords"`
 	GroupAdminsCanSetUserPassword            types.Bool    `tfsdk:"group_admins_can_set_user_password"`
 	IncludePasswordInWelcomeEmail            types.Bool    `tfsdk:"include_password_in_welcome_email"`
@@ -833,6 +834,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"group_admins_can_modify_users": schema.BoolAttribute{
 				Description: "Allow group admins to modify users in their groups",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"group_admins_can_bypass_user_lifecycle_rules": schema.BoolAttribute{
+				Description: "Allow group admins to exempt users in their groups from lifecycle rules",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -2008,6 +2017,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.GroupAdminsCanModifyUsers.IsNull() && !config.GroupAdminsCanModifyUsers.IsUnknown() {
 		paramsSiteUpdate["group_admins_can_modify_users"] = config.GroupAdminsCanModifyUsers.ValueBool()
 	}
+	if !config.GroupAdminsCanBypassUserLifecycleRules.IsNull() && !config.GroupAdminsCanBypassUserLifecycleRules.IsUnknown() {
+		paramsSiteUpdate["group_admins_can_bypass_user_lifecycle_rules"] = config.GroupAdminsCanBypassUserLifecycleRules.ValueBool()
+	}
 	if !config.GroupAdminsCanResetPasswords.IsNull() && !config.GroupAdminsCanResetPasswords.IsUnknown() {
 		paramsSiteUpdate["group_admins_can_reset_passwords"] = config.GroupAdminsCanResetPasswords.ValueBool()
 	}
@@ -2287,6 +2299,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.GroupAdminsCanDeleteUsers = types.BoolPointerValue(site.GroupAdminsCanDeleteUsers)
 	state.GroupAdminsCanEnableDisableUsers = types.BoolPointerValue(site.GroupAdminsCanEnableDisableUsers)
 	state.GroupAdminsCanModifyUsers = types.BoolPointerValue(site.GroupAdminsCanModifyUsers)
+	state.GroupAdminsCanBypassUserLifecycleRules = types.BoolPointerValue(site.GroupAdminsCanBypassUserLifecycleRules)
 	state.GroupAdminsCanResetPasswords = types.BoolPointerValue(site.GroupAdminsCanResetPasswords)
 	state.GroupAdminsCanSetUserPassword = types.BoolPointerValue(site.GroupAdminsCanSetUserPassword)
 	state.Hipaa = types.BoolPointerValue(site.Hipaa)

@@ -59,6 +59,8 @@ resource "files_child_site_management_policy" "example_child_site_management_pol
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Child Site Management Policies can be imported by specifying the id.
 terraform import files_child_site_management_policy.example_child_site_management_policy 1

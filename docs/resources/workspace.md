@@ -43,6 +43,8 @@ resource "files_workspace" "example_workspace" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Workspaces can be imported by specifying the id.
 terraform import files_workspace.example_workspace 1

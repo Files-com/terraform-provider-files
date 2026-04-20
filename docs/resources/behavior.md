@@ -362,6 +362,8 @@ resource "files_behavior" "example_metadata_category_behavior" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Behaviors can be imported by specifying the id.
 terraform import files_behavior.example_behavior 1

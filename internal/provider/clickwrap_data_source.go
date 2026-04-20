@@ -74,7 +74,7 @@ func (r *clickwrapDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 				Computed:    true,
 			},
 			"use_with_users": schema.StringAttribute{
-				Description: "Use this Clickwrap for User Registrations?  Note: This only applies to User Registrations where the User is invited to your Files.com site using an E-Mail invitation process where they then set their own password.",
+				Description: "Use this Clickwrap for Users?  Values: `none`, `require` (new user signup via email invitation only), `require_all_users_once` (show to all users at their next web login; once accepted, not shown again), `require_all_users_always` (show to all users on every web login).",
 				Computed:    true,
 			},
 			"use_with_bundles": schema.StringAttribute{

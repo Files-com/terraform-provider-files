@@ -28,6 +28,7 @@ resource "files_notification" "example_notification" {
   notify_user_actions         = false
   recursive                   = false
   send_interval               = "daily"
+  subject                     = "Vendor A CSV Activity"
   message                     = "custom notification email message"
   triggering_filenames        = ["*.jpg", "notify_file.txt"]
   triggering_group_ids        = [1]
@@ -56,6 +57,7 @@ resource "files_notification" "example_notification" {
 - `path` (String) Folder path to notify on. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `recursive` (Boolean) Apply notification recursively?  This will enable notifications for each subfolder.
 - `send_interval` (String) The time interval that notifications are aggregated to
+- `subject` (String) Custom subject line to use for notification emails
 - `trigger_by_share_recipients` (Boolean) Notify when actions are performed by a share recipient?
 - `triggering_filenames` (List of String) Array of filenames (possibly with wildcards) to scope trigger
 - `triggering_group_ids` (List of Number) If set, will only notify on actions made by a member of one of the specified groups
@@ -75,6 +77,8 @@ resource "files_notification" "example_notification" {
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # Notifications can be imported by specifying the id.

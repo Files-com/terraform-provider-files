@@ -109,6 +109,7 @@ resource "files_site" "example_site" {
   group_admins_can_delete_users                 = false
   group_admins_can_enable_disable_users         = false
   group_admins_can_modify_users                 = false
+  group_admins_can_bypass_user_lifecycle_rules  = false
   group_admins_can_reset_passwords              = false
   group_admins_can_set_user_password            = false
   bundle_recipient_blacklist_free_email_domains = false

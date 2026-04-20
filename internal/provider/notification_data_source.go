@@ -43,6 +43,7 @@ type notificationDataSourceModel struct {
 	NotifyOnUpload           types.Bool   `tfsdk:"notify_on_upload"`
 	Recursive                types.Bool   `tfsdk:"recursive"`
 	SendInterval             types.String `tfsdk:"send_interval"`
+	Subject                  types.String `tfsdk:"subject"`
 	Message                  types.String `tfsdk:"message"`
 	TriggeringFilenames      types.List   `tfsdk:"triggering_filenames"`
 	Unsubscribed             types.Bool   `tfsdk:"unsubscribed"`
@@ -151,6 +152,10 @@ func (r *notificationDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Description: "The time interval that notifications are aggregated to",
 				Computed:    true,
 			},
+			"subject": schema.StringAttribute{
+				Description: "Custom subject line to use for notification emails",
+				Computed:    true,
+			},
 			"message": schema.StringAttribute{
 				Description: "Custom message to include in notification emails",
 				Computed:    true,
@@ -238,6 +243,7 @@ func (r *notificationDataSource) populateDataSourceModel(ctx context.Context, no
 	state.NotifyOnUpload = types.BoolPointerValue(notification.NotifyOnUpload)
 	state.Recursive = types.BoolPointerValue(notification.Recursive)
 	state.SendInterval = types.StringValue(notification.SendInterval)
+	state.Subject = types.StringValue(notification.Subject)
 	state.Message = types.StringValue(notification.Message)
 	state.TriggeringFilenames, propDiags = types.ListValueFrom(ctx, types.StringType, notification.TriggeringFilenames)
 	diags.Append(propDiags...)

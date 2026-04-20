@@ -43,6 +43,7 @@ description: |-
   filename regex validation
   forbidden files
   required named or globbed files with their own per-file constraints
+  Required file rule keys may also include standard strftime-style date/time tokens like %Y, %m, and %d. Those tokens are resolved at evaluation time using a stable window anchor: schedule-driven expectations use the window's deadline_at, while manual and upload expectations use the window's opened_at.
   This is intentionally structured rather than scriptable, so it stays safe, explainable, and versionable.
   History and incidents
   The Expectation itself stores summary state like last_evaluated_at, last_success_at, last_failure_at, and last_result.
@@ -170,6 +171,10 @@ In criteria v1, this can express things like:
 * forbidden files
 
 * required named or globbed files with their own per-file constraints
+
+
+
+Required file rule keys may also include standard strftime-style date/time tokens like `%Y`, `%m`, and `%d`. Those tokens are resolved at evaluation time using a stable window anchor: schedule-driven expectations use the window's `deadline_at`, while manual and upload expectations use the window's `opened_at`.
 
 
 

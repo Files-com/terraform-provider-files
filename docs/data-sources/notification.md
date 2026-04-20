@@ -46,6 +46,7 @@ data "files_notification" "example_notification" {
 - `path` (String) Folder path to notify on. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `recursive` (Boolean) Apply notification recursively?  This will enable notifications for each subfolder.
 - `send_interval` (String) The time interval that notifications are aggregated to
+- `subject` (String) Custom subject line to use for notification emails
 - `suppressed_email` (Boolean) If true, it means that the recipient at this user's email address has manually unsubscribed from all emails, or had their email "hard bounce", which means that we are unable to send mail to this user's current email address. Notifications will resume if the user changes their email address.
 - `trigger_by_share_recipients` (Boolean) Notify when actions are performed by a share recipient?
 - `triggering_filenames` (List of String) Array of filenames (possibly with wildcards) to scope trigger

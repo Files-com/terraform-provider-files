@@ -108,6 +108,7 @@ type siteDataSourceModel struct {
 	GroupAdminsCanDeleteUsers                types.Bool    `tfsdk:"group_admins_can_delete_users"`
 	GroupAdminsCanEnableDisableUsers         types.Bool    `tfsdk:"group_admins_can_enable_disable_users"`
 	GroupAdminsCanModifyUsers                types.Bool    `tfsdk:"group_admins_can_modify_users"`
+	GroupAdminsCanBypassUserLifecycleRules   types.Bool    `tfsdk:"group_admins_can_bypass_user_lifecycle_rules"`
 	GroupAdminsCanResetPasswords             types.Bool    `tfsdk:"group_admins_can_reset_passwords"`
 	GroupAdminsCanSetUserPassword            types.Bool    `tfsdk:"group_admins_can_set_user_password"`
 	Hipaa                                    types.Bool    `tfsdk:"hipaa"`
@@ -556,6 +557,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"group_admins_can_modify_users": schema.BoolAttribute{
 				Description: "Allow group admins to modify users in their groups",
+				Computed:    true,
+			},
+			"group_admins_can_bypass_user_lifecycle_rules": schema.BoolAttribute{
+				Description: "Allow group admins to exempt users in their groups from lifecycle rules",
 				Computed:    true,
 			},
 			"group_admins_can_reset_passwords": schema.BoolAttribute{
@@ -1098,6 +1103,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.GroupAdminsCanDeleteUsers = types.BoolPointerValue(site.GroupAdminsCanDeleteUsers)
 	state.GroupAdminsCanEnableDisableUsers = types.BoolPointerValue(site.GroupAdminsCanEnableDisableUsers)
 	state.GroupAdminsCanModifyUsers = types.BoolPointerValue(site.GroupAdminsCanModifyUsers)
+	state.GroupAdminsCanBypassUserLifecycleRules = types.BoolPointerValue(site.GroupAdminsCanBypassUserLifecycleRules)
 	state.GroupAdminsCanResetPasswords = types.BoolPointerValue(site.GroupAdminsCanResetPasswords)
 	state.GroupAdminsCanSetUserPassword = types.BoolPointerValue(site.GroupAdminsCanSetUserPassword)
 	state.Hipaa = types.BoolPointerValue(site.Hipaa)

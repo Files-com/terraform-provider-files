@@ -58,6 +58,8 @@ resource "files_as2_station" "example_as2_station" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # As2 Stations can be imported by specifying the id.
 terraform import files_as2_station.example_as2_station 1

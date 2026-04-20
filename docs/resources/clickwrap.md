@@ -51,7 +51,7 @@ resource "files_clickwrap" "example_clickwrap" {
 - `name` (String) Name of the Clickwrap agreement (used when selecting from multiple Clickwrap agreements.)
 - `use_with_bundles` (String) Use this Clickwrap for Bundles?
 - `use_with_inboxes` (String) Use this Clickwrap for Inboxes?
-- `use_with_users` (String) Use this Clickwrap for User Registrations?  Note: This only applies to User Registrations where the User is invited to your Files.com site using an E-Mail invitation process where they then set their own password.
+- `use_with_users` (String) Use this Clickwrap for Users?  Values: `none`, `require` (new user signup via email invitation only), `require_all_users_once` (show to all users at their next web login; once accepted, not shown again), `require_all_users_always` (show to all users on every web login).
 
 ### Read-Only
 
@@ -60,6 +60,8 @@ resource "files_clickwrap" "example_clickwrap" {
 ## Import
 
 Import is supported using the following syntax:
+
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
 
 ```shell
 # Clickwraps can be imported by specifying the id.

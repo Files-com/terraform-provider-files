@@ -123,6 +123,8 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Siem Http Destinations can be imported by specifying the id.
 terraform import files_siem_http_destination.example_siem_http_destination 1

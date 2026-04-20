@@ -77,6 +77,8 @@ resource "files_file" "example_file" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Files can be imported by specifying the path.
 terraform import files_file.example_file path

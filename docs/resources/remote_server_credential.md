@@ -84,6 +84,8 @@ resource "files_remote_server_credential" "example_remote_server_credential" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Remote Server Credentials can be imported by specifying the id.
 terraform import files_remote_server_credential.example_remote_server_credential 1

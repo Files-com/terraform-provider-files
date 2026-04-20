@@ -52,6 +52,7 @@ type notificationResourceModel struct {
 	NotifyOnUpload           types.Bool   `tfsdk:"notify_on_upload"`
 	Recursive                types.Bool   `tfsdk:"recursive"`
 	SendInterval             types.String `tfsdk:"send_interval"`
+	Subject                  types.String `tfsdk:"subject"`
 	Message                  types.String `tfsdk:"message"`
 	TriggeringFilenames      types.List   `tfsdk:"triggering_filenames"`
 	UserId                   types.Int64  `tfsdk:"user_id"`
@@ -212,6 +213,14 @@ func (r *notificationResource) Schema(_ context.Context, _ resource.SchemaReques
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"subject": schema.StringAttribute{
+				Description: "Custom subject line to use for notification emails",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"message": schema.StringAttribute{
 				Description: "Custom message to include in notification emails",
 				Computed:    true,
@@ -320,6 +329,7 @@ func (r *notificationResource) Create(ctx context.Context, req resource.CreateRe
 		paramsNotificationCreate.Recursive = plan.Recursive.ValueBoolPointer()
 	}
 	paramsNotificationCreate.SendInterval = plan.SendInterval.ValueString()
+	paramsNotificationCreate.Subject = plan.Subject.ValueString()
 	paramsNotificationCreate.Message = plan.Message.ValueString()
 	if !plan.TriggeringFilenames.IsNull() && !plan.TriggeringFilenames.IsUnknown() {
 		diags = plan.TriggeringFilenames.ElementsAs(ctx, &paramsNotificationCreate.TriggeringFilenames, false)
@@ -442,6 +452,9 @@ func (r *notificationResource) Update(ctx context.Context, req resource.UpdateRe
 	if !config.SendInterval.IsNull() && !config.SendInterval.IsUnknown() {
 		paramsNotificationUpdate["send_interval"] = config.SendInterval.ValueString()
 	}
+	if !config.Subject.IsNull() && !config.Subject.IsUnknown() {
+		paramsNotificationUpdate["subject"] = config.Subject.ValueString()
+	}
 	if !config.Message.IsNull() && !config.Message.IsUnknown() {
 		paramsNotificationUpdate["message"] = config.Message.ValueString()
 	}
@@ -557,6 +570,7 @@ func (r *notificationResource) populateResourceModel(ctx context.Context, notifi
 	state.NotifyOnUpload = types.BoolPointerValue(notification.NotifyOnUpload)
 	state.Recursive = types.BoolPointerValue(notification.Recursive)
 	state.SendInterval = types.StringValue(notification.SendInterval)
+	state.Subject = types.StringValue(notification.Subject)
 	state.Message = types.StringValue(notification.Message)
 	state.TriggeringFilenames, propDiags = types.ListValueFrom(ctx, types.StringType, notification.TriggeringFilenames)
 	diags.Append(propDiags...)

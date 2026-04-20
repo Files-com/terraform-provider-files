@@ -38,6 +38,8 @@ resource "files_message_comment_reaction" "example_message_comment_reaction" {
 
 Import is supported using the following syntax:
 
+The [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import) can be used, for example:
+
 ```shell
 # Message Comment Reactions can be imported by specifying the id.
 terraform import files_message_comment_reaction.example_message_comment_reaction 1
