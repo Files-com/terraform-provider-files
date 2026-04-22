@@ -35,19 +35,20 @@ type groupResource struct {
 }
 
 type groupResourceModel struct {
-	Name              types.String            `tfsdk:"name"`
-	AllowedIps        types.String            `tfsdk:"allowed_ips"`
-	AdminIds          lib.SortedElementString `tfsdk:"admin_ids"`
-	Notes             types.String            `tfsdk:"notes"`
-	UserIds           lib.SortedElementString `tfsdk:"user_ids"`
-	FtpPermission     types.Bool              `tfsdk:"ftp_permission"`
-	SftpPermission    types.Bool              `tfsdk:"sftp_permission"`
-	DavPermission     types.Bool              `tfsdk:"dav_permission"`
-	RestapiPermission types.Bool              `tfsdk:"restapi_permission"`
-	WorkspaceId       types.Int64             `tfsdk:"workspace_id"`
-	Id                types.Int64             `tfsdk:"id"`
-	Usernames         types.String            `tfsdk:"usernames"`
-	SiteId            types.Int64             `tfsdk:"site_id"`
+	Name                          types.String            `tfsdk:"name"`
+	AllowedIps                    types.String            `tfsdk:"allowed_ips"`
+	AdminIds                      lib.SortedElementString `tfsdk:"admin_ids"`
+	Notes                         types.String            `tfsdk:"notes"`
+	UserIds                       lib.SortedElementString `tfsdk:"user_ids"`
+	FtpPermission                 types.Bool              `tfsdk:"ftp_permission"`
+	SftpPermission                types.Bool              `tfsdk:"sftp_permission"`
+	DavPermission                 types.Bool              `tfsdk:"dav_permission"`
+	RestapiPermission             types.Bool              `tfsdk:"restapi_permission"`
+	DesktopConfigurationProfileId types.Int64             `tfsdk:"desktop_configuration_profile_id"`
+	WorkspaceId                   types.Int64             `tfsdk:"workspace_id"`
+	Id                            types.Int64             `tfsdk:"id"`
+	Usernames                     types.String            `tfsdk:"usernames"`
+	SiteId                        types.Int64             `tfsdk:"site_id"`
 }
 
 func (r *groupResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -147,6 +148,14 @@ func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"desktop_configuration_profile_id": schema.Int64Attribute{
+				Description: "Desktop Configuration Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"workspace_id": schema.Int64Attribute{
 				Description: "Workspace ID",
 				Computed:    true,
@@ -205,6 +214,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	if !plan.RestapiPermission.IsNull() && !plan.RestapiPermission.IsUnknown() {
 		paramsGroupCreate.RestapiPermission = plan.RestapiPermission.ValueBoolPointer()
 	}
+	paramsGroupCreate.DesktopConfigurationProfileId = plan.DesktopConfigurationProfileId.ValueInt64()
 	paramsGroupCreate.AllowedIps = plan.AllowedIps.ValueString()
 	paramsGroupCreate.Name = plan.Name.ValueString()
 	paramsGroupCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
@@ -306,6 +316,9 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if !config.RestapiPermission.IsNull() && !config.RestapiPermission.IsUnknown() {
 		paramsGroupUpdate["restapi_permission"] = config.RestapiPermission.ValueBool()
 	}
+	if !config.DesktopConfigurationProfileId.IsNull() && !config.DesktopConfigurationProfileId.IsUnknown() {
+		paramsGroupUpdate["desktop_configuration_profile_id"] = config.DesktopConfigurationProfileId.ValueInt64()
+	}
 	if !config.AllowedIps.IsNull() && !config.AllowedIps.IsUnknown() {
 		paramsGroupUpdate["allowed_ips"] = config.AllowedIps.ValueString()
 	}
@@ -391,6 +404,7 @@ func (r *groupResource) populateResourceModel(ctx context.Context, group files_s
 	state.SftpPermission = types.BoolPointerValue(group.SftpPermission)
 	state.DavPermission = types.BoolPointerValue(group.DavPermission)
 	state.RestapiPermission = types.BoolPointerValue(group.RestapiPermission)
+	state.DesktopConfigurationProfileId = types.Int64Value(group.DesktopConfigurationProfileId)
 	state.SiteId = types.Int64Value(group.SiteId)
 	state.WorkspaceId = types.Int64Value(group.WorkspaceId)
 

@@ -24,16 +24,17 @@ Files.com's Group Admin feature allows you to define Group Admins, who then have
 
 ```terraform
 resource "files_group" "example_group" {
-  notes              = "example"
-  user_ids           = 1
-  admin_ids          = 1
-  ftp_permission     = true
-  sftp_permission    = true
-  dav_permission     = true
-  restapi_permission = true
-  allowed_ips        = "10.0.0.0/8\n127.0.0.1"
-  name               = "name"
-  workspace_id       = 0
+  notes                            = "example"
+  user_ids                         = 1
+  admin_ids                        = 1
+  ftp_permission                   = true
+  sftp_permission                  = true
+  dav_permission                   = true
+  restapi_permission               = true
+  desktop_configuration_profile_id = 1
+  allowed_ips                      = "10.0.0.0/8\n127.0.0.1"
+  name                             = "name"
+  workspace_id                     = 0
 }
 ```
 
@@ -49,6 +50,7 @@ resource "files_group" "example_group" {
 - `admin_ids` (String) Comma-delimited list of user IDs who are group administrators (separated by commas)
 - `allowed_ips` (String) A list of allowed IPs if applicable.  Newline delimited
 - `dav_permission` (Boolean) If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level.
+- `desktop_configuration_profile_id` (Number) Desktop Configuration Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.
 - `ftp_permission` (Boolean) If true, users in this group can use FTP to login.  This will override a false value of `ftp_permission` on the user level.
 - `notes` (String) Notes about this group
 - `restapi_permission` (Boolean) If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.

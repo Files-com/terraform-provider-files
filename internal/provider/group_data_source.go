@@ -26,19 +26,20 @@ type groupDataSource struct {
 }
 
 type groupDataSourceModel struct {
-	Id                types.Int64  `tfsdk:"id"`
-	Name              types.String `tfsdk:"name"`
-	AllowedIps        types.String `tfsdk:"allowed_ips"`
-	AdminIds          types.String `tfsdk:"admin_ids"`
-	Notes             types.String `tfsdk:"notes"`
-	UserIds           types.String `tfsdk:"user_ids"`
-	Usernames         types.String `tfsdk:"usernames"`
-	FtpPermission     types.Bool   `tfsdk:"ftp_permission"`
-	SftpPermission    types.Bool   `tfsdk:"sftp_permission"`
-	DavPermission     types.Bool   `tfsdk:"dav_permission"`
-	RestapiPermission types.Bool   `tfsdk:"restapi_permission"`
-	SiteId            types.Int64  `tfsdk:"site_id"`
-	WorkspaceId       types.Int64  `tfsdk:"workspace_id"`
+	Id                            types.Int64  `tfsdk:"id"`
+	Name                          types.String `tfsdk:"name"`
+	AllowedIps                    types.String `tfsdk:"allowed_ips"`
+	AdminIds                      types.String `tfsdk:"admin_ids"`
+	Notes                         types.String `tfsdk:"notes"`
+	UserIds                       types.String `tfsdk:"user_ids"`
+	Usernames                     types.String `tfsdk:"usernames"`
+	FtpPermission                 types.Bool   `tfsdk:"ftp_permission"`
+	SftpPermission                types.Bool   `tfsdk:"sftp_permission"`
+	DavPermission                 types.Bool   `tfsdk:"dav_permission"`
+	RestapiPermission             types.Bool   `tfsdk:"restapi_permission"`
+	DesktopConfigurationProfileId types.Int64  `tfsdk:"desktop_configuration_profile_id"`
+	SiteId                        types.Int64  `tfsdk:"site_id"`
+	WorkspaceId                   types.Int64  `tfsdk:"workspace_id"`
 }
 
 func (r *groupDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -112,6 +113,10 @@ func (r *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 				Description: "If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.",
 				Computed:    true,
 			},
+			"desktop_configuration_profile_id": schema.Int64Attribute{
+				Description: "Desktop Configuration Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.",
+				Computed:    true,
+			},
 			"site_id": schema.Int64Attribute{
 				Description: "Site ID",
 				Computed:    true,
@@ -166,6 +171,7 @@ func (r *groupDataSource) populateDataSourceModel(ctx context.Context, group fil
 	state.SftpPermission = types.BoolPointerValue(group.SftpPermission)
 	state.DavPermission = types.BoolPointerValue(group.DavPermission)
 	state.RestapiPermission = types.BoolPointerValue(group.RestapiPermission)
+	state.DesktopConfigurationProfileId = types.Int64Value(group.DesktopConfigurationProfileId)
 	state.SiteId = types.Int64Value(group.SiteId)
 	state.WorkspaceId = types.Int64Value(group.WorkspaceId)
 
