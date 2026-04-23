@@ -45,6 +45,7 @@ resource "files_remote_server" "example_remote_server" {
   s3_compatible_bucket                          = "my-bucket"
   s3_compatible_endpoint                        = "mys3platform.com"
   s3_compatible_region                          = "us-east-1"
+  s3_compatible_virtual_hosted_style            = true
   s3_region                                     = "us-east-1"
   server_certificate                            = "require_match"
   server_host_key                               = "[public key]"

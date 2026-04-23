@@ -9,7 +9,7 @@ description: |-
   FTP Servers require that you specify their hostname, port, username, password, and a value for ssl. Optionally, provide server_certificate.
   SFTP Servers require that you specify their hostname, port, username, password or private_key, and a value for ssl. Optionally, provide server_certificate, private_key_passphrase.
   S3 Buckets require that you specify their s3_bucket name, and s3_region. Optionally provide a aws_access_key, and aws_secret_key. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.
-  S3-Compatible Buckets require that you specify s3_compatible_bucket, s3_compatible_endpoint, s3_compatible_access_key, and s3_compatible_secret_key.
+  S3-Compatible Buckets require that you specify s3_compatible_bucket, s3_compatible_endpoint, s3_compatible_access_key, and s3_compatible_secret_key. Optionally provide s3_compatible_virtual_hosted_style to use virtual-hosted-style URLs instead of path-style URLs.
   Google Cloud Storage requires that you specify google_cloud_storage_bucket, and then one of the following sets of authentication credentials:
   
   for JSON authentcation: google_cloud_storage_project_id, and google_cloud_storage_credentials_json
@@ -55,7 +55,7 @@ S3 Buckets require that you specify their `s3_bucket` name, and `s3_region`. Opt
 
 
 
-S3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`.
+S3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`. Optionally provide `s3_compatible_virtual_hosted_style` to use virtual-hosted-style URLs instead of path-style URLs.
 
 
 
@@ -189,6 +189,7 @@ data "files_remote_server" "example_remote_server" {
 - `s3_compatible_bucket` (String) S3-compatible: Bucket name
 - `s3_compatible_endpoint` (String) S3-compatible: endpoint
 - `s3_compatible_region` (String) S3-compatible: region
+- `s3_compatible_virtual_hosted_style` (Boolean) S3-compatible: If true, use virtual-hosted-style URLs instead of path-style URLs
 - `s3_region` (String) S3 region
 - `server_certificate` (String) Remote server certificate
 - `server_host_key` (String) Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts
