@@ -3,14 +3,12 @@ module github.com/Files-com/terraform-provider-files
 go 1.25.8
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.3.93
+	github.com/Files-com/files-sdk-go/v3 v3.3.94
 	github.com/hashicorp/terraform-plugin-docs v0.24.0
 	github.com/hashicorp/terraform-plugin-framework v1.19.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.19.0
 	github.com/hashicorp/terraform-plugin-testing v1.15.0
 )
-
-require github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8 // indirect
 
 require (
 	dario.cat/mergo v1.0.2 // indirect
