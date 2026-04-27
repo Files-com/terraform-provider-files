@@ -5,6 +5,7 @@ subcategory: ""
 description: |-
   A Behavior is an API resource for what are also known as Folder Settings. Every behavior is associated with a folder.
   Depending on the behavior, it may also operate on child folders. It may be overridable at the child folder level or maybe can be added to at the child folder level. The exact options for each behavior type are explained in the table below.
+  Each behavior type also has a recursion mode in the behavior type documentation. always means the behavior is always recursive, never means it is never recursive, and sometimes means callers may choose the value of the recursive field.
   Additionally, some behaviors are visible to non-admins, and others are even settable by non-admins. All the details are below.
   Each behavior uses a different format for storing its settings value. Next to each behavior type is an example value. Our API and SDKs currently require that the value for behaviors be sent as raw JSON within the value field. Our SDK generator and API documentation generator doesn't fully keep up with this requirement, so if you need any help finding the exact syntax to use for your language or use case, just reach out.
   Note: Append Timestamp behavior removed. Check Override Upload Filename behavior which have even more functionality to modify name on upload.
@@ -17,6 +18,10 @@ A Behavior is an API resource for what are also known as Folder Settings. Every 
 
 
 Depending on the behavior, it may also operate on child folders. It may be overridable at the child folder level or maybe can be added to at the child folder level. The exact options for each behavior type are explained in the table below.
+
+
+
+Each behavior type also has a recursion mode in the behavior type documentation. `always` means the behavior is always recursive, `never` means it is never recursive, and `sometimes` means callers may choose the value of the `recursive` field.
 
 
 
@@ -350,7 +355,7 @@ resource "files_behavior" "example_metadata_category_behavior" {
 - `description` (String) Description for this behavior.
 - `disable_parent_folder_behavior` (Boolean) If true, the parent folder's behavior will be disabled for this folder and its children.
 - `name` (String) Name for this behavior.
-- `recursive` (Boolean) Is behavior recursive?
+- `recursive` (Boolean) Whether this behavior is recursive for this record. `always` behaviors are always `true`, `never` behaviors are always `false`, and `sometimes` behaviors may be either value.
 - `value` (Dynamic) Settings for this behavior.  See the section above for an example value to provide here.  Formatting is different for each Behavior type.  May be sent as nested JSON or a single JSON-encoded string.  If using XML encoding for the API call, this data must be sent as a JSON-encoded string.
 
 ### Read-Only
