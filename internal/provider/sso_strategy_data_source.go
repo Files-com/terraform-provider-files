@@ -68,6 +68,7 @@ type ssoStrategyDataSourceModel struct {
 	LdapBaseDn                       types.String `tfsdk:"ldap_base_dn"`
 	LdapDomain                       types.String `tfsdk:"ldap_domain"`
 	Enabled                          types.Bool   `tfsdk:"enabled"`
+	DisplayOnLoginPage               types.Bool   `tfsdk:"display_on_login_page"`
 	LdapHost                         types.String `tfsdk:"ldap_host"`
 	LdapHost2                        types.String `tfsdk:"ldap_host_2"`
 	LdapHost3                        types.String `tfsdk:"ldap_host_3"`
@@ -271,6 +272,10 @@ func (r *ssoStrategyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Description: "Is strategy enabled?  This may become automatically set to `false` after a high number and duration of failures.",
 				Computed:    true,
 			},
+			"display_on_login_page": schema.BoolAttribute{
+				Description: "Should this strategy be displayed on the login page?",
+				Computed:    true,
+			},
 			"ldap_host": schema.StringAttribute{
 				Description: "LDAP host",
 				Computed:    true,
@@ -376,6 +381,7 @@ func (r *ssoStrategyDataSource) populateDataSourceModel(ctx context.Context, sso
 	state.LdapBaseDn = types.StringValue(ssoStrategy.LdapBaseDn)
 	state.LdapDomain = types.StringValue(ssoStrategy.LdapDomain)
 	state.Enabled = types.BoolPointerValue(ssoStrategy.Enabled)
+	state.DisplayOnLoginPage = types.BoolPointerValue(ssoStrategy.DisplayOnLoginPage)
 	state.LdapHost = types.StringValue(ssoStrategy.LdapHost)
 	state.LdapHost2 = types.StringValue(ssoStrategy.LdapHost2)
 	state.LdapHost3 = types.StringValue(ssoStrategy.LdapHost3)

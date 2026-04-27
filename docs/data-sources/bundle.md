@@ -36,6 +36,7 @@ data "files_bundle" "example_bundle" {
 ### Read-Only
 
 - `bundlepaths` (Dynamic) A list of bundlepaths in this bundle.  For performance reasons, this is not provided when listing bundles.
+- `bypasses_site_expiration_rules` (Boolean) If true, this Share Link bypasses site-wide expiration rules. Only site admins may set this.
 - `clickwrap_body` (String) Legal text that must be agreed to prior to accessing Bundle.
 - `clickwrap_id` (Number) ID of the clickwrap to use with this bundle.
 - `code` (String) Bundle code.  This code forms the end part of the Public URL.

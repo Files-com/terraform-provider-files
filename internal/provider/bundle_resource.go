@@ -50,6 +50,7 @@ type bundleResourceModel struct {
 	SkipEmail                                    types.Bool    `tfsdk:"skip_email"`
 	StartAccessOnDate                            types.String  `tfsdk:"start_access_on_date"`
 	SkipCompany                                  types.Bool    `tfsdk:"skip_company"`
+	BypassesSiteExpirationRules                  types.Bool    `tfsdk:"bypasses_site_expiration_rules"`
 	DontSeparateSubmissionsByFolder              types.Bool    `tfsdk:"dont_separate_submissions_by_folder"`
 	MaxUses                                      types.Int64   `tfsdk:"max_uses"`
 	Note                                         types.String  `tfsdk:"note"`
@@ -196,6 +197,14 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			},
 			"skip_company": schema.BoolAttribute{
 				Description: "BundleRegistrations can be saved without providing company?",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"bypasses_site_expiration_rules": schema.BoolAttribute{
+				Description: "If true, this Share Link bypasses site-wide expiration rules. Only site admins may set this.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -422,6 +431,9 @@ func (r *bundleResource) Create(ctx context.Context, req resource.CreateRequest,
 		resp.Diagnostics.Append(diags...)
 	}
 	paramsBundleCreate.Password = config.Password.ValueString()
+	if !plan.BypassesSiteExpirationRules.IsNull() && !plan.BypassesSiteExpirationRules.IsUnknown() {
+		paramsBundleCreate.BypassesSiteExpirationRules = plan.BypassesSiteExpirationRules.ValueBoolPointer()
+	}
 	paramsBundleCreate.FormFieldSetId = config.FormFieldSetId.ValueInt64()
 	if !config.CreateSnapshot.IsNull() && !config.CreateSnapshot.IsUnknown() {
 		paramsBundleCreate.CreateSnapshot = config.CreateSnapshot.ValueBoolPointer()
@@ -581,6 +593,9 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 	}
 	if !config.Password.IsNull() && !config.Password.IsUnknown() {
 		paramsBundleUpdate["password"] = config.Password.ValueString()
+	}
+	if !config.BypassesSiteExpirationRules.IsNull() && !config.BypassesSiteExpirationRules.IsUnknown() {
+		paramsBundleUpdate["bypasses_site_expiration_rules"] = config.BypassesSiteExpirationRules.ValueBool()
 	}
 	if !config.FormFieldSetId.IsNull() && !config.FormFieldSetId.IsUnknown() {
 		paramsBundleUpdate["form_field_set_id"] = config.FormFieldSetId.ValueInt64()
@@ -789,6 +804,7 @@ func (r *bundleResource) populateResourceModel(ctx context.Context, bundle files
 	}
 	state.SkipCompany = types.BoolPointerValue(bundle.SkipCompany)
 	state.Id = types.Int64Value(bundle.Id)
+	state.BypassesSiteExpirationRules = types.BoolPointerValue(bundle.BypassesSiteExpirationRules)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), bundle.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files Bundle",

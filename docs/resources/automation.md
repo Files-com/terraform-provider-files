@@ -51,7 +51,9 @@ description: |-
   For example, if the triggering file is at path/to/file.txt, then the automation destination path/to/dest/incoming-%tf will result in the actual destination being path/to/dest/incoming-file.txt.
   Parent Folders
   To reference the parent folder of a source file, use %p1, %p2, %p3, etc. for the first, second, third, etc. parent folder, respectively.
+  To reference path components from the root downward, use %P1, %P2, %P3, etc. for the first, second, third, etc. path component, respectively.
   For example, if the source file is at accounts/file.txt, then the automation destination path/to/dest/%p1/some_file_name.txt will result in the actual destination being path/to/dest/accounts/some_file_name.txt.
+  If the source file is at partner/app/team/inbound/file.txt, then the automation destination path/to/dest/%P1/%P3/%P4/file.txt will result in the actual destination being path/to/dest/partner/team/inbound/file.txt.
   Source File Name
   To reference the name of the source file being processed, use the following tokens:
   
@@ -309,7 +311,15 @@ To reference the parent folder of a source file, use `%p1`, `%p2`, `%p3`, etc. f
 
 
 
+To reference path components from the root downward, use `%P1`, `%P2`, `%P3`, etc. for the first, second, third, etc. path component, respectively.
+
+
+
 For example, if the source file is at `accounts/file.txt`, then the automation destination `path/to/dest/%p1/some_file_name.txt` will result in the actual destination being `path/to/dest/accounts/some_file_name.txt`.
+
+
+
+If the source file is at `partner/app/team/inbound/file.txt`, then the automation destination `path/to/dest/%P1/%P3/%P4/file.txt` will result in the actual destination being `path/to/dest/partner/team/inbound/file.txt`.
 
 
 

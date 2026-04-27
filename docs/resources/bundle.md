@@ -25,6 +25,7 @@ resource "files_bundle" "example_bundle" {
   user_id                                             = 1
   paths                                               = ["file.txt"]
   password                                            = "Password"
+  bypasses_site_expiration_rules                      = true
   form_field_set_id                                   = 1
   create_snapshot                                     = false
   dont_separate_submissions_by_folder                 = true
@@ -63,6 +64,7 @@ resource "files_bundle" "example_bundle" {
 
 > **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
 
+- `bypasses_site_expiration_rules` (Boolean) If true, this Share Link bypasses site-wide expiration rules. Only site admins may set this.
 - `clickwrap_id` (Number) ID of the clickwrap to use with this bundle.
 - `code` (String) Bundle code.  This code forms the end part of the Public URL.
 - `create_snapshot` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) If true, create a snapshot of this bundle's contents.

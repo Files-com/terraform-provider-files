@@ -2,6 +2,7 @@ resource "files_bundle" "example_bundle" {
   user_id                                             = 1
   paths                                               = ["file.txt"]
   password                                            = "Password"
+  bypasses_site_expiration_rules                      = true
   form_field_set_id                                   = 1
   create_snapshot                                     = false
   dont_separate_submissions_by_folder                 = true

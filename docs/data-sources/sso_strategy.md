@@ -38,6 +38,7 @@ data "files_sso_strategy" "example_sso_strategy" {
 - `deprovision_behavior` (String) Method used for deprovisioning users.
 - `deprovision_groups` (Boolean) Auto-deprovision group membership based on group memberships on the SSO side?
 - `deprovision_users` (Boolean) Auto-deprovision users?
+- `display_on_login_page` (Boolean) Should this strategy be displayed on the login page?
 - `enabled` (Boolean) Is strategy enabled?  This may become automatically set to `false` after a high number and duration of failures.
 - `label` (String) Custom label for the SSO provider on the login page.
 - `ldap_base_dn` (String) Base DN for looking up users in LDAP server

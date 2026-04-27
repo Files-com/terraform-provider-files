@@ -51,6 +51,7 @@ type bundleDataSourceModel struct {
 	SkipEmail                                    types.Bool    `tfsdk:"skip_email"`
 	StartAccessOnDate                            types.String  `tfsdk:"start_access_on_date"`
 	SkipCompany                                  types.Bool    `tfsdk:"skip_company"`
+	BypassesSiteExpirationRules                  types.Bool    `tfsdk:"bypasses_site_expiration_rules"`
 	CreatedAt                                    types.String  `tfsdk:"created_at"`
 	DontSeparateSubmissionsByFolder              types.Bool    `tfsdk:"dont_separate_submissions_by_folder"`
 	MaxUses                                      types.Int64   `tfsdk:"max_uses"`
@@ -185,6 +186,10 @@ func (r *bundleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			},
 			"skip_company": schema.BoolAttribute{
 				Description: "BundleRegistrations can be saved without providing company?",
+				Computed:    true,
+			},
+			"bypasses_site_expiration_rules": schema.BoolAttribute{
+				Description: "If true, this Share Link bypasses site-wide expiration rules. Only site admins may set this.",
 				Computed:    true,
 			},
 			"created_at": schema.StringAttribute{
@@ -344,6 +349,7 @@ func (r *bundleDataSource) populateDataSourceModel(ctx context.Context, bundle f
 	}
 	state.SkipCompany = types.BoolPointerValue(bundle.SkipCompany)
 	state.Id = types.Int64Value(bundle.Id)
+	state.BypassesSiteExpirationRules = types.BoolPointerValue(bundle.BypassesSiteExpirationRules)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), bundle.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files Bundle",
