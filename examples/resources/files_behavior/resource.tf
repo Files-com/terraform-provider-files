@@ -36,7 +36,10 @@ resource "files_behavior" "example_webhook_behavior" {
 resource "files_behavior" "example_file_expiration_behavior" {
   path     = "path"
   behavior = "file_expiration"
-  value    = 30
+  value    = {
+    days_to_retain       = 30
+    delete_empty_folders = false
+  }
 }
 
 resource "files_behavior" "example_auto_encrypt_behavior" {
