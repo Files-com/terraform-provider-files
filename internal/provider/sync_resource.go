@@ -250,7 +250,7 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"schedule_times_of_day": schema.ListAttribute{
-				Description: "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. Times of day in HH:MM format.",
+				Description: "Times of day to run in HH:MM format. For `custom_schedule`, run at these times on specified days of week. For `daily`, run at these times on the scheduled interval date.",
 				Computed:    true,
 				Optional:    true,
 				ElementType: types.StringType,
@@ -259,7 +259,7 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"schedule_time_zone": schema.StringAttribute{
-				Description: "If trigger is `custom_schedule`, Custom schedule Time Zone for when the sync should be run.",
+				Description: "Time zone for scheduled times. If not set, times are interpreted as UTC.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -267,7 +267,7 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"holiday_region": schema.StringAttribute{
-				Description: "If trigger is `custom_schedule`, the sync will check if there is a formal, observed holiday for the region, and if so, it will not run.",
+				Description: "Skip sync if there is a formal, observed holiday for this region.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{

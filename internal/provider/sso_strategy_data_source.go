@@ -73,7 +73,9 @@ type ssoStrategyDataSourceModel struct {
 	LdapHost2                        types.String `tfsdk:"ldap_host_2"`
 	LdapHost3                        types.String `tfsdk:"ldap_host_3"`
 	LdapPort                         types.Int64  `tfsdk:"ldap_port"`
+	LdapProvisioningEnabled          types.Bool   `tfsdk:"ldap_provisioning_enabled"`
 	LdapSecure                       types.Bool   `tfsdk:"ldap_secure"`
+	LdapType                         types.String `tfsdk:"ldap_type"`
 	LdapUsername                     types.String `tfsdk:"ldap_username"`
 	LdapUsernameField                types.String `tfsdk:"ldap_username_field"`
 }
@@ -292,8 +294,16 @@ func (r *ssoStrategyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Description: "LDAP port",
 				Computed:    true,
 			},
+			"ldap_provisioning_enabled": schema.BoolAttribute{
+				Description: "Use LDAP server settings for scheduled provisioning while using this SSO provider for authentication?",
+				Computed:    true,
+			},
 			"ldap_secure": schema.BoolAttribute{
 				Description: "Use secure LDAP?",
+				Computed:    true,
+			},
+			"ldap_type": schema.StringAttribute{
+				Description: "LDAP server type",
 				Computed:    true,
 			},
 			"ldap_username": schema.StringAttribute{
@@ -386,7 +396,9 @@ func (r *ssoStrategyDataSource) populateDataSourceModel(ctx context.Context, sso
 	state.LdapHost2 = types.StringValue(ssoStrategy.LdapHost2)
 	state.LdapHost3 = types.StringValue(ssoStrategy.LdapHost3)
 	state.LdapPort = types.Int64Value(ssoStrategy.LdapPort)
+	state.LdapProvisioningEnabled = types.BoolPointerValue(ssoStrategy.LdapProvisioningEnabled)
 	state.LdapSecure = types.BoolPointerValue(ssoStrategy.LdapSecure)
+	state.LdapType = types.StringValue(ssoStrategy.LdapType)
 	state.LdapUsername = types.StringValue(ssoStrategy.LdapUsername)
 	state.LdapUsernameField = types.StringValue(ssoStrategy.LdapUsernameField)
 

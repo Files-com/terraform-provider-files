@@ -47,7 +47,9 @@ data "files_sso_strategy" "example_sso_strategy" {
 - `ldap_host_2` (String) LDAP backup host
 - `ldap_host_3` (String) LDAP backup host
 - `ldap_port` (Number) LDAP port
+- `ldap_provisioning_enabled` (Boolean) Use LDAP server settings for scheduled provisioning while using this SSO provider for authentication?
 - `ldap_secure` (Boolean) Use secure LDAP?
+- `ldap_type` (String) LDAP server type
 - `ldap_username` (String) Username for signing in to LDAP server.
 - `ldap_username_field` (String) LDAP username field
 - `logo_url` (String) URL holding a custom logo for the SSO provider on the login page.
