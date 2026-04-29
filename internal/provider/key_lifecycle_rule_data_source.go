@@ -29,6 +29,7 @@ type keyLifecycleRuleDataSourceModel struct {
 	Id                   types.Int64  `tfsdk:"id"`
 	KeyType              types.String `tfsdk:"key_type"`
 	InactivityDays       types.Int64  `tfsdk:"inactivity_days"`
+	ExpirationDays       types.Int64  `tfsdk:"expiration_days"`
 	ApplyToAllWorkspaces types.Bool   `tfsdk:"apply_to_all_workspaces"`
 	Name                 types.String `tfsdk:"name"`
 	WorkspaceId          types.Int64  `tfsdk:"workspace_id"`
@@ -59,7 +60,7 @@ func (r *keyLifecycleRuleDataSource) Metadata(_ context.Context, req datasource.
 
 func (r *keyLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A KeyLifecycleRule represents a rule that applies to GPG keys and SSH keys (also called User Public Keys) based on their inactivity.\n\n\n\nKeys that have been unused for the specified number of days will be deleted.",
+		Description: "A KeyLifecycleRule represents a rule that applies to GPG keys and SSH keys (also called User Public Keys) based on their inactivity or age.\n\n\n\nKeys that have been unused for the specified number of days will be deleted. SSH keys can also be configured to expire after a specified number of days. SSH key expiration applies only to User Public Keys used for inbound SFTP/SSH login, not Remote Server outbound SSH keys.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Key Lifecycle Rule ID",
@@ -71,6 +72,10 @@ func (r *keyLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.Sche
 			},
 			"inactivity_days": schema.Int64Attribute{
 				Description: "Number of days of inactivity before the rule applies.",
+				Computed:    true,
+			},
+			"expiration_days": schema.Int64Attribute{
+				Description: "Number of days after creation before an SSH key expires. Applies only to SSH keys.",
 				Computed:    true,
 			},
 			"apply_to_all_workspaces": schema.BoolAttribute{
@@ -123,6 +128,7 @@ func (r *keyLifecycleRuleDataSource) populateDataSourceModel(ctx context.Context
 	state.Id = types.Int64Value(keyLifecycleRule.Id)
 	state.KeyType = types.StringValue(keyLifecycleRule.KeyType)
 	state.InactivityDays = types.Int64Value(keyLifecycleRule.InactivityDays)
+	state.ExpirationDays = types.Int64Value(keyLifecycleRule.ExpirationDays)
 	state.ApplyToAllWorkspaces = types.BoolPointerValue(keyLifecycleRule.ApplyToAllWorkspaces)
 	state.Name = types.StringValue(keyLifecycleRule.Name)
 	state.WorkspaceId = types.Int64Value(keyLifecycleRule.WorkspaceId)

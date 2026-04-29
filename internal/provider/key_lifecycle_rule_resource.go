@@ -38,6 +38,7 @@ type keyLifecycleRuleResource struct {
 type keyLifecycleRuleResourceModel struct {
 	KeyType              types.String `tfsdk:"key_type"`
 	InactivityDays       types.Int64  `tfsdk:"inactivity_days"`
+	ExpirationDays       types.Int64  `tfsdk:"expiration_days"`
 	ApplyToAllWorkspaces types.Bool   `tfsdk:"apply_to_all_workspaces"`
 	Name                 types.String `tfsdk:"name"`
 	WorkspaceId          types.Int64  `tfsdk:"workspace_id"`
@@ -69,7 +70,7 @@ func (r *keyLifecycleRuleResource) Metadata(_ context.Context, req resource.Meta
 
 func (r *keyLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A KeyLifecycleRule represents a rule that applies to GPG keys and SSH keys (also called User Public Keys) based on their inactivity.\n\n\n\nKeys that have been unused for the specified number of days will be deleted.",
+		Description: "A KeyLifecycleRule represents a rule that applies to GPG keys and SSH keys (also called User Public Keys) based on their inactivity or age.\n\n\n\nKeys that have been unused for the specified number of days will be deleted. SSH keys can also be configured to expire after a specified number of days. SSH key expiration applies only to User Public Keys used for inbound SFTP/SSH login, not Remote Server outbound SSH keys.",
 		Attributes: map[string]schema.Attribute{
 			"key_type": schema.StringAttribute{
 				Description: "Key type for which the rule will apply (gpg or ssh).",
@@ -84,6 +85,14 @@ func (r *keyLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaRe
 			},
 			"inactivity_days": schema.Int64Attribute{
 				Description: "Number of days of inactivity before the rule applies.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"expiration_days": schema.Int64Attribute{
+				Description: "Number of days after creation before an SSH key expires. Applies only to SSH keys.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
@@ -143,6 +152,7 @@ func (r *keyLifecycleRuleResource) Create(ctx context.Context, req resource.Crea
 	if !plan.ApplyToAllWorkspaces.IsNull() && !plan.ApplyToAllWorkspaces.IsUnknown() {
 		paramsKeyLifecycleRuleCreate.ApplyToAllWorkspaces = plan.ApplyToAllWorkspaces.ValueBoolPointer()
 	}
+	paramsKeyLifecycleRuleCreate.ExpirationDays = plan.ExpirationDays.ValueInt64()
 	paramsKeyLifecycleRuleCreate.KeyType = paramsKeyLifecycleRuleCreate.KeyType.Enum()[plan.KeyType.ValueString()]
 	paramsKeyLifecycleRuleCreate.InactivityDays = plan.InactivityDays.ValueInt64()
 	paramsKeyLifecycleRuleCreate.Name = plan.Name.ValueString()
@@ -227,6 +237,9 @@ func (r *keyLifecycleRuleResource) Update(ctx context.Context, req resource.Upda
 	if !config.ApplyToAllWorkspaces.IsNull() && !config.ApplyToAllWorkspaces.IsUnknown() {
 		paramsKeyLifecycleRuleUpdate["apply_to_all_workspaces"] = config.ApplyToAllWorkspaces.ValueBool()
 	}
+	if !config.ExpirationDays.IsNull() && !config.ExpirationDays.IsUnknown() {
+		paramsKeyLifecycleRuleUpdate["expiration_days"] = config.ExpirationDays.ValueInt64()
+	}
 	if !config.KeyType.IsNull() && !config.KeyType.IsUnknown() {
 		paramsKeyLifecycleRuleUpdate["key_type"] = config.KeyType.ValueString()
 	}
@@ -310,6 +323,7 @@ func (r *keyLifecycleRuleResource) populateResourceModel(ctx context.Context, ke
 	state.Id = types.Int64Value(keyLifecycleRule.Id)
 	state.KeyType = types.StringValue(keyLifecycleRule.KeyType)
 	state.InactivityDays = types.Int64Value(keyLifecycleRule.InactivityDays)
+	state.ExpirationDays = types.Int64Value(keyLifecycleRule.ExpirationDays)
 	state.ApplyToAllWorkspaces = types.BoolPointerValue(keyLifecycleRule.ApplyToAllWorkspaces)
 	state.Name = types.StringValue(keyLifecycleRule.Name)
 	state.WorkspaceId = types.Int64Value(keyLifecycleRule.WorkspaceId)

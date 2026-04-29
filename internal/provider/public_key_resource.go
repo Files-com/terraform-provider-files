@@ -47,6 +47,8 @@ type publicKeyResourceModel struct {
 	Id                         types.Int64  `tfsdk:"id"`
 	WorkspaceId                types.Int64  `tfsdk:"workspace_id"`
 	CreatedAt                  types.String `tfsdk:"created_at"`
+	ExpiresAt                  types.String `tfsdk:"expires_at"`
+	Expired                    types.Bool   `tfsdk:"expired"`
 	Fingerprint                types.String `tfsdk:"fingerprint"`
 	FingerprintSha256          types.String `tfsdk:"fingerprint_sha256"`
 	Status                     types.String `tfsdk:"status"`
@@ -149,6 +151,14 @@ func (r *publicKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 			},
 			"created_at": schema.StringAttribute{
 				Description: "Public key created at date/time",
+				Computed:    true,
+			},
+			"expires_at": schema.StringAttribute{
+				Description: "Public key expiration date/time",
+				Computed:    true,
+			},
+			"expired": schema.BoolAttribute{
+				Description: "Is this public key expired?",
 				Computed:    true,
 			},
 			"fingerprint": schema.StringAttribute{
@@ -367,6 +377,13 @@ func (r *publicKeyResource) populateResourceModel(ctx context.Context, publicKey
 			"Could not convert state created_at to string: "+err.Error(),
 		)
 	}
+	if err := lib.TimeToStringType(ctx, path.Root("expires_at"), publicKey.ExpiresAt, &state.ExpiresAt); err != nil {
+		diags.AddError(
+			"Error Creating Files PublicKey",
+			"Could not convert state expires_at to string: "+err.Error(),
+		)
+	}
+	state.Expired = types.BoolPointerValue(publicKey.Expired)
 	state.Fingerprint = types.StringValue(publicKey.Fingerprint)
 	state.FingerprintSha256 = types.StringValue(publicKey.FingerprintSha256)
 	state.Status = types.StringValue(publicKey.Status)

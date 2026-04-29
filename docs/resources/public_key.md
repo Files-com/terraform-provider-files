@@ -64,6 +64,8 @@ resource "files_public_key" "example_public_key" {
 ### Read-Only
 
 - `created_at` (String) Public key created at date/time
+- `expired` (Boolean) Is this public key expired?
+- `expires_at` (String) Public key expiration date/time
 - `fingerprint` (String) Public key fingerprint (MD5)
 - `fingerprint_sha256` (String) Public key fingerprint (SHA256)
 - `generated_private_key` (String) Only returned when generating keys. Private key generated for the user.
