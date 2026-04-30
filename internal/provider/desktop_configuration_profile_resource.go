@@ -34,11 +34,12 @@ type desktopConfigurationProfileResource struct {
 }
 
 type desktopConfigurationProfileResourceModel struct {
-	Name           types.String  `tfsdk:"name"`
-	MountMappings  types.Dynamic `tfsdk:"mount_mappings"`
-	WorkspaceId    types.Int64   `tfsdk:"workspace_id"`
-	UseForAllUsers types.Bool    `tfsdk:"use_for_all_users"`
-	Id             types.Int64   `tfsdk:"id"`
+	Name                 types.String  `tfsdk:"name"`
+	MountMappings        types.Dynamic `tfsdk:"mount_mappings"`
+	WorkspaceId          types.Int64   `tfsdk:"workspace_id"`
+	UseForAllUsers       types.Bool    `tfsdk:"use_for_all_users"`
+	DisableDriveMounting types.Bool    `tfsdk:"disable_drive_mounting"`
+	Id                   types.Int64   `tfsdk:"id"`
 }
 
 func (r *desktopConfigurationProfileResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -92,6 +93,14 @@ func (r *desktopConfigurationProfileResource) Schema(_ context.Context, _ resour
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"disable_drive_mounting": schema.BoolAttribute{
+				Description: "Whether the desktop app should hide drive mounting, prevent new drive mounts, and unmount active drive mounts for users with this profile",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"id": schema.Int64Attribute{
 				Description: "Desktop Configuration Profile ID",
 				Computed:    true,
@@ -125,6 +134,9 @@ func (r *desktopConfigurationProfileResource) Create(ctx context.Context, req re
 	paramsDesktopConfigurationProfileCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	if !plan.UseForAllUsers.IsNull() && !plan.UseForAllUsers.IsUnknown() {
 		paramsDesktopConfigurationProfileCreate.UseForAllUsers = plan.UseForAllUsers.ValueBoolPointer()
+	}
+	if !plan.DisableDriveMounting.IsNull() && !plan.DisableDriveMounting.IsUnknown() {
+		paramsDesktopConfigurationProfileCreate.DisableDriveMounting = plan.DisableDriveMounting.ValueBoolPointer()
 	}
 
 	if resp.Diagnostics.HasError() {
@@ -215,6 +227,9 @@ func (r *desktopConfigurationProfileResource) Update(ctx context.Context, req re
 	if !config.UseForAllUsers.IsNull() && !config.UseForAllUsers.IsUnknown() {
 		paramsDesktopConfigurationProfileUpdate["use_for_all_users"] = config.UseForAllUsers.ValueBool()
 	}
+	if !config.DisableDriveMounting.IsNull() && !config.DisableDriveMounting.IsUnknown() {
+		paramsDesktopConfigurationProfileUpdate["disable_drive_mounting"] = config.DisableDriveMounting.ValueBool()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -289,6 +304,7 @@ func (r *desktopConfigurationProfileResource) populateResourceModel(ctx context.
 	state.Name = types.StringValue(desktopConfigurationProfile.Name)
 	state.WorkspaceId = types.Int64Value(desktopConfigurationProfile.WorkspaceId)
 	state.UseForAllUsers = types.BoolPointerValue(desktopConfigurationProfile.UseForAllUsers)
+	state.DisableDriveMounting = types.BoolPointerValue(desktopConfigurationProfile.DisableDriveMounting)
 	state.MountMappings, propDiags = lib.ToDynamic(ctx, path.Root("mount_mappings"), desktopConfigurationProfile.MountMappings, state.MountMappings.UnderlyingValue())
 	diags.Append(propDiags...)
 

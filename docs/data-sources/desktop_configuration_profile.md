@@ -27,6 +27,7 @@ data "files_desktop_configuration_profile" "example_desktop_configuration_profil
 
 ### Read-Only
 
+- `disable_drive_mounting` (Boolean) Whether the desktop app should hide drive mounting, prevent new drive mounts, and unmount active drive mounts for users with this profile
 - `mount_mappings` (Dynamic) Mount point mappings for the desktop app. Keys must be a single uppercase Windows drive letter other than A, B, or C, and values are Files.com paths to mount there.
 - `name` (String) Profile name
 - `use_for_all_users` (Boolean) Whether this profile applies to all users in the Workspace by default

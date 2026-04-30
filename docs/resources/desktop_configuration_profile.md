@@ -14,12 +14,13 @@ A Desktop Configuration Profile centrally defines desktop mount point mappings f
 
 ```terraform
 resource "files_desktop_configuration_profile" "example_desktop_configuration_profile" {
-  name              = "North America Desktop Profile"
-  mount_mappings    = {
+  name                   = "North America Desktop Profile"
+  mount_mappings         = {
     key = "example value"
   }
-  workspace_id      = 1
-  use_for_all_users = false
+  workspace_id           = 1
+  use_for_all_users      = false
+  disable_drive_mounting = false
 }
 ```
 
@@ -33,6 +34,7 @@ resource "files_desktop_configuration_profile" "example_desktop_configuration_pr
 
 ### Optional
 
+- `disable_drive_mounting` (Boolean) Whether the desktop app should hide drive mounting, prevent new drive mounts, and unmount active drive mounts for users with this profile
 - `use_for_all_users` (Boolean) Whether this profile applies to all users in the Workspace by default
 - `workspace_id` (Number) Workspace ID
 

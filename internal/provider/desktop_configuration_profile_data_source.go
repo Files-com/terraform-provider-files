@@ -28,11 +28,12 @@ type desktopConfigurationProfileDataSource struct {
 }
 
 type desktopConfigurationProfileDataSourceModel struct {
-	Id             types.Int64   `tfsdk:"id"`
-	Name           types.String  `tfsdk:"name"`
-	WorkspaceId    types.Int64   `tfsdk:"workspace_id"`
-	UseForAllUsers types.Bool    `tfsdk:"use_for_all_users"`
-	MountMappings  types.Dynamic `tfsdk:"mount_mappings"`
+	Id                   types.Int64   `tfsdk:"id"`
+	Name                 types.String  `tfsdk:"name"`
+	WorkspaceId          types.Int64   `tfsdk:"workspace_id"`
+	UseForAllUsers       types.Bool    `tfsdk:"use_for_all_users"`
+	DisableDriveMounting types.Bool    `tfsdk:"disable_drive_mounting"`
+	MountMappings        types.Dynamic `tfsdk:"mount_mappings"`
 }
 
 func (r *desktopConfigurationProfileDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -76,6 +77,10 @@ func (r *desktopConfigurationProfileDataSource) Schema(_ context.Context, _ data
 			},
 			"use_for_all_users": schema.BoolAttribute{
 				Description: "Whether this profile applies to all users in the Workspace by default",
+				Computed:    true,
+			},
+			"disable_drive_mounting": schema.BoolAttribute{
+				Description: "Whether the desktop app should hide drive mounting, prevent new drive mounts, and unmount active drive mounts for users with this profile",
 				Computed:    true,
 			},
 			"mount_mappings": schema.DynamicAttribute{
@@ -123,6 +128,7 @@ func (r *desktopConfigurationProfileDataSource) populateDataSourceModel(ctx cont
 	state.Name = types.StringValue(desktopConfigurationProfile.Name)
 	state.WorkspaceId = types.Int64Value(desktopConfigurationProfile.WorkspaceId)
 	state.UseForAllUsers = types.BoolPointerValue(desktopConfigurationProfile.UseForAllUsers)
+	state.DisableDriveMounting = types.BoolPointerValue(desktopConfigurationProfile.DisableDriveMounting)
 	state.MountMappings, propDiags = lib.ToDynamic(ctx, path.Root("mount_mappings"), desktopConfigurationProfile.MountMappings, state.MountMappings.UnderlyingValue())
 	diags.Append(propDiags...)
 
