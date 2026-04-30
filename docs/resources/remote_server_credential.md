@@ -33,6 +33,7 @@ resource "files_remote_server_credential" "example_remote_server_credential" {
   username                                      = "user"
   wasabi_access_key                             = "example"
   workspace_id                                  = 0
+  copy_values_from_credential_id                = 1
 }
 ```
 
@@ -53,6 +54,7 @@ resource "files_remote_server_credential" "example_remote_server_credential" {
 - `backblaze_b2_key_id` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Backblaze B2 Cloud Storage: keyID
 - `cloudflare_access_key` (String) Cloudflare: Access Key.
 - `cloudflare_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Cloudflare: Secret Key
+- `copy_values_from_credential_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) ID of Remote Server Credential to copy omitted values from.
 - `description` (String) Internal description for your reference
 - `filebase_access_key` (String) Filebase: Access Key.
 - `filebase_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Filebase: Secret Key

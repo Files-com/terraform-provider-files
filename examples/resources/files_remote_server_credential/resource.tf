@@ -13,5 +13,6 @@ resource "files_remote_server_credential" "example_remote_server_credential" {
   username                                      = "user"
   wasabi_access_key                             = "example"
   workspace_id                                  = 0
+  copy_values_from_credential_id                = 1
 }
 

@@ -66,6 +66,7 @@ type remoteServerCredentialResourceModel struct {
 	LinodeSecretKey                         types.String `tfsdk:"linode_secret_key"`
 	S3CompatibleSecretKey                   types.String `tfsdk:"s3_compatible_secret_key"`
 	WasabiSecretKey                         types.String `tfsdk:"wasabi_secret_key"`
+	CopyValuesFromCredentialId              types.Int64  `tfsdk:"copy_values_from_credential_id"`
 	Id                                      types.Int64  `tfsdk:"id"`
 	S3AssumeRoleExternalId                  types.String `tfsdk:"s3_assume_role_external_id"`
 }
@@ -298,6 +299,14 @@ func (r *remoteServerCredentialResource) Schema(_ context.Context, _ resource.Sc
 				Optional:    true,
 				WriteOnly:   true,
 			},
+			"copy_values_from_credential_id": schema.Int64Attribute{
+				Description: "ID of Remote Server Credential to copy omitted values from.",
+				Optional:    true,
+				WriteOnly:   true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.RequiresReplace(),
+				},
+			},
 			"id": schema.Int64Attribute{
 				Description: "Remote Server Credential ID",
 				Computed:    true,
@@ -359,6 +368,7 @@ func (r *remoteServerCredentialResource) Create(ctx context.Context, req resourc
 	paramsRemoteServerCredentialCreate.S3CompatibleSecretKey = config.S3CompatibleSecretKey.ValueString()
 	paramsRemoteServerCredentialCreate.WasabiSecretKey = config.WasabiSecretKey.ValueString()
 	paramsRemoteServerCredentialCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
+	paramsRemoteServerCredentialCreate.CopyValuesFromCredentialId = config.CopyValuesFromCredentialId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return

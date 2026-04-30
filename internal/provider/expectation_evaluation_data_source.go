@@ -42,7 +42,7 @@ type expectationEvaluationDataSourceModel struct {
 	ClosedAt               types.String  `tfsdk:"closed_at"`
 	MatchedFiles           types.Dynamic `tfsdk:"matched_files"`
 	MissingFiles           types.Dynamic `tfsdk:"missing_files"`
-	CriteriaErrors         types.Dynamic `tfsdk:"criteria_errors"`
+	CriteriaErrors         types.List    `tfsdk:"criteria_errors"`
 	Summary                types.Dynamic `tfsdk:"summary"`
 	CreatedAt              types.String  `tfsdk:"created_at"`
 	UpdatedAt              types.String  `tfsdk:"updated_at"`
@@ -131,9 +131,10 @@ func (r *expectationEvaluationDataSource) Schema(_ context.Context, _ datasource
 				Description: "Captured evidence for required files that were missing.",
 				Computed:    true,
 			},
-			"criteria_errors": schema.DynamicAttribute{
+			"criteria_errors": schema.ListAttribute{
 				Description: "Captured criteria failures for the window.",
 				Computed:    true,
+				ElementType: types.StringType,
 			},
 			"summary": schema.DynamicAttribute{
 				Description: "Compact evaluator summary payload.",
@@ -235,7 +236,7 @@ func (r *expectationEvaluationDataSource) populateDataSourceModel(ctx context.Co
 	diags.Append(propDiags...)
 	state.MissingFiles, propDiags = lib.ToDynamic(ctx, path.Root("missing_files"), expectationEvaluation.MissingFiles, state.MissingFiles.UnderlyingValue())
 	diags.Append(propDiags...)
-	state.CriteriaErrors, propDiags = lib.ToDynamic(ctx, path.Root("criteria_errors"), expectationEvaluation.CriteriaErrors, state.CriteriaErrors.UnderlyingValue())
+	state.CriteriaErrors, propDiags = types.ListValueFrom(ctx, types.StringType, expectationEvaluation.CriteriaErrors)
 	diags.Append(propDiags...)
 	state.Summary, propDiags = lib.ToDynamic(ctx, path.Root("summary"), expectationEvaluation.Summary, state.Summary.UnderlyingValue())
 	diags.Append(propDiags...)
