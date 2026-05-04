@@ -186,6 +186,7 @@ resource "files_site" "example_site" {
   bundle_watermark_attachment_delete            = false
   login_page_background_image_delete            = false
   disable_2fa_with_delay                        = false
+  redirect_old_subdomain                        = false
 }
 ```
 

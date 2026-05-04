@@ -224,6 +224,7 @@ func (p *filesProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewShareGroupDataSource,
 		NewSiemHttpDestinationDataSource,
 		NewSiteDataSource,
+		NewSiteSubdomainRedirectDataSource,
 		NewSnapshotDataSource,
 		NewSsoStrategyDataSource,
 		NewStyleDataSource,
