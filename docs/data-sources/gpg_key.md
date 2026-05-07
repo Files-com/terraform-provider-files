@@ -38,7 +38,7 @@ data "files_gpg_key" "example_gpg_key" {
 ### Read-Only
 
 - `expires_at` (String) GPG key expiration date.
-- `generated_private_key` (String) GPG private key.
+- `generated_private_key` (String, Sensitive) GPG private key.
 - `generated_public_key` (String) GPG public key
 - `name` (String) GPG key name.
 - `partner_id` (Number) Partner ID who owns this GPG Key, if applicable.

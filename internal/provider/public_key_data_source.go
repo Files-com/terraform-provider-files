@@ -114,6 +114,7 @@ func (r *publicKeyDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 			"generated_private_key": schema.StringAttribute{
 				Description: "Only returned when generating keys. Private key generated for the user.",
 				Computed:    true,
+				Sensitive:   true,
 			},
 			"generated_public_key": schema.StringAttribute{
 				Description: "Only returned when generating keys. Public key generated for the user.",

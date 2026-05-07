@@ -97,6 +97,7 @@ func (r *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			"key": schema.StringAttribute{
 				Description: "API Key actual key string",
 				Computed:    true,
+				Sensitive:   true,
 			},
 			"aws_style_credentials": schema.BoolAttribute{
 				Description: "If `true`, this API key will be usable with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.",
@@ -109,6 +110,7 @@ func (r *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			"aws_secret_key": schema.StringAttribute{
 				Description: "AWS Secret Key to use with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.",
 				Computed:    true,
+				Sensitive:   true,
 			},
 			"last_use_at": schema.StringAttribute{
 				Description: "API Key last used - note this value is only updated once per 3 hour period, so the 'actual' time of last use may be up to 3 hours later than this timestamp.",

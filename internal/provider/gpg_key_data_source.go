@@ -112,6 +112,7 @@ func (r *gpgKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			"generated_private_key": schema.StringAttribute{
 				Description: "GPG private key.",
 				Computed:    true,
+				Sensitive:   true,
 			},
 			"private_key_password_md5": schema.StringAttribute{
 				Description: "GPG private key password. Only required for password protected keys.",

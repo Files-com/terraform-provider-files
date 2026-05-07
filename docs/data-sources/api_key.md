@@ -41,13 +41,13 @@ data "files_api_key" "example_api_key" {
 ### Read-Only
 
 - `aws_access_key_id` (String) AWS Access Key ID to use with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.
-- `aws_secret_key` (String) AWS Secret Key to use with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.
+- `aws_secret_key` (String, Sensitive) AWS Secret Key to use with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.
 - `aws_style_credentials` (Boolean) If `true`, this API key will be usable with AWS-compatible endpoints, such as our Inbound S3-compatible endpoint.
 - `created_at` (String) Time which API Key was created
 - `description` (String) User-supplied description of API key.
 - `descriptive_label` (String) Unique label that describes this API key.  Useful for external systems where you may have API keys from multiple accounts and want a human-readable label for each key.
 - `expires_at` (String) API Key expiration date
-- `key` (String) API Key actual key string
+- `key` (String, Sensitive) API Key actual key string
 - `last_use_at` (String) API Key last used - note this value is only updated once per 3 hour period, so the 'actual' time of last use may be up to 3 hours later than this timestamp.
 - `name` (String) Internal name for the API Key.  For your use.
 - `permission_set` (String) Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.

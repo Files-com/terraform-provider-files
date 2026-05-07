@@ -52,7 +52,7 @@ data "files_public_key" "example_public_key" {
 - `expires_at` (String) Public key expiration date/time
 - `fingerprint` (String) Public key fingerprint (MD5)
 - `fingerprint_sha256` (String) Public key fingerprint (SHA256)
-- `generated_private_key` (String) Only returned when generating keys. Private key generated for the user.
+- `generated_private_key` (String, Sensitive) Only returned when generating keys. Private key generated for the user.
 - `generated_public_key` (String) Only returned when generating keys. Public key generated for the user.
 - `last_login_at` (String) Key's most recent login time via SFTP
 - `status` (String) Only returned when generating keys. Can be invalid, not_generated, generating, complete
