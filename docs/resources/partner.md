@@ -14,16 +14,19 @@ A Partner is a first-class entity that cleanly represents an external organizati
 
 ```terraform
 resource "files_partner" "example_partner" {
-  allowed_ips                  = "10.0.0.0/8\n127.0.0.1"
-  allow_bypassing_2fa_policies = false
-  allow_credential_changes     = false
-  allow_providing_gpg_keys     = false
-  allow_user_creation          = false
-  notes                        = "This is a note about the partner."
-  tags                         = "example"
-  name                         = "Acme Corp"
-  root_folder                  = "/AcmeCorp"
-  workspace_id                 = 1
+  allowed_ips                    = "10.0.0.0/8\n127.0.0.1"
+  allow_bypassing_2fa_policies   = false
+  allow_credential_changes       = false
+  allow_providing_gpg_keys       = false
+  allow_user_creation            = false
+  cc_emails_to_responsible_party = false
+  notes                          = "This is a note about the partner."
+  responsible_group_id           = 1
+  responsible_user_id            = 1
+  tags                           = "example"
+  name                           = "Acme Corp"
+  root_folder                    = "/AcmeCorp"
+  workspace_id                   = 1
 }
 ```
 
@@ -42,7 +45,10 @@ resource "files_partner" "example_partner" {
 - `allow_providing_gpg_keys` (Boolean) Allow Partner Admins to provide GPG keys.
 - `allow_user_creation` (Boolean) Allow Partner Admins to create users.
 - `allowed_ips` (String) A list of allowed IPs for this Partner. Newline delimited. Partner User IP access is allowed when the IP matches the Partner, User, or Site allowed IP lists.
+- `cc_emails_to_responsible_party` (Boolean) When `true`, emails sent to Partner users are copied to the responsible User or Group.
 - `notes` (String) Notes about this Partner.
+- `responsible_group_id` (Number) ID of the Group responsible for this Partner.
+- `responsible_user_id` (Number) ID of the User responsible for this Partner.
 - `tags` (String) Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.
 - `workspace_id` (Number) ID of the Workspace associated with this Partner.
 

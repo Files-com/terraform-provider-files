@@ -26,19 +26,22 @@ type partnerDataSource struct {
 }
 
 type partnerDataSourceModel struct {
-	Id                        types.Int64  `tfsdk:"id"`
-	AllowBypassing2faPolicies types.Bool   `tfsdk:"allow_bypassing_2fa_policies"`
-	AllowedIps                types.String `tfsdk:"allowed_ips"`
-	AllowCredentialChanges    types.Bool   `tfsdk:"allow_credential_changes"`
-	AllowProvidingGpgKeys     types.Bool   `tfsdk:"allow_providing_gpg_keys"`
-	AllowUserCreation         types.Bool   `tfsdk:"allow_user_creation"`
-	WorkspaceId               types.Int64  `tfsdk:"workspace_id"`
-	Name                      types.String `tfsdk:"name"`
-	Notes                     types.String `tfsdk:"notes"`
-	PartnerAdminIds           types.List   `tfsdk:"partner_admin_ids"`
-	RootFolder                types.String `tfsdk:"root_folder"`
-	Tags                      types.String `tfsdk:"tags"`
-	UserIds                   types.List   `tfsdk:"user_ids"`
+	Id                         types.Int64  `tfsdk:"id"`
+	AllowBypassing2faPolicies  types.Bool   `tfsdk:"allow_bypassing_2fa_policies"`
+	AllowedIps                 types.String `tfsdk:"allowed_ips"`
+	AllowCredentialChanges     types.Bool   `tfsdk:"allow_credential_changes"`
+	AllowProvidingGpgKeys      types.Bool   `tfsdk:"allow_providing_gpg_keys"`
+	AllowUserCreation          types.Bool   `tfsdk:"allow_user_creation"`
+	CcEmailsToResponsibleParty types.Bool   `tfsdk:"cc_emails_to_responsible_party"`
+	WorkspaceId                types.Int64  `tfsdk:"workspace_id"`
+	Name                       types.String `tfsdk:"name"`
+	Notes                      types.String `tfsdk:"notes"`
+	PartnerAdminIds            types.List   `tfsdk:"partner_admin_ids"`
+	ResponsibleGroupId         types.Int64  `tfsdk:"responsible_group_id"`
+	ResponsibleUserId          types.Int64  `tfsdk:"responsible_user_id"`
+	RootFolder                 types.String `tfsdk:"root_folder"`
+	Tags                       types.String `tfsdk:"tags"`
+	UserIds                    types.List   `tfsdk:"user_ids"`
 }
 
 func (r *partnerDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -92,6 +95,10 @@ func (r *partnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Description: "Allow Partner Admins to create users.",
 				Computed:    true,
 			},
+			"cc_emails_to_responsible_party": schema.BoolAttribute{
+				Description: "When `true`, emails sent to Partner users are copied to the responsible User or Group.",
+				Computed:    true,
+			},
 			"workspace_id": schema.Int64Attribute{
 				Description: "ID of the Workspace associated with this Partner.",
 				Computed:    true,
@@ -108,6 +115,14 @@ func (r *partnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Description: "Array of User IDs that are Partner Admins for this Partner.",
 				Computed:    true,
 				ElementType: types.Int64Type,
+			},
+			"responsible_group_id": schema.Int64Attribute{
+				Description: "ID of the Group responsible for this Partner.",
+				Computed:    true,
+			},
+			"responsible_user_id": schema.Int64Attribute{
+				Description: "ID of the User responsible for this Partner.",
+				Computed:    true,
 			},
 			"root_folder": schema.StringAttribute{
 				Description: "The root folder path for this Partner.",
@@ -164,12 +179,15 @@ func (r *partnerDataSource) populateDataSourceModel(ctx context.Context, partner
 	state.AllowCredentialChanges = types.BoolPointerValue(partner.AllowCredentialChanges)
 	state.AllowProvidingGpgKeys = types.BoolPointerValue(partner.AllowProvidingGpgKeys)
 	state.AllowUserCreation = types.BoolPointerValue(partner.AllowUserCreation)
+	state.CcEmailsToResponsibleParty = types.BoolPointerValue(partner.CcEmailsToResponsibleParty)
 	state.Id = types.Int64Value(partner.Id)
 	state.WorkspaceId = types.Int64Value(partner.WorkspaceId)
 	state.Name = types.StringValue(partner.Name)
 	state.Notes = types.StringValue(partner.Notes)
 	state.PartnerAdminIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, partner.PartnerAdminIds)
 	diags.Append(propDiags...)
+	state.ResponsibleGroupId = types.Int64Value(partner.ResponsibleGroupId)
+	state.ResponsibleUserId = types.Int64Value(partner.ResponsibleUserId)
 	state.RootFolder = types.StringValue(partner.RootFolder)
 	state.Tags = types.StringValue(partner.Tags)
 	state.UserIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, partner.UserIds)

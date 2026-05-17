@@ -35,6 +35,7 @@ type userLifecycleRuleDataSourceModel struct {
 	IncludeSiteAdmins    types.Bool   `tfsdk:"include_site_admins"`
 	ApplyToAllWorkspaces types.Bool   `tfsdk:"apply_to_all_workspaces"`
 	Name                 types.String `tfsdk:"name"`
+	NotifyUsers          types.Bool   `tfsdk:"notify_users"`
 	PartnerTag           types.String `tfsdk:"partner_tag"`
 	SiteId               types.Int64  `tfsdk:"site_id"`
 	WorkspaceId          types.Int64  `tfsdk:"workspace_id"`
@@ -106,6 +107,10 @@ func (r *userLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.Sch
 				Description: "User Lifecycle Rule name",
 				Computed:    true,
 			},
+			"notify_users": schema.BoolAttribute{
+				Description: "If true, users will be emailed before the rule disables or deletes them.",
+				Computed:    true,
+			},
 			"partner_tag": schema.StringAttribute{
 				Description: "If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.",
 				Computed:    true,
@@ -173,6 +178,7 @@ func (r *userLifecycleRuleDataSource) populateDataSourceModel(ctx context.Contex
 	state.IncludeSiteAdmins = types.BoolPointerValue(userLifecycleRule.IncludeSiteAdmins)
 	state.ApplyToAllWorkspaces = types.BoolPointerValue(userLifecycleRule.ApplyToAllWorkspaces)
 	state.Name = types.StringValue(userLifecycleRule.Name)
+	state.NotifyUsers = types.BoolPointerValue(userLifecycleRule.NotifyUsers)
 	state.PartnerTag = types.StringValue(userLifecycleRule.PartnerTag)
 	state.SiteId = types.Int64Value(userLifecycleRule.SiteId)
 	state.WorkspaceId = types.Int64Value(userLifecycleRule.WorkspaceId)

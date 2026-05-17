@@ -45,6 +45,7 @@ type userLifecycleRuleResourceModel struct {
 	IncludeSiteAdmins    types.Bool   `tfsdk:"include_site_admins"`
 	ApplyToAllWorkspaces types.Bool   `tfsdk:"apply_to_all_workspaces"`
 	Name                 types.String `tfsdk:"name"`
+	NotifyUsers          types.Bool   `tfsdk:"notify_users"`
 	PartnerTag           types.String `tfsdk:"partner_tag"`
 	WorkspaceId          types.Int64  `tfsdk:"workspace_id"`
 	UserState            types.String `tfsdk:"user_state"`
@@ -151,6 +152,14 @@ func (r *userLifecycleRuleResource) Schema(_ context.Context, _ resource.SchemaR
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"notify_users": schema.BoolAttribute{
+				Description: "If true, users will be emailed before the rule disables or deletes them.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"partner_tag": schema.StringAttribute{
 				Description: "If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.",
 				Computed:    true,
@@ -233,6 +242,9 @@ func (r *userLifecycleRuleResource) Create(ctx context.Context, req resource.Cre
 		paramsUserLifecycleRuleCreate.IncludeFolderAdmins = plan.IncludeFolderAdmins.ValueBoolPointer()
 	}
 	paramsUserLifecycleRuleCreate.Name = plan.Name.ValueString()
+	if !plan.NotifyUsers.IsNull() && !plan.NotifyUsers.IsUnknown() {
+		paramsUserLifecycleRuleCreate.NotifyUsers = plan.NotifyUsers.ValueBoolPointer()
+	}
 	paramsUserLifecycleRuleCreate.PartnerTag = plan.PartnerTag.ValueString()
 	paramsUserLifecycleRuleCreate.UserState = paramsUserLifecycleRuleCreate.UserState.Enum()[plan.UserState.ValueString()]
 	paramsUserLifecycleRuleCreate.UserTag = plan.UserTag.ValueString()
@@ -341,6 +353,9 @@ func (r *userLifecycleRuleResource) Update(ctx context.Context, req resource.Upd
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
 		paramsUserLifecycleRuleUpdate["name"] = config.Name.ValueString()
 	}
+	if !config.NotifyUsers.IsNull() && !config.NotifyUsers.IsUnknown() {
+		paramsUserLifecycleRuleUpdate["notify_users"] = config.NotifyUsers.ValueBool()
+	}
 	if !config.PartnerTag.IsNull() && !config.PartnerTag.IsUnknown() {
 		paramsUserLifecycleRuleUpdate["partner_tag"] = config.PartnerTag.ValueString()
 	}
@@ -433,6 +448,7 @@ func (r *userLifecycleRuleResource) populateResourceModel(ctx context.Context, u
 	state.IncludeSiteAdmins = types.BoolPointerValue(userLifecycleRule.IncludeSiteAdmins)
 	state.ApplyToAllWorkspaces = types.BoolPointerValue(userLifecycleRule.ApplyToAllWorkspaces)
 	state.Name = types.StringValue(userLifecycleRule.Name)
+	state.NotifyUsers = types.BoolPointerValue(userLifecycleRule.NotifyUsers)
 	state.PartnerTag = types.StringValue(userLifecycleRule.PartnerTag)
 	state.SiteId = types.Int64Value(userLifecycleRule.SiteId)
 	state.WorkspaceId = types.Int64Value(userLifecycleRule.WorkspaceId)

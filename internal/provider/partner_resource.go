@@ -34,19 +34,22 @@ type partnerResource struct {
 }
 
 type partnerResourceModel struct {
-	Name                      types.String `tfsdk:"name"`
-	RootFolder                types.String `tfsdk:"root_folder"`
-	AllowBypassing2faPolicies types.Bool   `tfsdk:"allow_bypassing_2fa_policies"`
-	AllowedIps                types.String `tfsdk:"allowed_ips"`
-	AllowCredentialChanges    types.Bool   `tfsdk:"allow_credential_changes"`
-	AllowProvidingGpgKeys     types.Bool   `tfsdk:"allow_providing_gpg_keys"`
-	AllowUserCreation         types.Bool   `tfsdk:"allow_user_creation"`
-	WorkspaceId               types.Int64  `tfsdk:"workspace_id"`
-	Notes                     types.String `tfsdk:"notes"`
-	Tags                      types.String `tfsdk:"tags"`
-	Id                        types.Int64  `tfsdk:"id"`
-	PartnerAdminIds           types.List   `tfsdk:"partner_admin_ids"`
-	UserIds                   types.List   `tfsdk:"user_ids"`
+	Name                       types.String `tfsdk:"name"`
+	RootFolder                 types.String `tfsdk:"root_folder"`
+	AllowBypassing2faPolicies  types.Bool   `tfsdk:"allow_bypassing_2fa_policies"`
+	AllowedIps                 types.String `tfsdk:"allowed_ips"`
+	AllowCredentialChanges     types.Bool   `tfsdk:"allow_credential_changes"`
+	AllowProvidingGpgKeys      types.Bool   `tfsdk:"allow_providing_gpg_keys"`
+	AllowUserCreation          types.Bool   `tfsdk:"allow_user_creation"`
+	CcEmailsToResponsibleParty types.Bool   `tfsdk:"cc_emails_to_responsible_party"`
+	WorkspaceId                types.Int64  `tfsdk:"workspace_id"`
+	Notes                      types.String `tfsdk:"notes"`
+	ResponsibleGroupId         types.Int64  `tfsdk:"responsible_group_id"`
+	ResponsibleUserId          types.Int64  `tfsdk:"responsible_user_id"`
+	Tags                       types.String `tfsdk:"tags"`
+	Id                         types.Int64  `tfsdk:"id"`
+	PartnerAdminIds            types.List   `tfsdk:"partner_admin_ids"`
+	UserIds                    types.List   `tfsdk:"user_ids"`
 }
 
 func (r *partnerResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -124,6 +127,14 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"cc_emails_to_responsible_party": schema.BoolAttribute{
+				Description: "When `true`, emails sent to Partner users are copied to the responsible User or Group.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"workspace_id": schema.Int64Attribute{
 				Description: "ID of the Workspace associated with this Partner.",
 				Computed:    true,
@@ -139,6 +150,22 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"responsible_group_id": schema.Int64Attribute{
+				Description: "ID of the Group responsible for this Partner.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"responsible_user_id": schema.Int64Attribute{
+				Description: "ID of the User responsible for this Partner.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"tags": schema.StringAttribute{
@@ -198,7 +225,12 @@ func (r *partnerResource) Create(ctx context.Context, req resource.CreateRequest
 	if !plan.AllowUserCreation.IsNull() && !plan.AllowUserCreation.IsUnknown() {
 		paramsPartnerCreate.AllowUserCreation = plan.AllowUserCreation.ValueBoolPointer()
 	}
+	if !plan.CcEmailsToResponsibleParty.IsNull() && !plan.CcEmailsToResponsibleParty.IsUnknown() {
+		paramsPartnerCreate.CcEmailsToResponsibleParty = plan.CcEmailsToResponsibleParty.ValueBoolPointer()
+	}
 	paramsPartnerCreate.Notes = plan.Notes.ValueString()
+	paramsPartnerCreate.ResponsibleGroupId = plan.ResponsibleGroupId.ValueInt64()
+	paramsPartnerCreate.ResponsibleUserId = plan.ResponsibleUserId.ValueInt64()
 	paramsPartnerCreate.Tags = plan.Tags.ValueString()
 	paramsPartnerCreate.Name = plan.Name.ValueString()
 	paramsPartnerCreate.RootFolder = plan.RootFolder.ValueString()
@@ -295,8 +327,17 @@ func (r *partnerResource) Update(ctx context.Context, req resource.UpdateRequest
 	if !config.AllowUserCreation.IsNull() && !config.AllowUserCreation.IsUnknown() {
 		paramsPartnerUpdate["allow_user_creation"] = config.AllowUserCreation.ValueBool()
 	}
+	if !config.CcEmailsToResponsibleParty.IsNull() && !config.CcEmailsToResponsibleParty.IsUnknown() {
+		paramsPartnerUpdate["cc_emails_to_responsible_party"] = config.CcEmailsToResponsibleParty.ValueBool()
+	}
 	if !config.Notes.IsNull() && !config.Notes.IsUnknown() {
 		paramsPartnerUpdate["notes"] = config.Notes.ValueString()
+	}
+	if !config.ResponsibleGroupId.IsNull() && !config.ResponsibleGroupId.IsUnknown() {
+		paramsPartnerUpdate["responsible_group_id"] = config.ResponsibleGroupId.ValueInt64()
+	}
+	if !config.ResponsibleUserId.IsNull() && !config.ResponsibleUserId.IsUnknown() {
+		paramsPartnerUpdate["responsible_user_id"] = config.ResponsibleUserId.ValueInt64()
 	}
 	if !config.Tags.IsNull() && !config.Tags.IsUnknown() {
 		paramsPartnerUpdate["tags"] = config.Tags.ValueString()
@@ -382,12 +423,15 @@ func (r *partnerResource) populateResourceModel(ctx context.Context, partner fil
 	state.AllowCredentialChanges = types.BoolPointerValue(partner.AllowCredentialChanges)
 	state.AllowProvidingGpgKeys = types.BoolPointerValue(partner.AllowProvidingGpgKeys)
 	state.AllowUserCreation = types.BoolPointerValue(partner.AllowUserCreation)
+	state.CcEmailsToResponsibleParty = types.BoolPointerValue(partner.CcEmailsToResponsibleParty)
 	state.Id = types.Int64Value(partner.Id)
 	state.WorkspaceId = types.Int64Value(partner.WorkspaceId)
 	state.Name = types.StringValue(partner.Name)
 	state.Notes = types.StringValue(partner.Notes)
 	state.PartnerAdminIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, partner.PartnerAdminIds)
 	diags.Append(propDiags...)
+	state.ResponsibleGroupId = types.Int64Value(partner.ResponsibleGroupId)
+	state.ResponsibleUserId = types.Int64Value(partner.ResponsibleUserId)
 	state.RootFolder = types.StringValue(partner.RootFolder)
 	state.Tags = types.StringValue(partner.Tags)
 	state.UserIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, partner.UserIds)

@@ -50,6 +50,7 @@ data "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
 - `include_folder_admins` (Boolean) If true, the rule will apply to folder admins.
 - `include_site_admins` (Boolean) If true, the rule will apply to site admins.
 - `name` (String) User Lifecycle Rule name
+- `notify_users` (Boolean) If true, users will be emailed before the rule disables or deletes them.
 - `partner_tag` (String) If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.
 - `site_id` (Number) Site ID
 - `user_state` (String) State of the users to apply the rule to (inactive or disabled)

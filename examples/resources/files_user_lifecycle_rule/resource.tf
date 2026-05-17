@@ -6,6 +6,7 @@ resource "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
   include_site_admins     = true
   include_folder_admins   = true
   name                    = "password specific rules"
+  notify_users            = true
   partner_tag             = "guest"
   user_state              = "inactive"
   user_tag                = "guest"
