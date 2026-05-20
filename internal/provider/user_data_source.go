@@ -28,81 +28,89 @@ type userDataSource struct {
 }
 
 type userDataSourceModel struct {
-	Id                               types.Int64  `tfsdk:"id"`
-	Username                         types.String `tfsdk:"username"`
-	AdminGroupIds                    types.List   `tfsdk:"admin_group_ids"`
-	AllowedIps                       types.String `tfsdk:"allowed_ips"`
-	AttachmentsPermission            types.Bool   `tfsdk:"attachments_permission"`
-	ApiKeysCount                     types.Int64  `tfsdk:"api_keys_count"`
-	AuthenticateUntil                types.String `tfsdk:"authenticate_until"`
-	AuthenticationMethod             types.String `tfsdk:"authentication_method"`
-	AvatarUrl                        types.String `tfsdk:"avatar_url"`
-	Billable                         types.Bool   `tfsdk:"billable"`
-	BillingPermission                types.Bool   `tfsdk:"billing_permission"`
-	BypassSiteAllowedIps             types.Bool   `tfsdk:"bypass_site_allowed_ips"`
-	BypassUserLifecycleRules         types.Bool   `tfsdk:"bypass_user_lifecycle_rules"`
-	CreatedAt                        types.String `tfsdk:"created_at"`
-	DavPermission                    types.Bool   `tfsdk:"dav_permission"`
-	Disabled                         types.Bool   `tfsdk:"disabled"`
-	DisabledExpiredOrInactive        types.Bool   `tfsdk:"disabled_expired_or_inactive"`
-	DesktopConfigurationProfileId    types.Int64  `tfsdk:"desktop_configuration_profile_id"`
-	Email                            types.String `tfsdk:"email"`
-	FilesystemLayout                 types.String `tfsdk:"filesystem_layout"`
-	FirstLoginAt                     types.String `tfsdk:"first_login_at"`
-	FtpPermission                    types.Bool   `tfsdk:"ftp_permission"`
-	GroupIds                         types.String `tfsdk:"group_ids"`
-	HeaderText                       types.String `tfsdk:"header_text"`
-	Language                         types.String `tfsdk:"language"`
-	LastLoginAt                      types.String `tfsdk:"last_login_at"`
-	LastWebLoginAt                   types.String `tfsdk:"last_web_login_at"`
-	LastFtpLoginAt                   types.String `tfsdk:"last_ftp_login_at"`
-	LastSftpLoginAt                  types.String `tfsdk:"last_sftp_login_at"`
-	LastDavLoginAt                   types.String `tfsdk:"last_dav_login_at"`
-	LastDesktopLoginAt               types.String `tfsdk:"last_desktop_login_at"`
-	LastRestapiLoginAt               types.String `tfsdk:"last_restapi_login_at"`
-	LastApiUseAt                     types.String `tfsdk:"last_api_use_at"`
-	LastActiveAt                     types.String `tfsdk:"last_active_at"`
-	LastProtocolCipher               types.String `tfsdk:"last_protocol_cipher"`
-	LockoutExpires                   types.String `tfsdk:"lockout_expires"`
-	Name                             types.String `tfsdk:"name"`
-	Company                          types.String `tfsdk:"company"`
-	Notes                            types.String `tfsdk:"notes"`
-	NotificationDailySendTime        types.Int64  `tfsdk:"notification_daily_send_time"`
-	OfficeIntegrationEnabled         types.Bool   `tfsdk:"office_integration_enabled"`
-	PartnerAdmin                     types.Bool   `tfsdk:"partner_admin"`
-	PartnerId                        types.Int64  `tfsdk:"partner_id"`
-	PartnerName                      types.String `tfsdk:"partner_name"`
-	PasswordSetAt                    types.String `tfsdk:"password_set_at"`
-	PasswordValidityDays             types.Int64  `tfsdk:"password_validity_days"`
-	PrimaryGroupId                   types.Int64  `tfsdk:"primary_group_id"`
-	PublicKeysCount                  types.Int64  `tfsdk:"public_keys_count"`
-	ReceiveAdminAlerts               types.Bool   `tfsdk:"receive_admin_alerts"`
-	Require2fa                       types.String `tfsdk:"require_2fa"`
-	RequireLoginBy                   types.String `tfsdk:"require_login_by"`
-	Active2fa                        types.Bool   `tfsdk:"active_2fa"`
-	RequirePasswordChange            types.Bool   `tfsdk:"require_password_change"`
-	PasswordExpired                  types.Bool   `tfsdk:"password_expired"`
-	ReadonlySiteAdmin                types.Bool   `tfsdk:"readonly_site_admin"`
-	RestapiPermission                types.Bool   `tfsdk:"restapi_permission"`
-	SelfManaged                      types.Bool   `tfsdk:"self_managed"`
-	SftpPermission                   types.Bool   `tfsdk:"sftp_permission"`
-	SiteAdmin                        types.Bool   `tfsdk:"site_admin"`
-	WorkspaceAdmin                   types.Bool   `tfsdk:"workspace_admin"`
-	SiteId                           types.Int64  `tfsdk:"site_id"`
-	WorkspaceId                      types.Int64  `tfsdk:"workspace_id"`
-	SkipWelcomeScreen                types.Bool   `tfsdk:"skip_welcome_screen"`
-	SslRequired                      types.String `tfsdk:"ssl_required"`
-	SsoStrategyId                    types.Int64  `tfsdk:"sso_strategy_id"`
-	SubscribeToNewsletter            types.Bool   `tfsdk:"subscribe_to_newsletter"`
-	ExternallyManaged                types.Bool   `tfsdk:"externally_managed"`
-	Tags                             types.String `tfsdk:"tags"`
-	TimeZone                         types.String `tfsdk:"time_zone"`
-	TypeOf2fa                        types.String `tfsdk:"type_of_2fa"`
-	TypeOf2faForDisplay              types.String `tfsdk:"type_of_2fa_for_display"`
-	UserRoot                         types.String `tfsdk:"user_root"`
-	UserHome                         types.String `tfsdk:"user_home"`
-	DaysRemainingUntilPasswordExpire types.Int64  `tfsdk:"days_remaining_until_password_expire"`
-	PasswordExpireAt                 types.String `tfsdk:"password_expire_at"`
+	Id                                     types.Int64  `tfsdk:"id"`
+	Username                               types.String `tfsdk:"username"`
+	AdminGroupIds                          types.List   `tfsdk:"admin_group_ids"`
+	AllowedIps                             types.String `tfsdk:"allowed_ips"`
+	AttachmentsPermission                  types.Bool   `tfsdk:"attachments_permission"`
+	ApiKeysCount                           types.Int64  `tfsdk:"api_keys_count"`
+	AuthenticateUntil                      types.String `tfsdk:"authenticate_until"`
+	AuthenticationMethod                   types.String `tfsdk:"authentication_method"`
+	AvatarUrl                              types.String `tfsdk:"avatar_url"`
+	Billable                               types.Bool   `tfsdk:"billable"`
+	BillingPermission                      types.Bool   `tfsdk:"billing_permission"`
+	BypassSiteAllowedIps                   types.Bool   `tfsdk:"bypass_site_allowed_ips"`
+	BypassUserLifecycleRules               types.Bool   `tfsdk:"bypass_user_lifecycle_rules"`
+	CreatedAt                              types.String `tfsdk:"created_at"`
+	DavPermission                          types.Bool   `tfsdk:"dav_permission"`
+	Disabled                               types.Bool   `tfsdk:"disabled"`
+	DisabledExpiredOrInactive              types.Bool   `tfsdk:"disabled_expired_or_inactive"`
+	DesktopConfigurationProfileId          types.Int64  `tfsdk:"desktop_configuration_profile_id"`
+	Email                                  types.String `tfsdk:"email"`
+	FilesystemLayout                       types.String `tfsdk:"filesystem_layout"`
+	FirstLoginAt                           types.String `tfsdk:"first_login_at"`
+	FtpPermission                          types.Bool   `tfsdk:"ftp_permission"`
+	GroupIds                               types.String `tfsdk:"group_ids"`
+	HeaderText                             types.String `tfsdk:"header_text"`
+	Language                               types.String `tfsdk:"language"`
+	LastLoginAt                            types.String `tfsdk:"last_login_at"`
+	LastWebLoginAt                         types.String `tfsdk:"last_web_login_at"`
+	LastFtpLoginAt                         types.String `tfsdk:"last_ftp_login_at"`
+	LastSftpLoginAt                        types.String `tfsdk:"last_sftp_login_at"`
+	LastDavLoginAt                         types.String `tfsdk:"last_dav_login_at"`
+	LastDesktopLoginAt                     types.String `tfsdk:"last_desktop_login_at"`
+	LastRestapiLoginAt                     types.String `tfsdk:"last_restapi_login_at"`
+	LastApiUseAt                           types.String `tfsdk:"last_api_use_at"`
+	LastActiveAt                           types.String `tfsdk:"last_active_at"`
+	LastProtocolCipher                     types.String `tfsdk:"last_protocol_cipher"`
+	LockoutExpires                         types.String `tfsdk:"lockout_expires"`
+	Name                                   types.String `tfsdk:"name"`
+	Company                                types.String `tfsdk:"company"`
+	Notes                                  types.String `tfsdk:"notes"`
+	NotificationDailySendTime              types.Int64  `tfsdk:"notification_daily_send_time"`
+	OfficeIntegrationEnabled               types.Bool   `tfsdk:"office_integration_enabled"`
+	PartnerAdmin                           types.Bool   `tfsdk:"partner_admin"`
+	PartnerId                              types.Int64  `tfsdk:"partner_id"`
+	PartnerName                            types.String `tfsdk:"partner_name"`
+	PasswordSetAt                          types.String `tfsdk:"password_set_at"`
+	PasswordValidityDays                   types.Int64  `tfsdk:"password_validity_days"`
+	PrimaryGroupId                         types.Int64  `tfsdk:"primary_group_id"`
+	PublicKeysCount                        types.Int64  `tfsdk:"public_keys_count"`
+	ReceiveAdminAlerts                     types.Bool   `tfsdk:"receive_admin_alerts"`
+	NotifyOnAllSiteWarnings                types.Bool   `tfsdk:"notify_on_all_site_warnings"`
+	NotifyOnAllSsoFailures                 types.Bool   `tfsdk:"notify_on_all_sso_failures"`
+	NotifyOnAllUserSecurityEvents          types.Bool   `tfsdk:"notify_on_all_user_security_events"`
+	NotifyOnAllPendingWorkFailures         types.Bool   `tfsdk:"notify_on_all_pending_work_failures"`
+	NotifyOnAllSiemHttpDestinationFailures types.Bool   `tfsdk:"notify_on_all_siem_http_destination_failures"`
+	NotifyOnAllSyncFailures                types.Bool   `tfsdk:"notify_on_all_sync_failures"`
+	NotifyOnAllAutomationFailures          types.Bool   `tfsdk:"notify_on_all_automation_failures"`
+	NotifyOnAllExpectationFailures         types.Bool   `tfsdk:"notify_on_all_expectation_failures"`
+	Require2fa                             types.String `tfsdk:"require_2fa"`
+	RequireLoginBy                         types.String `tfsdk:"require_login_by"`
+	Active2fa                              types.Bool   `tfsdk:"active_2fa"`
+	RequirePasswordChange                  types.Bool   `tfsdk:"require_password_change"`
+	PasswordExpired                        types.Bool   `tfsdk:"password_expired"`
+	ReadonlySiteAdmin                      types.Bool   `tfsdk:"readonly_site_admin"`
+	RestapiPermission                      types.Bool   `tfsdk:"restapi_permission"`
+	SelfManaged                            types.Bool   `tfsdk:"self_managed"`
+	SftpPermission                         types.Bool   `tfsdk:"sftp_permission"`
+	SiteAdmin                              types.Bool   `tfsdk:"site_admin"`
+	WorkspaceAdmin                         types.Bool   `tfsdk:"workspace_admin"`
+	SiteId                                 types.Int64  `tfsdk:"site_id"`
+	WorkspaceId                            types.Int64  `tfsdk:"workspace_id"`
+	SkipWelcomeScreen                      types.Bool   `tfsdk:"skip_welcome_screen"`
+	SslRequired                            types.String `tfsdk:"ssl_required"`
+	SsoStrategyId                          types.Int64  `tfsdk:"sso_strategy_id"`
+	SubscribeToNewsletter                  types.Bool   `tfsdk:"subscribe_to_newsletter"`
+	ExternallyManaged                      types.Bool   `tfsdk:"externally_managed"`
+	Tags                                   types.String `tfsdk:"tags"`
+	TimeZone                               types.String `tfsdk:"time_zone"`
+	TypeOf2fa                              types.String `tfsdk:"type_of_2fa"`
+	TypeOf2faForDisplay                    types.String `tfsdk:"type_of_2fa_for_display"`
+	UserRoot                               types.String `tfsdk:"user_root"`
+	UserHome                               types.String `tfsdk:"user_home"`
+	DaysRemainingUntilPasswordExpire       types.Int64  `tfsdk:"days_remaining_until_password_expire"`
+	PasswordExpireAt                       types.String `tfsdk:"password_expire_at"`
 }
 
 func (r *userDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -326,7 +334,39 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed:    true,
 			},
 			"receive_admin_alerts": schema.BoolAttribute{
-				Description: "Should the user receive admin alerts such a certificate expiration notifications and overages?",
+				Description: "Deprecated. Use notify_on_all_site_warnings and granular failure notification preferences instead.",
+				Computed:    true,
+			},
+			"notify_on_all_site_warnings": schema.BoolAttribute{
+				Description: "Should the user receive site warnings via email?",
+				Computed:    true,
+			},
+			"notify_on_all_sso_failures": schema.BoolAttribute{
+				Description: "Should the user receive sso/scim/ldap configuration/sync failures via email?",
+				Computed:    true,
+			},
+			"notify_on_all_user_security_events": schema.BoolAttribute{
+				Description: "Should the user receive user security events via email?",
+				Computed:    true,
+			},
+			"notify_on_all_pending_work_failures": schema.BoolAttribute{
+				Description: "Should the user receive pending work failures via email?",
+				Computed:    true,
+			},
+			"notify_on_all_siem_http_destination_failures": schema.BoolAttribute{
+				Description: "Should the user receive siem failures via email?",
+				Computed:    true,
+			},
+			"notify_on_all_sync_failures": schema.BoolAttribute{
+				Description: "Should the user receive sync failures via email?",
+				Computed:    true,
+			},
+			"notify_on_all_automation_failures": schema.BoolAttribute{
+				Description: "Should the user receive automation failures via email?",
+				Computed:    true,
+			},
+			"notify_on_all_expectation_failures": schema.BoolAttribute{
+				Description: "Should the user receive expectation failures and misses via email?",
 				Computed:    true,
 			},
 			"require_2fa": schema.StringAttribute{
@@ -590,6 +630,14 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.PrimaryGroupId = types.Int64Value(user.PrimaryGroupId)
 	state.PublicKeysCount = types.Int64Value(user.PublicKeysCount)
 	state.ReceiveAdminAlerts = types.BoolPointerValue(user.ReceiveAdminAlerts)
+	state.NotifyOnAllSiteWarnings = types.BoolPointerValue(user.NotifyOnAllSiteWarnings)
+	state.NotifyOnAllSsoFailures = types.BoolPointerValue(user.NotifyOnAllSsoFailures)
+	state.NotifyOnAllUserSecurityEvents = types.BoolPointerValue(user.NotifyOnAllUserSecurityEvents)
+	state.NotifyOnAllPendingWorkFailures = types.BoolPointerValue(user.NotifyOnAllPendingWorkFailures)
+	state.NotifyOnAllSiemHttpDestinationFailures = types.BoolPointerValue(user.NotifyOnAllSiemHttpDestinationFailures)
+	state.NotifyOnAllSyncFailures = types.BoolPointerValue(user.NotifyOnAllSyncFailures)
+	state.NotifyOnAllAutomationFailures = types.BoolPointerValue(user.NotifyOnAllAutomationFailures)
+	state.NotifyOnAllExpectationFailures = types.BoolPointerValue(user.NotifyOnAllExpectationFailures)
 	state.Require2fa = types.StringValue(user.Require2fa)
 	if err := lib.TimeToStringType(ctx, path.Root("require_login_by"), user.RequireLoginBy, &state.RequireLoginBy); err != nil {
 		diags.AddError(

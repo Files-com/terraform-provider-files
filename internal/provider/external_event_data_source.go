@@ -28,20 +28,12 @@ type externalEventDataSource struct {
 }
 
 type externalEventDataSourceModel struct {
-	Id                    types.Int64  `tfsdk:"id"`
-	EventType             types.String `tfsdk:"event_type"`
-	Status                types.String `tfsdk:"status"`
-	Body                  types.String `tfsdk:"body"`
-	CreatedAt             types.String `tfsdk:"created_at"`
-	BodyUrl               types.String `tfsdk:"body_url"`
-	FolderBehaviorId      types.Int64  `tfsdk:"folder_behavior_id"`
-	SiemHttpDestinationId types.Int64  `tfsdk:"siem_http_destination_id"`
-	SuccessfulFiles       types.Int64  `tfsdk:"successful_files"`
-	ErroredFiles          types.Int64  `tfsdk:"errored_files"`
-	BytesSynced           types.Int64  `tfsdk:"bytes_synced"`
-	ComparedFiles         types.Int64  `tfsdk:"compared_files"`
-	ComparedFolders       types.Int64  `tfsdk:"compared_folders"`
-	RemoteServerType      types.String `tfsdk:"remote_server_type"`
+	Id        types.Int64  `tfsdk:"id"`
+	EventType types.String `tfsdk:"event_type"`
+	Status    types.String `tfsdk:"status"`
+	Body      types.String `tfsdk:"body"`
+	CreatedAt types.String `tfsdk:"created_at"`
+	BodyUrl   types.String `tfsdk:"body_url"`
 }
 
 func (r *externalEventDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -69,7 +61,7 @@ func (r *externalEventDataSource) Metadata(_ context.Context, req datasource.Met
 
 func (r *externalEventDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "An ExternalEvent is a log record with activity such as logins, credential syncs, and lockouts.",
+		Description: "An ExternalEvent is a log that is sent to the cloud from a client application such as the Files.com CLI.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Event ID",
@@ -93,38 +85,6 @@ func (r *externalEventDataSource) Schema(_ context.Context, _ datasource.SchemaR
 			},
 			"body_url": schema.StringAttribute{
 				Description: "Link to log file.",
-				Computed:    true,
-			},
-			"folder_behavior_id": schema.Int64Attribute{
-				Description: "Folder Behavior ID",
-				Computed:    true,
-			},
-			"siem_http_destination_id": schema.Int64Attribute{
-				Description: "SIEM HTTP Destination ID.",
-				Computed:    true,
-			},
-			"successful_files": schema.Int64Attribute{
-				Description: "For sync events, the number of files handled successfully.",
-				Computed:    true,
-			},
-			"errored_files": schema.Int64Attribute{
-				Description: "For sync events, the number of files that encountered errors.",
-				Computed:    true,
-			},
-			"bytes_synced": schema.Int64Attribute{
-				Description: "For sync events, the total number of bytes synced.",
-				Computed:    true,
-			},
-			"compared_files": schema.Int64Attribute{
-				Description: "For sync events, the number of files considered for the sync.",
-				Computed:    true,
-			},
-			"compared_folders": schema.Int64Attribute{
-				Description: "For sync events, the number of folders listed and considered for the sync.",
-				Computed:    true,
-			},
-			"remote_server_type": schema.StringAttribute{
-				Description: "Associated Remote Server type, if any",
 				Computed:    true,
 			},
 		},
@@ -173,14 +133,6 @@ func (r *externalEventDataSource) populateDataSourceModel(ctx context.Context, e
 		)
 	}
 	state.BodyUrl = types.StringValue(externalEvent.BodyUrl)
-	state.FolderBehaviorId = types.Int64Value(externalEvent.FolderBehaviorId)
-	state.SiemHttpDestinationId = types.Int64Value(externalEvent.SiemHttpDestinationId)
-	state.SuccessfulFiles = types.Int64Value(externalEvent.SuccessfulFiles)
-	state.ErroredFiles = types.Int64Value(externalEvent.ErroredFiles)
-	state.BytesSynced = types.Int64Value(externalEvent.BytesSynced)
-	state.ComparedFiles = types.Int64Value(externalEvent.ComparedFiles)
-	state.ComparedFolders = types.Int64Value(externalEvent.ComparedFolders)
-	state.RemoteServerType = types.StringValue(externalEvent.RemoteServerType)
 
 	return
 }

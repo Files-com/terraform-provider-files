@@ -3,12 +3,12 @@
 page_title: "files_external_event Data Source - files"
 subcategory: ""
 description: |-
-  An ExternalEvent is a log record with activity such as logins, credential syncs, and lockouts.
+  An ExternalEvent is a log that is sent to the cloud from a client application such as the Files.com CLI.
 ---
 
 # files_external_event (Data Source)
 
-An ExternalEvent is a log record with activity such as logins, credential syncs, and lockouts.
+An ExternalEvent is a log that is sent to the cloud from a client application such as the Files.com CLI.
 
 ## Example Usage
 
@@ -29,14 +29,6 @@ data "files_external_event" "example_external_event" {
 
 - `body` (String) Event body
 - `body_url` (String) Link to log file.
-- `bytes_synced` (Number) For sync events, the total number of bytes synced.
-- `compared_files` (Number) For sync events, the number of files considered for the sync.
-- `compared_folders` (Number) For sync events, the number of folders listed and considered for the sync.
 - `created_at` (String) External event create date/time
-- `errored_files` (Number) For sync events, the number of files that encountered errors.
 - `event_type` (String) Type of event being recorded.
-- `folder_behavior_id` (Number) Folder Behavior ID
-- `remote_server_type` (String) Associated Remote Server type, if any
-- `siem_http_destination_id` (Number) SIEM HTTP Destination ID.
 - `status` (String) Status of event.
-- `successful_files` (Number) For sync events, the number of files handled successfully.

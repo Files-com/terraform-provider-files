@@ -57,54 +57,62 @@ These authentication methods can be configured during user creation and can be m
 
 ```terraform
 resource "files_user" "example_user" {
-  avatar_delete                    = false
-  email                            = "john.doe@files.com"
-  group_id                         = 1
-  group_ids                        = "example"
-  announcements_read               = false
-  allowed_ips                      = "10.0.0.0/8\n127.0.0.1"
-  attachments_permission           = true
-  authenticate_until               = "2000-01-01T01:00:00Z"
-  authentication_method            = "password"
-  billing_permission               = false
-  bypass_user_lifecycle_rules      = false
-  bypass_site_allowed_ips          = false
-  dav_permission                   = true
-  desktop_configuration_profile_id = 1
-  disabled                         = true
-  filesystem_layout                = "site_root"
-  ftp_permission                   = true
-  header_text                      = "User-specific message."
-  language                         = "en"
-  notification_daily_send_time     = 18
-  name                             = "John Doe"
-  company                          = "ACME Corp."
-  notes                            = "Internal notes on this user."
-  office_integration_enabled       = true
-  partner_admin                    = true
-  partner_id                       = 1
-  password_validity_days           = 1
-  primary_group_id                 = 1
-  readonly_site_admin              = true
-  receive_admin_alerts             = true
-  require_login_by                 = "2000-01-01T01:00:00Z"
-  require_password_change          = true
-  restapi_permission               = true
-  self_managed                     = true
-  sftp_permission                  = true
-  site_admin                       = true
-  skip_welcome_screen              = true
-  ssl_required                     = "always_require"
-  sso_strategy_id                  = 1
-  subscribe_to_newsletter          = true
-  require_2fa                      = "always_require"
-  tags                             = "example"
-  time_zone                        = "Pacific Time (US & Canada)"
-  user_root                        = "example"
-  user_home                        = "example"
-  workspace_admin                  = true
-  username                         = "user"
-  workspace_id                     = 1
+  avatar_delete                                = false
+  email                                        = "john.doe@files.com"
+  group_id                                     = 1
+  group_ids                                    = "example"
+  announcements_read                           = false
+  allowed_ips                                  = "10.0.0.0/8\n127.0.0.1"
+  attachments_permission                       = true
+  authenticate_until                           = "2000-01-01T01:00:00Z"
+  authentication_method                        = "password"
+  billing_permission                           = false
+  bypass_user_lifecycle_rules                  = false
+  bypass_site_allowed_ips                      = false
+  dav_permission                               = true
+  desktop_configuration_profile_id             = 1
+  disabled                                     = true
+  filesystem_layout                            = "site_root"
+  ftp_permission                               = true
+  header_text                                  = "User-specific message."
+  language                                     = "en"
+  notification_daily_send_time                 = 18
+  name                                         = "John Doe"
+  company                                      = "ACME Corp."
+  notes                                        = "Internal notes on this user."
+  office_integration_enabled                   = true
+  partner_admin                                = true
+  partner_id                                   = 1
+  password_validity_days                       = 1
+  primary_group_id                             = 1
+  readonly_site_admin                          = true
+  receive_admin_alerts                         = true
+  notify_on_all_site_warnings                  = true
+  notify_on_all_sso_failures                   = true
+  notify_on_all_user_security_events           = true
+  notify_on_all_pending_work_failures          = true
+  notify_on_all_siem_http_destination_failures = true
+  notify_on_all_sync_failures                  = true
+  notify_on_all_automation_failures            = true
+  notify_on_all_expectation_failures           = true
+  require_login_by                             = "2000-01-01T01:00:00Z"
+  require_password_change                      = true
+  restapi_permission                           = true
+  self_managed                                 = true
+  sftp_permission                              = true
+  site_admin                                   = true
+  skip_welcome_screen                          = true
+  ssl_required                                 = "always_require"
+  sso_strategy_id                              = 1
+  subscribe_to_newsletter                      = true
+  require_2fa                                  = "always_require"
+  tags                                         = "example"
+  time_zone                                    = "Pacific Time (US & Canada)"
+  user_root                                    = "example"
+  user_home                                    = "example"
+  workspace_admin                              = true
+  username                                     = "user"
+  workspace_id                                 = 1
 }
 ```
 
@@ -146,6 +154,14 @@ resource "files_user" "example_user" {
 - `name` (String) User's full name
 - `notes` (String) Any internal notes on the user
 - `notification_daily_send_time` (Number) Hour of the day at which daily notifications should be sent. Can be in range 0 to 23
+- `notify_on_all_automation_failures` (Boolean) Should the user receive automation failures via email?
+- `notify_on_all_expectation_failures` (Boolean) Should the user receive expectation failures and misses via email?
+- `notify_on_all_pending_work_failures` (Boolean) Should the user receive pending work failures via email?
+- `notify_on_all_siem_http_destination_failures` (Boolean) Should the user receive siem failures via email?
+- `notify_on_all_site_warnings` (Boolean) Should the user receive site warnings via email?
+- `notify_on_all_sso_failures` (Boolean) Should the user receive sso/scim/ldap configuration/sync failures via email?
+- `notify_on_all_sync_failures` (Boolean) Should the user receive sync failures via email?
+- `notify_on_all_user_security_events` (Boolean) Should the user receive user security events via email?
 - `office_integration_enabled` (Boolean) Enable integration with Office for the web?
 - `partner_admin` (Boolean) Is this user a Partner administrator?
 - `partner_id` (Number) Partner ID if this user belongs to a Partner
@@ -154,7 +170,7 @@ resource "files_user" "example_user" {
 - `password_validity_days` (Number) Number of days to allow user to use the same password
 - `primary_group_id` (Number) Primary group ID for Group Admin scoping
 - `readonly_site_admin` (Boolean) Is the user an allowed to view all (non-billing) site configuration for this site?
-- `receive_admin_alerts` (Boolean) Should the user receive admin alerts such a certificate expiration notifications and overages?
+- `receive_admin_alerts` (Boolean) Deprecated. Use notify_on_all_site_warnings and granular failure notification preferences instead.
 - `require_2fa` (String) 2FA required setting
 - `require_login_by` (String) Require user to login by specified date otherwise it will be disabled.
 - `require_password_change` (Boolean) Is a password change required upon next user login?

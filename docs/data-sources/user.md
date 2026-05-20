@@ -111,6 +111,14 @@ data "files_user" "example_user" {
 - `name` (String) User's full name
 - `notes` (String) Any internal notes on the user
 - `notification_daily_send_time` (Number) Hour of the day at which daily notifications should be sent. Can be in range 0 to 23
+- `notify_on_all_automation_failures` (Boolean) Should the user receive automation failures via email?
+- `notify_on_all_expectation_failures` (Boolean) Should the user receive expectation failures and misses via email?
+- `notify_on_all_pending_work_failures` (Boolean) Should the user receive pending work failures via email?
+- `notify_on_all_siem_http_destination_failures` (Boolean) Should the user receive siem failures via email?
+- `notify_on_all_site_warnings` (Boolean) Should the user receive site warnings via email?
+- `notify_on_all_sso_failures` (Boolean) Should the user receive sso/scim/ldap configuration/sync failures via email?
+- `notify_on_all_sync_failures` (Boolean) Should the user receive sync failures via email?
+- `notify_on_all_user_security_events` (Boolean) Should the user receive user security events via email?
 - `office_integration_enabled` (Boolean) Enable integration with Office for the web?
 - `partner_admin` (Boolean) Is this user a Partner administrator?
 - `partner_id` (Number) Partner ID if this user belongs to a Partner
@@ -122,7 +130,7 @@ data "files_user" "example_user" {
 - `primary_group_id` (Number) Primary group ID for Group Admin scoping
 - `public_keys_count` (Number) Number of public keys associated with this user
 - `readonly_site_admin` (Boolean) Is the user an allowed to view all (non-billing) site configuration for this site?
-- `receive_admin_alerts` (Boolean) Should the user receive admin alerts such a certificate expiration notifications and overages?
+- `receive_admin_alerts` (Boolean) Deprecated. Use notify_on_all_site_warnings and granular failure notification preferences instead.
 - `require_2fa` (String) 2FA required setting
 - `require_login_by` (String) Require user to login by specified date otherwise it will be disabled.
 - `require_password_change` (Boolean) Is a password change required upon next user login?
