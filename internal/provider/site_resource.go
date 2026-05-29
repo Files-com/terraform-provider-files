@@ -40,6 +40,7 @@ type siteResource struct {
 type siteResourceModel struct {
 	Name                                     types.String  `tfsdk:"name"`
 	AdditionalTextFileTypes                  types.List    `tfsdk:"additional_text_file_types"`
+	AiFeatureAvailability                    types.Dynamic `tfsdk:"ai_feature_availability"`
 	Allowed2faMethodSms                      types.Bool    `tfsdk:"allowed_2fa_method_sms"`
 	Allowed2faMethodTotp                     types.Bool    `tfsdk:"allowed_2fa_method_totp"`
 	Allowed2faMethodWebauthn                 types.Bool    `tfsdk:"allowed_2fa_method_webauthn"`
@@ -95,6 +96,7 @@ type siteResourceModel struct {
 	MobileAppSessionIpPinning                types.Bool    `tfsdk:"mobile_app_session_ip_pinning"`
 	MobileAppSessionLifetime                 types.Int64   `tfsdk:"mobile_app_session_lifetime"`
 	DisallowedCountries                      types.String  `tfsdk:"disallowed_countries"`
+	DisableAllAiFeatures                     types.Bool    `tfsdk:"disable_all_ai_features"`
 	DisableFilesCertificateGeneration        types.Bool    `tfsdk:"disable_files_certificate_generation"`
 	DisablePasswordReset                     types.Bool    `tfsdk:"disable_password_reset"`
 	Domain                                   types.String  `tfsdk:"domain"`
@@ -265,6 +267,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				ElementType: types.StringType,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"ai_feature_availability": schema.DynamicAttribute{
+				Description: "Availability settings for AI features by user class",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Dynamic{
+					dynamicplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"allowed_2fa_method_sms": schema.BoolAttribute{
@@ -715,6 +725,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"disable_all_ai_features": schema.BoolAttribute{
+				Description: "If true, all AI features are disabled for this site.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"disable_files_certificate_generation": schema.BoolAttribute{
@@ -1792,6 +1810,12 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.MotdUseForSftp.IsNull() && !config.MotdUseForSftp.IsUnknown() {
 		paramsSiteUpdate["motd_use_for_sftp"] = config.MotdUseForSftp.ValueBool()
 	}
+	if !config.DisableAllAiFeatures.IsNull() && !config.DisableAllAiFeatures.IsUnknown() {
+		paramsSiteUpdate["disable_all_ai_features"] = config.DisableAllAiFeatures.ValueBool()
+	}
+	updateAiFeatureAvailability, diags := lib.DynamicToInterface(ctx, path.Root("ai_feature_availability"), config.AiFeatureAvailability)
+	resp.Diagnostics.Append(diags...)
+	paramsSiteUpdate["ai_feature_availability"] = updateAiFeatureAvailability
 	if !config.AdditionalTextFileTypes.IsNull() && !config.AdditionalTextFileTypes.IsUnknown() {
 		var updateAdditionalTextFileTypes []string
 		diags = config.AdditionalTextFileTypes.ElementsAs(ctx, &updateAdditionalTextFileTypes, false)
@@ -2209,6 +2233,8 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.Name = types.StringValue(site.Name)
 	state.AdditionalTextFileTypes, propDiags = types.ListValueFrom(ctx, types.StringType, site.AdditionalTextFileTypes)
 	diags.Append(propDiags...)
+	state.AiFeatureAvailability, propDiags = lib.ToDynamic(ctx, path.Root("ai_feature_availability"), site.AiFeatureAvailability, state.AiFeatureAvailability.UnderlyingValue())
+	diags.Append(propDiags...)
 	state.Allowed2faMethodSms = types.BoolPointerValue(site.Allowed2faMethodSms)
 	state.Allowed2faMethodTotp = types.BoolPointerValue(site.Allowed2faMethodTotp)
 	state.Allowed2faMethodWebauthn = types.BoolPointerValue(site.Allowed2faMethodWebauthn)
@@ -2283,6 +2309,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.MobileAppSessionIpPinning = types.BoolPointerValue(site.MobileAppSessionIpPinning)
 	state.MobileAppSessionLifetime = types.Int64Value(site.MobileAppSessionLifetime)
 	state.DisallowedCountries = types.StringValue(site.DisallowedCountries)
+	state.DisableAllAiFeatures = types.BoolPointerValue(site.DisableAllAiFeatures)
 	state.DisableFilesCertificateGeneration = types.BoolPointerValue(site.DisableFilesCertificateGeneration)
 	state.DisableNotifications = types.BoolPointerValue(site.DisableNotifications)
 	state.DisablePasswordReset = types.BoolPointerValue(site.DisablePasswordReset)

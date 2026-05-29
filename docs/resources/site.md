@@ -52,6 +52,15 @@ resource "files_site" "example_site" {
   motd_text                                     = "example"
   motd_use_for_ftp                              = false
   motd_use_for_sftp                             = false
+  disable_all_ai_features                       = false
+  ai_feature_availability                       = {
+    in_app_ai_assistant = {
+      site_admins      = true
+      workspace_admins = true
+      folder_admins    = true
+      all_users        = true
+    }
+  }
   additional_text_file_types                    = ["example"]
   bundle_require_note                           = false
   bundle_send_shared_receipts                   = false
@@ -198,6 +207,7 @@ resource "files_site" "example_site" {
 - `active_sftp_host_key_id` (Number) Id of the currently selected custom SFTP Host Key
 - `additional_text_file_types` (List of String) Additional extensions that are considered text files
 - `admins_bypass_locked_subfolders` (Boolean) Allow admins to bypass the locked subfolders setting.
+- `ai_feature_availability` (Dynamic) Availability settings for AI features by user class
 - `allow_bundle_names` (Boolean) Are manual Bundle names allowed?
 - `allow_user_level_2fa_override` (Boolean) Allow the site-wide two-factor authentication requirement to be overriden on a per-user-basis?
 - `allow_user_level_allowed_ip_override` (Boolean) Allow the site-wide allowed IP restriction to be overriden on a per-user-basis?
@@ -244,6 +254,7 @@ resource "files_site" "example_site" {
 - `desktop_app` (Boolean) Is the desktop app enabled?
 - `desktop_app_session_ip_pinning` (Boolean) Is desktop app session IP pinning enabled?
 - `desktop_app_session_lifetime` (Number) Desktop app session lifetime (in hours)
+- `disable_all_ai_features` (Boolean) If true, all AI features are disabled for this site.
 - `disable_files_certificate_generation` (Boolean) If set, Files.com will not set the CAA records required to generate future SSL certificates for this domain.
 - `disable_password_reset` (Boolean) Is password reset disabled?
 - `disallowed_countries` (String) Comma separated list of disallowed Country codes

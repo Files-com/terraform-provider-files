@@ -32,6 +32,7 @@ type siteDataSourceModel struct {
 	Id                                       types.Int64   `tfsdk:"id"`
 	Name                                     types.String  `tfsdk:"name"`
 	AdditionalTextFileTypes                  types.List    `tfsdk:"additional_text_file_types"`
+	AiFeatureAvailability                    types.Dynamic `tfsdk:"ai_feature_availability"`
 	Allowed2faMethodSms                      types.Bool    `tfsdk:"allowed_2fa_method_sms"`
 	Allowed2faMethodTotp                     types.Bool    `tfsdk:"allowed_2fa_method_totp"`
 	Allowed2faMethodWebauthn                 types.Bool    `tfsdk:"allowed_2fa_method_webauthn"`
@@ -92,6 +93,7 @@ type siteDataSourceModel struct {
 	MobileAppSessionIpPinning                types.Bool    `tfsdk:"mobile_app_session_ip_pinning"`
 	MobileAppSessionLifetime                 types.Int64   `tfsdk:"mobile_app_session_lifetime"`
 	DisallowedCountries                      types.String  `tfsdk:"disallowed_countries"`
+	DisableAllAiFeatures                     types.Bool    `tfsdk:"disable_all_ai_features"`
 	DisableFilesCertificateGeneration        types.Bool    `tfsdk:"disable_files_certificate_generation"`
 	DisableNotifications                     types.Bool    `tfsdk:"disable_notifications"`
 	DisablePasswordReset                     types.Bool    `tfsdk:"disable_password_reset"`
@@ -253,6 +255,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Additional extensions that are considered text files",
 				Computed:    true,
 				ElementType: types.StringType,
+			},
+			"ai_feature_availability": schema.DynamicAttribute{
+				Description: "Availability settings for AI features by user class",
+				Computed:    true,
 			},
 			"allowed_2fa_method_sms": schema.BoolAttribute{
 				Description: "Is SMS two factor authentication allowed?",
@@ -493,6 +499,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"disallowed_countries": schema.StringAttribute{
 				Description: "Comma separated list of disallowed Country codes",
+				Computed:    true,
+			},
+			"disable_all_ai_features": schema.BoolAttribute{
+				Description: "If true, all AI features are disabled for this site.",
 				Computed:    true,
 			},
 			"disable_files_certificate_generation": schema.BoolAttribute{
@@ -1013,6 +1023,8 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.Name = types.StringValue(site.Name)
 	state.AdditionalTextFileTypes, propDiags = types.ListValueFrom(ctx, types.StringType, site.AdditionalTextFileTypes)
 	diags.Append(propDiags...)
+	state.AiFeatureAvailability, propDiags = lib.ToDynamic(ctx, path.Root("ai_feature_availability"), site.AiFeatureAvailability, state.AiFeatureAvailability.UnderlyingValue())
+	diags.Append(propDiags...)
 	state.Allowed2faMethodSms = types.BoolPointerValue(site.Allowed2faMethodSms)
 	state.Allowed2faMethodTotp = types.BoolPointerValue(site.Allowed2faMethodTotp)
 	state.Allowed2faMethodWebauthn = types.BoolPointerValue(site.Allowed2faMethodWebauthn)
@@ -1087,6 +1099,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.MobileAppSessionIpPinning = types.BoolPointerValue(site.MobileAppSessionIpPinning)
 	state.MobileAppSessionLifetime = types.Int64Value(site.MobileAppSessionLifetime)
 	state.DisallowedCountries = types.StringValue(site.DisallowedCountries)
+	state.DisableAllAiFeatures = types.BoolPointerValue(site.DisableAllAiFeatures)
 	state.DisableFilesCertificateGeneration = types.BoolPointerValue(site.DisableFilesCertificateGeneration)
 	state.DisableNotifications = types.BoolPointerValue(site.DisableNotifications)
 	state.DisablePasswordReset = types.BoolPointerValue(site.DisablePasswordReset)

@@ -32,6 +32,15 @@ resource "files_site" "example_site" {
   motd_text                                     = "example"
   motd_use_for_ftp                              = false
   motd_use_for_sftp                             = false
+  disable_all_ai_features                       = false
+  ai_feature_availability                       = {
+    in_app_ai_assistant = {
+      site_admins      = true
+      workspace_admins = true
+      folder_admins    = true
+      all_users        = true
+    }
+  }
   additional_text_file_types                    = ["example"]
   bundle_require_note                           = false
   bundle_send_shared_receipts                   = false
