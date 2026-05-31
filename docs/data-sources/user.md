@@ -86,6 +86,7 @@ data "files_user" "example_user" {
 - `created_at` (String) When this user was created
 - `dav_permission` (Boolean) Can the user connect with WebDAV?
 - `days_remaining_until_password_expire` (Number) Number of days remaining until password expires
+- `default_workspace_id` (Number) Workspace ID the user should land in by default when more than one Workspace is available.
 - `desktop_configuration_profile_id` (Number) Desktop Configuration Profile ID assigned directly to this user, if any.
 - `disabled` (Boolean) Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date.
 - `disabled_expired_or_inactive` (Boolean) Computed property that returns true if user disabled or expired or inactive.

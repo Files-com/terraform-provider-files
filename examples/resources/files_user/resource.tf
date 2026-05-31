@@ -13,6 +13,7 @@ resource "files_user" "example_user" {
   bypass_site_allowed_ips                      = false
   dav_permission                               = true
   desktop_configuration_profile_id             = 1
+  default_workspace_id                         = 1
   disabled                                     = true
   filesystem_layout                            = "site_root"
   ftp_permission                               = true

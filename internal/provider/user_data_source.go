@@ -98,6 +98,7 @@ type userDataSourceModel struct {
 	WorkspaceAdmin                         types.Bool   `tfsdk:"workspace_admin"`
 	SiteId                                 types.Int64  `tfsdk:"site_id"`
 	WorkspaceId                            types.Int64  `tfsdk:"workspace_id"`
+	DefaultWorkspaceId                     types.Int64  `tfsdk:"default_workspace_id"`
 	SkipWelcomeScreen                      types.Bool   `tfsdk:"skip_welcome_screen"`
 	SslRequired                            types.String `tfsdk:"ssl_required"`
 	SsoStrategyId                          types.Int64  `tfsdk:"sso_strategy_id"`
@@ -421,6 +422,10 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Workspace ID",
 				Computed:    true,
 			},
+			"default_workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID the user should land in by default when more than one Workspace is available.",
+				Computed:    true,
+			},
 			"skip_welcome_screen": schema.BoolAttribute{
 				Description: "Skip Welcome page in the UI?",
 				Computed:    true,
@@ -656,6 +661,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.WorkspaceAdmin = types.BoolPointerValue(user.WorkspaceAdmin)
 	state.SiteId = types.Int64Value(user.SiteId)
 	state.WorkspaceId = types.Int64Value(user.WorkspaceId)
+	state.DefaultWorkspaceId = types.Int64Value(user.DefaultWorkspaceId)
 	state.SkipWelcomeScreen = types.BoolPointerValue(user.SkipWelcomeScreen)
 	state.SslRequired = types.StringValue(user.SslRequired)
 	state.SsoStrategyId = types.Int64Value(user.SsoStrategyId)

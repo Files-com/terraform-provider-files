@@ -83,6 +83,7 @@ type userResourceModel struct {
 	SiteAdmin                              types.Bool              `tfsdk:"site_admin"`
 	WorkspaceAdmin                         types.Bool              `tfsdk:"workspace_admin"`
 	WorkspaceId                            types.Int64             `tfsdk:"workspace_id"`
+	DefaultWorkspaceId                     types.Int64             `tfsdk:"default_workspace_id"`
 	SkipWelcomeScreen                      types.Bool              `tfsdk:"skip_welcome_screen"`
 	SslRequired                            types.String            `tfsdk:"ssl_required"`
 	SsoStrategyId                          types.Int64             `tfsdk:"sso_strategy_id"`
@@ -526,6 +527,14 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					int64planmodifier.RequiresReplace(),
 				},
 			},
+			"default_workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID the user should land in by default when more than one Workspace is available.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"skip_welcome_screen": schema.BoolAttribute{
 				Description: "Skip Welcome page in the UI?",
 				Computed:    true,
@@ -830,6 +839,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		paramsUserCreate.DavPermission = plan.DavPermission.ValueBoolPointer()
 	}
 	paramsUserCreate.DesktopConfigurationProfileId = plan.DesktopConfigurationProfileId.ValueInt64()
+	paramsUserCreate.DefaultWorkspaceId = plan.DefaultWorkspaceId.ValueInt64()
 	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
 		paramsUserCreate.Disabled = plan.Disabled.ValueBoolPointer()
 	}
@@ -1080,6 +1090,9 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 	if !config.DesktopConfigurationProfileId.IsNull() && !config.DesktopConfigurationProfileId.IsUnknown() {
 		paramsUserUpdate["desktop_configuration_profile_id"] = config.DesktopConfigurationProfileId.ValueInt64()
+	}
+	if !config.DefaultWorkspaceId.IsNull() && !config.DefaultWorkspaceId.IsUnknown() {
+		paramsUserUpdate["default_workspace_id"] = config.DefaultWorkspaceId.ValueInt64()
 	}
 	if !config.Disabled.IsNull() && !config.Disabled.IsUnknown() {
 		paramsUserUpdate["disabled"] = config.Disabled.ValueBool()
@@ -1433,6 +1446,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.WorkspaceAdmin = types.BoolPointerValue(user.WorkspaceAdmin)
 	state.SiteId = types.Int64Value(user.SiteId)
 	state.WorkspaceId = types.Int64Value(user.WorkspaceId)
+	state.DefaultWorkspaceId = types.Int64Value(user.DefaultWorkspaceId)
 	state.SkipWelcomeScreen = types.BoolPointerValue(user.SkipWelcomeScreen)
 	state.SslRequired = types.StringValue(user.SslRequired)
 	state.SsoStrategyId = types.Int64Value(user.SsoStrategyId)

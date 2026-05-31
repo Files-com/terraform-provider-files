@@ -71,6 +71,7 @@ resource "files_user" "example_user" {
   bypass_site_allowed_ips                      = false
   dav_permission                               = true
   desktop_configuration_profile_id             = 1
+  default_workspace_id                         = 1
   disabled                                     = true
   filesystem_layout                            = "site_root"
   ftp_permission                               = true
@@ -140,6 +141,7 @@ resource "files_user" "example_user" {
 - `change_password_confirmation` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Optional, but if provided, we will ensure that it matches the value sent in `change_password`.
 - `company` (String) User's company
 - `dav_permission` (Boolean) Can the user connect with WebDAV?
+- `default_workspace_id` (Number) Workspace ID the user should land in by default when more than one Workspace is available.
 - `desktop_configuration_profile_id` (Number) Desktop Configuration Profile ID assigned directly to this user, if any.
 - `disabled` (Boolean) Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date.
 - `email` (String) User email address
