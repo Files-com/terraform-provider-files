@@ -524,7 +524,6 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
-					int64planmodifier.RequiresReplace(),
 				},
 			},
 			"default_workspace_id": schema.Int64Attribute{
@@ -1229,6 +1228,9 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 	if !config.Username.IsNull() && !config.Username.IsUnknown() {
 		paramsUserUpdate["username"] = config.Username.ValueString()
+	}
+	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
+		paramsUserUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
 
 	if resp.Diagnostics.HasError() {
