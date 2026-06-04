@@ -32,6 +32,7 @@ resource "files_bundle" "example_bundle" {
   expires_at                                          = "2000-01-01T01:00:00Z"
   finalize_snapshot                                   = false
   max_uses                                            = 1
+  group_id                                            = 1
   description                                         = "The public description of the bundle."
   note                                                = "The internal note on the bundle."
   code                                                = "abc123"
@@ -73,6 +74,7 @@ resource "files_bundle" "example_bundle" {
 - `expires_at` (String) Bundle expiration date/time
 - `finalize_snapshot` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.
 - `form_field_set_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Id of Form Field Set to use with this bundle
+- `group_id` (Number) Owning group ID. If set, members of this group can view, edit, and share this Share Link.
 - `inbox_id` (Number) ID of the associated inbox, if available.
 - `max_uses` (Number) Maximum number of times bundle can be accessed
 - `note` (String) Bundle internal note

@@ -55,6 +55,7 @@ type siteDataSourceModel struct {
 	BundleExpiration                         types.Int64   `tfsdk:"bundle_expiration"`
 	BundleNotFoundMessage                    types.String  `tfsdk:"bundle_not_found_message"`
 	BundlePasswordRequired                   types.Bool    `tfsdk:"bundle_password_required"`
+	BundlesDefaultOwnedByPrimaryGroup        types.Bool    `tfsdk:"bundles_default_owned_by_primary_group"`
 	BundleRecipientBlacklistDomains          types.List    `tfsdk:"bundle_recipient_blacklist_domains"`
 	BundleRecipientBlacklistFreeEmailDomains types.Bool    `tfsdk:"bundle_recipient_blacklist_free_email_domains"`
 	BundleRegistrationNotifications          types.String  `tfsdk:"bundle_registration_notifications"`
@@ -346,6 +347,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"bundle_password_required": schema.BoolAttribute{
 				Description: "Do Bundles require password protection?",
+				Computed:    true,
+			},
+			"bundles_default_owned_by_primary_group": schema.BoolAttribute{
+				Description: "If true, new Share Links created by a user with a primary group will default to that group as owner.",
 				Computed:    true,
 			},
 			"bundle_recipient_blacklist_domains": schema.ListAttribute{
@@ -1047,6 +1052,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.BundleExpiration = types.Int64Value(site.BundleExpiration)
 	state.BundleNotFoundMessage = types.StringValue(site.BundleNotFoundMessage)
 	state.BundlePasswordRequired = types.BoolPointerValue(site.BundlePasswordRequired)
+	state.BundlesDefaultOwnedByPrimaryGroup = types.BoolPointerValue(site.BundlesDefaultOwnedByPrimaryGroup)
 	state.BundleRecipientBlacklistDomains, propDiags = types.ListValueFrom(ctx, types.StringType, site.BundleRecipientBlacklistDomains)
 	diags.Append(propDiags...)
 	state.BundleRecipientBlacklistFreeEmailDomains = types.BoolPointerValue(site.BundleRecipientBlacklistFreeEmailDomains)

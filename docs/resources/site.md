@@ -64,6 +64,7 @@ resource "files_site" "example_site" {
   additional_text_file_types                    = ["example"]
   bundle_require_note                           = false
   bundle_send_shared_receipts                   = false
+  bundles_default_owned_by_primary_group        = false
   calculate_file_checksums_crc32                = false
   calculate_file_checksums_md5                  = false
   calculate_file_checksums_sha1                 = false
@@ -237,6 +238,7 @@ resource "files_site" "example_site" {
 - `bundle_send_shared_receipts` (Boolean) Do Bundle creators receive receipts of invitations?
 - `bundle_upload_receipt_notifications` (String) Do Bundle uploaders receive upload confirmation notifications?
 - `bundle_watermark_value` (Dynamic) Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value
+- `bundles_default_owned_by_primary_group` (Boolean) If true, new Share Links created by a user with a primary group will default to that group as owner.
 - `calculate_file_checksums_crc32` (Boolean) Calculate CRC32 checksums for files?
 - `calculate_file_checksums_md5` (Boolean) Calculate MD5 checksums for files?
 - `calculate_file_checksums_sha1` (Boolean) Calculate SHA1 checksums for files?

@@ -59,6 +59,7 @@ type bundleResourceModel struct {
 	SendEmailReceiptToUploader                   types.Bool    `tfsdk:"send_email_receipt_to_uploader"`
 	SnapshotId                                   types.Int64   `tfsdk:"snapshot_id"`
 	UserId                                       types.Int64   `tfsdk:"user_id"`
+	GroupId                                      types.Int64   `tfsdk:"group_id"`
 	ClickwrapId                                  types.Int64   `tfsdk:"clickwrap_id"`
 	InboxId                                      types.Int64   `tfsdk:"inbox_id"`
 	SendOneTimePasswordToRecipientAtRegistration types.Bool    `tfsdk:"send_one_time_password_to_recipient_at_registration"`
@@ -276,6 +277,14 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"group_id": schema.Int64Attribute{
+				Description: "Owning group ID. If set, members of this group can view, edit, and share this Share Link.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"clickwrap_id": schema.Int64Attribute{
 				Description: "ID of the clickwrap to use with this bundle.",
 				Computed:    true,
@@ -461,6 +470,7 @@ func (r *bundleResource) Create(ctx context.Context, req resource.CreateRequest,
 		paramsBundleCreate.FinalizeSnapshot = config.FinalizeSnapshot.ValueBoolPointer()
 	}
 	paramsBundleCreate.MaxUses = plan.MaxUses.ValueInt64()
+	paramsBundleCreate.GroupId = plan.GroupId.ValueInt64()
 	paramsBundleCreate.Description = plan.Description.ValueString()
 	paramsBundleCreate.Note = plan.Note.ValueString()
 	paramsBundleCreate.Code = plan.Code.ValueString()
@@ -639,6 +649,9 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 	}
 	if !config.MaxUses.IsNull() && !config.MaxUses.IsUnknown() {
 		paramsBundleUpdate["max_uses"] = config.MaxUses.ValueInt64()
+	}
+	if !config.GroupId.IsNull() && !config.GroupId.IsUnknown() {
+		paramsBundleUpdate["group_id"] = config.GroupId.ValueInt64()
 	}
 	if !config.Note.IsNull() && !config.Note.IsUnknown() {
 		paramsBundleUpdate["note"] = config.Note.ValueString()
@@ -820,6 +833,7 @@ func (r *bundleResource) populateResourceModel(ctx context.Context, bundle files
 	state.SnapshotId = types.Int64Value(bundle.SnapshotId)
 	state.UserId = types.Int64Value(bundle.UserId)
 	state.Username = types.StringValue(bundle.Username)
+	state.GroupId = types.Int64Value(bundle.GroupId)
 	state.ClickwrapId = types.Int64Value(bundle.ClickwrapId)
 	state.InboxId = types.Int64Value(bundle.InboxId)
 	respWatermarkAttachment, err := json.Marshal(bundle.WatermarkAttachment)

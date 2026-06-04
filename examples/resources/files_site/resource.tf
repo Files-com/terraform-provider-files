@@ -44,6 +44,7 @@ resource "files_site" "example_site" {
   additional_text_file_types                    = ["example"]
   bundle_require_note                           = false
   bundle_send_shared_receipts                   = false
+  bundles_default_owned_by_primary_group        = false
   calculate_file_checksums_crc32                = false
   calculate_file_checksums_md5                  = false
   calculate_file_checksums_sha1                 = false

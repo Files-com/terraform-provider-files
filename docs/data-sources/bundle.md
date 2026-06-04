@@ -51,6 +51,7 @@ data "files_bundle" "example_bundle" {
 - `dont_separate_submissions_by_folder` (Boolean) Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.
 - `expires_at` (String) Bundle expiration date/time
 - `form_field_set` (String) Custom Form to use
+- `group_id` (Number) Owning group ID. If set, members of this group can view, edit, and share this Share Link.
 - `has_inbox` (Boolean) Does this bundle have an associated inbox?
 - `inbox_id` (Number) ID of the associated inbox, if available.
 - `max_uses` (Number) Maximum number of times bundle can be accessed

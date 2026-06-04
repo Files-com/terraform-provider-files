@@ -9,6 +9,7 @@ resource "files_bundle" "example_bundle" {
   expires_at                                          = "2000-01-01T01:00:00Z"
   finalize_snapshot                                   = false
   max_uses                                            = 1
+  group_id                                            = 1
   description                                         = "The public description of the bundle."
   note                                                = "The internal note on the bundle."
   code                                                = "abc123"

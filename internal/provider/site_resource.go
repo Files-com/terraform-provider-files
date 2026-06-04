@@ -62,6 +62,7 @@ type siteResourceModel struct {
 	BundleExpiration                         types.Int64   `tfsdk:"bundle_expiration"`
 	BundleNotFoundMessage                    types.String  `tfsdk:"bundle_not_found_message"`
 	BundlePasswordRequired                   types.Bool    `tfsdk:"bundle_password_required"`
+	BundlesDefaultOwnedByPrimaryGroup        types.Bool    `tfsdk:"bundles_default_owned_by_primary_group"`
 	BundleRecipientBlacklistDomains          types.List    `tfsdk:"bundle_recipient_blacklist_domains"`
 	BundleRecipientBlacklistFreeEmailDomains types.Bool    `tfsdk:"bundle_recipient_blacklist_free_email_domains"`
 	BundleRegistrationNotifications          types.String  `tfsdk:"bundle_registration_notifications"`
@@ -442,6 +443,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"bundle_password_required": schema.BoolAttribute{
 				Description: "Do Bundles require password protection?",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"bundles_default_owned_by_primary_group": schema.BoolAttribute{
+				Description: "If true, new Share Links created by a user with a primary group will default to that group as owner.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -1828,6 +1837,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.BundleSendSharedReceipts.IsNull() && !config.BundleSendSharedReceipts.IsUnknown() {
 		paramsSiteUpdate["bundle_send_shared_receipts"] = config.BundleSendSharedReceipts.ValueBool()
 	}
+	if !config.BundlesDefaultOwnedByPrimaryGroup.IsNull() && !config.BundlesDefaultOwnedByPrimaryGroup.IsUnknown() {
+		paramsSiteUpdate["bundles_default_owned_by_primary_group"] = config.BundlesDefaultOwnedByPrimaryGroup.ValueBool()
+	}
 	if !config.CalculateFileChecksumsCrc32.IsNull() && !config.CalculateFileChecksumsCrc32.IsUnknown() {
 		paramsSiteUpdate["calculate_file_checksums_crc32"] = config.CalculateFileChecksumsCrc32.ValueBool()
 	}
@@ -2257,6 +2269,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.BundleExpiration = types.Int64Value(site.BundleExpiration)
 	state.BundleNotFoundMessage = types.StringValue(site.BundleNotFoundMessage)
 	state.BundlePasswordRequired = types.BoolPointerValue(site.BundlePasswordRequired)
+	state.BundlesDefaultOwnedByPrimaryGroup = types.BoolPointerValue(site.BundlesDefaultOwnedByPrimaryGroup)
 	state.BundleRecipientBlacklistDomains, propDiags = types.ListValueFrom(ctx, types.StringType, site.BundleRecipientBlacklistDomains)
 	diags.Append(propDiags...)
 	state.BundleRecipientBlacklistFreeEmailDomains = types.BoolPointerValue(site.BundleRecipientBlacklistFreeEmailDomains)

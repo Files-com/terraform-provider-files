@@ -62,6 +62,7 @@ type bundleDataSourceModel struct {
 	SnapshotId                                   types.Int64   `tfsdk:"snapshot_id"`
 	UserId                                       types.Int64   `tfsdk:"user_id"`
 	Username                                     types.String  `tfsdk:"username"`
+	GroupId                                      types.Int64   `tfsdk:"group_id"`
 	ClickwrapId                                  types.Int64   `tfsdk:"clickwrap_id"`
 	InboxId                                      types.Int64   `tfsdk:"inbox_id"`
 	WatermarkAttachment                          types.String  `tfsdk:"watermark_attachment"`
@@ -232,6 +233,10 @@ func (r *bundleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Description: "Bundle creator username",
 				Computed:    true,
 			},
+			"group_id": schema.Int64Attribute{
+				Description: "Owning group ID. If set, members of this group can view, edit, and share this Share Link.",
+				Computed:    true,
+			},
 			"clickwrap_id": schema.Int64Attribute{
 				Description: "ID of the clickwrap to use with this bundle.",
 				Computed:    true,
@@ -365,6 +370,7 @@ func (r *bundleDataSource) populateDataSourceModel(ctx context.Context, bundle f
 	state.SnapshotId = types.Int64Value(bundle.SnapshotId)
 	state.UserId = types.Int64Value(bundle.UserId)
 	state.Username = types.StringValue(bundle.Username)
+	state.GroupId = types.Int64Value(bundle.GroupId)
 	state.ClickwrapId = types.Int64Value(bundle.ClickwrapId)
 	state.InboxId = types.Int64Value(bundle.InboxId)
 	respWatermarkAttachment, err := json.Marshal(bundle.WatermarkAttachment)
