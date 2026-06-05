@@ -46,6 +46,8 @@ data "files_bundle" "example_bundle" {
 - `color_top` (String) Top bar background color
 - `color_top_text` (String) Top bar text color
 - `created_at` (String) Bundle created at date/time
+- `deleted` (Boolean) Indicates if the bundle has been deleted.
+- `deleted_at` (String) Bundle deleted at date/time
 - `description` (String) Public description
 - `dont_allow_folders_in_uploads` (Boolean) Should folder uploads be prevented?
 - `dont_separate_submissions_by_folder` (Boolean) Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.

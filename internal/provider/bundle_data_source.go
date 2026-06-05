@@ -53,6 +53,8 @@ type bundleDataSourceModel struct {
 	SkipCompany                                  types.Bool    `tfsdk:"skip_company"`
 	BypassesSiteExpirationRules                  types.Bool    `tfsdk:"bypasses_site_expiration_rules"`
 	CreatedAt                                    types.String  `tfsdk:"created_at"`
+	Deleted                                      types.Bool    `tfsdk:"deleted"`
+	DeletedAt                                    types.String  `tfsdk:"deleted_at"`
 	DontSeparateSubmissionsByFolder              types.Bool    `tfsdk:"dont_separate_submissions_by_folder"`
 	MaxUses                                      types.Int64   `tfsdk:"max_uses"`
 	Note                                         types.String  `tfsdk:"note"`
@@ -195,6 +197,14 @@ func (r *bundleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			},
 			"created_at": schema.StringAttribute{
 				Description: "Bundle created at date/time",
+				Computed:    true,
+			},
+			"deleted": schema.BoolAttribute{
+				Description: "Indicates if the bundle has been deleted.",
+				Computed:    true,
+			},
+			"deleted_at": schema.StringAttribute{
+				Description: "Bundle deleted at date/time",
 				Computed:    true,
 			},
 			"dont_separate_submissions_by_folder": schema.BoolAttribute{
@@ -359,6 +369,13 @@ func (r *bundleDataSource) populateDataSourceModel(ctx context.Context, bundle f
 		diags.AddError(
 			"Error Creating Files Bundle",
 			"Could not convert state created_at to string: "+err.Error(),
+		)
+	}
+	state.Deleted = types.BoolPointerValue(bundle.Deleted)
+	if err := lib.TimeToStringType(ctx, path.Root("deleted_at"), bundle.DeletedAt, &state.DeletedAt); err != nil {
+		diags.AddError(
+			"Error Creating Files Bundle",
+			"Could not convert state deleted_at to string: "+err.Error(),
 		)
 	}
 	state.DontSeparateSubmissionsByFolder = types.BoolPointerValue(bundle.DontSeparateSubmissionsByFolder)

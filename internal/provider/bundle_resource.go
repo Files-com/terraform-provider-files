@@ -81,6 +81,8 @@ type bundleResourceModel struct {
 	FormFieldSet                                 types.String  `tfsdk:"form_field_set"`
 	Id                                           types.Int64   `tfsdk:"id"`
 	CreatedAt                                    types.String  `tfsdk:"created_at"`
+	Deleted                                      types.Bool    `tfsdk:"deleted"`
+	DeletedAt                                    types.String  `tfsdk:"deleted_at"`
 	Username                                     types.String  `tfsdk:"username"`
 	WatermarkAttachment                          types.String  `tfsdk:"watermark_attachment"`
 	WatermarkValue                               types.Dynamic `tfsdk:"watermark_value"`
@@ -389,6 +391,14 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			},
 			"created_at": schema.StringAttribute{
 				Description: "Bundle created at date/time",
+				Computed:    true,
+			},
+			"deleted": schema.BoolAttribute{
+				Description: "Indicates if the bundle has been deleted.",
+				Computed:    true,
+			},
+			"deleted_at": schema.StringAttribute{
+				Description: "Bundle deleted at date/time",
 				Computed:    true,
 			},
 			"username": schema.StringAttribute{
@@ -822,6 +832,13 @@ func (r *bundleResource) populateResourceModel(ctx context.Context, bundle files
 		diags.AddError(
 			"Error Creating Files Bundle",
 			"Could not convert state created_at to string: "+err.Error(),
+		)
+	}
+	state.Deleted = types.BoolPointerValue(bundle.Deleted)
+	if err := lib.TimeToStringType(ctx, path.Root("deleted_at"), bundle.DeletedAt, &state.DeletedAt); err != nil {
+		diags.AddError(
+			"Error Creating Files Bundle",
+			"Could not convert state deleted_at to string: "+err.Error(),
 		)
 	}
 	state.DontSeparateSubmissionsByFolder = types.BoolPointerValue(bundle.DontSeparateSubmissionsByFolder)
