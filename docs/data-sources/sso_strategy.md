@@ -69,7 +69,7 @@ data "files_sso_strategy" "example_sso_strategy" {
 - `provision_group_required` (String) Comma or newline separated list of group names (with optional wildcards) to require membership for user provisioning.
 - `provision_groups` (Boolean) Auto-provision group membership based on group memberships on the SSO side?
 - `provision_readonly_site_admin_groups` (String) Comma-separated list of group names whose members will be created as Read-Only Site Admins.
-- `provision_require_2fa` (String) 2FA required setting for auto provisioned users.
+- `provision_require_2fa` (String) 2FA required setting for auto provisioned users. `use_system_setting` uses the site-wide setting, including SSO exemptions. `always_require` and `never_require` override the site-wide setting when user-level overrides are allowed.
 - `provision_sftp_permission` (Boolean) Auto-provisioned users get SFTP permission?
 - `provision_site_admin_groups` (String) Comma-separated list of group names whose members will be created as Site Admins.
 - `provision_time_zone` (String) Default time zone for auto provisioned users.

@@ -133,6 +133,7 @@ resource "files_site" "example_site" {
   allowed_2fa_method_static                     = false
   allowed_2fa_method_bypass_for_ftp_sftp_dav    = false
   require_2fa                                   = false
+  require_2fa_exempt_all_sso_users              = false
   require_2fa_user_type                         = "`site_admins`"
   color2_top                                    = "#000000"
   color2_left                                   = "#0066a7"

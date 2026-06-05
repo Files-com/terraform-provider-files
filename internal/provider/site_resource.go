@@ -154,6 +154,7 @@ type siteResourceModel struct {
 	PreventRootPermissionsForNonSiteAdmins   types.Bool    `tfsdk:"prevent_root_permissions_for_non_site_admins"`
 	ProtocolAccessGroupsOnly                 types.Bool    `tfsdk:"protocol_access_groups_only"`
 	Require2fa                               types.Bool    `tfsdk:"require_2fa"`
+	Require2faExemptAllSsoUsers              types.Bool    `tfsdk:"require_2fa_exempt_all_sso_users"`
 	RevokeBundleAccessOnDisableOrDelete      types.Bool    `tfsdk:"revoke_bundle_access_on_disable_or_delete"`
 	Require2faUserType                       types.String  `tfsdk:"require_2fa_user_type"`
 	RequireLogoutFromBundlesAndInboxes       types.Bool    `tfsdk:"require_logout_from_bundles_and_inboxes"`
@@ -1198,6 +1199,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"require_2fa_exempt_all_sso_users": schema.BoolAttribute{
+				Description: "If true, SSO users using the default user-level two-factor authentication setting are exempt from the site-wide two-factor authentication requirement.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"revoke_bundle_access_on_disable_or_delete": schema.BoolAttribute{
 				Description: "Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period.",
 				Computed:    true,
@@ -2098,6 +2107,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.Require2fa.IsNull() && !config.Require2fa.IsUnknown() {
 		paramsSiteUpdate["require_2fa"] = config.Require2fa.ValueBool()
 	}
+	if !config.Require2faExemptAllSsoUsers.IsNull() && !config.Require2faExemptAllSsoUsers.IsUnknown() {
+		paramsSiteUpdate["require_2fa_exempt_all_sso_users"] = config.Require2faExemptAllSsoUsers.ValueBool()
+	}
 	if !config.Require2faUserType.IsNull() && !config.Require2faUserType.IsUnknown() {
 		paramsSiteUpdate["require_2fa_user_type"] = config.Require2faUserType.ValueString()
 	}
@@ -2442,6 +2454,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.PreventRootPermissionsForNonSiteAdmins = types.BoolPointerValue(site.PreventRootPermissionsForNonSiteAdmins)
 	state.ProtocolAccessGroupsOnly = types.BoolPointerValue(site.ProtocolAccessGroupsOnly)
 	state.Require2fa = types.BoolPointerValue(site.Require2fa)
+	state.Require2faExemptAllSsoUsers = types.BoolPointerValue(site.Require2faExemptAllSsoUsers)
 	if err := lib.TimeToStringType(ctx, path.Root("require_2fa_stop_time"), site.Require2faStopTime, &state.Require2faStopTime); err != nil {
 		diags.AddError(
 			"Error Creating Files Site",

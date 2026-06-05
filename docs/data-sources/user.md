@@ -132,7 +132,7 @@ data "files_user" "example_user" {
 - `public_keys_count` (Number) Number of public keys associated with this user
 - `readonly_site_admin` (Boolean) Is the user an allowed to view all (non-billing) site configuration for this site?
 - `receive_admin_alerts` (Boolean) Deprecated. Use notify_on_all_site_warnings and granular failure notification preferences instead.
-- `require_2fa` (String) 2FA required setting
+- `require_2fa` (String) 2FA required setting. `use_system_setting` uses the site-wide setting, including SSO exemptions. `always_require` and `never_require` override the site-wide setting when user-level overrides are allowed.
 - `require_login_by` (String) Require user to login by specified date otherwise it will be disabled.
 - `require_password_change` (Boolean) Is a password change required upon next user login?
 - `restapi_permission` (Boolean) Can this user access the Web app, Desktop app, SDKs, or REST API?  (All of these tools use the API internally, so this is one unified permission set.)

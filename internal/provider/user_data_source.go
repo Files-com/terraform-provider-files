@@ -371,7 +371,7 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed:    true,
 			},
 			"require_2fa": schema.StringAttribute{
-				Description: "2FA required setting",
+				Description: "2FA required setting. `use_system_setting` uses the site-wide setting, including SSO exemptions. `always_require` and `never_require` override the site-wide setting when user-level overrides are allowed.",
 				Computed:    true,
 			},
 			"require_login_by": schema.StringAttribute{

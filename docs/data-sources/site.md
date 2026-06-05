@@ -165,6 +165,7 @@ data "files_site" "example_site" {
 - `protocol_access_groups_only` (Boolean) If true, protocol access permissions on users will be ignored, and only protocol access permissions set on Groups will be honored.  Make sure that your current user is a member of a group with API permission when changing this value to avoid locking yourself out of your site.
 - `reply_to_email` (String) Reply-to email for this site
 - `require_2fa` (Boolean) Require two-factor authentication for all users?
+- `require_2fa_exempt_all_sso_users` (Boolean) If true, SSO users using the default user-level two-factor authentication setting are exempt from the site-wide two-factor authentication requirement.
 - `require_2fa_stop_time` (String) If set, requirement for two-factor authentication has been scheduled to end on this date-time.
 - `require_2fa_user_type` (String) What type of user is required to use two-factor authentication (when require_2fa is set to `true` for this site)?
 - `require_logout_from_bundles_and_inboxes` (Boolean) If true, we will hide the 'Remember Me' box on Inbox and Bundle registration pages, requiring that the user logout and log back in every time they visit the page.

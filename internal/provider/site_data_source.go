@@ -166,6 +166,7 @@ type siteDataSourceModel struct {
 	PreventRootPermissionsForNonSiteAdmins   types.Bool    `tfsdk:"prevent_root_permissions_for_non_site_admins"`
 	ProtocolAccessGroupsOnly                 types.Bool    `tfsdk:"protocol_access_groups_only"`
 	Require2fa                               types.Bool    `tfsdk:"require_2fa"`
+	Require2faExemptAllSsoUsers              types.Bool    `tfsdk:"require_2fa_exempt_all_sso_users"`
 	Require2faStopTime                       types.String  `tfsdk:"require_2fa_stop_time"`
 	RevokeBundleAccessOnDisableOrDelete      types.Bool    `tfsdk:"revoke_bundle_access_on_disable_or_delete"`
 	Require2faUserType                       types.String  `tfsdk:"require_2fa_user_type"`
@@ -794,6 +795,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Require two-factor authentication for all users?",
 				Computed:    true,
 			},
+			"require_2fa_exempt_all_sso_users": schema.BoolAttribute{
+				Description: "If true, SSO users using the default user-level two-factor authentication setting are exempt from the site-wide two-factor authentication requirement.",
+				Computed:    true,
+			},
 			"require_2fa_stop_time": schema.StringAttribute{
 				Description: "If set, requirement for two-factor authentication has been scheduled to end on this date-time.",
 				Computed:    true,
@@ -1225,6 +1230,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.PreventRootPermissionsForNonSiteAdmins = types.BoolPointerValue(site.PreventRootPermissionsForNonSiteAdmins)
 	state.ProtocolAccessGroupsOnly = types.BoolPointerValue(site.ProtocolAccessGroupsOnly)
 	state.Require2fa = types.BoolPointerValue(site.Require2fa)
+	state.Require2faExemptAllSsoUsers = types.BoolPointerValue(site.Require2faExemptAllSsoUsers)
 	if err := lib.TimeToStringType(ctx, path.Root("require_2fa_stop_time"), site.Require2faStopTime, &state.Require2faStopTime); err != nil {
 		diags.AddError(
 			"Error Creating Files Site",
