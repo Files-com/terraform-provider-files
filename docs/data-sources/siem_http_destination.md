@@ -40,6 +40,7 @@ data "files_siem_http_destination" "example_siem_http_destination" {
 - `azure_oauth_client_credentials_tenant_id` (String) Applicable only for destination types: azure, azure_legacy. Client Credentials OAuth Tenant ID.
 - `azure_stream_name` (String) Applicable only for destination type: azure. Name of the stream in the DCR that represents the destination table.
 - `connection_test_entry` (String) Connection Test Entry
+- `crowdstrike_token_masked` (String) Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike.
 - `datadog_api_key_masked` (String) Applicable only for destination type: datadog. API key provided by Datadog.
 - `destination_type` (String) Destination Type
 - `destination_url` (String) Destination Url
@@ -75,7 +76,7 @@ data "files_siem_http_destination" "example_siem_http_destination" {
 - `sftp_action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `sftp_action_send_enabled` (Boolean) Whether or not sending is enabled for sftp_action logs.
 - `solar_winds_token_masked` (String) Applicable only for destination type: solar_winds. Authentication token provided by Solar Winds.
-- `splunk_token_masked` (String) Applicable only for destination type: splunk. Authentication token provided by Splunk.
+- `splunk_token_masked` (String) Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination.
 - `sync_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `sync_send_enabled` (Boolean) Whether or not sending is enabled for sync logs.
 - `web_dav_action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.

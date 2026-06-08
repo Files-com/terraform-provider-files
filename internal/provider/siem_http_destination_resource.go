@@ -65,6 +65,7 @@ type siemHttpDestinationResourceModel struct {
 	ExavaultApiRequestSendEnabled                 types.Bool    `tfsdk:"exavault_api_request_send_enabled"`
 	SettingsChangeSendEnabled                     types.Bool    `tfsdk:"settings_change_send_enabled"`
 	SplunkToken                                   types.String  `tfsdk:"splunk_token"`
+	CrowdstrikeToken                              types.String  `tfsdk:"crowdstrike_token"`
 	AzureOauthClientCredentialsClientSecret       types.String  `tfsdk:"azure_oauth_client_credentials_client_secret"`
 	QradarPassword                                types.String  `tfsdk:"qradar_password"`
 	SolarWindsToken                               types.String  `tfsdk:"solar_winds_token"`
@@ -72,6 +73,7 @@ type siemHttpDestinationResourceModel struct {
 	DatadogApiKey                                 types.String  `tfsdk:"datadog_api_key"`
 	Id                                            types.Int64   `tfsdk:"id"`
 	SplunkTokenMasked                             types.String  `tfsdk:"splunk_token_masked"`
+	CrowdstrikeTokenMasked                        types.String  `tfsdk:"crowdstrike_token_masked"`
 	AzureOauthClientCredentialsClientSecretMasked types.String  `tfsdk:"azure_oauth_client_credentials_client_secret_masked"`
 	QradarPasswordMasked                          types.String  `tfsdk:"qradar_password_masked"`
 	SolarWindsTokenMasked                         types.String  `tfsdk:"solar_winds_token_masked"`
@@ -131,7 +133,7 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 				Description: "Destination Type",
 				Required:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("generic", "splunk", "azure_legacy", "qradar", "sumo", "rapid7", "solar_winds", "new_relic", "datadog", "azure", "file"),
+					stringvalidator.OneOf("generic", "splunk", "azure_legacy", "qradar", "sumo", "rapid7", "solar_winds", "new_relic", "datadog", "azure", "file", "crowdstrike", "splunk_compatible"),
 				},
 			},
 			"name": schema.StringAttribute{
@@ -341,7 +343,12 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 				},
 			},
 			"splunk_token": schema.StringAttribute{
-				Description: "Applicable only for destination type: splunk. Authentication token provided by Splunk.",
+				Description: "Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination.",
+				Optional:    true,
+				WriteOnly:   true,
+			},
+			"crowdstrike_token": schema.StringAttribute{
+				Description: "Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike.",
 				Optional:    true,
 				WriteOnly:   true,
 			},
@@ -378,7 +385,11 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 				},
 			},
 			"splunk_token_masked": schema.StringAttribute{
-				Description: "Applicable only for destination type: splunk. Authentication token provided by Splunk.",
+				Description: "Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination.",
+				Computed:    true,
+			},
+			"crowdstrike_token_masked": schema.StringAttribute{
+				Description: "Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike.",
 				Computed:    true,
 			},
 			"azure_oauth_client_credentials_client_secret_masked": schema.StringAttribute{
@@ -519,6 +530,7 @@ func (r *siemHttpDestinationResource) Create(ctx context.Context, req resource.C
 	paramsSiemHttpDestinationCreate.FileFormat = paramsSiemHttpDestinationCreate.FileFormat.Enum()[plan.FileFormat.ValueString()]
 	paramsSiemHttpDestinationCreate.FileIntervalMinutes = plan.FileIntervalMinutes.ValueInt64()
 	paramsSiemHttpDestinationCreate.SplunkToken = config.SplunkToken.ValueString()
+	paramsSiemHttpDestinationCreate.CrowdstrikeToken = config.CrowdstrikeToken.ValueString()
 	paramsSiemHttpDestinationCreate.AzureDcrImmutableId = plan.AzureDcrImmutableId.ValueString()
 	paramsSiemHttpDestinationCreate.AzureStreamName = plan.AzureStreamName.ValueString()
 	paramsSiemHttpDestinationCreate.AzureOauthClientCredentialsTenantId = plan.AzureOauthClientCredentialsTenantId.ValueString()
@@ -667,6 +679,9 @@ func (r *siemHttpDestinationResource) Update(ctx context.Context, req resource.U
 	}
 	if !config.SplunkToken.IsNull() && !config.SplunkToken.IsUnknown() {
 		paramsSiemHttpDestinationUpdate["splunk_token"] = config.SplunkToken.ValueString()
+	}
+	if !config.CrowdstrikeToken.IsNull() && !config.CrowdstrikeToken.IsUnknown() {
+		paramsSiemHttpDestinationUpdate["crowdstrike_token"] = config.CrowdstrikeToken.ValueString()
 	}
 	if !config.AzureDcrImmutableId.IsNull() && !config.AzureDcrImmutableId.IsUnknown() {
 		paramsSiemHttpDestinationUpdate["azure_dcr_immutable_id"] = config.AzureDcrImmutableId.ValueString()
@@ -822,6 +837,7 @@ func (r *siemHttpDestinationResource) populateResourceModel(ctx context.Context,
 	state.SendingActive = types.BoolPointerValue(siemHttpDestination.SendingActive)
 	state.GenericPayloadType = types.StringValue(siemHttpDestination.GenericPayloadType)
 	state.SplunkTokenMasked = types.StringValue(siemHttpDestination.SplunkTokenMasked)
+	state.CrowdstrikeTokenMasked = types.StringValue(siemHttpDestination.CrowdstrikeTokenMasked)
 	state.AzureDcrImmutableId = types.StringValue(siemHttpDestination.AzureDcrImmutableId)
 	state.AzureStreamName = types.StringValue(siemHttpDestination.AzureStreamName)
 	state.AzureOauthClientCredentialsTenantId = types.StringValue(siemHttpDestination.AzureOauthClientCredentialsTenantId)

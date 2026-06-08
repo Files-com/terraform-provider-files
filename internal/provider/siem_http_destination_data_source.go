@@ -39,6 +39,7 @@ type siemHttpDestinationDataSourceModel struct {
 	SendingActive                                 types.Bool    `tfsdk:"sending_active"`
 	GenericPayloadType                            types.String  `tfsdk:"generic_payload_type"`
 	SplunkTokenMasked                             types.String  `tfsdk:"splunk_token_masked"`
+	CrowdstrikeTokenMasked                        types.String  `tfsdk:"crowdstrike_token_masked"`
 	AzureDcrImmutableId                           types.String  `tfsdk:"azure_dcr_immutable_id"`
 	AzureStreamName                               types.String  `tfsdk:"azure_stream_name"`
 	AzureOauthClientCredentialsTenantId           types.String  `tfsdk:"azure_oauth_client_credentials_tenant_id"`
@@ -152,7 +153,11 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 				Computed:    true,
 			},
 			"splunk_token_masked": schema.StringAttribute{
-				Description: "Applicable only for destination type: splunk. Authentication token provided by Splunk.",
+				Description: "Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination.",
+				Computed:    true,
+			},
+			"crowdstrike_token_masked": schema.StringAttribute{
+				Description: "Applicable only for destination type: crowdstrike. Authentication token provided by Crowdstrike.",
 				Computed:    true,
 			},
 			"azure_dcr_immutable_id": schema.StringAttribute{
@@ -376,6 +381,7 @@ func (r *siemHttpDestinationDataSource) populateDataSourceModel(ctx context.Cont
 	state.SendingActive = types.BoolPointerValue(siemHttpDestination.SendingActive)
 	state.GenericPayloadType = types.StringValue(siemHttpDestination.GenericPayloadType)
 	state.SplunkTokenMasked = types.StringValue(siemHttpDestination.SplunkTokenMasked)
+	state.CrowdstrikeTokenMasked = types.StringValue(siemHttpDestination.CrowdstrikeTokenMasked)
 	state.AzureDcrImmutableId = types.StringValue(siemHttpDestination.AzureDcrImmutableId)
 	state.AzureStreamName = types.StringValue(siemHttpDestination.AzureStreamName)
 	state.AzureOauthClientCredentialsTenantId = types.StringValue(siemHttpDestination.AzureOauthClientCredentialsTenantId)
