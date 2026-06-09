@@ -56,3 +56,4 @@ data "files_notification" "example_notification" {
 - `unsubscribed_reason` (String) The reason that the user unsubscribed
 - `user_id` (Number) Notification user ID
 - `username` (String) Notification username
+- `workspace_id` (Number) Workspace ID. `0` means the default workspace.

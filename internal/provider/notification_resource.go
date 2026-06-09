@@ -55,6 +55,7 @@ type notificationResourceModel struct {
 	Subject                  types.String `tfsdk:"subject"`
 	Message                  types.String `tfsdk:"message"`
 	TriggeringFilenames      types.List   `tfsdk:"triggering_filenames"`
+	WorkspaceId              types.Int64  `tfsdk:"workspace_id"`
 	UserId                   types.Int64  `tfsdk:"user_id"`
 	Username                 types.String `tfsdk:"username"`
 	Id                       types.Int64  `tfsdk:"id"`
@@ -238,6 +239,14 @@ func (r *notificationResource) Schema(_ context.Context, _ resource.SchemaReques
 					listplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID. `0` means the default workspace.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"user_id": schema.Int64Attribute{
 				Description: "Notification user ID",
 				Computed:    true,
@@ -346,6 +355,7 @@ func (r *notificationResource) Create(ctx context.Context, req resource.CreateRe
 	if !plan.TriggerByShareRecipients.IsNull() && !plan.TriggerByShareRecipients.IsUnknown() {
 		paramsNotificationCreate.TriggerByShareRecipients = plan.TriggerByShareRecipients.ValueBoolPointer()
 	}
+	paramsNotificationCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	paramsNotificationCreate.GroupId = plan.GroupId.ValueInt64()
 	paramsNotificationCreate.GroupIds, diags = lib.ListValueToString(ctx, path.Root("group_ids"), plan.GroupIds, ",")
 	resp.Diagnostics.Append(diags...)
@@ -479,6 +489,9 @@ func (r *notificationResource) Update(ctx context.Context, req resource.UpdateRe
 	if !config.TriggerByShareRecipients.IsNull() && !config.TriggerByShareRecipients.IsUnknown() {
 		paramsNotificationUpdate["trigger_by_share_recipients"] = config.TriggerByShareRecipients.ValueBool()
 	}
+	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
+		paramsNotificationUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -574,6 +587,7 @@ func (r *notificationResource) populateResourceModel(ctx context.Context, notifi
 	state.Message = types.StringValue(notification.Message)
 	state.TriggeringFilenames, propDiags = types.ListValueFrom(ctx, types.StringType, notification.TriggeringFilenames)
 	diags.Append(propDiags...)
+	state.WorkspaceId = types.Int64Value(notification.WorkspaceId)
 	state.Unsubscribed = types.BoolPointerValue(notification.Unsubscribed)
 	state.UnsubscribedReason = types.StringValue(notification.UnsubscribedReason)
 	state.UserId = types.Int64Value(notification.UserId)

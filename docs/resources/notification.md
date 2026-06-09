@@ -34,6 +34,7 @@ resource "files_notification" "example_notification" {
   triggering_group_ids        = [1]
   triggering_user_ids         = [1]
   trigger_by_share_recipients = true
+  workspace_id                = 1
   group_id                    = 1
   group_ids                   = [1]
   username                    = "User"
@@ -64,6 +65,7 @@ resource "files_notification" "example_notification" {
 - `triggering_user_ids` (List of Number) If set, will only notify on actions made one of the specified users
 - `user_id` (Number) Notification user ID
 - `username` (String) Notification username
+- `workspace_id` (Number) Workspace ID. `0` means the default workspace.
 
 ### Read-Only
 

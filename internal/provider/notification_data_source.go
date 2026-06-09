@@ -46,6 +46,7 @@ type notificationDataSourceModel struct {
 	Subject                  types.String `tfsdk:"subject"`
 	Message                  types.String `tfsdk:"message"`
 	TriggeringFilenames      types.List   `tfsdk:"triggering_filenames"`
+	WorkspaceId              types.Int64  `tfsdk:"workspace_id"`
 	Unsubscribed             types.Bool   `tfsdk:"unsubscribed"`
 	UnsubscribedReason       types.String `tfsdk:"unsubscribed_reason"`
 	UserId                   types.Int64  `tfsdk:"user_id"`
@@ -165,6 +166,10 @@ func (r *notificationDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Computed:    true,
 				ElementType: types.StringType,
 			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID. `0` means the default workspace.",
+				Computed:    true,
+			},
 			"unsubscribed": schema.BoolAttribute{
 				Description: "Is the user unsubscribed from this notification?",
 				Computed:    true,
@@ -247,6 +252,7 @@ func (r *notificationDataSource) populateDataSourceModel(ctx context.Context, no
 	state.Message = types.StringValue(notification.Message)
 	state.TriggeringFilenames, propDiags = types.ListValueFrom(ctx, types.StringType, notification.TriggeringFilenames)
 	diags.Append(propDiags...)
+	state.WorkspaceId = types.Int64Value(notification.WorkspaceId)
 	state.Unsubscribed = types.BoolPointerValue(notification.Unsubscribed)
 	state.UnsubscribedReason = types.StringValue(notification.UnsubscribedReason)
 	state.UserId = types.Int64Value(notification.UserId)

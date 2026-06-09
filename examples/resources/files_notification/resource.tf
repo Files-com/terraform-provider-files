@@ -14,6 +14,7 @@ resource "files_notification" "example_notification" {
   triggering_group_ids        = [1]
   triggering_user_ids         = [1]
   trigger_by_share_recipients = true
+  workspace_id                = 1
   group_id                    = 1
   group_ids                   = [1]
   username                    = "User"
