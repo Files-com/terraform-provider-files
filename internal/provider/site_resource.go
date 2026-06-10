@@ -191,6 +191,7 @@ type siteResourceModel struct {
 	UserRequestsNotifyAdmins                 types.Bool    `tfsdk:"user_requests_notify_admins"`
 	UsersCanCreateApiKeys                    types.Bool    `tfsdk:"users_can_create_api_keys"`
 	UsersCanCreateSshKeys                    types.Bool    `tfsdk:"users_can_create_ssh_keys"`
+	UsernameDisplay                          types.String  `tfsdk:"username_display"`
 	WelcomeCustomText                        types.String  `tfsdk:"welcome_custom_text"`
 	EmailFooterCustomText                    types.String  `tfsdk:"email_footer_custom_text"`
 	WelcomeEmailCc                           types.String  `tfsdk:"welcome_email_cc"`
@@ -1501,6 +1502,17 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"username_display": schema.StringAttribute{
+				Description: "How usernames are displayed in the web UI. Can be `username_only`, `full_name_only`, `full_name_username`, `full_name_company`, or `full_name_username_company`.",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("username_only", "full_name_only", "full_name_username", "full_name_company", "full_name_username_company"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"welcome_custom_text": schema.StringAttribute{
 				Description: "Custom text send in user welcome email",
 				Computed:    true,
@@ -1869,6 +1881,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 	if !config.As2MessageRetentionDays.IsNull() && !config.As2MessageRetentionDays.IsUnknown() {
 		paramsSiteUpdate["as2_message_retention_days"] = config.As2MessageRetentionDays.ValueInt64()
+	}
+	if !config.UsernameDisplay.IsNull() && !config.UsernameDisplay.IsUnknown() {
+		paramsSiteUpdate["username_display"] = config.UsernameDisplay.ValueString()
 	}
 	if !config.SessionExpiryMinutes.IsNull() && !config.SessionExpiryMinutes.IsUnknown() {
 		paramsSiteUpdate["session_expiry_minutes"] = config.SessionExpiryMinutes.ValueInt64()
@@ -2526,6 +2541,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.UserRequestsNotifyAdmins = types.BoolPointerValue(site.UserRequestsNotifyAdmins)
 	state.UsersCanCreateApiKeys = types.BoolPointerValue(site.UsersCanCreateApiKeys)
 	state.UsersCanCreateSshKeys = types.BoolPointerValue(site.UsersCanCreateSshKeys)
+	state.UsernameDisplay = types.StringValue(site.UsernameDisplay)
 	state.WelcomeCustomText = types.StringValue(site.WelcomeCustomText)
 	state.EmailFooterCustomText = types.StringValue(site.EmailFooterCustomText)
 	state.WelcomeEmailCc = types.StringValue(site.WelcomeEmailCc)

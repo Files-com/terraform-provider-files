@@ -60,14 +60,14 @@ func (r *keyLifecycleRuleDataSource) Metadata(_ context.Context, req datasource.
 
 func (r *keyLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A KeyLifecycleRule represents a rule that applies to GPG keys and SSH keys (also called User Public Keys) based on their inactivity or age.\n\n\n\nKeys that have been unused for the specified number of days will be deleted. SSH keys can also be configured to expire after a specified number of days. SSH key expiration applies only to User Public Keys used for inbound SFTP/SSH login, not Remote Server outbound SSH keys.",
+		Description: "A KeyLifecycleRule represents a rule that applies to API keys, GPG keys, and SSH keys (also called User Public Keys) based on their inactivity or age.\n\n\n\nKeys that have been unused for the specified number of days will be deleted. SSH keys can also be configured to expire after a specified number of days. SSH key expiration applies only to User Public Keys used for inbound SFTP/SSH login, not Remote Server outbound SSH keys.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Key Lifecycle Rule ID",
 				Required:    true,
 			},
 			"key_type": schema.StringAttribute{
-				Description: "Key type for which the rule will apply (gpg or ssh).",
+				Description: "Key type for which the rule will apply (gpg, ssh, or api).",
 				Computed:    true,
 			},
 			"inactivity_days": schema.Int64Attribute{

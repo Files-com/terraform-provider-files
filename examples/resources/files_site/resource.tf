@@ -52,6 +52,7 @@ resource "files_site" "example_site" {
   legacy_checksums_mode                         = false
   migrate_remote_server_sync_to_sync            = false
   as2_message_retention_days                    = 1
+  username_display                              = "username_only"
   session_expiry_minutes                        = 1
   ssl_required                                  = false
   sftp_insecure_ciphers                         = false

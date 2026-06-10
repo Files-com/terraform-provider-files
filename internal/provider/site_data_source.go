@@ -209,6 +209,7 @@ type siteDataSourceModel struct {
 	UserRequestsNotifyAdmins                 types.Bool    `tfsdk:"user_requests_notify_admins"`
 	UsersCanCreateApiKeys                    types.Bool    `tfsdk:"users_can_create_api_keys"`
 	UsersCanCreateSshKeys                    types.Bool    `tfsdk:"users_can_create_ssh_keys"`
+	UsernameDisplay                          types.String  `tfsdk:"username_display"`
 	WelcomeCustomText                        types.String  `tfsdk:"welcome_custom_text"`
 	EmailFooterCustomText                    types.String  `tfsdk:"email_footer_custom_text"`
 	WelcomeEmailCc                           types.String  `tfsdk:"welcome_email_cc"`
@@ -967,6 +968,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Allow users to create their own SSH keys?",
 				Computed:    true,
 			},
+			"username_display": schema.StringAttribute{
+				Description: "How usernames are displayed in the web UI. Can be `username_only`, `full_name_only`, `full_name_username`, `full_name_company`, or `full_name_username_company`.",
+				Computed:    true,
+			},
 			"welcome_custom_text": schema.StringAttribute{
 				Description: "Custom text send in user welcome email",
 				Computed:    true,
@@ -1302,6 +1307,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.UserRequestsNotifyAdmins = types.BoolPointerValue(site.UserRequestsNotifyAdmins)
 	state.UsersCanCreateApiKeys = types.BoolPointerValue(site.UsersCanCreateApiKeys)
 	state.UsersCanCreateSshKeys = types.BoolPointerValue(site.UsersCanCreateSshKeys)
+	state.UsernameDisplay = types.StringValue(site.UsernameDisplay)
 	state.WelcomeCustomText = types.StringValue(site.WelcomeCustomText)
 	state.EmailFooterCustomText = types.StringValue(site.EmailFooterCustomText)
 	state.WelcomeEmailCc = types.StringValue(site.WelcomeEmailCc)

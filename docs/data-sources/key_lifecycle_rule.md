@@ -3,13 +3,13 @@
 page_title: "files_key_lifecycle_rule Data Source - files"
 subcategory: ""
 description: |-
-  A KeyLifecycleRule represents a rule that applies to GPG keys and SSH keys (also called User Public Keys) based on their inactivity or age.
+  A KeyLifecycleRule represents a rule that applies to API keys, GPG keys, and SSH keys (also called User Public Keys) based on their inactivity or age.
   Keys that have been unused for the specified number of days will be deleted. SSH keys can also be configured to expire after a specified number of days. SSH key expiration applies only to User Public Keys used for inbound SFTP/SSH login, not Remote Server outbound SSH keys.
 ---
 
 # files_key_lifecycle_rule (Data Source)
 
-A KeyLifecycleRule represents a rule that applies to GPG keys and SSH keys (also called User Public Keys) based on their inactivity or age.
+A KeyLifecycleRule represents a rule that applies to API keys, GPG keys, and SSH keys (also called User Public Keys) based on their inactivity or age.
 
 
 
@@ -35,6 +35,6 @@ data "files_key_lifecycle_rule" "example_key_lifecycle_rule" {
 - `apply_to_all_workspaces` (Boolean) If true, a default-workspace rule also applies to keys in all workspaces.
 - `expiration_days` (Number) Number of days after creation before an SSH key expires. Applies only to SSH keys.
 - `inactivity_days` (Number) Number of days of inactivity before the rule applies.
-- `key_type` (String) Key type for which the rule will apply (gpg or ssh).
+- `key_type` (String) Key type for which the rule will apply (gpg, ssh, or api).
 - `name` (String) Key Lifecycle Rule name
 - `workspace_id` (Number) Workspace ID. `0` means the default workspace.

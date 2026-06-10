@@ -72,6 +72,7 @@ resource "files_site" "example_site" {
   legacy_checksums_mode                         = false
   migrate_remote_server_sync_to_sync            = false
   as2_message_retention_days                    = 1
+  username_display                              = "username_only"
   session_expiry_minutes                        = 1
   ssl_required                                  = false
   sftp_insecure_ciphers                         = false
@@ -358,6 +359,7 @@ resource "files_site" "example_site" {
 - `user_lockout_within` (Number) Number of hours for user lockout window
 - `user_requests_enabled` (Boolean) Enable User Requests feature
 - `user_requests_notify_admins` (Boolean) Send email to site admins when a user request is received?
+- `username_display` (String) How usernames are displayed in the web UI. Can be `username_only`, `full_name_only`, `full_name_username`, `full_name_company`, or `full_name_username_company`.
 - `users_can_create_api_keys` (Boolean) Allow users to create their own API keys?
 - `users_can_create_ssh_keys` (Boolean) Allow users to create their own SSH keys?
 - `welcome_custom_text` (String) Custom text send in user welcome email
