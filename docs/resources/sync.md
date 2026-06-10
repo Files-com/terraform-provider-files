@@ -20,27 +20,28 @@ Syncs track their runs, status, and configuration.
 
 ```terraform
 resource "files_sync" "example_sync" {
-  delete_empty_folders  = true
-  description           = "example"
-  dest_path             = "example"
-  dest_remote_server_id = 1
-  disabled              = true
-  exclude_patterns      = ["example"]
-  holiday_region        = "us_dc"
-  include_patterns      = ["example"]
-  interval              = "week"
-  keep_after_copy       = true
-  name                  = "example"
-  recurring_day         = 25
-  schedule_days_of_week = [0, 2, 4]
-  schedule_time_zone    = "Eastern Time (US & Canada)"
-  schedule_times_of_day = ["06:30", "14:30"]
-  src_path              = "example"
-  src_remote_server_id  = 1
-  sync_interval_minutes = 1
-  trigger               = "example"
-  trigger_file          = "example"
-  workspace_id          = 1
+  delete_empty_folders      = true
+  description               = "example"
+  dest_path                 = "example"
+  dest_remote_server_id     = 1
+  disabled                  = true
+  exclude_patterns          = ["example"]
+  holiday_region            = "us_dc"
+  include_patterns          = ["example"]
+  interval                  = "week"
+  keep_after_copy           = true
+  name                      = "example"
+  recurring_day             = 25
+  schedule_days_of_week     = [0, 2, 4]
+  schedule_time_zone        = "Eastern Time (US & Canada)"
+  schedule_times_of_day     = ["06:30", "14:30"]
+  src_path                  = "example"
+  src_remote_server_id      = 1
+  sync_interval_minutes     = 1
+  trigger                   = "example"
+  trigger_file              = "example"
+  always_write_trigger_file = true
+  workspace_id              = 1
 }
 ```
 
@@ -49,6 +50,7 @@ resource "files_sync" "example_sync" {
 
 ### Optional
 
+- `always_write_trigger_file` (Boolean) If true, the trigger file will be sent at the end of a successful sync even when no files were transferred.
 - `delete_empty_folders` (Boolean) Delete empty folders after sync?
 - `description` (String) Description for this sync job
 - `dest_path` (String) Absolute destination path for the sync

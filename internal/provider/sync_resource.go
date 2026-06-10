@@ -39,36 +39,37 @@ type syncResource struct {
 }
 
 type syncResourceModel struct {
-	Name                types.String `tfsdk:"name"`
-	Description         types.String `tfsdk:"description"`
-	WorkspaceId         types.Int64  `tfsdk:"workspace_id"`
-	SrcPath             types.String `tfsdk:"src_path"`
-	DestPath            types.String `tfsdk:"dest_path"`
-	SrcRemoteServerId   types.Int64  `tfsdk:"src_remote_server_id"`
-	DestRemoteServerId  types.Int64  `tfsdk:"dest_remote_server_id"`
-	KeepAfterCopy       types.Bool   `tfsdk:"keep_after_copy"`
-	DeleteEmptyFolders  types.Bool   `tfsdk:"delete_empty_folders"`
-	Disabled            types.Bool   `tfsdk:"disabled"`
-	Trigger             types.String `tfsdk:"trigger"`
-	TriggerFile         types.String `tfsdk:"trigger_file"`
-	IncludePatterns     types.List   `tfsdk:"include_patterns"`
-	ExcludePatterns     types.List   `tfsdk:"exclude_patterns"`
-	SyncIntervalMinutes types.Int64  `tfsdk:"sync_interval_minutes"`
-	Interval            types.String `tfsdk:"interval"`
-	RecurringDay        types.Int64  `tfsdk:"recurring_day"`
-	ScheduleDaysOfWeek  types.List   `tfsdk:"schedule_days_of_week"`
-	ScheduleTimesOfDay  types.List   `tfsdk:"schedule_times_of_day"`
-	ScheduleTimeZone    types.String `tfsdk:"schedule_time_zone"`
-	HolidayRegion       types.String `tfsdk:"holiday_region"`
-	Id                  types.Int64  `tfsdk:"id"`
-	SiteId              types.Int64  `tfsdk:"site_id"`
-	UserId              types.Int64  `tfsdk:"user_id"`
-	SrcSiteId           types.Int64  `tfsdk:"src_site_id"`
-	DestSiteId          types.Int64  `tfsdk:"dest_site_id"`
-	TwoWay              types.Bool   `tfsdk:"two_way"`
-	CreatedAt           types.String `tfsdk:"created_at"`
-	UpdatedAt           types.String `tfsdk:"updated_at"`
-	LatestSyncRun       types.String `tfsdk:"latest_sync_run"`
+	Name                   types.String `tfsdk:"name"`
+	Description            types.String `tfsdk:"description"`
+	WorkspaceId            types.Int64  `tfsdk:"workspace_id"`
+	SrcPath                types.String `tfsdk:"src_path"`
+	DestPath               types.String `tfsdk:"dest_path"`
+	SrcRemoteServerId      types.Int64  `tfsdk:"src_remote_server_id"`
+	DestRemoteServerId     types.Int64  `tfsdk:"dest_remote_server_id"`
+	KeepAfterCopy          types.Bool   `tfsdk:"keep_after_copy"`
+	DeleteEmptyFolders     types.Bool   `tfsdk:"delete_empty_folders"`
+	Disabled               types.Bool   `tfsdk:"disabled"`
+	Trigger                types.String `tfsdk:"trigger"`
+	TriggerFile            types.String `tfsdk:"trigger_file"`
+	AlwaysWriteTriggerFile types.Bool   `tfsdk:"always_write_trigger_file"`
+	IncludePatterns        types.List   `tfsdk:"include_patterns"`
+	ExcludePatterns        types.List   `tfsdk:"exclude_patterns"`
+	SyncIntervalMinutes    types.Int64  `tfsdk:"sync_interval_minutes"`
+	Interval               types.String `tfsdk:"interval"`
+	RecurringDay           types.Int64  `tfsdk:"recurring_day"`
+	ScheduleDaysOfWeek     types.List   `tfsdk:"schedule_days_of_week"`
+	ScheduleTimesOfDay     types.List   `tfsdk:"schedule_times_of_day"`
+	ScheduleTimeZone       types.String `tfsdk:"schedule_time_zone"`
+	HolidayRegion          types.String `tfsdk:"holiday_region"`
+	Id                     types.Int64  `tfsdk:"id"`
+	SiteId                 types.Int64  `tfsdk:"site_id"`
+	UserId                 types.Int64  `tfsdk:"user_id"`
+	SrcSiteId              types.Int64  `tfsdk:"src_site_id"`
+	DestSiteId             types.Int64  `tfsdk:"dest_site_id"`
+	TwoWay                 types.Bool   `tfsdk:"two_way"`
+	CreatedAt              types.String `tfsdk:"created_at"`
+	UpdatedAt              types.String `tfsdk:"updated_at"`
+	LatestSyncRun          types.String `tfsdk:"latest_sync_run"`
 }
 
 func (r *syncResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -196,6 +197,14 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"always_write_trigger_file": schema.BoolAttribute{
+				Description: "If true, the trigger file will be sent at the end of a successful sync even when no files were transferred.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"include_patterns": schema.ListAttribute{
@@ -370,6 +379,9 @@ func (r *syncResource) Create(ctx context.Context, req resource.CreateRequest, r
 	paramsSyncCreate.SyncIntervalMinutes = plan.SyncIntervalMinutes.ValueInt64()
 	paramsSyncCreate.Trigger = paramsSyncCreate.Trigger.Enum()[plan.Trigger.ValueString()]
 	paramsSyncCreate.TriggerFile = plan.TriggerFile.ValueString()
+	if !plan.AlwaysWriteTriggerFile.IsNull() && !plan.AlwaysWriteTriggerFile.IsUnknown() {
+		paramsSyncCreate.AlwaysWriteTriggerFile = plan.AlwaysWriteTriggerFile.ValueBoolPointer()
+	}
 	paramsSyncCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
@@ -520,6 +532,9 @@ func (r *syncResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.TriggerFile.IsNull() && !config.TriggerFile.IsUnknown() {
 		paramsSyncUpdate["trigger_file"] = config.TriggerFile.ValueString()
 	}
+	if !config.AlwaysWriteTriggerFile.IsNull() && !config.AlwaysWriteTriggerFile.IsUnknown() {
+		paramsSyncUpdate["always_write_trigger_file"] = config.AlwaysWriteTriggerFile.ValueBool()
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -608,6 +623,7 @@ func (r *syncResource) populateResourceModel(ctx context.Context, sync files_sdk
 	state.Disabled = types.BoolPointerValue(sync.Disabled)
 	state.Trigger = types.StringValue(sync.Trigger)
 	state.TriggerFile = types.StringValue(sync.TriggerFile)
+	state.AlwaysWriteTriggerFile = types.BoolPointerValue(sync.AlwaysWriteTriggerFile)
 	state.IncludePatterns, propDiags = types.ListValueFrom(ctx, types.StringType, sync.IncludePatterns)
 	diags.Append(propDiags...)
 	state.ExcludePatterns, propDiags = types.ListValueFrom(ctx, types.StringType, sync.ExcludePatterns)

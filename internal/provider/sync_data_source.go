@@ -29,36 +29,37 @@ type syncDataSource struct {
 }
 
 type syncDataSourceModel struct {
-	Id                  types.Int64  `tfsdk:"id"`
-	Name                types.String `tfsdk:"name"`
-	Description         types.String `tfsdk:"description"`
-	SiteId              types.Int64  `tfsdk:"site_id"`
-	WorkspaceId         types.Int64  `tfsdk:"workspace_id"`
-	UserId              types.Int64  `tfsdk:"user_id"`
-	SrcPath             types.String `tfsdk:"src_path"`
-	DestPath            types.String `tfsdk:"dest_path"`
-	SrcRemoteServerId   types.Int64  `tfsdk:"src_remote_server_id"`
-	DestRemoteServerId  types.Int64  `tfsdk:"dest_remote_server_id"`
-	SrcSiteId           types.Int64  `tfsdk:"src_site_id"`
-	DestSiteId          types.Int64  `tfsdk:"dest_site_id"`
-	TwoWay              types.Bool   `tfsdk:"two_way"`
-	KeepAfterCopy       types.Bool   `tfsdk:"keep_after_copy"`
-	DeleteEmptyFolders  types.Bool   `tfsdk:"delete_empty_folders"`
-	Disabled            types.Bool   `tfsdk:"disabled"`
-	Trigger             types.String `tfsdk:"trigger"`
-	TriggerFile         types.String `tfsdk:"trigger_file"`
-	IncludePatterns     types.List   `tfsdk:"include_patterns"`
-	ExcludePatterns     types.List   `tfsdk:"exclude_patterns"`
-	CreatedAt           types.String `tfsdk:"created_at"`
-	UpdatedAt           types.String `tfsdk:"updated_at"`
-	SyncIntervalMinutes types.Int64  `tfsdk:"sync_interval_minutes"`
-	Interval            types.String `tfsdk:"interval"`
-	RecurringDay        types.Int64  `tfsdk:"recurring_day"`
-	ScheduleDaysOfWeek  types.List   `tfsdk:"schedule_days_of_week"`
-	ScheduleTimesOfDay  types.List   `tfsdk:"schedule_times_of_day"`
-	ScheduleTimeZone    types.String `tfsdk:"schedule_time_zone"`
-	HolidayRegion       types.String `tfsdk:"holiday_region"`
-	LatestSyncRun       types.String `tfsdk:"latest_sync_run"`
+	Id                     types.Int64  `tfsdk:"id"`
+	Name                   types.String `tfsdk:"name"`
+	Description            types.String `tfsdk:"description"`
+	SiteId                 types.Int64  `tfsdk:"site_id"`
+	WorkspaceId            types.Int64  `tfsdk:"workspace_id"`
+	UserId                 types.Int64  `tfsdk:"user_id"`
+	SrcPath                types.String `tfsdk:"src_path"`
+	DestPath               types.String `tfsdk:"dest_path"`
+	SrcRemoteServerId      types.Int64  `tfsdk:"src_remote_server_id"`
+	DestRemoteServerId     types.Int64  `tfsdk:"dest_remote_server_id"`
+	SrcSiteId              types.Int64  `tfsdk:"src_site_id"`
+	DestSiteId             types.Int64  `tfsdk:"dest_site_id"`
+	TwoWay                 types.Bool   `tfsdk:"two_way"`
+	KeepAfterCopy          types.Bool   `tfsdk:"keep_after_copy"`
+	DeleteEmptyFolders     types.Bool   `tfsdk:"delete_empty_folders"`
+	Disabled               types.Bool   `tfsdk:"disabled"`
+	Trigger                types.String `tfsdk:"trigger"`
+	TriggerFile            types.String `tfsdk:"trigger_file"`
+	AlwaysWriteTriggerFile types.Bool   `tfsdk:"always_write_trigger_file"`
+	IncludePatterns        types.List   `tfsdk:"include_patterns"`
+	ExcludePatterns        types.List   `tfsdk:"exclude_patterns"`
+	CreatedAt              types.String `tfsdk:"created_at"`
+	UpdatedAt              types.String `tfsdk:"updated_at"`
+	SyncIntervalMinutes    types.Int64  `tfsdk:"sync_interval_minutes"`
+	Interval               types.String `tfsdk:"interval"`
+	RecurringDay           types.Int64  `tfsdk:"recurring_day"`
+	ScheduleDaysOfWeek     types.List   `tfsdk:"schedule_days_of_week"`
+	ScheduleTimesOfDay     types.List   `tfsdk:"schedule_times_of_day"`
+	ScheduleTimeZone       types.String `tfsdk:"schedule_time_zone"`
+	HolidayRegion          types.String `tfsdk:"holiday_region"`
+	LatestSyncRun          types.String `tfsdk:"latest_sync_run"`
 }
 
 func (r *syncDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -158,6 +159,10 @@ func (r *syncDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"trigger_file": schema.StringAttribute{
 				Description: "Some MFT services request an empty file (known as a trigger file) to signal the sync is complete and they can begin further processing. If trigger_file is set, a zero-byte file will be sent at the end of the sync.",
+				Computed:    true,
+			},
+			"always_write_trigger_file": schema.BoolAttribute{
+				Description: "If true, the trigger file will be sent at the end of a successful sync even when no files were transferred.",
 				Computed:    true,
 			},
 			"include_patterns": schema.ListAttribute{
@@ -267,6 +272,7 @@ func (r *syncDataSource) populateDataSourceModel(ctx context.Context, sync files
 	state.Disabled = types.BoolPointerValue(sync.Disabled)
 	state.Trigger = types.StringValue(sync.Trigger)
 	state.TriggerFile = types.StringValue(sync.TriggerFile)
+	state.AlwaysWriteTriggerFile = types.BoolPointerValue(sync.AlwaysWriteTriggerFile)
 	state.IncludePatterns, propDiags = types.ListValueFrom(ctx, types.StringType, sync.IncludePatterns)
 	diags.Append(propDiags...)
 	state.ExcludePatterns, propDiags = types.ListValueFrom(ctx, types.StringType, sync.ExcludePatterns)

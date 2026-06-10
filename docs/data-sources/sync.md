@@ -33,6 +33,7 @@ data "files_sync" "example_sync" {
 
 ### Read-Only
 
+- `always_write_trigger_file` (Boolean) If true, the trigger file will be sent at the end of a successful sync even when no files were transferred.
 - `created_at` (String) When this sync was created
 - `delete_empty_folders` (Boolean) Delete empty folders after sync?
 - `description` (String) Description for this sync job
