@@ -28,14 +28,14 @@ type partnerSiteRequestDataSource struct {
 }
 
 type partnerSiteRequestDataSourceModel struct {
-	Id           types.Int64  `tfsdk:"id"`
-	PartnerId    types.Int64  `tfsdk:"partner_id"`
-	LinkedSiteId types.Int64  `tfsdk:"linked_site_id"`
-	Status       types.String `tfsdk:"status"`
-	MainSiteName types.String `tfsdk:"main_site_name"`
-	PairingKey   types.String `tfsdk:"pairing_key"`
-	CreatedAt    types.String `tfsdk:"created_at"`
-	UpdatedAt    types.String `tfsdk:"updated_at"`
+	Id            types.Int64  `tfsdk:"id"`
+	HostPartnerId types.Int64  `tfsdk:"host_partner_id"`
+	GuestSiteId   types.Int64  `tfsdk:"guest_site_id"`
+	Status        types.String `tfsdk:"status"`
+	HostSiteName  types.String `tfsdk:"host_site_name"`
+	PairingKey    types.String `tfsdk:"pairing_key"`
+	CreatedAt     types.String `tfsdk:"created_at"`
+	UpdatedAt     types.String `tfsdk:"updated_at"`
 }
 
 func (r *partnerSiteRequestDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -63,30 +63,30 @@ func (r *partnerSiteRequestDataSource) Metadata(_ context.Context, req datasourc
 
 func (r *partnerSiteRequestDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A PartnerSiteRequest represents a request to link a partner's Files.com site with another Files.com site.\n\n\n\nThe Site with the Partner can initiate a request, which generates a pairing key. The target site admin must then approve the request using the pairing key.",
+		Description: "A PartnerSiteRequest represents a request for a Guest Partner to add their Files.com Site to their Partnership with the Host Partner. The Guest Partner's Files.com Site is referred to as the Guest Site in this relationship.\n\n\n\nThe Partner Admin user representing the Guest on the Host Partner can initiate a request, which generates a pairing key. The Guest Site admin must then approve the request. This ensures that the Partner Admin user representing the Guest on the Host Partner and the Site Admins of the Site are in agreement that the linking should occur.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Partner Site Request ID",
 				Required:    true,
 			},
-			"partner_id": schema.Int64Attribute{
-				Description: "Partner ID",
+			"host_partner_id": schema.Int64Attribute{
+				Description: "Host Partner ID",
 				Computed:    true,
 			},
-			"linked_site_id": schema.Int64Attribute{
-				Description: "Linked Site ID",
+			"guest_site_id": schema.Int64Attribute{
+				Description: "Guest Site ID",
 				Computed:    true,
 			},
 			"status": schema.StringAttribute{
 				Description: "Request status (pending, approved, rejected)",
 				Computed:    true,
 			},
-			"main_site_name": schema.StringAttribute{
-				Description: "Main Site Name",
+			"host_site_name": schema.StringAttribute{
+				Description: "Host Site Name",
 				Computed:    true,
 			},
 			"pairing_key": schema.StringAttribute{
-				Description: "Pairing key used to approve this request on the target site",
+				Description: "Pairing key used to approve this request on the Guest Site",
 				Computed:    true,
 			},
 			"created_at": schema.StringAttribute{
@@ -156,10 +156,10 @@ func (r *partnerSiteRequestDataSource) Read(ctx context.Context, req datasource.
 
 func (r *partnerSiteRequestDataSource) populateDataSourceModel(ctx context.Context, partnerSiteRequest files_sdk.PartnerSiteRequest, state *partnerSiteRequestDataSourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(partnerSiteRequest.Id)
-	state.PartnerId = types.Int64Value(partnerSiteRequest.PartnerId)
-	state.LinkedSiteId = types.Int64Value(partnerSiteRequest.LinkedSiteId)
+	state.HostPartnerId = types.Int64Value(partnerSiteRequest.HostPartnerId)
+	state.GuestSiteId = types.Int64Value(partnerSiteRequest.GuestSiteId)
 	state.Status = types.StringValue(partnerSiteRequest.Status)
-	state.MainSiteName = types.StringValue(partnerSiteRequest.MainSiteName)
+	state.HostSiteName = types.StringValue(partnerSiteRequest.HostSiteName)
 	state.PairingKey = types.StringValue(partnerSiteRequest.PairingKey)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), partnerSiteRequest.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(

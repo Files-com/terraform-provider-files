@@ -56,6 +56,7 @@ resource "files_partner" "example_partner" {
 
 - `id` (Number) The unique ID of the Partner.
 - `partner_admin_ids` (List of Number) Array of User IDs that are Partner Admins for this Partner.
+- `partnership_role` (String) This site's role in Partner Site relationships for this Partner. Can be `host`, `guest`, `host_and_guest`, or null.
 - `user_ids` (List of Number) Array of User IDs that belong to this Partner.
 
 ## Import

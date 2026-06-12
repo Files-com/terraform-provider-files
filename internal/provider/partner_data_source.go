@@ -37,6 +37,7 @@ type partnerDataSourceModel struct {
 	Name                       types.String `tfsdk:"name"`
 	Notes                      types.String `tfsdk:"notes"`
 	PartnerAdminIds            types.List   `tfsdk:"partner_admin_ids"`
+	PartnershipRole            types.String `tfsdk:"partnership_role"`
 	ResponsibleGroupId         types.Int64  `tfsdk:"responsible_group_id"`
 	ResponsibleUserId          types.Int64  `tfsdk:"responsible_user_id"`
 	RootFolder                 types.String `tfsdk:"root_folder"`
@@ -116,6 +117,10 @@ func (r *partnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Computed:    true,
 				ElementType: types.Int64Type,
 			},
+			"partnership_role": schema.StringAttribute{
+				Description: "This site's role in Partner Site relationships for this Partner. Can be `host`, `guest`, `host_and_guest`, or null.",
+				Computed:    true,
+			},
 			"responsible_group_id": schema.Int64Attribute{
 				Description: "ID of the Group responsible for this Partner.",
 				Computed:    true,
@@ -186,6 +191,7 @@ func (r *partnerDataSource) populateDataSourceModel(ctx context.Context, partner
 	state.Notes = types.StringValue(partner.Notes)
 	state.PartnerAdminIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, partner.PartnerAdminIds)
 	diags.Append(propDiags...)
+	state.PartnershipRole = types.StringValue(partner.PartnershipRole)
 	state.ResponsibleGroupId = types.Int64Value(partner.ResponsibleGroupId)
 	state.ResponsibleUserId = types.Int64Value(partner.ResponsibleUserId)
 	state.RootFolder = types.StringValue(partner.RootFolder)

@@ -8,6 +8,7 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	partner "github.com/Files-com/files-sdk-go/v3/partner"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -16,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -49,6 +51,7 @@ type partnerResourceModel struct {
 	Tags                       types.String `tfsdk:"tags"`
 	Id                         types.Int64  `tfsdk:"id"`
 	PartnerAdminIds            types.List   `tfsdk:"partner_admin_ids"`
+	PartnershipRole            types.String `tfsdk:"partnership_role"`
 	UserIds                    types.List   `tfsdk:"user_ids"`
 }
 
@@ -187,6 +190,13 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Description: "Array of User IDs that are Partner Admins for this Partner.",
 				Computed:    true,
 				ElementType: types.Int64Type,
+			},
+			"partnership_role": schema.StringAttribute{
+				Description: "This site's role in Partner Site relationships for this Partner. Can be `host`, `guest`, `host_and_guest`, or null.",
+				Computed:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("host", "guest", "host_and_guest"),
+				},
 			},
 			"user_ids": schema.ListAttribute{
 				Description: "Array of User IDs that belong to this Partner.",
@@ -430,6 +440,7 @@ func (r *partnerResource) populateResourceModel(ctx context.Context, partner fil
 	state.Notes = types.StringValue(partner.Notes)
 	state.PartnerAdminIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, partner.PartnerAdminIds)
 	diags.Append(propDiags...)
+	state.PartnershipRole = types.StringValue(partner.PartnershipRole)
 	state.ResponsibleGroupId = types.Int64Value(partner.ResponsibleGroupId)
 	state.ResponsibleUserId = types.Int64Value(partner.ResponsibleUserId)
 	state.RootFolder = types.StringValue(partner.RootFolder)

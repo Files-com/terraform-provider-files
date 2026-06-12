@@ -3,24 +3,24 @@
 page_title: "files_partner_site_request Resource - files"
 subcategory: ""
 description: |-
-  A PartnerSiteRequest represents a request to link a partner's Files.com site with another Files.com site.
-  The Site with the Partner can initiate a request, which generates a pairing key. The target site admin must then approve the request using the pairing key.
+  A PartnerSiteRequest represents a request for a Guest Partner to add their Files.com Site to their Partnership with the Host Partner. The Guest Partner's Files.com Site is referred to as the Guest Site in this relationship.
+  The Partner Admin user representing the Guest on the Host Partner can initiate a request, which generates a pairing key. The Guest Site admin must then approve the request. This ensures that the Partner Admin user representing the Guest on the Host Partner and the Site Admins of the Site are in agreement that the linking should occur.
 ---
 
 # files_partner_site_request (Resource)
 
-A PartnerSiteRequest represents a request to link a partner's Files.com site with another Files.com site.
+A PartnerSiteRequest represents a request for a Guest Partner to add their Files.com Site to their Partnership with the Host Partner. The Guest Partner's Files.com Site is referred to as the Guest Site in this relationship.
 
 
 
-The Site with the Partner can initiate a request, which generates a pairing key. The target site admin must then approve the request using the pairing key.
+The Partner Admin user representing the Guest on the Host Partner can initiate a request, which generates a pairing key. The Guest Site admin must then approve the request. This ensures that the Partner Admin user representing the Guest on the Host Partner and the Site Admins of the Site are in agreement that the linking should occur.
 
 ## Example Usage
 
 ```terraform
 resource "files_partner_site_request" "example_partner_site_request" {
-  partner_id = 1
-  site_url   = "site_url"
+  host_partner_id = 1
+  site_url        = "site_url"
 }
 ```
 
@@ -29,16 +29,16 @@ resource "files_partner_site_request" "example_partner_site_request" {
 
 ### Required
 
-- `partner_id` (Number) Partner ID
+- `host_partner_id` (Number) Host Partner ID
 - `site_url` (String) Site URL to link to
 
 ### Read-Only
 
 - `created_at` (String) Request creation date/time
+- `guest_site_id` (Number) Guest Site ID
+- `host_site_name` (String) Host Site Name
 - `id` (Number) Partner Site Request ID
-- `linked_site_id` (Number) Linked Site ID
-- `main_site_name` (String) Main Site Name
-- `pairing_key` (String) Pairing key used to approve this request on the target site
+- `pairing_key` (String) Pairing key used to approve this request on the Guest Site
 - `status` (String) Request status (pending, approved, rejected)
 - `updated_at` (String) Request last updated date/time
 
