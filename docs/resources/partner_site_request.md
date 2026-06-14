@@ -20,7 +20,7 @@ The Partner Admin user representing the Guest on the Host Partner can initiate a
 ```terraform
 resource "files_partner_site_request" "example_partner_site_request" {
   host_partner_id = 1
-  site_url        = "site_url"
+  guest_site_url  = "guest_site_url"
 }
 ```
 
@@ -29,13 +29,12 @@ resource "files_partner_site_request" "example_partner_site_request" {
 
 ### Required
 
+- `guest_site_url` (String) Guest Site URL
 - `host_partner_id` (Number) Host Partner ID
-- `site_url` (String) Site URL to link to
 
 ### Read-Only
 
 - `created_at` (String) Request creation date/time
-- `guest_site_id` (Number) Guest Site ID
 - `host_site_name` (String) Host Site Name
 - `id` (Number) Partner Site Request ID
 - `pairing_key` (String) Pairing key used to approve this request on the Guest Site

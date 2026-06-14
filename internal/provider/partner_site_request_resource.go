@@ -37,9 +37,8 @@ type partnerSiteRequestResource struct {
 
 type partnerSiteRequestResourceModel struct {
 	HostPartnerId types.Int64  `tfsdk:"host_partner_id"`
-	SiteUrl       types.String `tfsdk:"site_url"`
+	GuestSiteUrl  types.String `tfsdk:"guest_site_url"`
 	Id            types.Int64  `tfsdk:"id"`
-	GuestSiteId   types.Int64  `tfsdk:"guest_site_id"`
 	Status        types.String `tfsdk:"status"`
 	HostSiteName  types.String `tfsdk:"host_site_name"`
 	PairingKey    types.String `tfsdk:"pairing_key"`
@@ -81,8 +80,8 @@ func (r *partnerSiteRequestResource) Schema(_ context.Context, _ resource.Schema
 					int64planmodifier.RequiresReplace(),
 				},
 			},
-			"site_url": schema.StringAttribute{
-				Description: "Site URL to link to",
+			"guest_site_url": schema.StringAttribute{
+				Description: "Guest Site URL",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -94,10 +93,6 @@ func (r *partnerSiteRequestResource) Schema(_ context.Context, _ resource.Schema
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
-			},
-			"guest_site_id": schema.Int64Attribute{
-				Description: "Guest Site ID",
-				Computed:    true,
 			},
 			"status": schema.StringAttribute{
 				Description: "Request status (pending, approved, rejected)",
@@ -142,7 +137,7 @@ func (r *partnerSiteRequestResource) Create(ctx context.Context, req resource.Cr
 
 	paramsPartnerSiteRequestCreate := files_sdk.PartnerSiteRequestCreateParams{}
 	paramsPartnerSiteRequestCreate.HostPartnerId = plan.HostPartnerId.ValueInt64()
-	paramsPartnerSiteRequestCreate.SiteUrl = plan.SiteUrl.ValueString()
+	paramsPartnerSiteRequestCreate.GuestSiteUrl = plan.GuestSiteUrl.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -280,7 +275,7 @@ func (r *partnerSiteRequestResource) ImportState(ctx context.Context, req resour
 func (r *partnerSiteRequestResource) populateResourceModel(ctx context.Context, partnerSiteRequest files_sdk.PartnerSiteRequest, state *partnerSiteRequestResourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(partnerSiteRequest.Id)
 	state.HostPartnerId = types.Int64Value(partnerSiteRequest.HostPartnerId)
-	state.GuestSiteId = types.Int64Value(partnerSiteRequest.GuestSiteId)
+	state.GuestSiteUrl = types.StringValue(partnerSiteRequest.GuestSiteUrl)
 	state.Status = types.StringValue(partnerSiteRequest.Status)
 	state.HostSiteName = types.StringValue(partnerSiteRequest.HostSiteName)
 	state.PairingKey = types.StringValue(partnerSiteRequest.PairingKey)

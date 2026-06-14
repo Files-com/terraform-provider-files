@@ -33,7 +33,7 @@ data "files_partner_site_request" "example_partner_site_request" {
 ### Read-Only
 
 - `created_at` (String) Request creation date/time
-- `guest_site_id` (Number) Guest Site ID
+- `guest_site_url` (String) Guest Site URL
 - `host_partner_id` (Number) Host Partner ID
 - `host_site_name` (String) Host Site Name
 - `pairing_key` (String) Pairing key used to approve this request on the Guest Site

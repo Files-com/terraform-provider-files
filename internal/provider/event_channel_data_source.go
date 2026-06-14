@@ -30,6 +30,7 @@ type eventChannelDataSource struct {
 type eventChannelDataSourceModel struct {
 	Id             types.Int64  `tfsdk:"id"`
 	Name           types.String `tfsdk:"name"`
+	WorkspaceId    types.Int64  `tfsdk:"workspace_id"`
 	Description    types.String `tfsdk:"description"`
 	Enabled        types.Bool   `tfsdk:"enabled"`
 	DefaultChannel types.Bool   `tfsdk:"default_channel"`
@@ -70,6 +71,10 @@ func (r *eventChannelDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			},
 			"name": schema.StringAttribute{
 				Description: "Event Channel name.",
+				Computed:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID. 0 means the default workspace.",
 				Computed:    true,
 			},
 			"description": schema.StringAttribute{
@@ -129,6 +134,7 @@ func (r *eventChannelDataSource) Read(ctx context.Context, req datasource.ReadRe
 func (r *eventChannelDataSource) populateDataSourceModel(ctx context.Context, eventChannel files_sdk.EventChannel, state *eventChannelDataSourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(eventChannel.Id)
 	state.Name = types.StringValue(eventChannel.Name)
+	state.WorkspaceId = types.Int64Value(eventChannel.WorkspaceId)
 	state.Description = types.StringValue(eventChannel.Description)
 	state.Enabled = types.BoolPointerValue(eventChannel.Enabled)
 	state.DefaultChannel = types.BoolPointerValue(eventChannel.DefaultChannel)

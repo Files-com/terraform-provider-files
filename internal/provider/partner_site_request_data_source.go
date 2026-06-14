@@ -30,7 +30,7 @@ type partnerSiteRequestDataSource struct {
 type partnerSiteRequestDataSourceModel struct {
 	Id            types.Int64  `tfsdk:"id"`
 	HostPartnerId types.Int64  `tfsdk:"host_partner_id"`
-	GuestSiteId   types.Int64  `tfsdk:"guest_site_id"`
+	GuestSiteUrl  types.String `tfsdk:"guest_site_url"`
 	Status        types.String `tfsdk:"status"`
 	HostSiteName  types.String `tfsdk:"host_site_name"`
 	PairingKey    types.String `tfsdk:"pairing_key"`
@@ -73,8 +73,8 @@ func (r *partnerSiteRequestDataSource) Schema(_ context.Context, _ datasource.Sc
 				Description: "Host Partner ID",
 				Computed:    true,
 			},
-			"guest_site_id": schema.Int64Attribute{
-				Description: "Guest Site ID",
+			"guest_site_url": schema.StringAttribute{
+				Description: "Guest Site URL",
 				Computed:    true,
 			},
 			"status": schema.StringAttribute{
@@ -157,7 +157,7 @@ func (r *partnerSiteRequestDataSource) Read(ctx context.Context, req datasource.
 func (r *partnerSiteRequestDataSource) populateDataSourceModel(ctx context.Context, partnerSiteRequest files_sdk.PartnerSiteRequest, state *partnerSiteRequestDataSourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(partnerSiteRequest.Id)
 	state.HostPartnerId = types.Int64Value(partnerSiteRequest.HostPartnerId)
-	state.GuestSiteId = types.Int64Value(partnerSiteRequest.GuestSiteId)
+	state.GuestSiteUrl = types.StringValue(partnerSiteRequest.GuestSiteUrl)
 	state.Status = types.StringValue(partnerSiteRequest.Status)
 	state.HostSiteName = types.StringValue(partnerSiteRequest.HostSiteName)
 	state.PairingKey = types.StringValue(partnerSiteRequest.PairingKey)

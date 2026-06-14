@@ -36,6 +36,7 @@ type eventChannelResource struct {
 
 type eventChannelResourceModel struct {
 	Name           types.String `tfsdk:"name"`
+	WorkspaceId    types.Int64  `tfsdk:"workspace_id"`
 	Description    types.String `tfsdk:"description"`
 	Enabled        types.Bool   `tfsdk:"enabled"`
 	DefaultChannel types.Bool   `tfsdk:"default_channel"`
@@ -74,6 +75,14 @@ func (r *eventChannelResource) Schema(_ context.Context, _ resource.SchemaReques
 			"name": schema.StringAttribute{
 				Description: "Event Channel name.",
 				Required:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID. 0 means the default workspace.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
 			},
 			"description": schema.StringAttribute{
 				Description: "Event Channel description.",
@@ -134,6 +143,7 @@ func (r *eventChannelResource) Create(ctx context.Context, req resource.CreateRe
 
 	paramsEventChannelCreate := files_sdk.EventChannelCreateParams{}
 	paramsEventChannelCreate.Name = plan.Name.ValueString()
+	paramsEventChannelCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	paramsEventChannelCreate.Description = plan.Description.ValueString()
 	if !plan.Enabled.IsNull() && !plan.Enabled.IsUnknown() {
 		paramsEventChannelCreate.Enabled = plan.Enabled.ValueBoolPointer()
@@ -221,6 +231,9 @@ func (r *eventChannelResource) Update(ctx context.Context, req resource.UpdateRe
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
 		paramsEventChannelUpdate["name"] = config.Name.ValueString()
 	}
+	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
+		paramsEventChannelUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
+	}
 	if !config.Description.IsNull() && !config.Description.IsUnknown() {
 		paramsEventChannelUpdate["description"] = config.Description.ValueString()
 	}
@@ -300,6 +313,7 @@ func (r *eventChannelResource) ImportState(ctx context.Context, req resource.Imp
 func (r *eventChannelResource) populateResourceModel(ctx context.Context, eventChannel files_sdk.EventChannel, state *eventChannelResourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(eventChannel.Id)
 	state.Name = types.StringValue(eventChannel.Name)
+	state.WorkspaceId = types.Int64Value(eventChannel.WorkspaceId)
 	state.Description = types.StringValue(eventChannel.Description)
 	state.Enabled = types.BoolPointerValue(eventChannel.Enabled)
 	state.DefaultChannel = types.BoolPointerValue(eventChannel.DefaultChannel)

@@ -15,6 +15,7 @@ An EventChannel is a named grouping of EventSubscriptions.
 ```terraform
 resource "files_event_channel" "example_event_channel" {
   name            = "example"
+  workspace_id    = 1
   description     = "example"
   enabled         = true
   default_channel = true
@@ -33,6 +34,7 @@ resource "files_event_channel" "example_event_channel" {
 - `default_channel` (Boolean) Whether this Event Channel is the default destination for newly published events.
 - `description` (String) Event Channel description.
 - `enabled` (Boolean) Whether this Event Channel can dispatch events.
+- `workspace_id` (Number) Workspace ID. 0 means the default workspace.
 
 ### Read-Only
 

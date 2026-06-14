@@ -33,3 +33,4 @@ data "files_event_channel" "example_event_channel" {
 - `enabled` (Boolean) Whether this Event Channel can dispatch events.
 - `name` (String) Event Channel name.
 - `updated_at` (String) Event Channel update date/time.
+- `workspace_id` (Number) Workspace ID. 0 means the default workspace.
