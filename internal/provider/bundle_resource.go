@@ -712,11 +712,11 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if !config.SkipName.IsNull() && !config.SkipName.IsUnknown() {
 		paramsBundleUpdate["skip_name"] = config.SkipName.ValueBool()
 	}
-	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
-		paramsBundleUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
-	}
 	if !config.UserId.IsNull() && !config.UserId.IsUnknown() {
 		paramsBundleUpdate["user_id"] = config.UserId.ValueInt64()
+	}
+	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
+		paramsBundleUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
 
 	if resp.Diagnostics.HasError() {

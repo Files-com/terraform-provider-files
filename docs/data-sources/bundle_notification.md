@@ -28,6 +28,7 @@ data "files_bundle_notification" "example_bundle_notification" {
 ### Read-Only
 
 - `bundle_id` (Number) Bundle ID to notify on
+- `notify_current_user` (Boolean) Is the current user the user to notify?
 - `notify_on_registration` (Boolean) Triggers bundle notification when a registration action occurs for it.
 - `notify_on_upload` (Boolean) Triggers bundle notification when a upload action occurs for it.
 - `notify_user_id` (Number) The id of the user to notify.

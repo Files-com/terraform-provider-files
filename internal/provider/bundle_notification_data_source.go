@@ -30,6 +30,7 @@ type bundleNotificationDataSourceModel struct {
 	BundleId             types.Int64 `tfsdk:"bundle_id"`
 	NotifyOnRegistration types.Bool  `tfsdk:"notify_on_registration"`
 	NotifyOnUpload       types.Bool  `tfsdk:"notify_on_upload"`
+	NotifyCurrentUser    types.Bool  `tfsdk:"notify_current_user"`
 	NotifyUserId         types.Int64 `tfsdk:"notify_user_id"`
 	WorkspaceId          types.Int64 `tfsdk:"workspace_id"`
 }
@@ -75,6 +76,10 @@ func (r *bundleNotificationDataSource) Schema(_ context.Context, _ datasource.Sc
 			},
 			"notify_on_upload": schema.BoolAttribute{
 				Description: "Triggers bundle notification when a upload action occurs for it.",
+				Computed:    true,
+			},
+			"notify_current_user": schema.BoolAttribute{
+				Description: "Is the current user the user to notify?",
 				Computed:    true,
 			},
 			"notify_user_id": schema.Int64Attribute{
@@ -124,6 +129,7 @@ func (r *bundleNotificationDataSource) populateDataSourceModel(ctx context.Conte
 	state.Id = types.Int64Value(bundleNotification.Id)
 	state.NotifyOnRegistration = types.BoolPointerValue(bundleNotification.NotifyOnRegistration)
 	state.NotifyOnUpload = types.BoolPointerValue(bundleNotification.NotifyOnUpload)
+	state.NotifyCurrentUser = types.BoolPointerValue(bundleNotification.NotifyCurrentUser)
 	state.NotifyUserId = types.Int64Value(bundleNotification.NotifyUserId)
 	state.WorkspaceId = types.Int64Value(bundleNotification.WorkspaceId)
 
