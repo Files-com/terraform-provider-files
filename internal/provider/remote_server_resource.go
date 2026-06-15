@@ -58,6 +58,8 @@ type remoteServerResourceModel struct {
 	Ssl                                     types.String `tfsdk:"ssl"`
 	Username                                types.String `tfsdk:"username"`
 	GoogleCloudStorageBucket                types.String `tfsdk:"google_cloud_storage_bucket"`
+	GoogleCloudStorageAuthenticationMethod  types.String `tfsdk:"google_cloud_storage_authentication_method"`
+	GoogleCloudStorageOauthScope            types.String `tfsdk:"google_cloud_storage_oauth_scope"`
 	GoogleCloudStorageProjectId             types.String `tfsdk:"google_cloud_storage_project_id"`
 	GoogleCloudStorageS3CompatibleAccessKey types.String `tfsdk:"google_cloud_storage_s3_compatible_access_key"`
 	BackblazeB2S3Endpoint                   types.String `tfsdk:"backblaze_b2_s3_endpoint"`
@@ -151,7 +153,7 @@ func (r *remoteServerResource) Metadata(_ context.Context, req resource.Metadata
 
 func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A RemoteServer is a specific type of Behavior called `remote_server_sync`.\n\n\n\nRemote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.\n\n\n\nNot every attribute will apply to every remote server.\n\n\n\nFTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`. Optionally, provide `server_certificate`.\n\n\n\nSFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`. Optionally, provide `server_certificate`, `private_key_passphrase`.\n\n\n\nS3 Buckets require that you specify their `s3_bucket` name, and `s3_region`. Optionally provide a `aws_access_key`, and `aws_secret_key`. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.\n\n\n\nS3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`. Optionally provide `s3_compatible_virtual_hosted_style` to use virtual-hosted-style URLs instead of path-style URLs.\n\n\n\nGoogle Cloud Storage requires that you specify `google_cloud_storage_bucket`, and then one of the following sets of authentication credentials:\n\n - for JSON authentcation: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`\n\n - for HMAC (S3-Compatible) authentication: `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`\n\n\n\nWasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.\n\n\n\nBackblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453\n\n\n\nWebDAV Servers require that you specify their `hostname`, `username`, and `password`.\n\n\n\nOneDrive follow the `auth_setup_link` and login with Microsoft.\n\n\n\nSharepoint follow the `auth_setup_link` and login with Microsoft.\n\n\n\nBox follow the `auth_setup_link` and login with Box.\n\n\n\nDropbox specify if `dropbox_teams` then follow the `auth_setup_link` and login with Dropbox.\n\n\n\nGoogle Drive follow the `auth_setup_link` and login with Google.\n\n\n\nAzure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`, `azure_blob_storage_dns_suffix`\n\n\n\nAzure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`, `azure_files_storage_dns_suffix`\n\n\n\nFilebase requires `filebase_bucket`, `filebase_access_key`, and `filebase_secret_key`.\n\n\n\nCloudflare requires `cloudflare_bucket`, `cloudflare_access_key`, `cloudflare_secret_key` and `cloudflare_endpoint`.\n\n\n\nLinode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `linode_region`.",
+		Description: "A RemoteServer is a specific type of Behavior called `remote_server_sync`.\n\n\n\nRemote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.\n\n\n\nNot every attribute will apply to every remote server.\n\n\n\nFTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`. Optionally, provide `server_certificate`.\n\n\n\nSFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`. Optionally, provide `server_certificate`, `private_key_passphrase`.\n\n\n\nS3 Buckets require that you specify their `s3_bucket` name, and `s3_region`. Optionally provide a `aws_access_key`, and `aws_secret_key`. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.\n\n\n\nS3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`. Optionally provide `s3_compatible_virtual_hosted_style` to use virtual-hosted-style URLs instead of path-style URLs.\n\n\n\nGoogle Cloud Storage requires that you specify `google_cloud_storage_bucket`, and then one of the following sets of authentication credentials, selected by `google_cloud_storage_authentication_method` (defaults to `json`):\n\n - for JSON authentication: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`\n\n - for HMAC (S3-Compatible) authentication: `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`\n\n - for OAuth authentication: `google_cloud_storage_oauth_scope`, then follow the `auth_setup_link` and login with Google\n\n\n\nWasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.\n\n\n\nBackblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453\n\n\n\nWebDAV Servers require that you specify their `hostname`, `username`, and `password`.\n\n\n\nOneDrive follow the `auth_setup_link` and login with Microsoft.\n\n\n\nSharepoint follow the `auth_setup_link` and login with Microsoft.\n\n\n\nBox follow the `auth_setup_link` and login with Box.\n\n\n\nDropbox specify if `dropbox_teams` then follow the `auth_setup_link` and login with Dropbox.\n\n\n\nGoogle Drive follow the `auth_setup_link` and login with Google.\n\n\n\nAzure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`, `azure_blob_storage_dns_suffix`\n\n\n\nAzure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`, `azure_files_storage_dns_suffix`\n\n\n\nFilebase requires `filebase_bucket`, `filebase_access_key`, and `filebase_secret_key`.\n\n\n\nCloudflare requires `cloudflare_bucket`, `cloudflare_access_key`, `cloudflare_secret_key` and `cloudflare_endpoint`.\n\n\n\nLinode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `linode_region`.",
 		Attributes: map[string]schema.Attribute{
 			"hostname": schema.StringAttribute{
 				Description: "Hostname or IP address",
@@ -336,6 +338,25 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 			},
 			"google_cloud_storage_bucket": schema.StringAttribute{
 				Description: "Google Cloud Storage: Bucket Name",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"google_cloud_storage_authentication_method": schema.StringAttribute{
+				Description: "Google Cloud Storage: Authentication method. Can be json, hmac, or oauth.",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("json", "hmac", "oauth"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"google_cloud_storage_oauth_scope": schema.StringAttribute{
+				Description: "Google Cloud Storage: OAuth scope. Can be https://www.googleapis.com/auth/devstorage.read_only or https://www.googleapis.com/auth/devstorage.read_write.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -845,7 +866,9 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.FilesAgentRoot = plan.FilesAgentRoot.ValueString()
 	paramsRemoteServerCreate.FilesAgentVersion = plan.FilesAgentVersion.ValueString()
 	paramsRemoteServerCreate.OutboundAgentId = plan.OutboundAgentId.ValueInt64()
+	paramsRemoteServerCreate.GoogleCloudStorageAuthenticationMethod = paramsRemoteServerCreate.GoogleCloudStorageAuthenticationMethod.Enum()[plan.GoogleCloudStorageAuthenticationMethod.ValueString()]
 	paramsRemoteServerCreate.GoogleCloudStorageBucket = plan.GoogleCloudStorageBucket.ValueString()
+	paramsRemoteServerCreate.GoogleCloudStorageOauthScope = plan.GoogleCloudStorageOauthScope.ValueString()
 	paramsRemoteServerCreate.GoogleCloudStorageProjectId = plan.GoogleCloudStorageProjectId.ValueString()
 	paramsRemoteServerCreate.GoogleCloudStorageS3CompatibleAccessKey = plan.GoogleCloudStorageS3CompatibleAccessKey.ValueString()
 	paramsRemoteServerCreate.Hostname = plan.Hostname.ValueString()
@@ -1087,8 +1110,14 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	if !config.OutboundAgentId.IsNull() && !config.OutboundAgentId.IsUnknown() {
 		paramsRemoteServerUpdate["outbound_agent_id"] = config.OutboundAgentId.ValueInt64()
 	}
+	if !config.GoogleCloudStorageAuthenticationMethod.IsNull() && !config.GoogleCloudStorageAuthenticationMethod.IsUnknown() {
+		paramsRemoteServerUpdate["google_cloud_storage_authentication_method"] = config.GoogleCloudStorageAuthenticationMethod.ValueString()
+	}
 	if !config.GoogleCloudStorageBucket.IsNull() && !config.GoogleCloudStorageBucket.IsUnknown() {
 		paramsRemoteServerUpdate["google_cloud_storage_bucket"] = config.GoogleCloudStorageBucket.ValueString()
+	}
+	if !config.GoogleCloudStorageOauthScope.IsNull() && !config.GoogleCloudStorageOauthScope.IsUnknown() {
+		paramsRemoteServerUpdate["google_cloud_storage_oauth_scope"] = config.GoogleCloudStorageOauthScope.ValueString()
 	}
 	if !config.GoogleCloudStorageProjectId.IsNull() && !config.GoogleCloudStorageProjectId.IsUnknown() {
 		paramsRemoteServerUpdate["google_cloud_storage_project_id"] = config.GoogleCloudStorageProjectId.ValueString()
@@ -1276,6 +1305,8 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.Ssl = types.StringValue(remoteServer.Ssl)
 	state.Username = types.StringValue(remoteServer.Username)
 	state.GoogleCloudStorageBucket = types.StringValue(remoteServer.GoogleCloudStorageBucket)
+	state.GoogleCloudStorageAuthenticationMethod = types.StringValue(remoteServer.GoogleCloudStorageAuthenticationMethod)
+	state.GoogleCloudStorageOauthScope = types.StringValue(remoteServer.GoogleCloudStorageOauthScope)
 	state.GoogleCloudStorageProjectId = types.StringValue(remoteServer.GoogleCloudStorageProjectId)
 	state.GoogleCloudStorageS3CompatibleAccessKey = types.StringValue(remoteServer.GoogleCloudStorageS3CompatibleAccessKey)
 	state.BackblazeB2S3Endpoint = types.StringValue(remoteServer.BackblazeB2S3Endpoint)

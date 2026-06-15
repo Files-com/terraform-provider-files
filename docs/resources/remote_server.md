@@ -10,10 +10,11 @@ description: |-
   SFTP Servers require that you specify their hostname, port, username, password or private_key, and a value for ssl. Optionally, provide server_certificate, private_key_passphrase.
   S3 Buckets require that you specify their s3_bucket name, and s3_region. Optionally provide a aws_access_key, and aws_secret_key. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.
   S3-Compatible Buckets require that you specify s3_compatible_bucket, s3_compatible_endpoint, s3_compatible_access_key, and s3_compatible_secret_key. Optionally provide s3_compatible_virtual_hosted_style to use virtual-hosted-style URLs instead of path-style URLs.
-  Google Cloud Storage requires that you specify google_cloud_storage_bucket, and then one of the following sets of authentication credentials:
+  Google Cloud Storage requires that you specify google_cloud_storage_bucket, and then one of the following sets of authentication credentials, selected by google_cloud_storage_authentication_method (defaults to json):
   
-  for JSON authentcation: google_cloud_storage_project_id, and google_cloud_storage_credentials_json
+  for JSON authentication: google_cloud_storage_project_id, and google_cloud_storage_credentials_json
   for HMAC (S3-Compatible) authentication: google_cloud_storage_s3_compatible_access_key, and google_cloud_storage_s3_compatible_secret_key
+  for OAuth authentication: google_cloud_storage_oauth_scope, then follow the auth_setup_link and login with Google
   Wasabi requires wasabi_bucket, wasabi_region, wasabi_access_key, and wasabi_secret_key.
   Backblaze B2 Cloud Storage backblaze_b2_bucket, backblaze_b2_s3_endpoint, backblaze_b2_application_key, and backblaze_b2_key_id. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453
   WebDAV Servers require that you specify their hostname, username, and password.
@@ -59,11 +60,13 @@ S3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compa
 
 
 
-Google Cloud Storage requires that you specify `google_cloud_storage_bucket`, and then one of the following sets of authentication credentials:
+Google Cloud Storage requires that you specify `google_cloud_storage_bucket`, and then one of the following sets of authentication credentials, selected by `google_cloud_storage_authentication_method` (defaults to `json`):
 
- - for JSON authentcation: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`
+ - for JSON authentication: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`
 
  - for HMAC (S3-Compatible) authentication: `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`
+
+ - for OAuth authentication: `google_cloud_storage_oauth_scope`, then follow the `auth_setup_link` and login with Google
 
 
 
@@ -146,7 +149,9 @@ resource "files_remote_server" "example_remote_server" {
   files_agent_root                              = "example"
   files_agent_version                           = "example"
   outbound_agent_id                             = 1
+  google_cloud_storage_authentication_method    = "json"
   google_cloud_storage_bucket                   = "my-bucket"
+  google_cloud_storage_oauth_scope              = "https://www.googleapis.com/auth/devstorage.read_only"
   google_cloud_storage_project_id               = "my-project"
   google_cloud_storage_s3_compatible_access_key = "example"
   hostname                                      = "remote-server.com"
@@ -220,8 +225,10 @@ resource "files_remote_server" "example_remote_server" {
 - `files_agent_permission_set` (String) Local permissions for files agent. read_only, write_only, or read_write
 - `files_agent_root` (String) Agent local root path
 - `files_agent_version` (String) Files Agent version
+- `google_cloud_storage_authentication_method` (String) Google Cloud Storage: Authentication method. Can be json, hmac, or oauth.
 - `google_cloud_storage_bucket` (String) Google Cloud Storage: Bucket Name
 - `google_cloud_storage_credentials_json` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Google Cloud Storage: JSON file that contains the private key. To generate see https://cloud.google.com/storage/docs/json_api/v1/how-tos/authorizing#APIKey
+- `google_cloud_storage_oauth_scope` (String) Google Cloud Storage: OAuth scope. Can be https://www.googleapis.com/auth/devstorage.read_only or https://www.googleapis.com/auth/devstorage.read_write.
 - `google_cloud_storage_project_id` (String) Google Cloud Storage: Project ID
 - `google_cloud_storage_s3_compatible_access_key` (String) Google Cloud Storage: S3-compatible Access Key.
 - `google_cloud_storage_s3_compatible_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Google Cloud Storage: S3-compatible secret key
