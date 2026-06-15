@@ -187,12 +187,13 @@ resource "files_behavior" "example_auto_decrypt_behavior" {
   path     = "path"
   behavior = "auto_decrypt"
   value    = {
-    gpg_key_id         = 1
-    gpg_key_ids        = [1]
-    algorithm          = "PGP/GPG"
-    suffix             = ".gpg"
-    ignore_mdc_error   = true
-    gpg_key_partner_id = 1
+    gpg_key_id           = 1
+    gpg_key_ids          = [1]
+    algorithm            = "PGP/GPG"
+    suffix               = ".gpg"
+    ignore_mdc_error     = true
+    gpg_key_partner_id   = 1
+    use_all_private_keys = false
   }
 }
 
