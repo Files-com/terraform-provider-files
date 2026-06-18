@@ -37,7 +37,7 @@ type groupUserResourceModel struct {
 	UserId    types.Int64  `tfsdk:"user_id"`
 	Admin     types.Bool   `tfsdk:"admin"`
 	GroupName types.String `tfsdk:"group_name"`
-	Usernames types.String `tfsdk:"usernames"`
+	Username  types.String `tfsdk:"username"`
 }
 
 func (r *groupUserResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -94,8 +94,8 @@ func (r *groupUserResource) Schema(_ context.Context, _ resource.SchemaRequest, 
 				Description: "Group name",
 				Computed:    true,
 			},
-			"usernames": schema.StringAttribute{
-				Description: "Comma-delimited list of usernames who belong to this group (separated by commas).",
+			"username": schema.StringAttribute{
+				Description: "Username of the user",
 				Computed:    true,
 			},
 		},
@@ -274,7 +274,7 @@ func (r *groupUserResource) populateResourceModel(ctx context.Context, groupUser
 	state.GroupId = types.Int64Value(groupUser.GroupId)
 	state.UserId = types.Int64Value(groupUser.UserId)
 	state.Admin = types.BoolPointerValue(groupUser.Admin)
-	state.Usernames = types.StringValue(groupUser.Usernames)
+	state.Username = types.StringValue(groupUser.Username)
 
 	return
 }

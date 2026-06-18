@@ -30,7 +30,7 @@ type groupUserDataSourceModel struct {
 	UserId    types.Int64  `tfsdk:"user_id"`
 	GroupName types.String `tfsdk:"group_name"`
 	Admin     types.Bool   `tfsdk:"admin"`
-	Usernames types.String `tfsdk:"usernames"`
+	Username  types.String `tfsdk:"username"`
 }
 
 func (r *groupUserDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -76,8 +76,8 @@ func (r *groupUserDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 				Description: "Is this user an administrator of this group?",
 				Computed:    true,
 			},
-			"usernames": schema.StringAttribute{
-				Description: "Comma-delimited list of usernames who belong to this group (separated by commas).",
+			"username": schema.StringAttribute{
+				Description: "Username of the user",
 				Computed:    true,
 			},
 		},
@@ -144,7 +144,7 @@ func (r *groupUserDataSource) populateDataSourceModel(ctx context.Context, group
 	state.GroupId = types.Int64Value(groupUser.GroupId)
 	state.UserId = types.Int64Value(groupUser.UserId)
 	state.Admin = types.BoolPointerValue(groupUser.Admin)
-	state.Usernames = types.StringValue(groupUser.Usernames)
+	state.Username = types.StringValue(groupUser.Username)
 
 	return
 }

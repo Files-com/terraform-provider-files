@@ -46,7 +46,7 @@ resource "files_group_user" "example_group_user" {
 ### Read-Only
 
 - `group_name` (String) Group name
-- `usernames` (String) Comma-delimited list of usernames who belong to this group (separated by commas).
+- `username` (String) Username of the user
 
 ## Import
 
