@@ -184,6 +184,7 @@ func (p *filesProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewBehaviorDataSource,
 		NewBundleDataSource,
 		NewBundleNotificationDataSource,
+		NewChatSessionDataSource,
 		NewChildSiteManagementPolicyDataSource,
 		NewClickwrapDataSource,
 		NewCustomDomainDataSource,
