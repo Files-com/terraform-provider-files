@@ -93,6 +93,7 @@ type siteResourceModel struct {
 	DesktopAppSessionLifetime                types.Int64   `tfsdk:"desktop_app_session_lifetime"`
 	LegacyChecksumsMode                      types.Bool    `tfsdk:"legacy_checksums_mode"`
 	MigrateRemoteServerSyncToSync            types.Bool    `tfsdk:"migrate_remote_server_sync_to_sync"`
+	McpDcrEnabled                            types.Bool    `tfsdk:"mcp_dcr_enabled"`
 	MobileApp                                types.Bool    `tfsdk:"mobile_app"`
 	MobileAppSessionIpPinning                types.Bool    `tfsdk:"mobile_app_session_ip_pinning"`
 	MobileAppSessionLifetime                 types.Int64   `tfsdk:"mobile_app_session_lifetime"`
@@ -700,6 +701,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"migrate_remote_server_sync_to_sync": schema.BoolAttribute{
 				Description: "If true, we will migrate all remote server syncs to the new Sync model.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"mcp_dcr_enabled": schema.BoolAttribute{
+				Description: "Is OAuth DCR (dynamic client registration) for MCP enabled?",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -1846,6 +1855,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	updateAiFeatureAvailability, diags := lib.DynamicToInterface(ctx, path.Root("ai_feature_availability"), config.AiFeatureAvailability)
 	resp.Diagnostics.Append(diags...)
 	paramsSiteUpdate["ai_feature_availability"] = updateAiFeatureAvailability
+	if !config.McpDcrEnabled.IsNull() && !config.McpDcrEnabled.IsUnknown() {
+		paramsSiteUpdate["mcp_dcr_enabled"] = config.McpDcrEnabled.ValueBool()
+	}
 	if !config.AdditionalTextFileTypes.IsNull() && !config.AdditionalTextFileTypes.IsUnknown() {
 		var updateAdditionalTextFileTypes []string
 		diags = config.AdditionalTextFileTypes.ElementsAs(ctx, &updateAdditionalTextFileTypes, false)
@@ -2345,6 +2357,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.DesktopAppSessionLifetime = types.Int64Value(site.DesktopAppSessionLifetime)
 	state.LegacyChecksumsMode = types.BoolPointerValue(site.LegacyChecksumsMode)
 	state.MigrateRemoteServerSyncToSync = types.BoolPointerValue(site.MigrateRemoteServerSyncToSync)
+	state.McpDcrEnabled = types.BoolPointerValue(site.McpDcrEnabled)
 	state.MobileApp = types.BoolPointerValue(site.MobileApp)
 	state.MobileAppSessionIpPinning = types.BoolPointerValue(site.MobileAppSessionIpPinning)
 	state.MobileAppSessionLifetime = types.Int64Value(site.MobileAppSessionLifetime)

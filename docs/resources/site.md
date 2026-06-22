@@ -61,6 +61,7 @@ resource "files_site" "example_site" {
       all_users        = true
     }
   }
+  mcp_dcr_enabled                               = false
   additional_text_file_types                    = ["example"]
   bundle_require_note                           = false
   bundle_send_shared_receipts                   = false
@@ -298,6 +299,7 @@ resource "files_site" "example_site" {
 - `legacy_checksums_mode` (Boolean) Use legacy checksums mode?
 - `login_help_text` (String) Login help text
 - `max_prior_passwords` (Number) Number of prior passwords to disallow
+- `mcp_dcr_enabled` (Boolean) Is OAuth DCR (dynamic client registration) for MCP enabled?
 - `migrate_remote_server_sync_to_sync` (Boolean) If true, we will migrate all remote server syncs to the new Sync model.
 - `mobile_app` (Boolean) Is the mobile app enabled?
 - `mobile_app_session_ip_pinning` (Boolean) Is mobile app session IP pinning enabled?

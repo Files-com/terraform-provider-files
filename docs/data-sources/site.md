@@ -134,6 +134,7 @@ data "files_site" "example_site" {
 - `logo` (String) Branded logo
 - `managed_site_settings` (Dynamic) List of site settings managed by the parent site
 - `max_prior_passwords` (Number) Number of prior passwords to disallow
+- `mcp_dcr_enabled` (Boolean) Is OAuth DCR (dynamic client registration) for MCP enabled?
 - `migrate_remote_server_sync_to_sync` (Boolean) If true, we will migrate all remote server syncs to the new Sync model.
 - `mobile_app` (Boolean) Is the mobile app enabled?
 - `mobile_app_session_ip_pinning` (Boolean) Is mobile app session IP pinning enabled?

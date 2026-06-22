@@ -41,6 +41,7 @@ resource "files_site" "example_site" {
       all_users        = true
     }
   }
+  mcp_dcr_enabled                               = false
   additional_text_file_types                    = ["example"]
   bundle_require_note                           = false
   bundle_send_shared_receipts                   = false

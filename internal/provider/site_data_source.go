@@ -90,6 +90,7 @@ type siteDataSourceModel struct {
 	DesktopAppSessionLifetime                types.Int64   `tfsdk:"desktop_app_session_lifetime"`
 	LegacyChecksumsMode                      types.Bool    `tfsdk:"legacy_checksums_mode"`
 	MigrateRemoteServerSyncToSync            types.Bool    `tfsdk:"migrate_remote_server_sync_to_sync"`
+	McpDcrEnabled                            types.Bool    `tfsdk:"mcp_dcr_enabled"`
 	MobileApp                                types.Bool    `tfsdk:"mobile_app"`
 	MobileAppSessionIpPinning                types.Bool    `tfsdk:"mobile_app_session_ip_pinning"`
 	MobileAppSessionLifetime                 types.Int64   `tfsdk:"mobile_app_session_lifetime"`
@@ -490,6 +491,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"migrate_remote_server_sync_to_sync": schema.BoolAttribute{
 				Description: "If true, we will migrate all remote server syncs to the new Sync model.",
+				Computed:    true,
+			},
+			"mcp_dcr_enabled": schema.BoolAttribute{
+				Description: "Is OAuth DCR (dynamic client registration) for MCP enabled?",
 				Computed:    true,
 			},
 			"mobile_app": schema.BoolAttribute{
@@ -1111,6 +1116,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.DesktopAppSessionLifetime = types.Int64Value(site.DesktopAppSessionLifetime)
 	state.LegacyChecksumsMode = types.BoolPointerValue(site.LegacyChecksumsMode)
 	state.MigrateRemoteServerSyncToSync = types.BoolPointerValue(site.MigrateRemoteServerSyncToSync)
+	state.McpDcrEnabled = types.BoolPointerValue(site.McpDcrEnabled)
 	state.MobileApp = types.BoolPointerValue(site.MobileApp)
 	state.MobileAppSessionIpPinning = types.BoolPointerValue(site.MobileAppSessionIpPinning)
 	state.MobileAppSessionLifetime = types.Int64Value(site.MobileAppSessionLifetime)
