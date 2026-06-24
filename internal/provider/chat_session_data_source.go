@@ -28,7 +28,7 @@ type chatSessionDataSource struct {
 }
 
 type chatSessionDataSourceModel struct {
-	Id           types.Int64   `tfsdk:"id"`
+	Id           types.String  `tfsdk:"id"`
 	UserId       types.Int64   `tfsdk:"user_id"`
 	WorkspaceId  types.Int64   `tfsdk:"workspace_id"`
 	LastActiveAt types.String  `tfsdk:"last_active_at"`
@@ -63,7 +63,7 @@ func (r *chatSessionDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 	resp.Schema = schema.Schema{
 		Description: "A ChatSession represents one conversation with the Files.com AI Assistant.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
+			"id": schema.StringAttribute{
 				Description: "Chat Session ID.",
 				Required:    true,
 			},
@@ -100,13 +100,13 @@ func (r *chatSessionDataSource) Read(ctx context.Context, req datasource.ReadReq
 	}
 
 	paramsChatSessionFind := files_sdk.ChatSessionFindParams{}
-	paramsChatSessionFind.Id = data.Id.ValueInt64()
+	paramsChatSessionFind.Id = data.Id.ValueString()
 
 	chatSession, err := r.client.Find(paramsChatSessionFind, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Files ChatSession",
-			"Could not read chat_session id "+fmt.Sprint(data.Id.ValueInt64())+": "+err.Error(),
+			"Could not read chat_session id "+fmt.Sprint(data.Id.ValueString())+": "+err.Error(),
 		)
 		return
 	}
@@ -124,7 +124,7 @@ func (r *chatSessionDataSource) Read(ctx context.Context, req datasource.ReadReq
 func (r *chatSessionDataSource) populateDataSourceModel(ctx context.Context, chatSession files_sdk.ChatSession, state *chatSessionDataSourceModel) (diags diag.Diagnostics) {
 	var propDiags diag.Diagnostics
 
-	state.Id = types.Int64Value(chatSession.Id)
+	state.Id = types.StringValue(chatSession.Id)
 	state.UserId = types.Int64Value(chatSession.UserId)
 	state.WorkspaceId = types.Int64Value(chatSession.WorkspaceId)
 	if err := lib.TimeToStringType(ctx, path.Root("last_active_at"), chatSession.LastActiveAt, &state.LastActiveAt); err != nil {

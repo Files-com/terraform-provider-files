@@ -14,7 +14,7 @@ A ChatSession represents one conversation with the Files.com AI Assistant.
 
 ```terraform
 data "files_chat_session" "example_chat_session" {
-  id = 1
+  id = "id"
 }
 ```
 
@@ -23,7 +23,7 @@ data "files_chat_session" "example_chat_session" {
 
 ### Required
 
-- `id` (Number) Chat Session ID.
+- `id` (String) Chat Session ID.
 
 ### Read-Only
 

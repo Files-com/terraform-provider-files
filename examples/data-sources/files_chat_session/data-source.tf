@@ -1,3 +1,3 @@
 data "files_chat_session" "example_chat_session" {
-  id = 1
+  id = "id"
 }
