@@ -538,7 +538,7 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed:    true,
 			},
 			"domain_letsencrypt_chain": schema.StringAttribute{
-				Description: "Letsencrypt chain to use when registering SSL Certificate for domain.",
+				Description: "Letsencrypt chain to use when registering SSL Certificate for domain. No longer used as of 2026.",
 				Computed:    true,
 			},
 			"email": schema.StringAttribute{

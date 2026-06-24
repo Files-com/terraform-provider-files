@@ -788,7 +788,7 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"domain_letsencrypt_chain": schema.StringAttribute{
-				Description: "Letsencrypt chain to use when registering SSL Certificate for domain.",
+				Description: "Letsencrypt chain to use when registering SSL Certificate for domain. No longer used as of 2026.",
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
