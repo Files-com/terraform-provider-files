@@ -56,6 +56,7 @@ data "files_bundle" "example_bundle" {
 - `group_id` (Number) Owning group ID. If set, members of this group can view, edit, and share this Share Link.
 - `has_inbox` (Boolean) Does this bundle have an associated inbox?
 - `inbox_id` (Number) ID of the associated inbox, if available.
+- `internal_name` (String) Internal name for identifying this Share Link.
 - `max_uses` (Number) Maximum number of times bundle can be accessed
 - `note` (String) Bundle internal note
 - `password_protected` (Boolean) Is this bundle password protected?

@@ -57,6 +57,7 @@ type bundleDataSourceModel struct {
 	DeletedAt                                    types.String  `tfsdk:"deleted_at"`
 	DontSeparateSubmissionsByFolder              types.Bool    `tfsdk:"dont_separate_submissions_by_folder"`
 	MaxUses                                      types.Int64   `tfsdk:"max_uses"`
+	InternalName                                 types.String  `tfsdk:"internal_name"`
 	Note                                         types.String  `tfsdk:"note"`
 	PathTemplate                                 types.String  `tfsdk:"path_template"`
 	PathTemplateTimeZone                         types.String  `tfsdk:"path_template_time_zone"`
@@ -213,6 +214,10 @@ func (r *bundleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			},
 			"max_uses": schema.Int64Attribute{
 				Description: "Maximum number of times bundle can be accessed",
+				Computed:    true,
+			},
+			"internal_name": schema.StringAttribute{
+				Description: "Internal name for identifying this Share Link.",
 				Computed:    true,
 			},
 			"note": schema.StringAttribute{
@@ -380,6 +385,7 @@ func (r *bundleDataSource) populateDataSourceModel(ctx context.Context, bundle f
 	}
 	state.DontSeparateSubmissionsByFolder = types.BoolPointerValue(bundle.DontSeparateSubmissionsByFolder)
 	state.MaxUses = types.Int64Value(bundle.MaxUses)
+	state.InternalName = types.StringValue(bundle.InternalName)
 	state.Note = types.StringValue(bundle.Note)
 	state.PathTemplate = types.StringValue(bundle.PathTemplate)
 	state.PathTemplateTimeZone = types.StringValue(bundle.PathTemplateTimeZone)

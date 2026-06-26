@@ -53,6 +53,7 @@ type bundleResourceModel struct {
 	BypassesSiteExpirationRules                  types.Bool    `tfsdk:"bypasses_site_expiration_rules"`
 	DontSeparateSubmissionsByFolder              types.Bool    `tfsdk:"dont_separate_submissions_by_folder"`
 	MaxUses                                      types.Int64   `tfsdk:"max_uses"`
+	InternalName                                 types.String  `tfsdk:"internal_name"`
 	Note                                         types.String  `tfsdk:"note"`
 	PathTemplate                                 types.String  `tfsdk:"path_template"`
 	PathTemplateTimeZone                         types.String  `tfsdk:"path_template_time_zone"`
@@ -228,6 +229,14 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"internal_name": schema.StringAttribute{
+				Description: "Internal name for identifying this Share Link.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"note": schema.StringAttribute{
@@ -481,6 +490,7 @@ func (r *bundleResource) Create(ctx context.Context, req resource.CreateRequest,
 	}
 	paramsBundleCreate.MaxUses = plan.MaxUses.ValueInt64()
 	paramsBundleCreate.GroupId = plan.GroupId.ValueInt64()
+	paramsBundleCreate.InternalName = plan.InternalName.ValueString()
 	paramsBundleCreate.Description = plan.Description.ValueString()
 	paramsBundleCreate.Note = plan.Note.ValueString()
 	paramsBundleCreate.Code = plan.Code.ValueString()
@@ -663,6 +673,9 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if !config.GroupId.IsNull() && !config.GroupId.IsUnknown() {
 		paramsBundleUpdate["group_id"] = config.GroupId.ValueInt64()
 	}
+	if !config.InternalName.IsNull() && !config.InternalName.IsUnknown() {
+		paramsBundleUpdate["internal_name"] = config.InternalName.ValueString()
+	}
 	if !config.Note.IsNull() && !config.Note.IsUnknown() {
 		paramsBundleUpdate["note"] = config.Note.ValueString()
 	}
@@ -843,6 +856,7 @@ func (r *bundleResource) populateResourceModel(ctx context.Context, bundle files
 	}
 	state.DontSeparateSubmissionsByFolder = types.BoolPointerValue(bundle.DontSeparateSubmissionsByFolder)
 	state.MaxUses = types.Int64Value(bundle.MaxUses)
+	state.InternalName = types.StringValue(bundle.InternalName)
 	state.Note = types.StringValue(bundle.Note)
 	state.PathTemplate = types.StringValue(bundle.PathTemplate)
 	state.PathTemplateTimeZone = types.StringValue(bundle.PathTemplateTimeZone)

@@ -33,6 +33,7 @@ resource "files_bundle" "example_bundle" {
   finalize_snapshot                                   = false
   max_uses                                            = 1
   group_id                                            = 1
+  internal_name                                       = "Quarterly reports"
   description                                         = "The public description of the bundle."
   note                                                = "The internal note on the bundle."
   code                                                = "abc123"
@@ -76,6 +77,7 @@ resource "files_bundle" "example_bundle" {
 - `form_field_set_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Id of Form Field Set to use with this bundle
 - `group_id` (Number) Owning group ID. If set, members of this group can view, edit, and share this Share Link.
 - `inbox_id` (Number) ID of the associated inbox, if available.
+- `internal_name` (String) Internal name for identifying this Share Link.
 - `max_uses` (Number) Maximum number of times bundle can be accessed
 - `note` (String) Bundle internal note
 - `password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password for this bundle.

@@ -10,6 +10,7 @@ resource "files_bundle" "example_bundle" {
   finalize_snapshot                                   = false
   max_uses                                            = 1
   group_id                                            = 1
+  internal_name                                       = "Quarterly reports"
   description                                         = "The public description of the bundle."
   note                                                = "The internal note on the bundle."
   code                                                = "abc123"
