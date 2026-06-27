@@ -30,6 +30,7 @@ type chatSessionDataSource struct {
 type chatSessionDataSourceModel struct {
 	Id           types.String  `tfsdk:"id"`
 	UserId       types.Int64   `tfsdk:"user_id"`
+	AiTaskId     types.Int64   `tfsdk:"ai_task_id"`
 	WorkspaceId  types.Int64   `tfsdk:"workspace_id"`
 	LastActiveAt types.String  `tfsdk:"last_active_at"`
 	CreatedAt    types.String  `tfsdk:"created_at"`
@@ -69,6 +70,10 @@ func (r *chatSessionDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 			},
 			"user_id": schema.Int64Attribute{
 				Description: "User ID.",
+				Computed:    true,
+			},
+			"ai_task_id": schema.Int64Attribute{
+				Description: "AI Task ID. Present when the conversation was started by an AI Task.",
 				Computed:    true,
 			},
 			"workspace_id": schema.Int64Attribute{
@@ -126,6 +131,7 @@ func (r *chatSessionDataSource) populateDataSourceModel(ctx context.Context, cha
 
 	state.Id = types.StringValue(chatSession.Id)
 	state.UserId = types.Int64Value(chatSession.UserId)
+	state.AiTaskId = types.Int64Value(chatSession.AiTaskId)
 	state.WorkspaceId = types.Int64Value(chatSession.WorkspaceId)
 	if err := lib.TimeToStringType(ctx, path.Root("last_active_at"), chatSession.LastActiveAt, &state.LastActiveAt); err != nil {
 		diags.AddError(

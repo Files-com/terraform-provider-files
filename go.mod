@@ -10,6 +10,8 @@ require (
 	github.com/hashicorp/terraform-plugin-testing v1.15.0
 )
 
+require github.com/lpar/date v1.0.0 // indirect
+
 require (
 	dario.cat/mergo v1.0.2 // indirect
 	github.com/BurntSushi/toml v1.5.0 // indirect
@@ -59,7 +61,7 @@ require (
 	github.com/hashicorp/yamux v0.1.2 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.10 // indirect
-	github.com/lpar/date v1.0.0 // indirect
+	github.com/lpar/calendar v0.2.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.16 // indirect

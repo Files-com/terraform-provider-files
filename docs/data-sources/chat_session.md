@@ -27,6 +27,7 @@ data "files_chat_session" "example_chat_session" {
 
 ### Read-Only
 
+- `ai_task_id` (Number) AI Task ID. Present when the conversation was started by an AI Task.
 - `created_at` (String) Chat session creation date/time.
 - `last_active_at` (String) Most recent chat activity date/time.
 - `messages` (Dynamic) Visible conversation messages in this chat session. For performance reasons, this is not provided when listing chat sessions.
