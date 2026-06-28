@@ -42,6 +42,7 @@ type aiTaskResourceModel struct {
 	Prompt                types.String `tfsdk:"prompt"`
 	WorkspaceId           types.Int64  `tfsdk:"workspace_id"`
 	Description           types.String `tfsdk:"description"`
+	PermissionSet         types.String `tfsdk:"permission_set"`
 	Path                  types.String `tfsdk:"path"`
 	Source                types.String `tfsdk:"source"`
 	Disabled              types.Bool   `tfsdk:"disabled"`
@@ -108,6 +109,17 @@ func (r *aiTaskResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Description: "AI Task description.",
 				Computed:    true,
 				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"permission_set": schema.StringAttribute{
+				Description: "Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`.",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("full", "files_only"),
+				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
@@ -260,6 +272,7 @@ func (r *aiTaskResource) Create(ctx context.Context, req resource.CreateRequest,
 	paramsAiTaskCreate.Interval = plan.Interval.ValueString()
 	paramsAiTaskCreate.Name = plan.Name.ValueString()
 	paramsAiTaskCreate.Path = plan.Path.ValueString()
+	paramsAiTaskCreate.PermissionSet = paramsAiTaskCreate.PermissionSet.Enum()[plan.PermissionSet.ValueString()]
 	paramsAiTaskCreate.Prompt = plan.Prompt.ValueString()
 	paramsAiTaskCreate.RecurringDay = plan.RecurringDay.ValueInt64()
 	if !plan.ScheduleDaysOfWeek.IsNull() && !plan.ScheduleDaysOfWeek.IsUnknown() {
@@ -373,6 +386,9 @@ func (r *aiTaskResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if !config.Path.IsNull() && !config.Path.IsUnknown() {
 		paramsAiTaskUpdate["path"] = config.Path.ValueString()
 	}
+	if !config.PermissionSet.IsNull() && !config.PermissionSet.IsUnknown() {
+		paramsAiTaskUpdate["permission_set"] = config.PermissionSet.ValueString()
+	}
 	if !config.Prompt.IsNull() && !config.Prompt.IsUnknown() {
 		paramsAiTaskUpdate["prompt"] = config.Prompt.ValueString()
 	}
@@ -484,6 +500,7 @@ func (r *aiTaskResource) populateResourceModel(ctx context.Context, aiTask files
 	state.Name = types.StringValue(aiTask.Name)
 	state.Description = types.StringValue(aiTask.Description)
 	state.Prompt = types.StringValue(aiTask.Prompt)
+	state.PermissionSet = types.StringValue(aiTask.PermissionSet)
 	state.Path = types.StringValue(aiTask.Path)
 	state.Source = types.StringValue(aiTask.Source)
 	state.Disabled = types.BoolPointerValue(aiTask.Disabled)

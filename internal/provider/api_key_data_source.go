@@ -45,6 +45,7 @@ type apiKeyDataSourceModel struct {
 	SiteName            types.String `tfsdk:"site_name"`
 	Url                 types.String `tfsdk:"url"`
 	UserId              types.Int64  `tfsdk:"user_id"`
+	WorkspaceId         types.Int64  `tfsdk:"workspace_id"`
 }
 
 func (r *apiKeyDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -72,7 +73,7 @@ func (r *apiKeyDataSource) Metadata(_ context.Context, req datasource.MetadataRe
 
 func (r *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "An APIKey is a key that allows programmatic access to your Site.\n\n\n\nAPI keys confer all the permissions of the user who owns them.\n\nIf an API key is created without a user owner, it is considered a site-wide API key, which has full permissions to do anything on the Site.\n\n\n\nWe recommend registering API keys to service users wherever possible and then using User or Group Permissions to restrict that API Key appropriately.",
+		Description: "An APIKey is a key that allows programmatic access to your Site.\n\n\n\nAPI keys confer all the permissions of the user who owns them unless the key uses a restricted permission set.\n\nIf an API key is created without a user owner, it is considered a site-wide API key. Site-wide API keys with the `files_only` permission set are restricted to file-user permissions and workspace scoping.\n\n\n\nWe recommend registering API keys to service users wherever possible and then using User or Group Permissions to restrict that API Key appropriately.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "API Key ID",
@@ -121,7 +122,7 @@ func (r *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Computed:    true,
 			},
 			"permission_set": schema.StringAttribute{
-				Description: "Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.",
+				Description: "Permissions for this API Key. Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Keys with the `files_only` permission set can perform file operations as a full-access file user in the key's workspace scope, but cannot use site admin, workspace admin, folder admin, group admin, partner admin, or billing privileges from the owning user.",
 				Computed:    true,
 			},
 			"platform": schema.StringAttribute{
@@ -142,6 +143,10 @@ func (r *apiKeyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			},
 			"user_id": schema.Int64Attribute{
 				Description: "User ID for the owner of this API Key.  May be blank for Site-wide API Keys.",
+				Computed:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID for this API Key. `0` means the default workspace.",
 				Computed:    true,
 			},
 		},
@@ -211,6 +216,7 @@ func (r *apiKeyDataSource) populateDataSourceModel(ctx context.Context, apiKey f
 	state.SiteName = types.StringValue(apiKey.SiteName)
 	state.Url = types.StringValue(apiKey.Url)
 	state.UserId = types.Int64Value(apiKey.UserId)
+	state.WorkspaceId = types.Int64Value(apiKey.WorkspaceId)
 
 	return
 }

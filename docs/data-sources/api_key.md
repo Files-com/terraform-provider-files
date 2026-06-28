@@ -4,8 +4,8 @@ page_title: "files_api_key Data Source - files"
 subcategory: ""
 description: |-
   An APIKey is a key that allows programmatic access to your Site.
-  API keys confer all the permissions of the user who owns them.
-  If an API key is created without a user owner, it is considered a site-wide API key, which has full permissions to do anything on the Site.
+  API keys confer all the permissions of the user who owns them unless the key uses a restricted permission set.
+  If an API key is created without a user owner, it is considered a site-wide API key. Site-wide API keys with the files_only permission set are restricted to file-user permissions and workspace scoping.
   We recommend registering API keys to service users wherever possible and then using User or Group Permissions to restrict that API Key appropriately.
 ---
 
@@ -15,9 +15,9 @@ An APIKey is a key that allows programmatic access to your Site.
 
 
 
-API keys confer all the permissions of the user who owns them.
+API keys confer all the permissions of the user who owns them unless the key uses a restricted permission set.
 
-If an API key is created without a user owner, it is considered a site-wide API key, which has full permissions to do anything on the Site.
+If an API key is created without a user owner, it is considered a site-wide API key. Site-wide API keys with the `files_only` permission set are restricted to file-user permissions and workspace scoping.
 
 
 
@@ -50,9 +50,10 @@ data "files_api_key" "example_api_key" {
 - `key` (String, Sensitive) API Key actual key string
 - `last_use_at` (String) API Key last used - note this value is only updated once per 3 hour period, so the 'actual' time of last use may be up to 3 hours later than this timestamp.
 - `name` (String) Internal name for the API Key.  For your use.
-- `permission_set` (String) Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.
+- `permission_set` (String) Permissions for this API Key. Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Keys with the `files_only` permission set can perform file operations as a full-access file user in the key's workspace scope, but cannot use site admin, workspace admin, folder admin, group admin, partner admin, or billing privileges from the owning user.
 - `platform` (String) If this API key represents a Desktop app, what platform was it created on?
 - `site_id` (Number) Site ID
 - `site_name` (String) Site Name
 - `url` (String) URL for API host.
 - `user_id` (Number) User ID for the owner of this API Key.  May be blank for Site-wide API Keys.
+- `workspace_id` (Number) Workspace ID for this API Key. `0` means the default workspace.

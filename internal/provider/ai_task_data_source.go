@@ -33,6 +33,7 @@ type aiTaskDataSourceModel struct {
 	Name                  types.String `tfsdk:"name"`
 	Description           types.String `tfsdk:"description"`
 	Prompt                types.String `tfsdk:"prompt"`
+	PermissionSet         types.String `tfsdk:"permission_set"`
 	Path                  types.String `tfsdk:"path"`
 	Source                types.String `tfsdk:"source"`
 	Disabled              types.Bool   `tfsdk:"disabled"`
@@ -96,6 +97,10 @@ func (r *aiTaskDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			},
 			"prompt": schema.StringAttribute{
 				Description: "Prompt sent when this AI Task is invoked.",
+				Computed:    true,
+			},
+			"permission_set": schema.StringAttribute{
+				Description: "Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`.",
 				Computed:    true,
 			},
 			"path": schema.StringAttribute{
@@ -207,6 +212,7 @@ func (r *aiTaskDataSource) populateDataSourceModel(ctx context.Context, aiTask f
 	state.Name = types.StringValue(aiTask.Name)
 	state.Description = types.StringValue(aiTask.Description)
 	state.Prompt = types.StringValue(aiTask.Prompt)
+	state.PermissionSet = types.StringValue(aiTask.PermissionSet)
 	state.Path = types.StringValue(aiTask.Path)
 	state.Source = types.StringValue(aiTask.Source)
 	state.Disabled = types.BoolPointerValue(aiTask.Disabled)

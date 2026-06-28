@@ -6,5 +6,6 @@ resource "files_api_key" "example_api_key" {
   aws_style_credentials = true
   path                  = "shared/docs"
   permission_set        = "full"
+  workspace_id          = 1
 }
 

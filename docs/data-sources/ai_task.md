@@ -37,6 +37,7 @@ data "files_ai_task" "example_ai_task" {
 - `master_admin_user_id` (Number) Master User ID used for AI Task invocations.
 - `name` (String) AI Task name.
 - `path` (String) Path scope used for action-triggered AI Tasks. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
+- `permission_set` (String) Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`.
 - `prompt` (String) Prompt sent when this AI Task is invoked.
 - `recurring_day` (Number) If trigger is `daily`, this selects the day number inside the chosen interval.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.

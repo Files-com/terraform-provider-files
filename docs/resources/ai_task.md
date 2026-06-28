@@ -20,6 +20,7 @@ resource "files_ai_task" "example_ai_task" {
   interval              = "day"
   name                  = "Summarize daily reports"
   path                  = "incoming/reports"
+  permission_set        = "files_only"
   prompt                = "Summarize the uploaded file and identify follow-up actions."
   recurring_day         = 1
   schedule_days_of_week = [1, 3, 5]
@@ -47,6 +48,7 @@ resource "files_ai_task" "example_ai_task" {
 - `holiday_region` (String) Optional holiday region used by scheduled AI Tasks.
 - `interval` (String) If trigger is `daily`, this specifies how often to run the AI Task.
 - `path` (String) Path scope used for action-triggered AI Tasks. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
+- `permission_set` (String) Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`.
 - `recurring_day` (Number) If trigger is `daily`, this selects the day number inside the chosen interval.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.
 - `schedule_time_zone` (String) Time zone used by the AI Task schedule.

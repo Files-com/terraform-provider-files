@@ -5,6 +5,7 @@ resource "files_ai_task" "example_ai_task" {
   interval              = "day"
   name                  = "Summarize daily reports"
   path                  = "incoming/reports"
+  permission_set        = "files_only"
   prompt                = "Summarize the uploaded file and identify follow-up actions."
   recurring_day         = 1
   schedule_days_of_week = [1, 3, 5]

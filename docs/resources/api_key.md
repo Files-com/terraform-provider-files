@@ -4,8 +4,8 @@ page_title: "files_api_key Resource - files"
 subcategory: ""
 description: |-
   An APIKey is a key that allows programmatic access to your Site.
-  API keys confer all the permissions of the user who owns them.
-  If an API key is created without a user owner, it is considered a site-wide API key, which has full permissions to do anything on the Site.
+  API keys confer all the permissions of the user who owns them unless the key uses a restricted permission set.
+  If an API key is created without a user owner, it is considered a site-wide API key. Site-wide API keys with the files_only permission set are restricted to file-user permissions and workspace scoping.
   We recommend registering API keys to service users wherever possible and then using User or Group Permissions to restrict that API Key appropriately.
 ---
 
@@ -15,9 +15,9 @@ An APIKey is a key that allows programmatic access to your Site.
 
 
 
-API keys confer all the permissions of the user who owns them.
+API keys confer all the permissions of the user who owns them unless the key uses a restricted permission set.
 
-If an API key is created without a user owner, it is considered a site-wide API key, which has full permissions to do anything on the Site.
+If an API key is created without a user owner, it is considered a site-wide API key. Site-wide API keys with the `files_only` permission set are restricted to file-user permissions and workspace scoping.
 
 
 
@@ -34,6 +34,7 @@ resource "files_api_key" "example_api_key" {
   aws_style_credentials = true
   path                  = "shared/docs"
   permission_set        = "full"
+  workspace_id          = 1
 }
 ```
 
@@ -52,8 +53,9 @@ resource "files_api_key" "example_api_key" {
 - `description` (String) User-supplied description of API key.
 - `expires_at` (String) API Key expiration date
 - `path` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Folder path restriction for `office_integration` permission set API keys.
-- `permission_set` (String) Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.
+- `permission_set` (String) Permissions for this API Key. Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Keys with the `files_only` permission set can perform file operations as a full-access file user in the key's workspace scope, but cannot use site admin, workspace admin, folder admin, group admin, partner admin, or billing privileges from the owning user.
 - `user_id` (Number) User ID for the owner of this API Key.  May be blank for Site-wide API Keys.
+- `workspace_id` (Number) Workspace ID for this API Key. `0` means the default workspace.
 
 ### Read-Only
 

@@ -44,6 +44,7 @@ type apiKeyResourceModel struct {
 	AwsStyleCredentials types.Bool   `tfsdk:"aws_style_credentials"`
 	PermissionSet       types.String `tfsdk:"permission_set"`
 	UserId              types.Int64  `tfsdk:"user_id"`
+	WorkspaceId         types.Int64  `tfsdk:"workspace_id"`
 	Path                types.String `tfsdk:"path"`
 	Id                  types.Int64  `tfsdk:"id"`
 	DescriptiveLabel    types.String `tfsdk:"descriptive_label"`
@@ -83,7 +84,7 @@ func (r *apiKeyResource) Metadata(_ context.Context, req resource.MetadataReques
 
 func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "An APIKey is a key that allows programmatic access to your Site.\n\n\n\nAPI keys confer all the permissions of the user who owns them.\n\nIf an API key is created without a user owner, it is considered a site-wide API key, which has full permissions to do anything on the Site.\n\n\n\nWe recommend registering API keys to service users wherever possible and then using User or Group Permissions to restrict that API Key appropriately.",
+		Description: "An APIKey is a key that allows programmatic access to your Site.\n\n\n\nAPI keys confer all the permissions of the user who owns them unless the key uses a restricted permission set.\n\nIf an API key is created without a user owner, it is considered a site-wide API key. Site-wide API keys with the `files_only` permission set are restricted to file-user permissions and workspace scoping.\n\n\n\nWe recommend registering API keys to service users wherever possible and then using User or Group Permissions to restrict that API Key appropriately.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Internal name for the API Key.  For your use.",
@@ -115,11 +116,11 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				},
 			},
 			"permission_set": schema.StringAttribute{
-				Description: "Permissions for this API Key. It must be full for site-wide API Keys.  Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Additional permission sets may become available in the future, such as for a Site Admin to give a key with no administrator privileges.  If you have ideas for permission sets, please let us know.",
+				Description: "Permissions for this API Key. Keys with the `desktop_app` permission set only have the ability to do the functions provided in our Desktop App (File and Share Link operations). Keys with the `office_integration` permission set are auto generated, and automatically expire, to allow users to interact with office integration platforms. Keys with the `files_only` permission set can perform file operations as a full-access file user in the key's workspace scope, but cannot use site admin, workspace admin, folder admin, group admin, partner admin, or billing privileges from the owning user.",
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("none", "full", "desktop_app", "sync_app", "office_integration", "mobile_app"),
+					stringvalidator.OneOf("none", "full", "desktop_app", "sync_app", "office_integration", "mobile_app", "files_only"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
@@ -128,6 +129,15 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			},
 			"user_id": schema.Int64Attribute{
 				Description: "User ID for the owner of this API Key.  May be blank for Site-wide API Keys.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
+				},
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID for this API Key. `0` means the default workspace.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
@@ -235,6 +245,7 @@ func (r *apiKeyResource) Create(ctx context.Context, req resource.CreateRequest,
 	}
 	paramsApiKeyCreate.Path = config.Path.ValueString()
 	paramsApiKeyCreate.PermissionSet = paramsApiKeyCreate.PermissionSet.Enum()[plan.PermissionSet.ValueString()]
+	paramsApiKeyCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -434,6 +445,7 @@ func (r *apiKeyResource) populateResourceModel(ctx context.Context, apiKey files
 	state.SiteName = types.StringValue(apiKey.SiteName)
 	state.Url = types.StringValue(apiKey.Url)
 	state.UserId = types.Int64Value(apiKey.UserId)
+	state.WorkspaceId = types.Int64Value(apiKey.WorkspaceId)
 
 	return
 }
