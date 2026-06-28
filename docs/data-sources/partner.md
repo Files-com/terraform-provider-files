@@ -27,6 +27,7 @@ data "files_partner" "example_partner" {
 
 ### Read-Only
 
+- `ai_assistant_personality_id` (Number) AI Assistant Personality ID assigned to this Partner, if any. Users in the Partner inherit it unless a direct per-user assignment overrides it.
 - `allow_bypassing_2fa_policies` (Boolean) Allow Partner Admins to change Two-Factor Authentication requirements for Partner Users.
 - `allow_credential_changes` (Boolean) Allow Partner Admins to change or reset credentials for users belonging to this Partner.
 - `allow_providing_gpg_keys` (Boolean) Allow Partner Admins to provide GPG keys.

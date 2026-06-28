@@ -33,6 +33,7 @@ type groupDataSourceModel struct {
 	Notes                         types.String `tfsdk:"notes"`
 	UserIds                       types.String `tfsdk:"user_ids"`
 	Usernames                     types.String `tfsdk:"usernames"`
+	AiAssistantPersonalityId      types.Int64  `tfsdk:"ai_assistant_personality_id"`
 	FtpPermission                 types.Bool   `tfsdk:"ftp_permission"`
 	SftpPermission                types.Bool   `tfsdk:"sftp_permission"`
 	DavPermission                 types.Bool   `tfsdk:"dav_permission"`
@@ -95,6 +96,10 @@ func (r *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 			},
 			"usernames": schema.StringAttribute{
 				Description: "Comma-delimited list of usernames who belong to this group (separated by commas)",
+				Computed:    true,
+			},
+			"ai_assistant_personality_id": schema.Int64Attribute{
+				Description: "AI Assistant Personality ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user or Partner assignment overrides it.",
 				Computed:    true,
 			},
 			"ftp_permission": schema.BoolAttribute{
@@ -167,6 +172,7 @@ func (r *groupDataSource) populateDataSourceModel(ctx context.Context, group fil
 	state.Notes = types.StringValue(group.Notes)
 	state.UserIds = types.StringValue(group.UserIds)
 	state.Usernames = types.StringValue(group.Usernames)
+	state.AiAssistantPersonalityId = types.Int64Value(group.AiAssistantPersonalityId)
 	state.FtpPermission = types.BoolPointerValue(group.FtpPermission)
 	state.SftpPermission = types.BoolPointerValue(group.SftpPermission)
 	state.DavPermission = types.BoolPointerValue(group.DavPermission)

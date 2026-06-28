@@ -176,6 +176,7 @@ func (p *filesProvider) Configure(ctx context.Context, req provider.ConfigureReq
 func (p *filesProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewActionNotificationExportDataSource,
+		NewAiAssistantPersonalityDataSource,
 		NewAiTaskDataSource,
 		NewApiKeyDataSource,
 		NewAs2PartnerDataSource,
@@ -253,6 +254,7 @@ func (p *filesProvider) DataSources(_ context.Context) []func() datasource.DataS
 
 func (p *filesProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
+		NewAiAssistantPersonalityResource,
 		NewAiTaskResource,
 		NewApiKeyResource,
 		NewAs2PartnerResource,

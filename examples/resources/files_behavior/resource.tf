@@ -303,3 +303,12 @@ resource "files_behavior" "example_metadata_category_behavior" {
     metadata_category_id = 1
   }
 }
+
+resource "files_behavior" "example_auto_unzip_behavior" {
+  path     = "path"
+  behavior = "auto_unzip"
+  value    = {
+    destination_path = "/Uploads/Unzipped/%Y/%m/%d"
+    path_time_zone   = "Eastern Time (US & Canada)"
+  }
+}

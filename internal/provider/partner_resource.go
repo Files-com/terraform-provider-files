@@ -44,6 +44,7 @@ type partnerResourceModel struct {
 	AllowProvidingGpgKeys      types.Bool   `tfsdk:"allow_providing_gpg_keys"`
 	AllowUserCreation          types.Bool   `tfsdk:"allow_user_creation"`
 	CcEmailsToResponsibleParty types.Bool   `tfsdk:"cc_emails_to_responsible_party"`
+	AiAssistantPersonalityId   types.Int64  `tfsdk:"ai_assistant_personality_id"`
 	WorkspaceId                types.Int64  `tfsdk:"workspace_id"`
 	Notes                      types.String `tfsdk:"notes"`
 	ResponsibleGroupId         types.Int64  `tfsdk:"responsible_group_id"`
@@ -138,6 +139,14 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"ai_assistant_personality_id": schema.Int64Attribute{
+				Description: "AI Assistant Personality ID assigned to this Partner, if any. Users in the Partner inherit it unless a direct per-user assignment overrides it.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"workspace_id": schema.Int64Attribute{
 				Description: "ID of the Workspace associated with this Partner.",
 				Computed:    true,
@@ -222,6 +231,7 @@ func (r *partnerResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	paramsPartnerCreate := files_sdk.PartnerCreateParams{}
+	paramsPartnerCreate.AiAssistantPersonalityId = plan.AiAssistantPersonalityId.ValueInt64()
 	paramsPartnerCreate.AllowedIps = plan.AllowedIps.ValueString()
 	if !plan.AllowBypassing2faPolicies.IsNull() && !plan.AllowBypassing2faPolicies.IsUnknown() {
 		paramsPartnerCreate.AllowBypassing2faPolicies = plan.AllowBypassing2faPolicies.ValueBoolPointer()
@@ -321,6 +331,9 @@ func (r *partnerResource) Update(ctx context.Context, req resource.UpdateRequest
 	paramsPartnerUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
 		paramsPartnerUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.AiAssistantPersonalityId.IsNull() && !config.AiAssistantPersonalityId.IsUnknown() {
+		paramsPartnerUpdate["ai_assistant_personality_id"] = config.AiAssistantPersonalityId.ValueInt64()
 	}
 	if !config.AllowedIps.IsNull() && !config.AllowedIps.IsUnknown() {
 		paramsPartnerUpdate["allowed_ips"] = config.AllowedIps.ValueString()
@@ -435,6 +448,7 @@ func (r *partnerResource) populateResourceModel(ctx context.Context, partner fil
 	state.AllowUserCreation = types.BoolPointerValue(partner.AllowUserCreation)
 	state.CcEmailsToResponsibleParty = types.BoolPointerValue(partner.CcEmailsToResponsibleParty)
 	state.Id = types.Int64Value(partner.Id)
+	state.AiAssistantPersonalityId = types.Int64Value(partner.AiAssistantPersonalityId)
 	state.WorkspaceId = types.Int64Value(partner.WorkspaceId)
 	state.Name = types.StringValue(partner.Name)
 	state.Notes = types.StringValue(partner.Notes)

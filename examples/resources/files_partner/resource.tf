@@ -1,4 +1,5 @@
 resource "files_partner" "example_partner" {
+  ai_assistant_personality_id    = 1
   allowed_ips                    = "10.0.0.0/8\n127.0.0.1"
   allow_bypassing_2fa_policies   = false
   allow_credential_changes       = false

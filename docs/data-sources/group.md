@@ -38,6 +38,7 @@ data "files_group" "example_group" {
 ### Read-Only
 
 - `admin_ids` (String) Comma-delimited list of user IDs who are group administrators (separated by commas)
+- `ai_assistant_personality_id` (Number) AI Assistant Personality ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user or Partner assignment overrides it.
 - `allowed_ips` (String) A list of allowed IPs if applicable.  Newline delimited
 - `dav_permission` (Boolean) If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level.
 - `desktop_configuration_profile_id` (Number) Desktop Configuration Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.

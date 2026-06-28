@@ -33,6 +33,7 @@ type partnerDataSourceModel struct {
 	AllowProvidingGpgKeys      types.Bool   `tfsdk:"allow_providing_gpg_keys"`
 	AllowUserCreation          types.Bool   `tfsdk:"allow_user_creation"`
 	CcEmailsToResponsibleParty types.Bool   `tfsdk:"cc_emails_to_responsible_party"`
+	AiAssistantPersonalityId   types.Int64  `tfsdk:"ai_assistant_personality_id"`
 	WorkspaceId                types.Int64  `tfsdk:"workspace_id"`
 	Name                       types.String `tfsdk:"name"`
 	Notes                      types.String `tfsdk:"notes"`
@@ -98,6 +99,10 @@ func (r *partnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 			},
 			"cc_emails_to_responsible_party": schema.BoolAttribute{
 				Description: "When `true`, emails sent to Partner users are copied to the responsible User or Group.",
+				Computed:    true,
+			},
+			"ai_assistant_personality_id": schema.Int64Attribute{
+				Description: "AI Assistant Personality ID assigned to this Partner, if any. Users in the Partner inherit it unless a direct per-user assignment overrides it.",
 				Computed:    true,
 			},
 			"workspace_id": schema.Int64Attribute{
@@ -186,6 +191,7 @@ func (r *partnerDataSource) populateDataSourceModel(ctx context.Context, partner
 	state.AllowUserCreation = types.BoolPointerValue(partner.AllowUserCreation)
 	state.CcEmailsToResponsibleParty = types.BoolPointerValue(partner.CcEmailsToResponsibleParty)
 	state.Id = types.Int64Value(partner.Id)
+	state.AiAssistantPersonalityId = types.Int64Value(partner.AiAssistantPersonalityId)
 	state.WorkspaceId = types.Int64Value(partner.WorkspaceId)
 	state.Name = types.StringValue(partner.Name)
 	state.Notes = types.StringValue(partner.Notes)

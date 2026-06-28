@@ -48,6 +48,7 @@ type userResourceModel struct {
 	BypassUserLifecycleRules               types.Bool              `tfsdk:"bypass_user_lifecycle_rules"`
 	DavPermission                          types.Bool              `tfsdk:"dav_permission"`
 	Disabled                               types.Bool              `tfsdk:"disabled"`
+	AiAssistantPersonalityId               types.Int64             `tfsdk:"ai_assistant_personality_id"`
 	DesktopConfigurationProfileId          types.Int64             `tfsdk:"desktop_configuration_profile_id"`
 	Email                                  types.String            `tfsdk:"email"`
 	FilesystemLayout                       types.String            `tfsdk:"filesystem_layout"`
@@ -237,6 +238,14 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"ai_assistant_personality_id": schema.Int64Attribute{
+				Description: "AI Assistant Personality ID assigned directly to this user, if any.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"desktop_configuration_profile_id": schema.Int64Attribute{
@@ -804,6 +813,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !config.AnnouncementsRead.IsNull() && !config.AnnouncementsRead.IsUnknown() {
 		paramsUserCreate.AnnouncementsRead = config.AnnouncementsRead.ValueBoolPointer()
 	}
+	paramsUserCreate.AiAssistantPersonalityId = plan.AiAssistantPersonalityId.ValueInt64()
 	paramsUserCreate.AllowedIps = plan.AllowedIps.ValueString()
 	if !plan.AttachmentsPermission.IsNull() && !plan.AttachmentsPermission.IsUnknown() {
 		paramsUserCreate.AttachmentsPermission = plan.AttachmentsPermission.ValueBoolPointer()
@@ -1049,6 +1059,9 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 	if !config.AnnouncementsRead.IsNull() && !config.AnnouncementsRead.IsUnknown() {
 		paramsUserUpdate["announcements_read"] = config.AnnouncementsRead.ValueBool()
+	}
+	if !config.AiAssistantPersonalityId.IsNull() && !config.AiAssistantPersonalityId.IsUnknown() {
+		paramsUserUpdate["ai_assistant_personality_id"] = config.AiAssistantPersonalityId.ValueInt64()
 	}
 	if !config.AllowedIps.IsNull() && !config.AllowedIps.IsUnknown() {
 		paramsUserUpdate["allowed_ips"] = config.AllowedIps.ValueString()
@@ -1330,6 +1343,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.DavPermission = types.BoolPointerValue(user.DavPermission)
 	state.Disabled = types.BoolPointerValue(user.Disabled)
 	state.DisabledExpiredOrInactive = types.BoolPointerValue(user.DisabledExpiredOrInactive)
+	state.AiAssistantPersonalityId = types.Int64Value(user.AiAssistantPersonalityId)
 	state.DesktopConfigurationProfileId = types.Int64Value(user.DesktopConfigurationProfileId)
 	state.Email = types.StringValue(user.Email)
 	state.FilesystemLayout = types.StringValue(user.FilesystemLayout)

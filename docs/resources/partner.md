@@ -14,6 +14,7 @@ A Partner is a first-class entity that cleanly represents an external organizati
 
 ```terraform
 resource "files_partner" "example_partner" {
+  ai_assistant_personality_id    = 1
   allowed_ips                    = "10.0.0.0/8\n127.0.0.1"
   allow_bypassing_2fa_policies   = false
   allow_credential_changes       = false
@@ -40,6 +41,7 @@ resource "files_partner" "example_partner" {
 
 ### Optional
 
+- `ai_assistant_personality_id` (Number) AI Assistant Personality ID assigned to this Partner, if any. Users in the Partner inherit it unless a direct per-user assignment overrides it.
 - `allow_bypassing_2fa_policies` (Boolean) Allow Partner Admins to change Two-Factor Authentication requirements for Partner Users.
 - `allow_credential_changes` (Boolean) Allow Partner Admins to change or reset credentials for users belonging to this Partner.
 - `allow_providing_gpg_keys` (Boolean) Allow Partner Admins to provide GPG keys.

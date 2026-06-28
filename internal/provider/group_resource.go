@@ -40,6 +40,7 @@ type groupResourceModel struct {
 	AdminIds                      lib.SortedElementString `tfsdk:"admin_ids"`
 	Notes                         types.String            `tfsdk:"notes"`
 	UserIds                       lib.SortedElementString `tfsdk:"user_ids"`
+	AiAssistantPersonalityId      types.Int64             `tfsdk:"ai_assistant_personality_id"`
 	FtpPermission                 types.Bool              `tfsdk:"ftp_permission"`
 	SftpPermission                types.Bool              `tfsdk:"sftp_permission"`
 	DavPermission                 types.Bool              `tfsdk:"dav_permission"`
@@ -115,6 +116,14 @@ func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 					stringplanmodifier.UseStateForUnknown(),
 				},
 				CustomType: lib.SortedElementStringType{},
+			},
+			"ai_assistant_personality_id": schema.Int64Attribute{
+				Description: "AI Assistant Personality ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user or Partner assignment overrides it.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
 			},
 			"ftp_permission": schema.BoolAttribute{
 				Description: "If true, users in this group can use FTP to login.  This will override a false value of `ftp_permission` on the user level.",
@@ -202,6 +211,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	paramsGroupCreate.Notes = plan.Notes.ValueString()
 	paramsGroupCreate.UserIds = plan.UserIds.ValueString()
 	paramsGroupCreate.AdminIds = plan.AdminIds.ValueString()
+	paramsGroupCreate.AiAssistantPersonalityId = plan.AiAssistantPersonalityId.ValueInt64()
 	if !plan.FtpPermission.IsNull() && !plan.FtpPermission.IsUnknown() {
 		paramsGroupCreate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
 	}
@@ -304,6 +314,9 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if !config.AdminIds.IsNull() && !config.AdminIds.IsUnknown() {
 		paramsGroupUpdate["admin_ids"] = config.AdminIds.ValueString()
 	}
+	if !config.AiAssistantPersonalityId.IsNull() && !config.AiAssistantPersonalityId.IsUnknown() {
+		paramsGroupUpdate["ai_assistant_personality_id"] = config.AiAssistantPersonalityId.ValueInt64()
+	}
 	if !config.FtpPermission.IsNull() && !config.FtpPermission.IsUnknown() {
 		paramsGroupUpdate["ftp_permission"] = config.FtpPermission.ValueBool()
 	}
@@ -400,6 +413,7 @@ func (r *groupResource) populateResourceModel(ctx context.Context, group files_s
 	state.Notes = types.StringValue(group.Notes)
 	state.UserIds = lib.SortedElementStringValue(group.UserIds)
 	state.Usernames = types.StringValue(group.Usernames)
+	state.AiAssistantPersonalityId = types.Int64Value(group.AiAssistantPersonalityId)
 	state.FtpPermission = types.BoolPointerValue(group.FtpPermission)
 	state.SftpPermission = types.BoolPointerValue(group.SftpPermission)
 	state.DavPermission = types.BoolPointerValue(group.DavPermission)

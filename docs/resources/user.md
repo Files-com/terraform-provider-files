@@ -62,6 +62,7 @@ resource "files_user" "example_user" {
   group_id                                     = 1
   group_ids                                    = "example"
   announcements_read                           = false
+  ai_assistant_personality_id                  = 1
   allowed_ips                                  = "10.0.0.0/8\n127.0.0.1"
   attachments_permission                       = true
   authenticate_until                           = "2000-01-01T01:00:00Z"
@@ -128,6 +129,7 @@ resource "files_user" "example_user" {
 
 > **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
 
+- `ai_assistant_personality_id` (Number) AI Assistant Personality ID assigned directly to this user, if any.
 - `allowed_ips` (String) A list of allowed IPs if applicable.  Newline delimited
 - `announcements_read` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Signifies that the user has read all the announcements in the UI.
 - `attachments_permission` (Boolean) If `true`, the user can user create Bundles (aka Share Links). Use the bundle permission instead.

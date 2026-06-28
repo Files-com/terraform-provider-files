@@ -4,6 +4,7 @@ resource "files_user" "example_user" {
   group_id                                     = 1
   group_ids                                    = "example"
   announcements_read                           = false
+  ai_assistant_personality_id                  = 1
   allowed_ips                                  = "10.0.0.0/8\n127.0.0.1"
   attachments_permission                       = true
   authenticate_until                           = "2000-01-01T01:00:00Z"

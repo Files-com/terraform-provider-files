@@ -72,6 +72,7 @@ data "files_user" "example_user" {
 
 - `active_2fa` (Boolean) Is 2fa active for the user?
 - `admin_group_ids` (List of Number) List of group IDs of which this user is an administrator
+- `ai_assistant_personality_id` (Number) AI Assistant Personality ID assigned directly to this user, if any.
 - `allowed_ips` (String) A list of allowed IPs if applicable.  Newline delimited
 - `api_keys_count` (Number) Number of API keys associated with this user
 - `attachments_permission` (Boolean) If `true`, the user can user create Bundles (aka Share Links). Use the bundle permission instead.
