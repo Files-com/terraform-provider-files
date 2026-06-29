@@ -4,7 +4,7 @@ page_title: "files_remote_server Resource - files"
 subcategory: ""
 description: |-
   A RemoteServer is a specific type of Behavior called remote_server_sync.
-  Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.
+  Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, Azure Blob Storage, or Files.com direct link.
   Not every attribute will apply to every remote server.
   FTP Servers require that you specify their hostname, port, username, password, and a value for ssl. Optionally, provide server_certificate.
   SFTP Servers require that you specify their hostname, port, username, password or private_key, and a value for ssl. Optionally, provide server_certificate, private_key_passphrase.
@@ -36,7 +36,7 @@ A RemoteServer is a specific type of Behavior called `remote_server_sync`.
 
 
 
-Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.
+Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, Azure Blob Storage, or Files.com direct link.
 
 
 
@@ -225,6 +225,7 @@ resource "files_remote_server" "example_remote_server" {
 - `files_agent_permission_set` (String) Local permissions for files agent. read_only, write_only, or read_write
 - `files_agent_root` (String) Agent local root path
 - `files_agent_version` (String) Files Agent version
+- `files_api_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Files.com direct link: API key used once to pair the remote server.
 - `google_cloud_storage_authentication_method` (String) Google Cloud Storage: Authentication method. Can be json, hmac, or oauth.
 - `google_cloud_storage_bucket` (String) Google Cloud Storage: Bucket Name
 - `google_cloud_storage_credentials_json` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Google Cloud Storage: JSON file that contains the private key. To generate see https://cloud.google.com/storage/docs/json_api/v1/how-tos/authorizing#APIKey
@@ -281,6 +282,7 @@ resource "files_remote_server" "example_remote_server" {
 - `files_agent_latest_version` (String) Latest available Files Agent version
 - `files_agent_supports_push_updates` (Boolean) Files Agent supports receiving push updates
 - `files_agent_up_to_date` (Boolean) If true, the Files Agent is up to date.
+- `files_api_key_prefix` (String) Files.com direct link: paired API key prefix.
 - `id` (Number) Remote Server ID
 - `pinned_region` (String) If set, all communications with this remote server are made through the provided region.
 - `remote_home_path` (String) Initial home folder on remote server

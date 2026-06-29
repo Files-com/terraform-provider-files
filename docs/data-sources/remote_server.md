@@ -4,7 +4,7 @@ page_title: "files_remote_server Data Source - files"
 subcategory: ""
 description: |-
   A RemoteServer is a specific type of Behavior called remote_server_sync.
-  Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.
+  Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, Azure Blob Storage, or Files.com direct link.
   Not every attribute will apply to every remote server.
   FTP Servers require that you specify their hostname, port, username, password, and a value for ssl. Optionally, provide server_certificate.
   SFTP Servers require that you specify their hostname, port, username, password or private_key, and a value for ssl. Optionally, provide server_certificate, private_key_passphrase.
@@ -36,7 +36,7 @@ A RemoteServer is a specific type of Behavior called `remote_server_sync`.
 
 
 
-Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, or Azure Blob Storage.
+Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, Azure Blob Storage, or Files.com direct link.
 
 
 
@@ -168,6 +168,7 @@ data "files_remote_server" "example_remote_server" {
 - `files_agent_supports_push_updates` (Boolean) Files Agent supports receiving push updates
 - `files_agent_up_to_date` (Boolean) If true, the Files Agent is up to date.
 - `files_agent_version` (String) Files Agent version
+- `files_api_key_prefix` (String) Files.com direct link: paired API key prefix.
 - `google_cloud_storage_authentication_method` (String) Google Cloud Storage: Authentication method. Can be json, hmac, or oauth.
 - `google_cloud_storage_bucket` (String) Google Cloud Storage: Bucket Name
 - `google_cloud_storage_oauth_scope` (String) Google Cloud Storage: OAuth scope. Can be https://www.googleapis.com/auth/devstorage.read_only or https://www.googleapis.com/auth/devstorage.read_write.
