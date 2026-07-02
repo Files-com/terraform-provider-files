@@ -29,6 +29,7 @@ data "files_ai_assistant_personality" "example_ai_assistant_personality" {
 
 - `apply_to_all_workspaces` (Boolean) If true, this default-workspace personality can apply to users in all workspaces.
 - `created_at` (String) Creation time.
+- `name` (String) AI Assistant Personality name.
 - `system_prompt` (String) System prompt injected into the in-app AI Assistant.
 - `updated_at` (String) Last update time.
 - `use_by_default` (Boolean) Whether this personality is the default personality for the Workspace.

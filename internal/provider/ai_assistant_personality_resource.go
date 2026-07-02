@@ -34,6 +34,7 @@ type aiAssistantPersonalityResource struct {
 }
 
 type aiAssistantPersonalityResourceModel struct {
+	Name                 types.String `tfsdk:"name"`
 	SystemPrompt         types.String `tfsdk:"system_prompt"`
 	WorkspaceId          types.Int64  `tfsdk:"workspace_id"`
 	UseByDefault         types.Bool   `tfsdk:"use_by_default"`
@@ -70,6 +71,10 @@ func (r *aiAssistantPersonalityResource) Schema(_ context.Context, _ resource.Sc
 	resp.Schema = schema.Schema{
 		Description: "An AI Assistant Personality defines a system prompt used to customize the in-app AI Assistant.",
 		Attributes: map[string]schema.Attribute{
+			"name": schema.StringAttribute{
+				Description: "AI Assistant Personality name.",
+				Required:    true,
+			},
 			"system_prompt": schema.StringAttribute{
 				Description: "System prompt injected into the in-app AI Assistant.",
 				Required:    true,
@@ -135,6 +140,7 @@ func (r *aiAssistantPersonalityResource) Create(ctx context.Context, req resourc
 	if !plan.ApplyToAllWorkspaces.IsNull() && !plan.ApplyToAllWorkspaces.IsUnknown() {
 		paramsAiAssistantPersonalityCreate.ApplyToAllWorkspaces = plan.ApplyToAllWorkspaces.ValueBoolPointer()
 	}
+	paramsAiAssistantPersonalityCreate.Name = plan.Name.ValueString()
 	paramsAiAssistantPersonalityCreate.SystemPrompt = plan.SystemPrompt.ValueString()
 	if !plan.UseByDefault.IsNull() && !plan.UseByDefault.IsUnknown() {
 		paramsAiAssistantPersonalityCreate.UseByDefault = plan.UseByDefault.ValueBoolPointer()
@@ -220,6 +226,9 @@ func (r *aiAssistantPersonalityResource) Update(ctx context.Context, req resourc
 	if !config.ApplyToAllWorkspaces.IsNull() && !config.ApplyToAllWorkspaces.IsUnknown() {
 		paramsAiAssistantPersonalityUpdate["apply_to_all_workspaces"] = config.ApplyToAllWorkspaces.ValueBool()
 	}
+	if !config.Name.IsNull() && !config.Name.IsUnknown() {
+		paramsAiAssistantPersonalityUpdate["name"] = config.Name.ValueString()
+	}
 	if !config.SystemPrompt.IsNull() && !config.SystemPrompt.IsUnknown() {
 		paramsAiAssistantPersonalityUpdate["system_prompt"] = config.SystemPrompt.ValueString()
 	}
@@ -299,6 +308,7 @@ func (r *aiAssistantPersonalityResource) ImportState(ctx context.Context, req re
 func (r *aiAssistantPersonalityResource) populateResourceModel(ctx context.Context, aiAssistantPersonality files_sdk.AiAssistantPersonality, state *aiAssistantPersonalityResourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(aiAssistantPersonality.Id)
 	state.WorkspaceId = types.Int64Value(aiAssistantPersonality.WorkspaceId)
+	state.Name = types.StringValue(aiAssistantPersonality.Name)
 	state.SystemPrompt = types.StringValue(aiAssistantPersonality.SystemPrompt)
 	state.UseByDefault = types.BoolPointerValue(aiAssistantPersonality.UseByDefault)
 	state.ApplyToAllWorkspaces = types.BoolPointerValue(aiAssistantPersonality.ApplyToAllWorkspaces)

@@ -30,6 +30,7 @@ type aiAssistantPersonalityDataSource struct {
 type aiAssistantPersonalityDataSourceModel struct {
 	Id                   types.Int64  `tfsdk:"id"`
 	WorkspaceId          types.Int64  `tfsdk:"workspace_id"`
+	Name                 types.String `tfsdk:"name"`
 	SystemPrompt         types.String `tfsdk:"system_prompt"`
 	UseByDefault         types.Bool   `tfsdk:"use_by_default"`
 	ApplyToAllWorkspaces types.Bool   `tfsdk:"apply_to_all_workspaces"`
@@ -70,6 +71,10 @@ func (r *aiAssistantPersonalityDataSource) Schema(_ context.Context, _ datasourc
 			},
 			"workspace_id": schema.Int64Attribute{
 				Description: "Workspace ID. `0` means the default workspace.",
+				Computed:    true,
+			},
+			"name": schema.StringAttribute{
+				Description: "AI Assistant Personality name.",
 				Computed:    true,
 			},
 			"system_prompt": schema.StringAttribute{
@@ -129,6 +134,7 @@ func (r *aiAssistantPersonalityDataSource) Read(ctx context.Context, req datasou
 func (r *aiAssistantPersonalityDataSource) populateDataSourceModel(ctx context.Context, aiAssistantPersonality files_sdk.AiAssistantPersonality, state *aiAssistantPersonalityDataSourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(aiAssistantPersonality.Id)
 	state.WorkspaceId = types.Int64Value(aiAssistantPersonality.WorkspaceId)
+	state.Name = types.StringValue(aiAssistantPersonality.Name)
 	state.SystemPrompt = types.StringValue(aiAssistantPersonality.SystemPrompt)
 	state.UseByDefault = types.BoolPointerValue(aiAssistantPersonality.UseByDefault)
 	state.ApplyToAllWorkspaces = types.BoolPointerValue(aiAssistantPersonality.ApplyToAllWorkspaces)

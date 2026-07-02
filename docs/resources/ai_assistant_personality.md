@@ -15,6 +15,7 @@ An AI Assistant Personality defines a system prompt used to customize the in-app
 ```terraform
 resource "files_ai_assistant_personality" "example_ai_assistant_personality" {
   apply_to_all_workspaces = false
+  name                    = "Concise Assistant"
   system_prompt           = "Respond as a concise operations assistant."
   use_by_default          = false
   workspace_id            = 0
@@ -26,6 +27,7 @@ resource "files_ai_assistant_personality" "example_ai_assistant_personality" {
 
 ### Required
 
+- `name` (String) AI Assistant Personality name.
 - `system_prompt` (String) System prompt injected into the in-app AI Assistant.
 
 ### Optional
