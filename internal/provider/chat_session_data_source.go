@@ -29,6 +29,7 @@ type chatSessionDataSource struct {
 
 type chatSessionDataSourceModel struct {
 	Id           types.String  `tfsdk:"id"`
+	Title        types.String  `tfsdk:"title"`
 	UserId       types.Int64   `tfsdk:"user_id"`
 	AiTaskId     types.Int64   `tfsdk:"ai_task_id"`
 	WorkspaceId  types.Int64   `tfsdk:"workspace_id"`
@@ -67,6 +68,10 @@ func (r *chatSessionDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 			"id": schema.StringAttribute{
 				Description: "Chat Session ID.",
 				Required:    true,
+			},
+			"title": schema.StringAttribute{
+				Description: "Short AI-generated chat title.",
+				Computed:    true,
 			},
 			"user_id": schema.Int64Attribute{
 				Description: "User ID.",
@@ -130,6 +135,7 @@ func (r *chatSessionDataSource) populateDataSourceModel(ctx context.Context, cha
 	var propDiags diag.Diagnostics
 
 	state.Id = types.StringValue(chatSession.Id)
+	state.Title = types.StringValue(chatSession.Title)
 	state.UserId = types.Int64Value(chatSession.UserId)
 	state.AiTaskId = types.Int64Value(chatSession.AiTaskId)
 	state.WorkspaceId = types.Int64Value(chatSession.WorkspaceId)

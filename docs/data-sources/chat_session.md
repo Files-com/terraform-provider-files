@@ -31,5 +31,6 @@ data "files_chat_session" "example_chat_session" {
 - `created_at` (String) Chat session creation date/time.
 - `last_active_at` (String) Most recent chat activity date/time.
 - `messages` (Dynamic) Visible conversation messages in this chat session. For performance reasons, this is not provided when listing chat sessions.
+- `title` (String) Short AI-generated chat title.
 - `user_id` (Number) User ID.
 - `workspace_id` (Number) Workspace ID. `0` means the default workspace.
