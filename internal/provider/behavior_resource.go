@@ -47,6 +47,7 @@ type behaviorResourceModel struct {
 	Recursive                   types.Bool    `tfsdk:"recursive"`
 	Id                          types.Int64   `tfsdk:"id"`
 	AttachmentUrl               types.String  `tfsdk:"attachment_url"`
+	PublicHostingUrl            types.String  `tfsdk:"public_hosting_url"`
 }
 
 func (r *behaviorResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -142,6 +143,10 @@ func (r *behaviorResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 			},
 			"attachment_url": schema.StringAttribute{
 				Description: "URL for attached file",
+				Computed:    true,
+			},
+			"public_hosting_url": schema.StringAttribute{
+				Description: "Public URL for this publicly hosted folder when the `Serve Publicly` behavior has a key configured.  When a Custom Domain with `public_hosting` destination is attached to this behavior, the URL uses that domain.  Otherwise it uses the site's `subdomain.hosted-by-files.com` host.",
 				Computed:    true,
 			},
 		},
@@ -346,6 +351,7 @@ func (r *behaviorResource) populateResourceModel(ctx context.Context, behavior f
 	state.Description = types.StringValue(behavior.Description)
 	state.Value, propDiags = lib.ToDynamic(ctx, path.Root("value"), behavior.Value, state.Value.UnderlyingValue())
 	diags.Append(propDiags...)
+	state.PublicHostingUrl = types.StringValue(behavior.PublicHostingUrl)
 	state.DisableParentFolderBehavior = types.BoolPointerValue(behavior.DisableParentFolderBehavior)
 	state.Recursive = types.BoolPointerValue(behavior.Recursive)
 

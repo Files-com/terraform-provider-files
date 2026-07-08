@@ -79,11 +79,11 @@ func (r *customDomainResource) Schema(_ context.Context, _ resource.SchemaReques
 				Required:    true,
 			},
 			"destination": schema.StringAttribute{
-				Description: "Where this custom domain routes. Can be `site_alias`, `public_hosting`, or `s3_endpoint`.",
+				Description: "Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason.",
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("site_alias", "public_hosting", "s3_endpoint"),
+					stringvalidator.OneOf("site_alias", "public_hosting", "s3_endpoint", "unassigned"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
@@ -98,7 +98,7 @@ func (r *customDomainResource) Schema(_ context.Context, _ resource.SchemaReques
 				},
 			},
 			"folder_behavior_id": schema.Int64Attribute{
-				Description: "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.",
+				Description: "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{

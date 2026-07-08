@@ -35,6 +35,7 @@ type behaviorDataSourceModel struct {
 	Name                        types.String  `tfsdk:"name"`
 	Description                 types.String  `tfsdk:"description"`
 	Value                       types.Dynamic `tfsdk:"value"`
+	PublicHostingUrl            types.String  `tfsdk:"public_hosting_url"`
 	DisableParentFolderBehavior types.Bool    `tfsdk:"disable_parent_folder_behavior"`
 	Recursive                   types.Bool    `tfsdk:"recursive"`
 }
@@ -94,6 +95,10 @@ func (r *behaviorDataSource) Schema(_ context.Context, _ datasource.SchemaReques
 				Description: "Settings for this behavior.  See the section above for an example value to provide here.  Formatting is different for each Behavior type.  May be sent as nested JSON or a single JSON-encoded string.  If using XML encoding for the API call, this data must be sent as a JSON-encoded string.",
 				Computed:    true,
 			},
+			"public_hosting_url": schema.StringAttribute{
+				Description: "Public URL for this publicly hosted folder when the `Serve Publicly` behavior has a key configured.  When a Custom Domain with `public_hosting` destination is attached to this behavior, the URL uses that domain.  Otherwise it uses the site's `subdomain.hosted-by-files.com` host.",
+				Computed:    true,
+			},
 			"disable_parent_folder_behavior": schema.BoolAttribute{
 				Description: "If true, the parent folder's behavior will be disabled for this folder and its children.",
 				Computed:    true,
@@ -147,6 +152,7 @@ func (r *behaviorDataSource) populateDataSourceModel(ctx context.Context, behavi
 	state.Description = types.StringValue(behavior.Description)
 	state.Value, propDiags = lib.ToDynamic(ctx, path.Root("value"), behavior.Value, state.Value.UnderlyingValue())
 	diags.Append(propDiags...)
+	state.PublicHostingUrl = types.StringValue(behavior.PublicHostingUrl)
 	state.DisableParentFolderBehavior = types.BoolPointerValue(behavior.DisableParentFolderBehavior)
 	state.Recursive = types.BoolPointerValue(behavior.Recursive)
 

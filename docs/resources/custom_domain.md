@@ -30,8 +30,8 @@ resource "files_custom_domain" "example_custom_domain" {
 
 ### Optional
 
-- `destination` (String) Where this custom domain routes. Can be `site_alias`, `public_hosting`, or `s3_endpoint`.
-- `folder_behavior_id` (Number) Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.
+- `destination` (String) Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason.
+- `folder_behavior_id` (Number) Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`.
 - `ssl_certificate_id` (Number) Current SSL certificate ID.
 
 ### Read-Only

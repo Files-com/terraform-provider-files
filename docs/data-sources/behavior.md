@@ -58,5 +58,6 @@ data "files_behavior" "example_behavior" {
 - `disable_parent_folder_behavior` (Boolean) If true, the parent folder's behavior will be disabled for this folder and its children.
 - `name` (String) Name for this behavior.
 - `path` (String) Folder path.  Note that Behavior paths cannot be updated once initially set.  You will need to remove and re-create the behavior on the new path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
+- `public_hosting_url` (String) Public URL for this publicly hosted folder when the `Serve Publicly` behavior has a key configured.  When a Custom Domain with `public_hosting` destination is attached to this behavior, the URL uses that domain.  Otherwise it uses the site's `subdomain.hosted-by-files.com` host.
 - `recursive` (Boolean) Whether this behavior is recursive for this record. `always` behaviors are always `true`, `never` behaviors are always `false`, and `sometimes` behaviors may be either value.
 - `value` (Dynamic) Settings for this behavior.  See the section above for an example value to provide here.  Formatting is different for each Behavior type.  May be sent as nested JSON or a single JSON-encoded string.  If using XML encoding for the API call, this data must be sent as a JSON-encoded string.
