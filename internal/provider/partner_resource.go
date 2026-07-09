@@ -47,6 +47,7 @@ type partnerResourceModel struct {
 	AiAssistantPersonalityId   types.Int64  `tfsdk:"ai_assistant_personality_id"`
 	WorkspaceId                types.Int64  `tfsdk:"workspace_id"`
 	Notes                      types.String `tfsdk:"notes"`
+	PartnerChannelTemplateId   types.Int64  `tfsdk:"partner_channel_template_id"`
 	ResponsibleGroupId         types.Int64  `tfsdk:"responsible_group_id"`
 	ResponsibleUserId          types.Int64  `tfsdk:"responsible_user_id"`
 	Tags                       types.String `tfsdk:"tags"`
@@ -164,6 +165,14 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"partner_channel_template_id": schema.Int64Attribute{
+				Description: "ID of the Partner Channel Template assigned to this Partner.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"responsible_group_id": schema.Int64Attribute{
 				Description: "ID of the Group responsible for this Partner.",
 				Computed:    true,
@@ -249,6 +258,7 @@ func (r *partnerResource) Create(ctx context.Context, req resource.CreateRequest
 		paramsPartnerCreate.CcEmailsToResponsibleParty = plan.CcEmailsToResponsibleParty.ValueBoolPointer()
 	}
 	paramsPartnerCreate.Notes = plan.Notes.ValueString()
+	paramsPartnerCreate.PartnerChannelTemplateId = plan.PartnerChannelTemplateId.ValueInt64()
 	paramsPartnerCreate.ResponsibleGroupId = plan.ResponsibleGroupId.ValueInt64()
 	paramsPartnerCreate.ResponsibleUserId = plan.ResponsibleUserId.ValueInt64()
 	paramsPartnerCreate.Tags = plan.Tags.ValueString()
@@ -356,6 +366,9 @@ func (r *partnerResource) Update(ctx context.Context, req resource.UpdateRequest
 	if !config.Notes.IsNull() && !config.Notes.IsUnknown() {
 		paramsPartnerUpdate["notes"] = config.Notes.ValueString()
 	}
+	if !config.PartnerChannelTemplateId.IsNull() && !config.PartnerChannelTemplateId.IsUnknown() {
+		paramsPartnerUpdate["partner_channel_template_id"] = config.PartnerChannelTemplateId.ValueInt64()
+	}
 	if !config.ResponsibleGroupId.IsNull() && !config.ResponsibleGroupId.IsUnknown() {
 		paramsPartnerUpdate["responsible_group_id"] = config.ResponsibleGroupId.ValueInt64()
 	}
@@ -454,6 +467,7 @@ func (r *partnerResource) populateResourceModel(ctx context.Context, partner fil
 	state.Notes = types.StringValue(partner.Notes)
 	state.PartnerAdminIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, partner.PartnerAdminIds)
 	diags.Append(propDiags...)
+	state.PartnerChannelTemplateId = types.Int64Value(partner.PartnerChannelTemplateId)
 	state.PartnershipRole = types.StringValue(partner.PartnershipRole)
 	state.ResponsibleGroupId = types.Int64Value(partner.ResponsibleGroupId)
 	state.ResponsibleUserId = types.Int64Value(partner.ResponsibleUserId)

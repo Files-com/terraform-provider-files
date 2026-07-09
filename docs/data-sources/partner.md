@@ -37,6 +37,7 @@ data "files_partner" "example_partner" {
 - `name` (String) The name of the Partner.
 - `notes` (String) Notes about this Partner.
 - `partner_admin_ids` (List of Number) Array of User IDs that are Partner Admins for this Partner.
+- `partner_channel_template_id` (Number) ID of the Partner Channel Template assigned to this Partner.
 - `partnership_role` (String) This site's role in Partner Site relationships for this Partner. Can be `host`, `guest`, `host_and_guest`, or null.
 - `responsible_group_id` (Number) ID of the Group responsible for this Partner.
 - `responsible_user_id` (Number) ID of the User responsible for this Partner.

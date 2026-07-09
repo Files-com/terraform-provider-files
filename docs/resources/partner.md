@@ -22,6 +22,7 @@ resource "files_partner" "example_partner" {
   allow_user_creation            = false
   cc_emails_to_responsible_party = false
   notes                          = "This is a note about the partner."
+  partner_channel_template_id    = 1
   responsible_group_id           = 1
   responsible_user_id            = 1
   tags                           = "example"
@@ -49,6 +50,7 @@ resource "files_partner" "example_partner" {
 - `allowed_ips` (String) A list of allowed IPs for this Partner. Newline delimited. Partner User IP access is allowed when the IP matches the Partner, User, or Site allowed IP lists.
 - `cc_emails_to_responsible_party` (Boolean) When `true`, emails sent to Partner users are copied to the responsible User or Group.
 - `notes` (String) Notes about this Partner.
+- `partner_channel_template_id` (Number) ID of the Partner Channel Template assigned to this Partner.
 - `responsible_group_id` (Number) ID of the Group responsible for this Partner.
 - `responsible_user_id` (Number) ID of the User responsible for this Partner.
 - `tags` (String) Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.

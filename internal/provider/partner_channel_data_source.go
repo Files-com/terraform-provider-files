@@ -29,11 +29,14 @@ type partnerChannelDataSourceModel struct {
 	Id                             types.Int64  `tfsdk:"id"`
 	WorkspaceId                    types.Int64  `tfsdk:"workspace_id"`
 	PartnerId                      types.Int64  `tfsdk:"partner_id"`
+	PartnerChannelTemplateId       types.Int64  `tfsdk:"partner_channel_template_id"`
 	Path                           types.String `tfsdk:"path"`
 	ToPartnerFolderName            types.String `tfsdk:"to_partner_folder_name"`
 	FromPartnerFolderName          types.String `tfsdk:"from_partner_folder_name"`
 	FromPartnerRoutePath           types.String `tfsdk:"from_partner_route_path"`
 	ToPartnerRoutePath             types.String `tfsdk:"to_partner_route_path"`
+	ToPartnerManagedFolderPaths    types.List   `tfsdk:"to_partner_managed_folder_paths"`
+	FromPartnerManagedFolderPaths  types.List   `tfsdk:"from_partner_managed_folder_paths"`
 	EffectiveToPartnerFolderName   types.String `tfsdk:"effective_to_partner_folder_name"`
 	EffectiveFromPartnerFolderName types.String `tfsdk:"effective_from_partner_folder_name"`
 	ChannelPath                    types.String `tfsdk:"channel_path"`
@@ -80,6 +83,10 @@ func (r *partnerChannelDataSource) Schema(_ context.Context, _ datasource.Schema
 				Description: "ID of the Partner this Channel belongs to.",
 				Computed:    true,
 			},
+			"partner_channel_template_id": schema.Int64Attribute{
+				Description: "ID of the Partner Channel Template that manages this Channel, if any.",
+				Computed:    true,
+			},
 			"path": schema.StringAttribute{
 				Description: "Channel path relative to the Partner root folder. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
 				Computed:    true,
@@ -99,6 +106,16 @@ func (r *partnerChannelDataSource) Schema(_ context.Context, _ datasource.Schema
 			"to_partner_route_path": schema.StringAttribute{
 				Description: "Optional route path for files delivered to the Partner.",
 				Computed:    true,
+			},
+			"to_partner_managed_folder_paths": schema.ListAttribute{
+				Description: "Managed folder paths inside the to-Partner folder.",
+				Computed:    true,
+				ElementType: types.StringType,
+			},
+			"from_partner_managed_folder_paths": schema.ListAttribute{
+				Description: "Managed folder paths inside the from-Partner folder.",
+				Computed:    true,
+				ElementType: types.StringType,
 			},
 			"effective_to_partner_folder_name": schema.StringAttribute{
 				Description: "Resolved to-Partner folder name after Channel override and default.",
@@ -155,14 +172,21 @@ func (r *partnerChannelDataSource) Read(ctx context.Context, req datasource.Read
 }
 
 func (r *partnerChannelDataSource) populateDataSourceModel(ctx context.Context, partnerChannel files_sdk.PartnerChannel, state *partnerChannelDataSourceModel) (diags diag.Diagnostics) {
+	var propDiags diag.Diagnostics
+
 	state.Id = types.Int64Value(partnerChannel.Id)
 	state.WorkspaceId = types.Int64Value(partnerChannel.WorkspaceId)
 	state.PartnerId = types.Int64Value(partnerChannel.PartnerId)
+	state.PartnerChannelTemplateId = types.Int64Value(partnerChannel.PartnerChannelTemplateId)
 	state.Path = types.StringValue(partnerChannel.Path)
 	state.ToPartnerFolderName = types.StringValue(partnerChannel.ToPartnerFolderName)
 	state.FromPartnerFolderName = types.StringValue(partnerChannel.FromPartnerFolderName)
 	state.FromPartnerRoutePath = types.StringValue(partnerChannel.FromPartnerRoutePath)
 	state.ToPartnerRoutePath = types.StringValue(partnerChannel.ToPartnerRoutePath)
+	state.ToPartnerManagedFolderPaths, propDiags = types.ListValueFrom(ctx, types.StringType, partnerChannel.ToPartnerManagedFolderPaths)
+	diags.Append(propDiags...)
+	state.FromPartnerManagedFolderPaths, propDiags = types.ListValueFrom(ctx, types.StringType, partnerChannel.FromPartnerManagedFolderPaths)
+	diags.Append(propDiags...)
 	state.EffectiveToPartnerFolderName = types.StringValue(partnerChannel.EffectiveToPartnerFolderName)
 	state.EffectiveFromPartnerFolderName = types.StringValue(partnerChannel.EffectiveFromPartnerFolderName)
 	state.ChannelPath = types.StringValue(partnerChannel.ChannelPath)

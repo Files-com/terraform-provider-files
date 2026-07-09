@@ -7,6 +7,7 @@ resource "files_partner" "example_partner" {
   allow_user_creation            = false
   cc_emails_to_responsible_party = false
   notes                          = "This is a note about the partner."
+  partner_channel_template_id    = 1
   responsible_group_id           = 1
   responsible_user_id            = 1
   tags                           = "example"
