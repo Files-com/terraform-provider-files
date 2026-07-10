@@ -46,6 +46,7 @@ type groupResourceModel struct {
 	DavPermission                 types.Bool              `tfsdk:"dav_permission"`
 	RestapiPermission             types.Bool              `tfsdk:"restapi_permission"`
 	DesktopConfigurationProfileId types.Int64             `tfsdk:"desktop_configuration_profile_id"`
+	IntegrationCentricProfileId   types.Int64             `tfsdk:"integration_centric_profile_id"`
 	WorkspaceId                   types.Int64             `tfsdk:"workspace_id"`
 	Id                            types.Int64             `tfsdk:"id"`
 	Usernames                     types.String            `tfsdk:"usernames"`
@@ -165,6 +166,14 @@ func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"integration_centric_profile_id": schema.Int64Attribute{
+				Description: "Integration Centric Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"workspace_id": schema.Int64Attribute{
 				Description: "Workspace ID",
 				Computed:    true,
@@ -225,6 +234,7 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 		paramsGroupCreate.RestapiPermission = plan.RestapiPermission.ValueBoolPointer()
 	}
 	paramsGroupCreate.DesktopConfigurationProfileId = plan.DesktopConfigurationProfileId.ValueInt64()
+	paramsGroupCreate.IntegrationCentricProfileId = plan.IntegrationCentricProfileId.ValueInt64()
 	paramsGroupCreate.AllowedIps = plan.AllowedIps.ValueString()
 	paramsGroupCreate.Name = plan.Name.ValueString()
 	paramsGroupCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
@@ -332,6 +342,9 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if !config.DesktopConfigurationProfileId.IsNull() && !config.DesktopConfigurationProfileId.IsUnknown() {
 		paramsGroupUpdate["desktop_configuration_profile_id"] = config.DesktopConfigurationProfileId.ValueInt64()
 	}
+	if !config.IntegrationCentricProfileId.IsNull() && !config.IntegrationCentricProfileId.IsUnknown() {
+		paramsGroupUpdate["integration_centric_profile_id"] = config.IntegrationCentricProfileId.ValueInt64()
+	}
 	if !config.AllowedIps.IsNull() && !config.AllowedIps.IsUnknown() {
 		paramsGroupUpdate["allowed_ips"] = config.AllowedIps.ValueString()
 	}
@@ -419,6 +432,7 @@ func (r *groupResource) populateResourceModel(ctx context.Context, group files_s
 	state.DavPermission = types.BoolPointerValue(group.DavPermission)
 	state.RestapiPermission = types.BoolPointerValue(group.RestapiPermission)
 	state.DesktopConfigurationProfileId = types.Int64Value(group.DesktopConfigurationProfileId)
+	state.IntegrationCentricProfileId = types.Int64Value(group.IntegrationCentricProfileId)
 	state.SiteId = types.Int64Value(group.SiteId)
 	state.WorkspaceId = types.Int64Value(group.WorkspaceId)
 

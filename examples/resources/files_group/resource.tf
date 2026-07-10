@@ -8,6 +8,7 @@ resource "files_group" "example_group" {
   dav_permission                   = true
   restapi_permission               = true
   desktop_configuration_profile_id = 1
+  integration_centric_profile_id   = 1
   allowed_ips                      = "10.0.0.0/8\n127.0.0.1"
   name                             = "name"
   workspace_id                     = 0

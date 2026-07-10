@@ -33,6 +33,7 @@ resource "files_group" "example_group" {
   dav_permission                   = true
   restapi_permission               = true
   desktop_configuration_profile_id = 1
+  integration_centric_profile_id   = 1
   allowed_ips                      = "10.0.0.0/8\n127.0.0.1"
   name                             = "name"
   workspace_id                     = 0
@@ -54,6 +55,7 @@ resource "files_group" "example_group" {
 - `dav_permission` (Boolean) If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level.
 - `desktop_configuration_profile_id` (Number) Desktop Configuration Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.
 - `ftp_permission` (Boolean) If true, users in this group can use FTP to login.  This will override a false value of `ftp_permission` on the user level.
+- `integration_centric_profile_id` (Number) Integration Centric Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.
 - `notes` (String) Notes about this group
 - `restapi_permission` (Boolean) If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.
 - `sftp_permission` (Boolean) If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level.

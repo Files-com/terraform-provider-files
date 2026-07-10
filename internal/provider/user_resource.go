@@ -50,6 +50,7 @@ type userResourceModel struct {
 	Disabled                               types.Bool              `tfsdk:"disabled"`
 	AiAssistantPersonalityId               types.Int64             `tfsdk:"ai_assistant_personality_id"`
 	DesktopConfigurationProfileId          types.Int64             `tfsdk:"desktop_configuration_profile_id"`
+	IntegrationCentricProfileId            types.Int64             `tfsdk:"integration_centric_profile_id"`
 	Email                                  types.String            `tfsdk:"email"`
 	FilesystemLayout                       types.String            `tfsdk:"filesystem_layout"`
 	FtpPermission                          types.Bool              `tfsdk:"ftp_permission"`
@@ -250,6 +251,14 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"desktop_configuration_profile_id": schema.Int64Attribute{
 				Description: "Desktop Configuration Profile ID assigned directly to this user, if any.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"integration_centric_profile_id": schema.Int64Attribute{
+				Description: "Integration Centric Profile ID assigned directly to this user, if any.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
@@ -857,6 +866,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		paramsUserCreate.FtpPermission = plan.FtpPermission.ValueBoolPointer()
 	}
 	paramsUserCreate.HeaderText = plan.HeaderText.ValueString()
+	paramsUserCreate.IntegrationCentricProfileId = plan.IntegrationCentricProfileId.ValueInt64()
 	paramsUserCreate.Language = plan.Language.ValueString()
 	paramsUserCreate.NotificationDailySendTime = plan.NotificationDailySendTime.ValueInt64()
 	paramsUserCreate.Name = plan.Name.ValueString()
@@ -1118,6 +1128,9 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.HeaderText.IsNull() && !config.HeaderText.IsUnknown() {
 		paramsUserUpdate["header_text"] = config.HeaderText.ValueString()
 	}
+	if !config.IntegrationCentricProfileId.IsNull() && !config.IntegrationCentricProfileId.IsUnknown() {
+		paramsUserUpdate["integration_centric_profile_id"] = config.IntegrationCentricProfileId.ValueInt64()
+	}
 	if !config.Language.IsNull() && !config.Language.IsUnknown() {
 		paramsUserUpdate["language"] = config.Language.ValueString()
 	}
@@ -1345,6 +1358,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.DisabledExpiredOrInactive = types.BoolPointerValue(user.DisabledExpiredOrInactive)
 	state.AiAssistantPersonalityId = types.Int64Value(user.AiAssistantPersonalityId)
 	state.DesktopConfigurationProfileId = types.Int64Value(user.DesktopConfigurationProfileId)
+	state.IntegrationCentricProfileId = types.Int64Value(user.IntegrationCentricProfileId)
 	state.Email = types.StringValue(user.Email)
 	state.FilesystemLayout = types.StringValue(user.FilesystemLayout)
 	if err := lib.TimeToStringType(ctx, path.Root("first_login_at"), user.FirstLoginAt, &state.FirstLoginAt); err != nil {

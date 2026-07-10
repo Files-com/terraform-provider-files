@@ -124,6 +124,7 @@ Linode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `l
 
 ```terraform
 resource "files_remote_server" "example_remote_server" {
+  user_id                                       = 1
   reset_authentication                          = false
   allow_relative_paths                          = true
   aws_access_key                                = "example"
@@ -265,6 +266,7 @@ resource "files_remote_server" "example_remote_server" {
 - `ssl` (String) Should we require SSL?
 - `ssl_certificate` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) SSL client certificate.
 - `upload_staging_path` (String) Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP.
+- `user_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) User ID.  Provide a value of `0` to operate the current session's user.
 - `username` (String) Remote server username.
 - `wasabi_access_key` (String) Wasabi: Access Key.
 - `wasabi_bucket` (String) Wasabi: Bucket name

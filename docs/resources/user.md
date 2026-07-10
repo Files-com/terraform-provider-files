@@ -77,6 +77,7 @@ resource "files_user" "example_user" {
   filesystem_layout                            = "site_root"
   ftp_permission                               = true
   header_text                                  = "User-specific message."
+  integration_centric_profile_id               = 1
   language                                     = "en"
   notification_daily_send_time                 = 18
   name                                         = "John Doe"
@@ -154,6 +155,7 @@ resource "files_user" "example_user" {
 - `group_ids` (String) Comma-separated list of group IDs of which this user is a member
 - `header_text` (String) Text to display to the user in the header of the UI
 - `imported_password_hash` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Pre-calculated hash of the user's password. If supplied, this will be used to authenticate the user on first login. Supported hash methods are MD5, SHA1, and SHA256.
+- `integration_centric_profile_id` (Number) Integration Centric Profile ID assigned directly to this user, if any.
 - `language` (String) Preferred language
 - `name` (String) User's full name
 - `notes` (String) Any internal notes on the user

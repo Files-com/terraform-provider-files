@@ -19,6 +19,7 @@ resource "files_user" "example_user" {
   filesystem_layout                            = "site_root"
   ftp_permission                               = true
   header_text                                  = "User-specific message."
+  integration_centric_profile_id               = 1
   language                                     = "en"
   notification_daily_send_time                 = 18
   name                                         = "John Doe"

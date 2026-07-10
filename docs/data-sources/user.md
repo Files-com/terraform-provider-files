@@ -98,6 +98,7 @@ data "files_user" "example_user" {
 - `ftp_permission` (Boolean) Can the user access with FTP/FTPS?
 - `group_ids` (String) Comma-separated list of group IDs of which this user is a member
 - `header_text` (String) Text to display to the user in the header of the UI
+- `integration_centric_profile_id` (Number) Integration Centric Profile ID assigned directly to this user, if any.
 - `language` (String) Preferred language
 - `last_active_at` (String) User's most recent activity time, which is the latest of most recent login, most recent API use, enablement, or creation
 - `last_api_use_at` (String) User's most recent API use time

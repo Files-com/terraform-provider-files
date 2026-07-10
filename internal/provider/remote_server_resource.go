@@ -94,6 +94,7 @@ type remoteServerResourceModel struct {
 	LinodeBucket                            types.String `tfsdk:"linode_bucket"`
 	LinodeAccessKey                         types.String `tfsdk:"linode_access_key"`
 	LinodeRegion                            types.String `tfsdk:"linode_region"`
+	UserId                                  types.Int64  `tfsdk:"user_id"`
 	Password                                types.String `tfsdk:"password"`
 	PrivateKey                              types.String `tfsdk:"private_key"`
 	PrivateKeyPassphrase                    types.String `tfsdk:"private_key_passphrase"`
@@ -643,6 +644,14 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"user_id": schema.Int64Attribute{
+				Description: "User ID.  Provide a value of `0` to operate the current session's user.",
+				Optional:    true,
+				WriteOnly:   true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.RequiresReplace(),
+				},
+			},
 			"password": schema.StringAttribute{
 				Description: "Password, if needed.",
 				Optional:    true,
@@ -824,6 +833,7 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
+	paramsRemoteServerCreate.UserId = config.UserId.ValueInt64()
 	paramsRemoteServerCreate.Password = config.Password.ValueString()
 	paramsRemoteServerCreate.PrivateKey = config.PrivateKey.ValueString()
 	paramsRemoteServerCreate.PrivateKeyPassphrase = config.PrivateKeyPassphrase.ValueString()

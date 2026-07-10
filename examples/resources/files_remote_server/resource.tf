@@ -1,4 +1,5 @@
 resource "files_remote_server" "example_remote_server" {
+  user_id                                       = 1
   reset_authentication                          = false
   allow_relative_paths                          = true
   aws_access_key                                = "example"

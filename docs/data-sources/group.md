@@ -43,6 +43,7 @@ data "files_group" "example_group" {
 - `dav_permission` (Boolean) If true, users in this group can use WebDAV to login.  This will override a false value of `dav_permission` on the user level.
 - `desktop_configuration_profile_id` (Number) Desktop Configuration Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.
 - `ftp_permission` (Boolean) If true, users in this group can use FTP to login.  This will override a false value of `ftp_permission` on the user level.
+- `integration_centric_profile_id` (Number) Integration Centric Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.
 - `name` (String) Group name
 - `notes` (String) Notes about this group
 - `restapi_permission` (Boolean) If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.
