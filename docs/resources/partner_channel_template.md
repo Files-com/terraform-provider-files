@@ -16,10 +16,10 @@ A PartnerChannelTemplate defines reusable Partner Channel configuration that can
 resource "files_partner_channel_template" "example_partner_channel_template" {
   from_partner_folder_name          = "incoming"
   from_partner_managed_folder_paths = ["claims/received"]
-  from_partner_route_path           = "processing/from-partner"
+  from_partner_route_path_pattern   = "processing/{{partner_name}}/from-partner"
   to_partner_folder_name            = "outgoing"
   to_partner_managed_folder_paths   = ["reports/monthly"]
-  to_partner_route_path             = "delivery/to-partner"
+  to_partner_route_path_pattern     = "delivery/{{partner_name}}/to-partner"
   name                              = "Claims Template"
   path                              = "claims/medical"
   workspace_id                      = 0
@@ -38,10 +38,10 @@ resource "files_partner_channel_template" "example_partner_channel_template" {
 
 - `from_partner_folder_name` (String) Optional Channel-level from-Partner folder name override.
 - `from_partner_managed_folder_paths` (List of String) Managed folder paths inside the from-Partner folder.
-- `from_partner_route_path` (String) Optional route path for files uploaded by the Partner.
+- `from_partner_route_path_pattern` (String) Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}.
 - `to_partner_folder_name` (String) Optional Channel-level to-Partner folder name override.
 - `to_partner_managed_folder_paths` (List of String) Managed folder paths inside the to-Partner folder.
-- `to_partner_route_path` (String) Optional route path for files delivered to the Partner.
+- `to_partner_route_path_pattern` (String) Optional route path pattern for files delivered to the Partner. Supports {{partner_name}}.
 - `workspace_id` (Number) ID of the Workspace associated with this Partner Channel Template.
 
 ### Read-Only

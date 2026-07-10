@@ -32,8 +32,8 @@ type partnerChannelTemplateDataSourceModel struct {
 	Path                           types.String `tfsdk:"path"`
 	ToPartnerFolderName            types.String `tfsdk:"to_partner_folder_name"`
 	FromPartnerFolderName          types.String `tfsdk:"from_partner_folder_name"`
-	FromPartnerRoutePath           types.String `tfsdk:"from_partner_route_path"`
-	ToPartnerRoutePath             types.String `tfsdk:"to_partner_route_path"`
+	FromPartnerRoutePathPattern    types.String `tfsdk:"from_partner_route_path_pattern"`
+	ToPartnerRoutePathPattern      types.String `tfsdk:"to_partner_route_path_pattern"`
 	ToPartnerManagedFolderPaths    types.List   `tfsdk:"to_partner_managed_folder_paths"`
 	FromPartnerManagedFolderPaths  types.List   `tfsdk:"from_partner_managed_folder_paths"`
 	EffectiveToPartnerFolderName   types.String `tfsdk:"effective_to_partner_folder_name"`
@@ -91,12 +91,12 @@ func (r *partnerChannelTemplateDataSource) Schema(_ context.Context, _ datasourc
 				Description: "Optional Channel-level from-Partner folder name override.",
 				Computed:    true,
 			},
-			"from_partner_route_path": schema.StringAttribute{
-				Description: "Optional route path for files uploaded by the Partner.",
+			"from_partner_route_path_pattern": schema.StringAttribute{
+				Description: "Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}.",
 				Computed:    true,
 			},
-			"to_partner_route_path": schema.StringAttribute{
-				Description: "Optional route path for files delivered to the Partner.",
+			"to_partner_route_path_pattern": schema.StringAttribute{
+				Description: "Optional route path pattern for files delivered to the Partner. Supports {{partner_name}}.",
 				Computed:    true,
 			},
 			"to_partner_managed_folder_paths": schema.ListAttribute{
@@ -160,8 +160,8 @@ func (r *partnerChannelTemplateDataSource) populateDataSourceModel(ctx context.C
 	state.Path = types.StringValue(partnerChannelTemplate.Path)
 	state.ToPartnerFolderName = types.StringValue(partnerChannelTemplate.ToPartnerFolderName)
 	state.FromPartnerFolderName = types.StringValue(partnerChannelTemplate.FromPartnerFolderName)
-	state.FromPartnerRoutePath = types.StringValue(partnerChannelTemplate.FromPartnerRoutePath)
-	state.ToPartnerRoutePath = types.StringValue(partnerChannelTemplate.ToPartnerRoutePath)
+	state.FromPartnerRoutePathPattern = types.StringValue(partnerChannelTemplate.FromPartnerRoutePathPattern)
+	state.ToPartnerRoutePathPattern = types.StringValue(partnerChannelTemplate.ToPartnerRoutePathPattern)
 	state.ToPartnerManagedFolderPaths, propDiags = types.ListValueFrom(ctx, types.StringType, partnerChannelTemplate.ToPartnerManagedFolderPaths)
 	diags.Append(propDiags...)
 	state.FromPartnerManagedFolderPaths, propDiags = types.ListValueFrom(ctx, types.StringType, partnerChannelTemplate.FromPartnerManagedFolderPaths)

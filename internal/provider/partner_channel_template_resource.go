@@ -39,8 +39,8 @@ type partnerChannelTemplateResourceModel struct {
 	WorkspaceId                    types.Int64  `tfsdk:"workspace_id"`
 	ToPartnerFolderName            types.String `tfsdk:"to_partner_folder_name"`
 	FromPartnerFolderName          types.String `tfsdk:"from_partner_folder_name"`
-	FromPartnerRoutePath           types.String `tfsdk:"from_partner_route_path"`
-	ToPartnerRoutePath             types.String `tfsdk:"to_partner_route_path"`
+	FromPartnerRoutePathPattern    types.String `tfsdk:"from_partner_route_path_pattern"`
+	ToPartnerRoutePathPattern      types.String `tfsdk:"to_partner_route_path_pattern"`
 	ToPartnerManagedFolderPaths    types.List   `tfsdk:"to_partner_managed_folder_paths"`
 	FromPartnerManagedFolderPaths  types.List   `tfsdk:"from_partner_managed_folder_paths"`
 	Id                             types.Int64  `tfsdk:"id"`
@@ -108,16 +108,16 @@ func (r *partnerChannelTemplateResource) Schema(_ context.Context, _ resource.Sc
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"from_partner_route_path": schema.StringAttribute{
-				Description: "Optional route path for files uploaded by the Partner.",
+			"from_partner_route_path_pattern": schema.StringAttribute{
+				Description: "Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"to_partner_route_path": schema.StringAttribute{
-				Description: "Optional route path for files delivered to the Partner.",
+			"to_partner_route_path_pattern": schema.StringAttribute{
+				Description: "Optional route path pattern for files delivered to the Partner. Supports {{partner_name}}.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -181,13 +181,13 @@ func (r *partnerChannelTemplateResource) Create(ctx context.Context, req resourc
 		diags = plan.FromPartnerManagedFolderPaths.ElementsAs(ctx, &paramsPartnerChannelTemplateCreate.FromPartnerManagedFolderPaths, false)
 		resp.Diagnostics.Append(diags...)
 	}
-	paramsPartnerChannelTemplateCreate.FromPartnerRoutePath = plan.FromPartnerRoutePath.ValueString()
+	paramsPartnerChannelTemplateCreate.FromPartnerRoutePathPattern = plan.FromPartnerRoutePathPattern.ValueString()
 	paramsPartnerChannelTemplateCreate.ToPartnerFolderName = plan.ToPartnerFolderName.ValueString()
 	if !plan.ToPartnerManagedFolderPaths.IsNull() && !plan.ToPartnerManagedFolderPaths.IsUnknown() {
 		diags = plan.ToPartnerManagedFolderPaths.ElementsAs(ctx, &paramsPartnerChannelTemplateCreate.ToPartnerManagedFolderPaths, false)
 		resp.Diagnostics.Append(diags...)
 	}
-	paramsPartnerChannelTemplateCreate.ToPartnerRoutePath = plan.ToPartnerRoutePath.ValueString()
+	paramsPartnerChannelTemplateCreate.ToPartnerRoutePathPattern = plan.ToPartnerRoutePathPattern.ValueString()
 	paramsPartnerChannelTemplateCreate.Name = plan.Name.ValueString()
 	paramsPartnerChannelTemplateCreate.Path = plan.Path.ValueString()
 	paramsPartnerChannelTemplateCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
@@ -277,8 +277,8 @@ func (r *partnerChannelTemplateResource) Update(ctx context.Context, req resourc
 		resp.Diagnostics.Append(diags...)
 		paramsPartnerChannelTemplateUpdate["from_partner_managed_folder_paths"] = updateFromPartnerManagedFolderPaths
 	}
-	if !config.FromPartnerRoutePath.IsNull() && !config.FromPartnerRoutePath.IsUnknown() {
-		paramsPartnerChannelTemplateUpdate["from_partner_route_path"] = config.FromPartnerRoutePath.ValueString()
+	if !config.FromPartnerRoutePathPattern.IsNull() && !config.FromPartnerRoutePathPattern.IsUnknown() {
+		paramsPartnerChannelTemplateUpdate["from_partner_route_path_pattern"] = config.FromPartnerRoutePathPattern.ValueString()
 	}
 	if !config.ToPartnerFolderName.IsNull() && !config.ToPartnerFolderName.IsUnknown() {
 		paramsPartnerChannelTemplateUpdate["to_partner_folder_name"] = config.ToPartnerFolderName.ValueString()
@@ -289,8 +289,8 @@ func (r *partnerChannelTemplateResource) Update(ctx context.Context, req resourc
 		resp.Diagnostics.Append(diags...)
 		paramsPartnerChannelTemplateUpdate["to_partner_managed_folder_paths"] = updateToPartnerManagedFolderPaths
 	}
-	if !config.ToPartnerRoutePath.IsNull() && !config.ToPartnerRoutePath.IsUnknown() {
-		paramsPartnerChannelTemplateUpdate["to_partner_route_path"] = config.ToPartnerRoutePath.ValueString()
+	if !config.ToPartnerRoutePathPattern.IsNull() && !config.ToPartnerRoutePathPattern.IsUnknown() {
+		paramsPartnerChannelTemplateUpdate["to_partner_route_path_pattern"] = config.ToPartnerRoutePathPattern.ValueString()
 	}
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
 		paramsPartnerChannelTemplateUpdate["name"] = config.Name.ValueString()
@@ -374,8 +374,8 @@ func (r *partnerChannelTemplateResource) populateResourceModel(ctx context.Conte
 	state.Path = types.StringValue(partnerChannelTemplate.Path)
 	state.ToPartnerFolderName = types.StringValue(partnerChannelTemplate.ToPartnerFolderName)
 	state.FromPartnerFolderName = types.StringValue(partnerChannelTemplate.FromPartnerFolderName)
-	state.FromPartnerRoutePath = types.StringValue(partnerChannelTemplate.FromPartnerRoutePath)
-	state.ToPartnerRoutePath = types.StringValue(partnerChannelTemplate.ToPartnerRoutePath)
+	state.FromPartnerRoutePathPattern = types.StringValue(partnerChannelTemplate.FromPartnerRoutePathPattern)
+	state.ToPartnerRoutePathPattern = types.StringValue(partnerChannelTemplate.ToPartnerRoutePathPattern)
 	state.ToPartnerManagedFolderPaths, propDiags = types.ListValueFrom(ctx, types.StringType, partnerChannelTemplate.ToPartnerManagedFolderPaths)
 	diags.Append(propDiags...)
 	state.FromPartnerManagedFolderPaths, propDiags = types.ListValueFrom(ctx, types.StringType, partnerChannelTemplate.FromPartnerManagedFolderPaths)

@@ -31,10 +31,10 @@ data "files_partner_channel_template" "example_partner_channel_template" {
 - `effective_to_partner_folder_name` (String) Resolved to-Partner folder name after Template override and default.
 - `from_partner_folder_name` (String) Optional Channel-level from-Partner folder name override.
 - `from_partner_managed_folder_paths` (List of String) Managed folder paths inside the from-Partner folder.
-- `from_partner_route_path` (String) Optional route path for files uploaded by the Partner.
+- `from_partner_route_path_pattern` (String) Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}.
 - `name` (String) The name of the Partner Channel Template.
 - `path` (String) Channel path relative to the Partner root folder. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `to_partner_folder_name` (String) Optional Channel-level to-Partner folder name override.
 - `to_partner_managed_folder_paths` (List of String) Managed folder paths inside the to-Partner folder.
-- `to_partner_route_path` (String) Optional route path for files delivered to the Partner.
+- `to_partner_route_path_pattern` (String) Optional route path pattern for files delivered to the Partner. Supports {{partner_name}}.
 - `workspace_id` (Number) ID of the Workspace associated with this Partner Channel Template.
