@@ -111,6 +111,7 @@ type siteResourceModel struct {
 	NonSsoUsersAllowed                       types.Bool    `tfsdk:"non_sso_users_allowed"`
 	FolderPermissionsGroupsOnly              types.Bool    `tfsdk:"folder_permissions_groups_only"`
 	GroupAdminsCanAddUsers                   types.Bool    `tfsdk:"group_admins_can_add_users"`
+	GroupAdminsCanManageGroupMemberships     types.Bool    `tfsdk:"group_admins_can_manage_group_memberships"`
 	GroupAdminsCanDeleteUsers                types.Bool    `tfsdk:"group_admins_can_delete_users"`
 	GroupAdminsCanEnableDisableUsers         types.Bool    `tfsdk:"group_admins_can_enable_disable_users"`
 	GroupAdminsCanModifyUsers                types.Bool    `tfsdk:"group_admins_can_modify_users"`
@@ -848,6 +849,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"group_admins_can_add_users": schema.BoolAttribute{
 				Description: "Allow group admins to create users in their groups",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"group_admins_can_manage_group_memberships": schema.BoolAttribute{
+				Description: "Allow group admins to add or remove existing users in their groups",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -2080,6 +2089,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.GroupAdminsCanAddUsers.IsNull() && !config.GroupAdminsCanAddUsers.IsUnknown() {
 		paramsSiteUpdate["group_admins_can_add_users"] = config.GroupAdminsCanAddUsers.ValueBool()
 	}
+	if !config.GroupAdminsCanManageGroupMemberships.IsNull() && !config.GroupAdminsCanManageGroupMemberships.IsUnknown() {
+		paramsSiteUpdate["group_admins_can_manage_group_memberships"] = config.GroupAdminsCanManageGroupMemberships.ValueBool()
+	}
 	if !config.GroupAdminsCanDeleteUsers.IsNull() && !config.GroupAdminsCanDeleteUsers.IsUnknown() {
 		paramsSiteUpdate["group_admins_can_delete_users"] = config.GroupAdminsCanDeleteUsers.ValueBool()
 	}
@@ -2376,6 +2388,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.NonSsoUsersAllowed = types.BoolPointerValue(site.NonSsoUsersAllowed)
 	state.FolderPermissionsGroupsOnly = types.BoolPointerValue(site.FolderPermissionsGroupsOnly)
 	state.GroupAdminsCanAddUsers = types.BoolPointerValue(site.GroupAdminsCanAddUsers)
+	state.GroupAdminsCanManageGroupMemberships = types.BoolPointerValue(site.GroupAdminsCanManageGroupMemberships)
 	state.GroupAdminsCanDeleteUsers = types.BoolPointerValue(site.GroupAdminsCanDeleteUsers)
 	state.GroupAdminsCanEnableDisableUsers = types.BoolPointerValue(site.GroupAdminsCanEnableDisableUsers)
 	state.GroupAdminsCanModifyUsers = types.BoolPointerValue(site.GroupAdminsCanModifyUsers)

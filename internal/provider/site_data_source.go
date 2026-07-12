@@ -109,6 +109,7 @@ type siteDataSourceModel struct {
 	NonSsoUsersAllowed                       types.Bool    `tfsdk:"non_sso_users_allowed"`
 	FolderPermissionsGroupsOnly              types.Bool    `tfsdk:"folder_permissions_groups_only"`
 	GroupAdminsCanAddUsers                   types.Bool    `tfsdk:"group_admins_can_add_users"`
+	GroupAdminsCanManageGroupMemberships     types.Bool    `tfsdk:"group_admins_can_manage_group_memberships"`
 	GroupAdminsCanDeleteUsers                types.Bool    `tfsdk:"group_admins_can_delete_users"`
 	GroupAdminsCanEnableDisableUsers         types.Bool    `tfsdk:"group_admins_can_enable_disable_users"`
 	GroupAdminsCanModifyUsers                types.Bool    `tfsdk:"group_admins_can_modify_users"`
@@ -567,6 +568,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"group_admins_can_add_users": schema.BoolAttribute{
 				Description: "Allow group admins to create users in their groups",
+				Computed:    true,
+			},
+			"group_admins_can_manage_group_memberships": schema.BoolAttribute{
+				Description: "Allow group admins to add or remove existing users in their groups",
 				Computed:    true,
 			},
 			"group_admins_can_delete_users": schema.BoolAttribute{
@@ -1135,6 +1140,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.NonSsoUsersAllowed = types.BoolPointerValue(site.NonSsoUsersAllowed)
 	state.FolderPermissionsGroupsOnly = types.BoolPointerValue(site.FolderPermissionsGroupsOnly)
 	state.GroupAdminsCanAddUsers = types.BoolPointerValue(site.GroupAdminsCanAddUsers)
+	state.GroupAdminsCanManageGroupMemberships = types.BoolPointerValue(site.GroupAdminsCanManageGroupMemberships)
 	state.GroupAdminsCanDeleteUsers = types.BoolPointerValue(site.GroupAdminsCanDeleteUsers)
 	state.GroupAdminsCanEnableDisableUsers = types.BoolPointerValue(site.GroupAdminsCanEnableDisableUsers)
 	state.GroupAdminsCanModifyUsers = types.BoolPointerValue(site.GroupAdminsCanModifyUsers)

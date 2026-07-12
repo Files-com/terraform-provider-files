@@ -118,6 +118,7 @@ resource "files_site" "example_site" {
     key = "example value"
   }
   group_admins_can_add_users                    = false
+  group_admins_can_manage_group_memberships     = false
   group_admins_can_delete_users                 = false
   group_admins_can_enable_disable_users         = false
   group_admins_can_modify_users                 = false
