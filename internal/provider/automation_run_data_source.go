@@ -32,6 +32,7 @@ type automationRunDataSourceModel struct {
 	AutomationId         types.Int64   `tfsdk:"automation_id"`
 	AutomationVersionId  types.Int64   `tfsdk:"automation_version_id"`
 	WorkspaceId          types.Int64   `tfsdk:"workspace_id"`
+	CancelRequestedAt    types.String  `tfsdk:"cancel_requested_at"`
 	CompletedAt          types.String  `tfsdk:"completed_at"`
 	CreatedAt            types.String  `tfsdk:"created_at"`
 	RetryAt              types.String  `tfsdk:"retry_at"`
@@ -43,6 +44,7 @@ type automationRunDataSourceModel struct {
 	SuccessfulOperations types.Int64   `tfsdk:"successful_operations"`
 	FailedOperations     types.Int64   `tfsdk:"failed_operations"`
 	Definition           types.Dynamic `tfsdk:"definition"`
+	NodeStates           types.Dynamic `tfsdk:"node_states"`
 	JournalUrl           types.String  `tfsdk:"journal_url"`
 	StatusMessagesUrl    types.String  `tfsdk:"status_messages_url"`
 }
@@ -90,6 +92,10 @@ func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaR
 				Description: "Workspace ID.",
 				Computed:    true,
 			},
+			"cancel_requested_at": schema.StringAttribute{
+				Description: "Date/time at which cancellation was requested.",
+				Computed:    true,
+			},
 			"completed_at": schema.StringAttribute{
 				Description: "Automation run completion/failure date/time.",
 				Computed:    true,
@@ -119,7 +125,7 @@ func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaR
 				Computed:    true,
 			},
 			"status": schema.StringAttribute{
-				Description: "The success status of the AutomationRun. One of `running`, `success`, `partial_failure`, or `failure`.",
+				Description: "The status of the AutomationRun. One of `queued`, `running`, `success`, `partial_failure`, `failure`, `skipped`, or `canceled`.",
 				Computed:    true,
 			},
 			"successful_operations": schema.Int64Attribute{
@@ -132,6 +138,10 @@ func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaR
 			},
 			"definition": schema.DynamicAttribute{
 				Description: "Automation definition snapshot pinned by this run. For performance reasons, this is not provided when listing Automation runs.",
+				Computed:    true,
+			},
+			"node_states": schema.DynamicAttribute{
+				Description: "Status and execution stage for each node in this run. For performance reasons, this is not provided when listing Automation runs.",
 				Computed:    true,
 			},
 			"journal_url": schema.StringAttribute{
@@ -183,6 +193,12 @@ func (r *automationRunDataSource) populateDataSourceModel(ctx context.Context, a
 	state.AutomationId = types.Int64Value(automationRun.AutomationId)
 	state.AutomationVersionId = types.Int64Value(automationRun.AutomationVersionId)
 	state.WorkspaceId = types.Int64Value(automationRun.WorkspaceId)
+	if err := lib.TimeToStringType(ctx, path.Root("cancel_requested_at"), automationRun.CancelRequestedAt, &state.CancelRequestedAt); err != nil {
+		diags.AddError(
+			"Error Creating Files AutomationRun",
+			"Could not convert state cancel_requested_at to string: "+err.Error(),
+		)
+	}
 	if err := lib.TimeToStringType(ctx, path.Root("completed_at"), automationRun.CompletedAt, &state.CompletedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files AutomationRun",
@@ -214,6 +230,8 @@ func (r *automationRunDataSource) populateDataSourceModel(ctx context.Context, a
 	state.SuccessfulOperations = types.Int64Value(automationRun.SuccessfulOperations)
 	state.FailedOperations = types.Int64Value(automationRun.FailedOperations)
 	state.Definition, propDiags = lib.ToDynamic(ctx, path.Root("definition"), automationRun.Definition, state.Definition.UnderlyingValue())
+	diags.Append(propDiags...)
+	state.NodeStates, propDiags = lib.ToDynamic(ctx, path.Root("node_states"), automationRun.NodeStates, state.NodeStates.UnderlyingValue())
 	diags.Append(propDiags...)
 	state.JournalUrl = types.StringValue(automationRun.JournalUrl)
 	state.StatusMessagesUrl = types.StringValue(automationRun.StatusMessagesUrl)

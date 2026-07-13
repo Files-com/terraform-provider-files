@@ -39,17 +39,19 @@ data "files_automation_run" "example_automation_run" {
 
 - `automation_id` (Number) ID of the associated Automation.
 - `automation_version_id` (Number) ID of the immutable Automation version pinned by this run.
+- `cancel_requested_at` (String) Date/time at which cancellation was requested.
 - `completed_at` (String) Automation run completion/failure date/time.
 - `created_at` (String) Automation run start date/time.
 - `definition` (Dynamic) Automation definition snapshot pinned by this run. For performance reasons, this is not provided when listing Automation runs.
 - `failed_operations` (Number) Count of failed operations.
 - `journal_url` (String) Link to the run journal artifact.
+- `node_states` (Dynamic) Status and execution stage for each node in this run. For performance reasons, this is not provided when listing Automation runs.
 - `retried_at` (String) If set, this Automation run was retried due to `failure` or `partial_failure`.
 - `retried_in_run_id` (Number) ID of the run that is or will be retrying this run.
 - `retry_at` (String) If set, this automation will be retried at this date/time due to `failure` or `partial_failure`.
 - `retry_of_run_id` (Number) ID of the original run that this run is retrying.
 - `runtime` (Number) Automation run runtime.
-- `status` (String) The success status of the AutomationRun. One of `running`, `success`, `partial_failure`, or `failure`.
+- `status` (String) The status of the AutomationRun. One of `queued`, `running`, `success`, `partial_failure`, `failure`, `skipped`, or `canceled`.
 - `status_messages_url` (String) Link to status messages log file.
 - `successful_operations` (Number) Count of successful operations.
 - `workspace_id` (Number) Workspace ID.
