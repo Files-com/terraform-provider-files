@@ -38,9 +38,12 @@ data "files_automation_run" "example_automation_run" {
 ### Read-Only
 
 - `automation_id` (Number) ID of the associated Automation.
+- `automation_version_id` (Number) ID of the immutable Automation version pinned by this run.
 - `completed_at` (String) Automation run completion/failure date/time.
 - `created_at` (String) Automation run start date/time.
+- `definition` (Dynamic) Automation definition snapshot pinned by this run. For performance reasons, this is not provided when listing Automation runs.
 - `failed_operations` (Number) Count of failed operations.
+- `journal_url` (String) Link to the run journal artifact.
 - `retried_at` (String) If set, this Automation run was retried due to `failure` or `partial_failure`.
 - `retried_in_run_id` (Number) ID of the run that is or will be retrying this run.
 - `retry_at` (String) If set, this automation will be retried at this date/time due to `failure` or `partial_failure`.

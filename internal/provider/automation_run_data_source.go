@@ -30,6 +30,7 @@ type automationRunDataSource struct {
 type automationRunDataSourceModel struct {
 	Id                   types.Int64   `tfsdk:"id"`
 	AutomationId         types.Int64   `tfsdk:"automation_id"`
+	AutomationVersionId  types.Int64   `tfsdk:"automation_version_id"`
 	WorkspaceId          types.Int64   `tfsdk:"workspace_id"`
 	CompletedAt          types.String  `tfsdk:"completed_at"`
 	CreatedAt            types.String  `tfsdk:"created_at"`
@@ -41,6 +42,8 @@ type automationRunDataSourceModel struct {
 	Status               types.String  `tfsdk:"status"`
 	SuccessfulOperations types.Int64   `tfsdk:"successful_operations"`
 	FailedOperations     types.Int64   `tfsdk:"failed_operations"`
+	Definition           types.Dynamic `tfsdk:"definition"`
+	JournalUrl           types.String  `tfsdk:"journal_url"`
 	StatusMessagesUrl    types.String  `tfsdk:"status_messages_url"`
 }
 
@@ -77,6 +80,10 @@ func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaR
 			},
 			"automation_id": schema.Int64Attribute{
 				Description: "ID of the associated Automation.",
+				Computed:    true,
+			},
+			"automation_version_id": schema.Int64Attribute{
+				Description: "ID of the immutable Automation version pinned by this run.",
 				Computed:    true,
 			},
 			"workspace_id": schema.Int64Attribute{
@@ -123,6 +130,14 @@ func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaR
 				Description: "Count of failed operations.",
 				Computed:    true,
 			},
+			"definition": schema.DynamicAttribute{
+				Description: "Automation definition snapshot pinned by this run. For performance reasons, this is not provided when listing Automation runs.",
+				Computed:    true,
+			},
+			"journal_url": schema.StringAttribute{
+				Description: "Link to the run journal artifact.",
+				Computed:    true,
+			},
 			"status_messages_url": schema.StringAttribute{
 				Description: "Link to status messages log file.",
 				Computed:    true,
@@ -162,8 +177,11 @@ func (r *automationRunDataSource) Read(ctx context.Context, req datasource.ReadR
 }
 
 func (r *automationRunDataSource) populateDataSourceModel(ctx context.Context, automationRun files_sdk.AutomationRun, state *automationRunDataSourceModel) (diags diag.Diagnostics) {
+	var propDiags diag.Diagnostics
+
 	state.Id = types.Int64Value(automationRun.Id)
 	state.AutomationId = types.Int64Value(automationRun.AutomationId)
+	state.AutomationVersionId = types.Int64Value(automationRun.AutomationVersionId)
 	state.WorkspaceId = types.Int64Value(automationRun.WorkspaceId)
 	if err := lib.TimeToStringType(ctx, path.Root("completed_at"), automationRun.CompletedAt, &state.CompletedAt); err != nil {
 		diags.AddError(
@@ -195,6 +213,9 @@ func (r *automationRunDataSource) populateDataSourceModel(ctx context.Context, a
 	state.Status = types.StringValue(automationRun.Status)
 	state.SuccessfulOperations = types.Int64Value(automationRun.SuccessfulOperations)
 	state.FailedOperations = types.Int64Value(automationRun.FailedOperations)
+	state.Definition, propDiags = lib.ToDynamic(ctx, path.Root("definition"), automationRun.Definition, state.Definition.UnderlyingValue())
+	diags.Append(propDiags...)
+	state.JournalUrl = types.StringValue(automationRun.JournalUrl)
 	state.StatusMessagesUrl = types.StringValue(automationRun.StatusMessagesUrl)
 
 	return

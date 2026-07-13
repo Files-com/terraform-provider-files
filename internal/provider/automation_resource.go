@@ -75,7 +75,9 @@ type automationResourceModel struct {
 	HolidayRegion                    types.String  `tfsdk:"holiday_region"`
 	Id                               types.Int64   `tfsdk:"id"`
 	Deleted                          types.Bool    `tfsdk:"deleted"`
+	Definition                       types.Dynamic `tfsdk:"definition"`
 	LastModifiedAt                   types.String  `tfsdk:"last_modified_at"`
+	Version                          types.Int64   `tfsdk:"version"`
 	Schedule                         types.Dynamic `tfsdk:"schedule"`
 	HumanReadableSchedule            types.String  `tfsdk:"human_readable_schedule"`
 	UserId                           types.Int64   `tfsdk:"user_id"`
@@ -113,7 +115,7 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Description: "Automation type",
 				Required:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("create_folder", "delete_file", "copy_file", "move_file", "as2_send", "run_sync", "import_file"),
+					stringvalidator.OneOf("create_folder", "delete_file", "copy_file", "move_file", "as2_send", "run_sync", "import_file", "v2"),
 				},
 			},
 			"workspace_id": schema.Int64Attribute{
@@ -403,8 +405,16 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Description: "Indicates if the automation has been deleted.",
 				Computed:    true,
 			},
+			"definition": schema.DynamicAttribute{
+				Description: "Automation v2 graph definition.",
+				Computed:    true,
+			},
 			"last_modified_at": schema.StringAttribute{
 				Description: "Time when automation was last modified. Does not change for name or description updates.",
+				Computed:    true,
+			},
+			"version": schema.Int64Attribute{
+				Description: "Current Automation v2 definition version.",
 				Computed:    true,
 			},
 			"schedule": schema.DynamicAttribute{
@@ -784,6 +794,8 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	state.Automation = types.StringValue(automation.Automation)
 	state.Deleted = types.BoolPointerValue(automation.Deleted)
 	state.Description = types.StringValue(automation.Description)
+	state.Definition, propDiags = lib.ToDynamic(ctx, path.Root("definition"), automation.Definition, state.Definition.UnderlyingValue())
+	diags.Append(propDiags...)
 	state.DestinationReplaceFrom = types.StringValue(automation.DestinationReplaceFrom)
 	state.DestinationReplaceTo = types.StringValue(automation.DestinationReplaceTo)
 	state.Destinations, propDiags = types.ListValueFrom(ctx, types.StringType, automation.Destinations)
@@ -808,6 +820,7 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	state.OverwriteFiles = types.BoolPointerValue(automation.OverwriteFiles)
 	state.Path = types.StringValue(automation.Path)
 	state.PathTimeZone = types.StringValue(automation.PathTimeZone)
+	state.Version = types.Int64Value(automation.Version)
 	state.RecurringDay = types.Int64Value(automation.RecurringDay)
 	state.RetryOnFailureIntervalInMinutes = types.Int64Value(automation.RetryOnFailureIntervalInMinutes)
 	state.RetryOnFailureNumberOfAttempts = types.Int64Value(automation.RetryOnFailureNumberOfAttempts)

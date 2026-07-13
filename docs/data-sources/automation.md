@@ -595,6 +595,7 @@ data "files_automation" "example_automation" {
 - `always_overwrite_size_matching_files` (Boolean) Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`.
 - `always_serialize_jobs` (Boolean) Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance.
 - `automation` (String) Automation type
+- `definition` (Dynamic) Automation v2 graph definition.
 - `deleted` (Boolean) Indicates if the automation has been deleted.
 - `description` (String) Description for the this Automation.
 - `destination_replace_from` (String) If set, this string in the destination path will be replaced with the value in `destination_replace_to`.
@@ -630,5 +631,6 @@ data "files_automation" "example_automation" {
 - `user_id` (Number) User ID of the Automation's creator.
 - `user_ids` (List of Number) IDs of Users for the Automation (i.e. who to Request File from)
 - `value` (Dynamic) A Hash of attributes specific to the automation type.
+- `version` (Number) Current Automation v2 definition version.
 - `webhook_url` (String) If trigger is `webhook`, this is the URL of the webhook to trigger the Automation.
 - `workspace_id` (Number) Workspace ID

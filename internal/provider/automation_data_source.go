@@ -35,6 +35,7 @@ type automationDataSourceModel struct {
 	Automation                       types.String  `tfsdk:"automation"`
 	Deleted                          types.Bool    `tfsdk:"deleted"`
 	Description                      types.String  `tfsdk:"description"`
+	Definition                       types.Dynamic `tfsdk:"definition"`
 	DestinationReplaceFrom           types.String  `tfsdk:"destination_replace_from"`
 	DestinationReplaceTo             types.String  `tfsdk:"destination_replace_to"`
 	Destinations                     types.List    `tfsdk:"destinations"`
@@ -51,6 +52,7 @@ type automationDataSourceModel struct {
 	OverwriteFiles                   types.Bool    `tfsdk:"overwrite_files"`
 	Path                             types.String  `tfsdk:"path"`
 	PathTimeZone                     types.String  `tfsdk:"path_time_zone"`
+	Version                          types.Int64   `tfsdk:"version"`
 	RecurringDay                     types.Int64   `tfsdk:"recurring_day"`
 	RetryOnFailureIntervalInMinutes  types.Int64   `tfsdk:"retry_on_failure_interval_in_minutes"`
 	RetryOnFailureNumberOfAttempts   types.Int64   `tfsdk:"retry_on_failure_number_of_attempts"`
@@ -126,6 +128,10 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Description: "Description for the this Automation.",
 				Computed:    true,
 			},
+			"definition": schema.DynamicAttribute{
+				Description: "Automation v2 graph definition.",
+				Computed:    true,
+			},
 			"destination_replace_from": schema.StringAttribute{
 				Description: "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.",
 				Computed:    true,
@@ -190,6 +196,10 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			},
 			"path_time_zone": schema.StringAttribute{
 				Description: "Timezone to use when rendering timestamps in paths.",
+				Computed:    true,
+			},
+			"version": schema.Int64Attribute{
+				Description: "Current Automation v2 definition version.",
 				Computed:    true,
 			},
 			"recurring_day": schema.Int64Attribute{
@@ -314,6 +324,8 @@ func (r *automationDataSource) populateDataSourceModel(ctx context.Context, auto
 	state.Automation = types.StringValue(automation.Automation)
 	state.Deleted = types.BoolPointerValue(automation.Deleted)
 	state.Description = types.StringValue(automation.Description)
+	state.Definition, propDiags = lib.ToDynamic(ctx, path.Root("definition"), automation.Definition, state.Definition.UnderlyingValue())
+	diags.Append(propDiags...)
 	state.DestinationReplaceFrom = types.StringValue(automation.DestinationReplaceFrom)
 	state.DestinationReplaceTo = types.StringValue(automation.DestinationReplaceTo)
 	state.Destinations, propDiags = types.ListValueFrom(ctx, types.StringType, automation.Destinations)
@@ -338,6 +350,7 @@ func (r *automationDataSource) populateDataSourceModel(ctx context.Context, auto
 	state.OverwriteFiles = types.BoolPointerValue(automation.OverwriteFiles)
 	state.Path = types.StringValue(automation.Path)
 	state.PathTimeZone = types.StringValue(automation.PathTimeZone)
+	state.Version = types.Int64Value(automation.Version)
 	state.RecurringDay = types.Int64Value(automation.RecurringDay)
 	state.RetryOnFailureIntervalInMinutes = types.Int64Value(automation.RetryOnFailureIntervalInMinutes)
 	state.RetryOnFailureNumberOfAttempts = types.Int64Value(automation.RetryOnFailureNumberOfAttempts)

@@ -675,12 +675,14 @@ resource "files_automation" "example_automation" {
 
 ### Read-Only
 
+- `definition` (Dynamic) Automation v2 graph definition.
 - `deleted` (Boolean) Indicates if the automation has been deleted.
 - `human_readable_schedule` (String) If trigger is `custom_schedule` or `daily` with times, Human readable schedule description for when the automation should be run.
 - `id` (Number) Automation ID
 - `last_modified_at` (String) Time when automation was last modified. Does not change for name or description updates.
 - `schedule` (Dynamic) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run in json format.
 - `user_id` (Number) User ID of the Automation's creator.
+- `version` (Number) Current Automation v2 definition version.
 - `webhook_url` (String) If trigger is `webhook`, this is the URL of the webhook to trigger the Automation.
 
 ## Import
