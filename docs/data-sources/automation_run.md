@@ -43,9 +43,12 @@ data "files_automation_run" "example_automation_run" {
 - `completed_at` (String) Automation run completion/failure date/time.
 - `created_at` (String) Automation run start date/time.
 - `definition` (Dynamic) Automation definition snapshot pinned by this run. For performance reasons, this is not provided when listing Automation runs.
+- `execution_nodes` (Dynamic) Execution status, timing, and bounded output summaries for each node. For performance reasons, this is not provided when listing Automation runs.
 - `failed_operations` (Number) Count of failed operations.
 - `journal_url` (String) Link to the run journal artifact.
 - `node_states` (Dynamic) Status and execution stage for each node in this run. For performance reasons, this is not provided when listing Automation runs.
+- `rerun_from_node_id` (String) Node at which this run resumed execution.
+- `rerun_of_run_id` (Number) ID of the run whose persisted node outputs this run reused.
 - `retried_at` (String) If set, this Automation run was retried due to `failure` or `partial_failure`.
 - `retried_in_run_id` (Number) ID of the run that is or will be retrying this run.
 - `retry_at` (String) If set, this automation will be retried at this date/time due to `failure` or `partial_failure`.

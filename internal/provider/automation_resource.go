@@ -76,6 +76,7 @@ type automationResourceModel struct {
 	Id                               types.Int64   `tfsdk:"id"`
 	Deleted                          types.Bool    `tfsdk:"deleted"`
 	Definition                       types.Dynamic `tfsdk:"definition"`
+	InboundEmailAddress              types.String  `tfsdk:"inbound_email_address"`
 	LastModifiedAt                   types.String  `tfsdk:"last_modified_at"`
 	Version                          types.Int64   `tfsdk:"version"`
 	Schedule                         types.Dynamic `tfsdk:"schedule"`
@@ -407,6 +408,10 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			},
 			"definition": schema.DynamicAttribute{
 				Description: "Automation v2 graph definition.",
+				Computed:    true,
+			},
+			"inbound_email_address": schema.StringAttribute{
+				Description: "If trigger is `email`, this is the address that triggers the Automation.",
 				Computed:    true,
 			},
 			"last_modified_at": schema.StringAttribute{
@@ -804,6 +809,7 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	state.ExcludePattern = types.StringValue(automation.ExcludePattern)
 	state.ImportUrls, propDiags = lib.ToDynamic(ctx, path.Root("import_urls"), automation.ImportUrls, state.ImportUrls.UnderlyingValue())
 	diags.Append(propDiags...)
+	state.InboundEmailAddress = types.StringValue(automation.InboundEmailAddress)
 	state.FlattenDestinationStructure = types.BoolPointerValue(automation.FlattenDestinationStructure)
 	state.GroupIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, automation.GroupIds)
 	diags.Append(propDiags...)

@@ -609,6 +609,7 @@ data "files_automation" "example_automation" {
 - `human_readable_schedule` (String) If trigger is `custom_schedule` or `daily` with times, Human readable schedule description for when the automation should be run.
 - `ignore_locked_folders` (Boolean) If true, the Lock Folders behavior will be disregarded for automated actions.
 - `import_urls` (Dynamic) List of URLs to be imported and names to be used.
+- `inbound_email_address` (String) If trigger is `email`, this is the address that triggers the Automation.
 - `interval` (String) If trigger is `daily`, this specifies how often to run this automation.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`
 - `last_modified_at` (String) Time when automation was last modified. Does not change for name or description updates.
 - `legacy_folder_matching` (Boolean) If `true`, use the legacy behavior for this automation, where it can operate on folders in addition to just files.  This behavior no longer works and should not be used.

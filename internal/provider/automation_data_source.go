@@ -42,6 +42,7 @@ type automationDataSourceModel struct {
 	Disabled                         types.Bool    `tfsdk:"disabled"`
 	ExcludePattern                   types.String  `tfsdk:"exclude_pattern"`
 	ImportUrls                       types.Dynamic `tfsdk:"import_urls"`
+	InboundEmailAddress              types.String  `tfsdk:"inbound_email_address"`
 	FlattenDestinationStructure      types.Bool    `tfsdk:"flatten_destination_structure"`
 	GroupIds                         types.List    `tfsdk:"group_ids"`
 	IgnoreLockedFolders              types.Bool    `tfsdk:"ignore_locked_folders"`
@@ -155,6 +156,10 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			},
 			"import_urls": schema.DynamicAttribute{
 				Description: "List of URLs to be imported and names to be used.",
+				Computed:    true,
+			},
+			"inbound_email_address": schema.StringAttribute{
+				Description: "If trigger is `email`, this is the address that triggers the Automation.",
 				Computed:    true,
 			},
 			"flatten_destination_structure": schema.BoolAttribute{
@@ -334,6 +339,7 @@ func (r *automationDataSource) populateDataSourceModel(ctx context.Context, auto
 	state.ExcludePattern = types.StringValue(automation.ExcludePattern)
 	state.ImportUrls, propDiags = lib.ToDynamic(ctx, path.Root("import_urls"), automation.ImportUrls, state.ImportUrls.UnderlyingValue())
 	diags.Append(propDiags...)
+	state.InboundEmailAddress = types.StringValue(automation.InboundEmailAddress)
 	state.FlattenDestinationStructure = types.BoolPointerValue(automation.FlattenDestinationStructure)
 	state.GroupIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, automation.GroupIds)
 	diags.Append(propDiags...)

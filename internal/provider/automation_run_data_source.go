@@ -39,12 +39,15 @@ type automationRunDataSourceModel struct {
 	RetriedAt            types.String  `tfsdk:"retried_at"`
 	RetriedInRunId       types.Int64   `tfsdk:"retried_in_run_id"`
 	RetryOfRunId         types.Int64   `tfsdk:"retry_of_run_id"`
+	RerunOfRunId         types.Int64   `tfsdk:"rerun_of_run_id"`
+	RerunFromNodeId      types.String  `tfsdk:"rerun_from_node_id"`
 	Runtime              types.Float64 `tfsdk:"runtime"`
 	Status               types.String  `tfsdk:"status"`
 	SuccessfulOperations types.Int64   `tfsdk:"successful_operations"`
 	FailedOperations     types.Int64   `tfsdk:"failed_operations"`
 	Definition           types.Dynamic `tfsdk:"definition"`
 	NodeStates           types.Dynamic `tfsdk:"node_states"`
+	ExecutionNodes       types.Dynamic `tfsdk:"execution_nodes"`
 	JournalUrl           types.String  `tfsdk:"journal_url"`
 	StatusMessagesUrl    types.String  `tfsdk:"status_messages_url"`
 }
@@ -120,6 +123,14 @@ func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaR
 				Description: "ID of the original run that this run is retrying.",
 				Computed:    true,
 			},
+			"rerun_of_run_id": schema.Int64Attribute{
+				Description: "ID of the run whose persisted node outputs this run reused.",
+				Computed:    true,
+			},
+			"rerun_from_node_id": schema.StringAttribute{
+				Description: "Node at which this run resumed execution.",
+				Computed:    true,
+			},
 			"runtime": schema.Float64Attribute{
 				Description: "Automation run runtime.",
 				Computed:    true,
@@ -142,6 +153,10 @@ func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaR
 			},
 			"node_states": schema.DynamicAttribute{
 				Description: "Status and execution stage for each node in this run. For performance reasons, this is not provided when listing Automation runs.",
+				Computed:    true,
+			},
+			"execution_nodes": schema.DynamicAttribute{
+				Description: "Execution status, timing, and bounded output summaries for each node. For performance reasons, this is not provided when listing Automation runs.",
 				Computed:    true,
 			},
 			"journal_url": schema.StringAttribute{
@@ -225,6 +240,8 @@ func (r *automationRunDataSource) populateDataSourceModel(ctx context.Context, a
 	}
 	state.RetriedInRunId = types.Int64Value(automationRun.RetriedInRunId)
 	state.RetryOfRunId = types.Int64Value(automationRun.RetryOfRunId)
+	state.RerunOfRunId = types.Int64Value(automationRun.RerunOfRunId)
+	state.RerunFromNodeId = types.StringValue(automationRun.RerunFromNodeId)
 	state.Runtime = types.Float64Value(automationRun.Runtime)
 	state.Status = types.StringValue(automationRun.Status)
 	state.SuccessfulOperations = types.Int64Value(automationRun.SuccessfulOperations)
@@ -232,6 +249,8 @@ func (r *automationRunDataSource) populateDataSourceModel(ctx context.Context, a
 	state.Definition, propDiags = lib.ToDynamic(ctx, path.Root("definition"), automationRun.Definition, state.Definition.UnderlyingValue())
 	diags.Append(propDiags...)
 	state.NodeStates, propDiags = lib.ToDynamic(ctx, path.Root("node_states"), automationRun.NodeStates, state.NodeStates.UnderlyingValue())
+	diags.Append(propDiags...)
+	state.ExecutionNodes, propDiags = lib.ToDynamic(ctx, path.Root("execution_nodes"), automationRun.ExecutionNodes, state.ExecutionNodes.UnderlyingValue())
 	diags.Append(propDiags...)
 	state.JournalUrl = types.StringValue(automationRun.JournalUrl)
 	state.StatusMessagesUrl = types.StringValue(automationRun.StatusMessagesUrl)

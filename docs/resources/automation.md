@@ -679,6 +679,7 @@ resource "files_automation" "example_automation" {
 - `deleted` (Boolean) Indicates if the automation has been deleted.
 - `human_readable_schedule` (String) If trigger is `custom_schedule` or `daily` with times, Human readable schedule description for when the automation should be run.
 - `id` (Number) Automation ID
+- `inbound_email_address` (String) If trigger is `email`, this is the address that triggers the Automation.
 - `last_modified_at` (String) Time when automation was last modified. Does not change for name or description updates.
 - `schedule` (Dynamic) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run in json format.
 - `user_id` (Number) User ID of the Automation's creator.
