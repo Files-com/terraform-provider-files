@@ -312,3 +312,12 @@ resource "files_behavior" "example_auto_unzip_behavior" {
     path_time_zone   = "Eastern Time (US & Canada)"
   }
 }
+
+resource "files_behavior" "example_remote_server_metadata_index_behavior" {
+  path     = "path"
+  behavior = "remote_server_metadata_index"
+  value    = {
+    interval_minutes       = 1440
+    initial_scan_completed = false
+  }
+}
