@@ -29,7 +29,7 @@ data "files_expectation_evaluation" "example_expectation_evaluation" {
 
 - `closed_at` (String) When the evaluation row was finalized.
 - `created_at` (String) Creation time.
-- `criteria_errors` (List of String) Captured criteria failures for the window.
+- `criteria_errors` (List of String) Captured criteria failures for the window, including file-scoped FTS errors and returned validation details.
 - `deadline_at` (String) Logical due boundary for schedule-driven windows.
 - `expectation_id` (Number) Expectation ID.
 - `hard_close_at` (String) Hard stop after which the window may not remain open.

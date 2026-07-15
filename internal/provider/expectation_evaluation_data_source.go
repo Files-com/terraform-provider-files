@@ -132,7 +132,7 @@ func (r *expectationEvaluationDataSource) Schema(_ context.Context, _ datasource
 				Computed:    true,
 			},
 			"criteria_errors": schema.ListAttribute{
-				Description: "Captured criteria failures for the window.",
+				Description: "Captured criteria failures for the window, including file-scoped FTS errors and returned validation details.",
 				Computed:    true,
 				ElementType: types.StringType,
 			},
