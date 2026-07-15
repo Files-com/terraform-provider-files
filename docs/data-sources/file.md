@@ -38,6 +38,7 @@ data "files_file" "example_file" {
 - `created_by_remote_server_id` (Number) ID of the Remote Server that created the file/folder
 - `created_by_sync_id` (Number) ID of the Sync that created the file/folder
 - `custom_metadata` (Dynamic) Custom metadata map of keys and values. Limited to 32 keys, 256 characters per key and 1024 characters per value.
+- `direct_connection_info` (String) Optional direct connection information for direct Agent transfer attempts
 - `display_name` (String) File/Folder display name
 - `download_uri` (String) Link to download file. Provided only in response to a download request.
 - `is_locked` (Boolean) Is this folder locked and unable to be modified?

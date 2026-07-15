@@ -72,6 +72,7 @@ type folderResourceModel struct {
 	SubfoldersLocked                   types.Bool    `tfsdk:"subfolders_locked"`
 	IsLocked                           types.Bool    `tfsdk:"is_locked"`
 	DownloadUri                        types.String  `tfsdk:"download_uri"`
+	DirectConnectionInfo               types.String  `tfsdk:"direct_connection_info"`
 	PreviewId                          types.Int64   `tfsdk:"preview_id"`
 	Preview                            types.String  `tfsdk:"preview"`
 }
@@ -257,6 +258,10 @@ func (r *folderResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			},
 			"download_uri": schema.StringAttribute{
 				Description: "Link to download file. Provided only in response to a download request.",
+				Computed:    true,
+			},
+			"direct_connection_info": schema.StringAttribute{
+				Description: "Optional direct connection information for direct Agent transfer attempts",
 				Computed:    true,
 			},
 			"preview_id": schema.Int64Attribute{
@@ -560,6 +565,14 @@ func (r *folderResource) populateResourceModel(ctx context.Context, folder files
 	state.SubfoldersLocked = types.BoolPointerValue(folder.SubfoldersLocked)
 	state.IsLocked = types.BoolPointerValue(folder.IsLocked)
 	state.DownloadUri = types.StringValue(folder.DownloadUri)
+	respDirectConnectionInfo, err := json.Marshal(folder.DirectConnectionInfo)
+	if err != nil {
+		diags.AddError(
+			"Error Creating Files Folder",
+			"Could not marshal direct_connection_info to JSON: "+err.Error(),
+		)
+	}
+	state.DirectConnectionInfo = types.StringValue(string(respDirectConnectionInfo))
 	state.PriorityColor = types.StringValue(folder.PriorityColor)
 	state.PreviewId = types.Int64Value(folder.PreviewId)
 	respPreview, err := json.Marshal(folder.Preview)

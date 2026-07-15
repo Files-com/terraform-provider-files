@@ -70,6 +70,7 @@ type fileResourceModel struct {
 	SubfoldersLocked                   types.Bool    `tfsdk:"subfolders_locked"`
 	IsLocked                           types.Bool    `tfsdk:"is_locked"`
 	DownloadUri                        types.String  `tfsdk:"download_uri"`
+	DirectConnectionInfo               types.String  `tfsdk:"direct_connection_info"`
 	PreviewId                          types.Int64   `tfsdk:"preview_id"`
 	Preview                            types.String  `tfsdk:"preview"`
 }
@@ -263,6 +264,10 @@ func (r *fileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"download_uri": schema.StringAttribute{
 				Description: "Link to download file. Provided only in response to a download request.",
+				Computed:    true,
+			},
+			"direct_connection_info": schema.StringAttribute{
+				Description: "Optional direct connection information for direct Agent transfer attempts",
 				Computed:    true,
 			},
 			"preview_id": schema.Int64Attribute{
@@ -533,6 +538,14 @@ func (r *fileResource) populateResourceModel(ctx context.Context, file files_sdk
 	state.SubfoldersLocked = types.BoolPointerValue(file.SubfoldersLocked)
 	state.IsLocked = types.BoolPointerValue(file.IsLocked)
 	state.DownloadUri = types.StringValue(file.DownloadUri)
+	respDirectConnectionInfo, err := json.Marshal(file.DirectConnectionInfo)
+	if err != nil {
+		diags.AddError(
+			"Error Creating Files File",
+			"Could not marshal direct_connection_info to JSON: "+err.Error(),
+		)
+	}
+	state.DirectConnectionInfo = types.StringValue(string(respDirectConnectionInfo))
 	state.PriorityColor = types.StringValue(file.PriorityColor)
 	state.PreviewId = types.Int64Value(file.PreviewId)
 	respPreview, err := json.Marshal(file.Preview)

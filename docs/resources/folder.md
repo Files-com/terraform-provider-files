@@ -52,6 +52,7 @@ resource "files_folder" "example_folder" {
 - `created_by_inbox_id` (Number) ID of the Inbox that created the file/folder
 - `created_by_remote_server_id` (Number) ID of the Remote Server that created the file/folder
 - `created_by_sync_id` (Number) ID of the Sync that created the file/folder
+- `direct_connection_info` (String) Optional direct connection information for direct Agent transfer attempts
 - `display_name` (String) File/Folder display name
 - `download_uri` (String) Link to download file. Provided only in response to a download request.
 - `is_locked` (Boolean) Is this folder locked and unable to be modified?
