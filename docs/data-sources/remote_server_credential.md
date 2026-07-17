@@ -44,6 +44,9 @@ data "files_remote_server_credential" "example_remote_server_credential" {
 - `s3_assume_role_external_id` (String) External ID for AssumeRole authentication.
 - `s3_compatible_access_key` (String) S3-compatible: Access Key
 - `server_type` (String) Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server.
+- `sharepoint_app_credential_type` (String) SharePoint: App-only credential type. Either secret or certificate.
+- `sharepoint_client_id` (String) SharePoint: Microsoft Entra application client ID for app-only authentication.
+- `sharepoint_tenant_id` (String) SharePoint: Microsoft Entra tenant ID for app-only authentication.
 - `username` (String) Remote server username.
 - `wasabi_access_key` (String) Wasabi: Access Key.
 - `workspace_id` (Number) Workspace ID (0 for default workspace)

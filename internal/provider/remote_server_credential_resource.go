@@ -48,6 +48,8 @@ type remoteServerCredentialResourceModel struct {
 	FilebaseAccessKey                       types.String `tfsdk:"filebase_access_key"`
 	CloudflareAccessKey                     types.String `tfsdk:"cloudflare_access_key"`
 	LinodeAccessKey                         types.String `tfsdk:"linode_access_key"`
+	SharepointTenantId                      types.String `tfsdk:"sharepoint_tenant_id"`
+	SharepointClientId                      types.String `tfsdk:"sharepoint_client_id"`
 	Username                                types.String `tfsdk:"username"`
 	Password                                types.String `tfsdk:"password"`
 	PrivateKey                              types.String `tfsdk:"private_key"`
@@ -65,10 +67,13 @@ type remoteServerCredentialResourceModel struct {
 	GoogleCloudStorageS3CompatibleSecretKey types.String `tfsdk:"google_cloud_storage_s3_compatible_secret_key"`
 	LinodeSecretKey                         types.String `tfsdk:"linode_secret_key"`
 	S3CompatibleSecretKey                   types.String `tfsdk:"s3_compatible_secret_key"`
+	SharepointClientCertificate             types.String `tfsdk:"sharepoint_client_certificate"`
+	SharepointClientSecret                  types.String `tfsdk:"sharepoint_client_secret"`
 	WasabiSecretKey                         types.String `tfsdk:"wasabi_secret_key"`
 	CopyValuesFromCredentialId              types.Int64  `tfsdk:"copy_values_from_credential_id"`
 	Id                                      types.Int64  `tfsdk:"id"`
 	S3AssumeRoleExternalId                  types.String `tfsdk:"s3_assume_role_external_id"`
+	SharepointAppCredentialType             types.String `tfsdk:"sharepoint_app_credential_type"`
 }
 
 func (r *remoteServerCredentialResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -206,6 +211,22 @@ func (r *remoteServerCredentialResource) Schema(_ context.Context, _ resource.Sc
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"sharepoint_tenant_id": schema.StringAttribute{
+				Description: "SharePoint: Microsoft Entra tenant ID for app-only authentication.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"sharepoint_client_id": schema.StringAttribute{
+				Description: "SharePoint: Microsoft Entra application client ID for app-only authentication.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"username": schema.StringAttribute{
 				Description: "Remote server username.",
 				Computed:    true,
@@ -294,6 +315,16 @@ func (r *remoteServerCredentialResource) Schema(_ context.Context, _ resource.Sc
 				Optional:    true,
 				WriteOnly:   true,
 			},
+			"sharepoint_client_certificate": schema.StringAttribute{
+				Description: "SharePoint: PEM-encoded certificate and unencrypted private key for app-only authentication.",
+				Optional:    true,
+				WriteOnly:   true,
+			},
+			"sharepoint_client_secret": schema.StringAttribute{
+				Description: "SharePoint: Microsoft Entra application client secret for app-only authentication.",
+				Optional:    true,
+				WriteOnly:   true,
+			},
 			"wasabi_secret_key": schema.StringAttribute{
 				Description: "Wasabi: Secret Key",
 				Optional:    true,
@@ -316,6 +347,10 @@ func (r *remoteServerCredentialResource) Schema(_ context.Context, _ resource.Sc
 			},
 			"s3_assume_role_external_id": schema.StringAttribute{
 				Description: "External ID for AssumeRole authentication.",
+				Computed:    true,
+			},
+			"sharepoint_app_credential_type": schema.StringAttribute{
+				Description: "SharePoint: App-only credential type. Either secret or certificate.",
 				Computed:    true,
 			},
 		},
@@ -348,6 +383,8 @@ func (r *remoteServerCredentialResource) Create(ctx context.Context, req resourc
 	paramsRemoteServerCredentialCreate.GoogleCloudStorageS3CompatibleAccessKey = plan.GoogleCloudStorageS3CompatibleAccessKey.ValueString()
 	paramsRemoteServerCredentialCreate.LinodeAccessKey = plan.LinodeAccessKey.ValueString()
 	paramsRemoteServerCredentialCreate.S3CompatibleAccessKey = plan.S3CompatibleAccessKey.ValueString()
+	paramsRemoteServerCredentialCreate.SharepointClientId = plan.SharepointClientId.ValueString()
+	paramsRemoteServerCredentialCreate.SharepointTenantId = plan.SharepointTenantId.ValueString()
 	paramsRemoteServerCredentialCreate.Username = plan.Username.ValueString()
 	paramsRemoteServerCredentialCreate.WasabiAccessKey = plan.WasabiAccessKey.ValueString()
 	paramsRemoteServerCredentialCreate.Password = config.Password.ValueString()
@@ -366,6 +403,8 @@ func (r *remoteServerCredentialResource) Create(ctx context.Context, req resourc
 	paramsRemoteServerCredentialCreate.GoogleCloudStorageS3CompatibleSecretKey = config.GoogleCloudStorageS3CompatibleSecretKey.ValueString()
 	paramsRemoteServerCredentialCreate.LinodeSecretKey = config.LinodeSecretKey.ValueString()
 	paramsRemoteServerCredentialCreate.S3CompatibleSecretKey = config.S3CompatibleSecretKey.ValueString()
+	paramsRemoteServerCredentialCreate.SharepointClientCertificate = config.SharepointClientCertificate.ValueString()
+	paramsRemoteServerCredentialCreate.SharepointClientSecret = config.SharepointClientSecret.ValueString()
 	paramsRemoteServerCredentialCreate.WasabiSecretKey = config.WasabiSecretKey.ValueString()
 	paramsRemoteServerCredentialCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	paramsRemoteServerCredentialCreate.CopyValuesFromCredentialId = config.CopyValuesFromCredentialId.ValueInt64()
@@ -479,6 +518,12 @@ func (r *remoteServerCredentialResource) Update(ctx context.Context, req resourc
 	if !config.S3CompatibleAccessKey.IsNull() && !config.S3CompatibleAccessKey.IsUnknown() {
 		paramsRemoteServerCredentialUpdate["s3_compatible_access_key"] = config.S3CompatibleAccessKey.ValueString()
 	}
+	if !config.SharepointClientId.IsNull() && !config.SharepointClientId.IsUnknown() {
+		paramsRemoteServerCredentialUpdate["sharepoint_client_id"] = config.SharepointClientId.ValueString()
+	}
+	if !config.SharepointTenantId.IsNull() && !config.SharepointTenantId.IsUnknown() {
+		paramsRemoteServerCredentialUpdate["sharepoint_tenant_id"] = config.SharepointTenantId.ValueString()
+	}
 	if !config.Username.IsNull() && !config.Username.IsUnknown() {
 		paramsRemoteServerCredentialUpdate["username"] = config.Username.ValueString()
 	}
@@ -532,6 +577,12 @@ func (r *remoteServerCredentialResource) Update(ctx context.Context, req resourc
 	}
 	if !config.S3CompatibleSecretKey.IsNull() && !config.S3CompatibleSecretKey.IsUnknown() {
 		paramsRemoteServerCredentialUpdate["s3_compatible_secret_key"] = config.S3CompatibleSecretKey.ValueString()
+	}
+	if !config.SharepointClientCertificate.IsNull() && !config.SharepointClientCertificate.IsUnknown() {
+		paramsRemoteServerCredentialUpdate["sharepoint_client_certificate"] = config.SharepointClientCertificate.ValueString()
+	}
+	if !config.SharepointClientSecret.IsNull() && !config.SharepointClientSecret.IsUnknown() {
+		paramsRemoteServerCredentialUpdate["sharepoint_client_secret"] = config.SharepointClientSecret.ValueString()
 	}
 	if !config.WasabiSecretKey.IsNull() && !config.WasabiSecretKey.IsUnknown() {
 		paramsRemoteServerCredentialUpdate["wasabi_secret_key"] = config.WasabiSecretKey.ValueString()
@@ -619,6 +670,9 @@ func (r *remoteServerCredentialResource) populateResourceModel(ctx context.Conte
 	state.FilebaseAccessKey = types.StringValue(remoteServerCredential.FilebaseAccessKey)
 	state.CloudflareAccessKey = types.StringValue(remoteServerCredential.CloudflareAccessKey)
 	state.LinodeAccessKey = types.StringValue(remoteServerCredential.LinodeAccessKey)
+	state.SharepointTenantId = types.StringValue(remoteServerCredential.SharepointTenantId)
+	state.SharepointClientId = types.StringValue(remoteServerCredential.SharepointClientId)
+	state.SharepointAppCredentialType = types.StringValue(remoteServerCredential.SharepointAppCredentialType)
 	state.Username = types.StringValue(remoteServerCredential.Username)
 
 	return

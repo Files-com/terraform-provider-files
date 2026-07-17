@@ -30,6 +30,8 @@ resource "files_remote_server_credential" "example_remote_server_credential" {
   google_cloud_storage_s3_compatible_access_key = "example"
   linode_access_key                             = "example"
   s3_compatible_access_key                      = "example"
+  sharepoint_client_id                          = "00000000-0000-0000-0000-000000000000"
+  sharepoint_tenant_id                          = "00000000-0000-0000-0000-000000000000"
   username                                      = "user"
   wasabi_access_key                             = "example"
   workspace_id                                  = 0
@@ -72,6 +74,10 @@ resource "files_remote_server_credential" "example_remote_server_credential" {
 - `s3_compatible_access_key` (String) S3-compatible: Access Key
 - `s3_compatible_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) S3-compatible: Secret Key
 - `server_type` (String) Remote server type.  Remote Server Credentials are only valid for a single type of Remote Server.
+- `sharepoint_client_certificate` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) SharePoint: PEM-encoded certificate and unencrypted private key for app-only authentication.
+- `sharepoint_client_id` (String) SharePoint: Microsoft Entra application client ID for app-only authentication.
+- `sharepoint_client_secret` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) SharePoint: Microsoft Entra application client secret for app-only authentication.
+- `sharepoint_tenant_id` (String) SharePoint: Microsoft Entra tenant ID for app-only authentication.
 - `username` (String) Remote server username.
 - `wasabi_access_key` (String) Wasabi: Access Key.
 - `wasabi_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Wasabi: Secret Key
@@ -81,6 +87,7 @@ resource "files_remote_server_credential" "example_remote_server_credential" {
 
 - `id` (Number) Remote Server Credential ID
 - `s3_assume_role_external_id` (String) External ID for AssumeRole authentication.
+- `sharepoint_app_credential_type` (String) SharePoint: App-only credential type. Either secret or certificate.
 
 ## Import
 

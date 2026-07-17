@@ -4,7 +4,7 @@ page_title: "files_remote_server Resource - files"
 subcategory: ""
 description: |-
   A RemoteServer is a specific type of Behavior called remote_server_sync.
-  Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, Azure Blob Storage, or Files.com direct link.
+  Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, SharePoint, Google Drive, Azure Blob Storage, or Files.com direct link.
   Not every attribute will apply to every remote server.
   FTP Servers require that you specify their hostname, port, username, password, and a value for ssl. Optionally, provide server_certificate.
   SFTP Servers require that you specify their hostname, port, username, password or private_key, and a value for ssl. Optionally, provide server_certificate, private_key_passphrase.
@@ -19,7 +19,7 @@ description: |-
   Backblaze B2 Cloud Storage backblaze_b2_bucket, backblaze_b2_s3_endpoint, backblaze_b2_application_key, and backblaze_b2_key_id. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453
   WebDAV Servers require that you specify their hostname, username, and password.
   OneDrive follow the auth_setup_link and login with Microsoft.
-  Sharepoint follow the auth_setup_link and login with Microsoft.
+  SharePoint supports delegated authentication through auth_setup_link, or app-only authentication with sharepoint_tenant_id, sharepoint_client_id, and either sharepoint_client_secret or sharepoint_client_certificate. Set sharepoint_site_url to scope the remote server to a site granted through Microsoft Graph Sites.Selected; leave it blank to browse all sites.
   Box follow the auth_setup_link and login with Box.
   Dropbox specify if dropbox_teams then follow the auth_setup_link and login with Dropbox.
   Google Drive follow the auth_setup_link and login with Google.
@@ -36,7 +36,7 @@ A RemoteServer is a specific type of Behavior called `remote_server_sync`.
 
 
 
-Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, Azure Blob Storage, or Files.com direct link.
+Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, SharePoint, Google Drive, Azure Blob Storage, or Files.com direct link.
 
 
 
@@ -86,7 +86,7 @@ OneDrive follow the `auth_setup_link` and login with Microsoft.
 
 
 
-Sharepoint follow the `auth_setup_link` and login with Microsoft.
+SharePoint supports delegated authentication through `auth_setup_link`, or app-only authentication with `sharepoint_tenant_id`, `sharepoint_client_id`, and either `sharepoint_client_secret` or `sharepoint_client_certificate`. Set `sharepoint_site_url` to scope the remote server to a site granted through Microsoft Graph `Sites.Selected`; leave it blank to browse all sites.
 
 
 
@@ -178,6 +178,9 @@ resource "files_remote_server" "example_remote_server" {
   server_certificate                            = "require_match"
   server_host_key                               = "[public key]"
   server_type                                   = "s3"
+  sharepoint_client_id                          = "00000000-0000-0000-0000-000000000000"
+  sharepoint_site_url                           = "https://example.sharepoint.com/sites/accounting"
+  sharepoint_tenant_id                          = "00000000-0000-0000-0000-000000000000"
   ssl                                           = "if_available"
   username                                      = "user"
   wasabi_access_key                             = "example"
@@ -263,6 +266,11 @@ resource "files_remote_server" "example_remote_server" {
 - `server_certificate` (String) Remote server certificate
 - `server_host_key` (String) Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts
 - `server_type` (String) Remote server type.
+- `sharepoint_client_certificate` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) SharePoint: PEM-encoded certificate and unencrypted private key for app-only authentication.
+- `sharepoint_client_id` (String) SharePoint: Microsoft Entra application client ID for app-only authentication.
+- `sharepoint_client_secret` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) SharePoint: Microsoft Entra application client secret for app-only authentication.
+- `sharepoint_site_url` (String) SharePoint: Site URL to scope app-only authentication to a single site. Leave blank to browse all sites.
+- `sharepoint_tenant_id` (String) SharePoint: Microsoft Entra tenant ID for app-only authentication.
 - `ssl` (String) Should we require SSL?
 - `ssl_certificate` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) SSL client certificate.
 - `upload_staging_path` (String) Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP.
@@ -289,6 +297,8 @@ resource "files_remote_server" "example_remote_server" {
 - `pinned_region` (String) If set, all communications with this remote server are made through the provided region.
 - `remote_home_path` (String) Initial home folder on remote server
 - `s3_assume_role_external_id` (String) External ID for AssumeRole authentication.
+- `sharepoint_app_authentication` (Boolean) SharePoint: If true, this remote server uses Microsoft Entra app-only authentication.
+- `sharepoint_app_credential_type` (String) SharePoint: App-only credential type. Either secret or certificate.
 - `supports_versioning` (Boolean) If true, this remote server supports file versioning. This value is determined automatically by Files.com.
 
 ## Import

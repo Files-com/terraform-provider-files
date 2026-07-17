@@ -68,6 +68,9 @@ type remoteServerResourceModel struct {
 	WasabiRegion                            types.String `tfsdk:"wasabi_region"`
 	WasabiAccessKey                         types.String `tfsdk:"wasabi_access_key"`
 	OneDriveAccountType                     types.String `tfsdk:"one_drive_account_type"`
+	SharepointTenantId                      types.String `tfsdk:"sharepoint_tenant_id"`
+	SharepointClientId                      types.String `tfsdk:"sharepoint_client_id"`
+	SharepointSiteUrl                       types.String `tfsdk:"sharepoint_site_url"`
 	AzureBlobStorageAccount                 types.String `tfsdk:"azure_blob_storage_account"`
 	AzureBlobStorageContainer               types.String `tfsdk:"azure_blob_storage_container"`
 	AzureBlobStorageHierarchicalNamespace   types.Bool   `tfsdk:"azure_blob_storage_hierarchical_namespace"`
@@ -99,6 +102,8 @@ type remoteServerResourceModel struct {
 	PrivateKey                              types.String `tfsdk:"private_key"`
 	PrivateKeyPassphrase                    types.String `tfsdk:"private_key_passphrase"`
 	ResetAuthentication                     types.Bool   `tfsdk:"reset_authentication"`
+	SharepointClientCertificate             types.String `tfsdk:"sharepoint_client_certificate"`
+	SharepointClientSecret                  types.String `tfsdk:"sharepoint_client_secret"`
 	SslCertificate                          types.String `tfsdk:"ssl_certificate"`
 	AwsSecretKey                            types.String `tfsdk:"aws_secret_key"`
 	AzureBlobStorageAccessKey               types.String `tfsdk:"azure_blob_storage_access_key"`
@@ -123,6 +128,8 @@ type remoteServerResourceModel struct {
 	S3AssumeRoleExternalId                  types.String `tfsdk:"s3_assume_role_external_id"`
 	AuthStatus                              types.String `tfsdk:"auth_status"`
 	AuthAccountName                         types.String `tfsdk:"auth_account_name"`
+	SharepointAppAuthentication             types.Bool   `tfsdk:"sharepoint_app_authentication"`
+	SharepointAppCredentialType             types.String `tfsdk:"sharepoint_app_credential_type"`
 	FilesAgentApiToken                      types.String `tfsdk:"files_agent_api_token"`
 	FilesAgentUpToDate                      types.Bool   `tfsdk:"files_agent_up_to_date"`
 	FilesAgentLatestVersion                 types.String `tfsdk:"files_agent_latest_version"`
@@ -156,7 +163,7 @@ func (r *remoteServerResource) Metadata(_ context.Context, req resource.Metadata
 
 func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A RemoteServer is a specific type of Behavior called `remote_server_sync`.\n\n\n\nRemote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, Google Drive, Azure Blob Storage, or Files.com direct link.\n\n\n\nNot every attribute will apply to every remote server.\n\n\n\nFTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`. Optionally, provide `server_certificate`.\n\n\n\nSFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`. Optionally, provide `server_certificate`, `private_key_passphrase`.\n\n\n\nS3 Buckets require that you specify their `s3_bucket` name, and `s3_region`. Optionally provide a `aws_access_key`, and `aws_secret_key`. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.\n\n\n\nS3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`. Optionally provide `s3_compatible_virtual_hosted_style` to use virtual-hosted-style URLs instead of path-style URLs.\n\n\n\nGoogle Cloud Storage requires that you specify `google_cloud_storage_bucket`, and then one of the following sets of authentication credentials, selected by `google_cloud_storage_authentication_method` (defaults to `json`):\n\n - for JSON authentication: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`\n\n - for HMAC (S3-Compatible) authentication: `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`\n\n - for OAuth authentication: `google_cloud_storage_oauth_scope`, then follow the `auth_setup_link` and login with Google\n\n\n\nWasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.\n\n\n\nBackblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453\n\n\n\nWebDAV Servers require that you specify their `hostname`, `username`, and `password`.\n\n\n\nOneDrive follow the `auth_setup_link` and login with Microsoft.\n\n\n\nSharepoint follow the `auth_setup_link` and login with Microsoft.\n\n\n\nBox follow the `auth_setup_link` and login with Box.\n\n\n\nDropbox specify if `dropbox_teams` then follow the `auth_setup_link` and login with Dropbox.\n\n\n\nGoogle Drive follow the `auth_setup_link` and login with Google.\n\n\n\nAzure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`, `azure_blob_storage_dns_suffix`\n\n\n\nAzure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`, `azure_files_storage_dns_suffix`\n\n\n\nFilebase requires `filebase_bucket`, `filebase_access_key`, and `filebase_secret_key`.\n\n\n\nCloudflare requires `cloudflare_bucket`, `cloudflare_access_key`, `cloudflare_secret_key` and `cloudflare_endpoint`.\n\n\n\nLinode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `linode_region`.",
+		Description: "A RemoteServer is a specific type of Behavior called `remote_server_sync`.\n\n\n\nRemote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, SharePoint, Google Drive, Azure Blob Storage, or Files.com direct link.\n\n\n\nNot every attribute will apply to every remote server.\n\n\n\nFTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`. Optionally, provide `server_certificate`.\n\n\n\nSFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`. Optionally, provide `server_certificate`, `private_key_passphrase`.\n\n\n\nS3 Buckets require that you specify their `s3_bucket` name, and `s3_region`. Optionally provide a `aws_access_key`, and `aws_secret_key`. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.\n\n\n\nS3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`. Optionally provide `s3_compatible_virtual_hosted_style` to use virtual-hosted-style URLs instead of path-style URLs.\n\n\n\nGoogle Cloud Storage requires that you specify `google_cloud_storage_bucket`, and then one of the following sets of authentication credentials, selected by `google_cloud_storage_authentication_method` (defaults to `json`):\n\n - for JSON authentication: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`\n\n - for HMAC (S3-Compatible) authentication: `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`\n\n - for OAuth authentication: `google_cloud_storage_oauth_scope`, then follow the `auth_setup_link` and login with Google\n\n\n\nWasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.\n\n\n\nBackblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453\n\n\n\nWebDAV Servers require that you specify their `hostname`, `username`, and `password`.\n\n\n\nOneDrive follow the `auth_setup_link` and login with Microsoft.\n\n\n\nSharePoint supports delegated authentication through `auth_setup_link`, or app-only authentication with `sharepoint_tenant_id`, `sharepoint_client_id`, and either `sharepoint_client_secret` or `sharepoint_client_certificate`. Set `sharepoint_site_url` to scope the remote server to a site granted through Microsoft Graph `Sites.Selected`; leave it blank to browse all sites.\n\n\n\nBox follow the `auth_setup_link` and login with Box.\n\n\n\nDropbox specify if `dropbox_teams` then follow the `auth_setup_link` and login with Dropbox.\n\n\n\nGoogle Drive follow the `auth_setup_link` and login with Google.\n\n\n\nAzure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`, `azure_blob_storage_dns_suffix`\n\n\n\nAzure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`, `azure_files_storage_dns_suffix`\n\n\n\nFilebase requires `filebase_bucket`, `filebase_access_key`, and `filebase_secret_key`.\n\n\n\nCloudflare requires `cloudflare_bucket`, `cloudflare_access_key`, `cloudflare_secret_key` and `cloudflare_endpoint`.\n\n\n\nLinode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `linode_region`.",
 		Attributes: map[string]schema.Attribute{
 			"hostname": schema.StringAttribute{
 				Description: "Hostname or IP address",
@@ -433,6 +440,30 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"sharepoint_tenant_id": schema.StringAttribute{
+				Description: "SharePoint: Microsoft Entra tenant ID for app-only authentication.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"sharepoint_client_id": schema.StringAttribute{
+				Description: "SharePoint: Microsoft Entra application client ID for app-only authentication.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"sharepoint_site_url": schema.StringAttribute{
+				Description: "SharePoint: Site URL to scope app-only authentication to a single site. Leave blank to browse all sites.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"azure_blob_storage_account": schema.StringAttribute{
 				Description: "Azure Blob Storage: Account name",
 				Computed:    true,
@@ -672,6 +703,16 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				Optional:    true,
 				WriteOnly:   true,
 			},
+			"sharepoint_client_certificate": schema.StringAttribute{
+				Description: "SharePoint: PEM-encoded certificate and unencrypted private key for app-only authentication.",
+				Optional:    true,
+				WriteOnly:   true,
+			},
+			"sharepoint_client_secret": schema.StringAttribute{
+				Description: "SharePoint: Microsoft Entra application client secret for app-only authentication.",
+				Optional:    true,
+				WriteOnly:   true,
+			},
 			"ssl_certificate": schema.StringAttribute{
 				Description: "SSL client certificate.",
 				Optional:    true,
@@ -790,6 +831,14 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				Description: "Describes the authorized account",
 				Computed:    true,
 			},
+			"sharepoint_app_authentication": schema.BoolAttribute{
+				Description: "SharePoint: If true, this remote server uses Microsoft Entra app-only authentication.",
+				Computed:    true,
+			},
+			"sharepoint_app_credential_type": schema.StringAttribute{
+				Description: "SharePoint: App-only credential type. Either secret or certificate.",
+				Computed:    true,
+			},
 			"files_agent_api_token": schema.StringAttribute{
 				Description: "Files Agent API Token",
 				Computed:    true,
@@ -840,6 +889,8 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	if !config.ResetAuthentication.IsNull() && !config.ResetAuthentication.IsUnknown() {
 		paramsRemoteServerCreate.ResetAuthentication = config.ResetAuthentication.ValueBoolPointer()
 	}
+	paramsRemoteServerCreate.SharepointClientCertificate = config.SharepointClientCertificate.ValueString()
+	paramsRemoteServerCreate.SharepointClientSecret = config.SharepointClientSecret.ValueString()
 	paramsRemoteServerCreate.SslCertificate = config.SslCertificate.ValueString()
 	paramsRemoteServerCreate.AwsSecretKey = config.AwsSecretKey.ValueString()
 	paramsRemoteServerCreate.AzureBlobStorageAccessKey = config.AzureBlobStorageAccessKey.ValueString()
@@ -920,6 +971,9 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.ServerCertificate = paramsRemoteServerCreate.ServerCertificate.Enum()[plan.ServerCertificate.ValueString()]
 	paramsRemoteServerCreate.ServerHostKey = plan.ServerHostKey.ValueString()
 	paramsRemoteServerCreate.ServerType = paramsRemoteServerCreate.ServerType.Enum()[plan.ServerType.ValueString()]
+	paramsRemoteServerCreate.SharepointClientId = plan.SharepointClientId.ValueString()
+	paramsRemoteServerCreate.SharepointSiteUrl = plan.SharepointSiteUrl.ValueString()
+	paramsRemoteServerCreate.SharepointTenantId = plan.SharepointTenantId.ValueString()
 	paramsRemoteServerCreate.Ssl = paramsRemoteServerCreate.Ssl.Enum()[plan.Ssl.ValueString()]
 	paramsRemoteServerCreate.Username = plan.Username.ValueString()
 	paramsRemoteServerCreate.WasabiAccessKey = plan.WasabiAccessKey.ValueString()
@@ -1014,6 +1068,12 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 	if !config.ResetAuthentication.IsNull() && !config.ResetAuthentication.IsUnknown() {
 		paramsRemoteServerUpdate["reset_authentication"] = config.ResetAuthentication.ValueBool()
+	}
+	if !config.SharepointClientCertificate.IsNull() && !config.SharepointClientCertificate.IsUnknown() {
+		paramsRemoteServerUpdate["sharepoint_client_certificate"] = config.SharepointClientCertificate.ValueString()
+	}
+	if !config.SharepointClientSecret.IsNull() && !config.SharepointClientSecret.IsUnknown() {
+		paramsRemoteServerUpdate["sharepoint_client_secret"] = config.SharepointClientSecret.ValueString()
 	}
 	if !config.SslCertificate.IsNull() && !config.SslCertificate.IsUnknown() {
 		paramsRemoteServerUpdate["ssl_certificate"] = config.SslCertificate.ValueString()
@@ -1219,6 +1279,15 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	if !config.ServerType.IsNull() && !config.ServerType.IsUnknown() {
 		paramsRemoteServerUpdate["server_type"] = config.ServerType.ValueString()
 	}
+	if !config.SharepointClientId.IsNull() && !config.SharepointClientId.IsUnknown() {
+		paramsRemoteServerUpdate["sharepoint_client_id"] = config.SharepointClientId.ValueString()
+	}
+	if !config.SharepointSiteUrl.IsNull() && !config.SharepointSiteUrl.IsUnknown() {
+		paramsRemoteServerUpdate["sharepoint_site_url"] = config.SharepointSiteUrl.ValueString()
+	}
+	if !config.SharepointTenantId.IsNull() && !config.SharepointTenantId.IsUnknown() {
+		paramsRemoteServerUpdate["sharepoint_tenant_id"] = config.SharepointTenantId.ValueString()
+	}
 	if !config.Ssl.IsNull() && !config.Ssl.IsUnknown() {
 		paramsRemoteServerUpdate["ssl"] = config.Ssl.ValueString()
 	}
@@ -1342,6 +1411,11 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.AuthStatus = types.StringValue(remoteServer.AuthStatus)
 	state.AuthAccountName = types.StringValue(remoteServer.AuthAccountName)
 	state.OneDriveAccountType = types.StringValue(remoteServer.OneDriveAccountType)
+	state.SharepointTenantId = types.StringValue(remoteServer.SharepointTenantId)
+	state.SharepointClientId = types.StringValue(remoteServer.SharepointClientId)
+	state.SharepointAppAuthentication = types.BoolPointerValue(remoteServer.SharepointAppAuthentication)
+	state.SharepointAppCredentialType = types.StringValue(remoteServer.SharepointAppCredentialType)
+	state.SharepointSiteUrl = types.StringValue(remoteServer.SharepointSiteUrl)
 	state.AzureBlobStorageAccount = types.StringValue(remoteServer.AzureBlobStorageAccount)
 	state.AzureBlobStorageContainer = types.StringValue(remoteServer.AzureBlobStorageContainer)
 	state.AzureBlobStorageHierarchicalNamespace = types.BoolPointerValue(remoteServer.AzureBlobStorageHierarchicalNamespace)

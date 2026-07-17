@@ -41,6 +41,9 @@ type remoteServerCredentialDataSourceModel struct {
 	FilebaseAccessKey                       types.String `tfsdk:"filebase_access_key"`
 	CloudflareAccessKey                     types.String `tfsdk:"cloudflare_access_key"`
 	LinodeAccessKey                         types.String `tfsdk:"linode_access_key"`
+	SharepointTenantId                      types.String `tfsdk:"sharepoint_tenant_id"`
+	SharepointClientId                      types.String `tfsdk:"sharepoint_client_id"`
+	SharepointAppCredentialType             types.String `tfsdk:"sharepoint_app_credential_type"`
 	Username                                types.String `tfsdk:"username"`
 }
 
@@ -131,6 +134,18 @@ func (r *remoteServerCredentialDataSource) Schema(_ context.Context, _ datasourc
 				Description: "Linode: Access Key",
 				Computed:    true,
 			},
+			"sharepoint_tenant_id": schema.StringAttribute{
+				Description: "SharePoint: Microsoft Entra tenant ID for app-only authentication.",
+				Computed:    true,
+			},
+			"sharepoint_client_id": schema.StringAttribute{
+				Description: "SharePoint: Microsoft Entra application client ID for app-only authentication.",
+				Computed:    true,
+			},
+			"sharepoint_app_credential_type": schema.StringAttribute{
+				Description: "SharePoint: App-only credential type. Either secret or certificate.",
+				Computed:    true,
+			},
 			"username": schema.StringAttribute{
 				Description: "Remote server username.",
 				Computed:    true,
@@ -185,6 +200,9 @@ func (r *remoteServerCredentialDataSource) populateDataSourceModel(ctx context.C
 	state.FilebaseAccessKey = types.StringValue(remoteServerCredential.FilebaseAccessKey)
 	state.CloudflareAccessKey = types.StringValue(remoteServerCredential.CloudflareAccessKey)
 	state.LinodeAccessKey = types.StringValue(remoteServerCredential.LinodeAccessKey)
+	state.SharepointTenantId = types.StringValue(remoteServerCredential.SharepointTenantId)
+	state.SharepointClientId = types.StringValue(remoteServerCredential.SharepointClientId)
+	state.SharepointAppCredentialType = types.StringValue(remoteServerCredential.SharepointAppCredentialType)
 	state.Username = types.StringValue(remoteServerCredential.Username)
 
 	return

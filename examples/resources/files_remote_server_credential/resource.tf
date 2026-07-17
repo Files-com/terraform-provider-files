@@ -10,6 +10,8 @@ resource "files_remote_server_credential" "example_remote_server_credential" {
   google_cloud_storage_s3_compatible_access_key = "example"
   linode_access_key                             = "example"
   s3_compatible_access_key                      = "example"
+  sharepoint_client_id                          = "00000000-0000-0000-0000-000000000000"
+  sharepoint_tenant_id                          = "00000000-0000-0000-0000-000000000000"
   username                                      = "user"
   wasabi_access_key                             = "example"
   workspace_id                                  = 0
