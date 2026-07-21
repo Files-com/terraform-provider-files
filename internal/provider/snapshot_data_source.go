@@ -34,6 +34,7 @@ type snapshotDataSourceModel struct {
 	Name        types.String `tfsdk:"name"`
 	UserId      types.Int64  `tfsdk:"user_id"`
 	BundleId    types.Int64  `tfsdk:"bundle_id"`
+	WorkspaceId types.Int64  `tfsdk:"workspace_id"`
 }
 
 func (r *snapshotDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -87,6 +88,10 @@ func (r *snapshotDataSource) Schema(_ context.Context, _ datasource.SchemaReques
 				Description: "The bundle using this snapshot, if applicable.",
 				Computed:    true,
 			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID. `0` means the default workspace.",
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -138,6 +143,7 @@ func (r *snapshotDataSource) populateDataSourceModel(ctx context.Context, snapsh
 	state.Name = types.StringValue(snapshot.Name)
 	state.UserId = types.Int64Value(snapshot.UserId)
 	state.BundleId = types.Int64Value(snapshot.BundleId)
+	state.WorkspaceId = types.Int64Value(snapshot.WorkspaceId)
 
 	return
 }

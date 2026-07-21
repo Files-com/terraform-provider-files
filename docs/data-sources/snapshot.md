@@ -37,3 +37,4 @@ data "files_snapshot" "example_snapshot" {
 - `finalized_at` (String) When the snapshot was finalized.
 - `name` (String) A name for the snapshot.
 - `user_id` (Number) The user that created this snapshot, if applicable.
+- `workspace_id` (Number) Workspace ID. `0` means the default workspace.

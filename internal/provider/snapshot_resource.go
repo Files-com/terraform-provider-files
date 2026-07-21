@@ -37,6 +37,7 @@ type snapshotResource struct {
 type snapshotResourceModel struct {
 	ExpiresAt   types.String `tfsdk:"expires_at"`
 	Name        types.String `tfsdk:"name"`
+	WorkspaceId types.Int64  `tfsdk:"workspace_id"`
 	Paths       types.List   `tfsdk:"paths"`
 	Id          types.Int64  `tfsdk:"id"`
 	FinalizedAt types.String `tfsdk:"finalized_at"`
@@ -85,6 +86,15 @@ func (r *snapshotResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID. `0` means the default workspace.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
 				},
 			},
 			"paths": schema.ListAttribute{
@@ -152,6 +162,7 @@ func (r *snapshotResource) Create(ctx context.Context, req resource.CreateReques
 		diags = config.Paths.ElementsAs(ctx, &paramsSnapshotCreate.Paths, false)
 		resp.Diagnostics.Append(diags...)
 	}
+	paramsSnapshotCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -338,6 +349,7 @@ func (r *snapshotResource) populateResourceModel(ctx context.Context, snapshot f
 	state.Name = types.StringValue(snapshot.Name)
 	state.UserId = types.Int64Value(snapshot.UserId)
 	state.BundleId = types.Int64Value(snapshot.BundleId)
+	state.WorkspaceId = types.Int64Value(snapshot.WorkspaceId)
 
 	return
 }
