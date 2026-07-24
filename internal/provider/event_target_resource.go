@@ -18,6 +18,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/dynamicplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -84,11 +85,14 @@ func (r *eventTargetResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "Event Target type.",
 				Required:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("email", "webhook", "slack_webhook", "teams_webhook", "amazon_sns", "google_pubsub"),
+					stringvalidator.OneOf("email", "webhook", "slack_webhook", "teams_webhook", "amazon_sns", "google_pubsub", "folder"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"config": schema.DynamicAttribute{
-				Description: "Event Target configuration.",
+				Description: "Event Target configuration. Folder targets accept path and format (json or csv).",
 				Required:    true,
 			},
 			"workspace_id": schema.Int64Attribute{
@@ -116,7 +120,7 @@ func (r *eventTargetResource) Schema(_ context.Context, _ resource.SchemaRequest
 				},
 			},
 			"delivery_policy": schema.DynamicAttribute{
-				Description: "Event Target delivery policy. Email targets support batch_interval in seconds, between 600 and 86400.",
+				Description: "Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Dynamic{
@@ -162,7 +166,6 @@ func (r *eventTargetResource) Create(ctx context.Context, req resource.CreateReq
 	if !plan.ApplyToAllWorkspaces.IsNull() && !plan.ApplyToAllWorkspaces.IsUnknown() {
 		paramsEventTargetCreate.ApplyToAllWorkspaces = plan.ApplyToAllWorkspaces.ValueBoolPointer()
 	}
-	paramsEventTargetCreate.TargetType = paramsEventTargetCreate.TargetType.Enum()[plan.TargetType.ValueString()]
 	if !plan.Enabled.IsNull() && !plan.Enabled.IsUnknown() {
 		paramsEventTargetCreate.Enabled = plan.Enabled.ValueBoolPointer()
 	}
@@ -172,6 +175,7 @@ func (r *eventTargetResource) Create(ctx context.Context, req resource.CreateReq
 	createDeliveryPolicy, diags := lib.DynamicToInterface(ctx, path.Root("delivery_policy"), plan.DeliveryPolicy)
 	resp.Diagnostics.Append(diags...)
 	paramsEventTargetCreate.DeliveryPolicy = createDeliveryPolicy
+	paramsEventTargetCreate.TargetType = paramsEventTargetCreate.TargetType.Enum()[plan.TargetType.ValueString()]
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -257,9 +261,6 @@ func (r *eventTargetResource) Update(ctx context.Context, req resource.UpdateReq
 	}
 	if !config.ApplyToAllWorkspaces.IsNull() && !config.ApplyToAllWorkspaces.IsUnknown() {
 		paramsEventTargetUpdate["apply_to_all_workspaces"] = config.ApplyToAllWorkspaces.ValueBool()
-	}
-	if !config.TargetType.IsNull() && !config.TargetType.IsUnknown() {
-		paramsEventTargetUpdate["target_type"] = config.TargetType.ValueString()
 	}
 	if !config.Enabled.IsNull() && !config.Enabled.IsUnknown() {
 		paramsEventTargetUpdate["enabled"] = config.Enabled.ValueBool()

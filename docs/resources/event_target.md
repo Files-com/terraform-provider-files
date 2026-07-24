@@ -17,10 +17,10 @@ resource "files_event_target" "example_event_target" {
   name                    = "example"
   workspace_id            = 1
   apply_to_all_workspaces = true
-  target_type             = "example"
   enabled                 = true
   config                  = "example"
   delivery_policy         = "example"
+  target_type             = "example"
 }
 ```
 
@@ -29,14 +29,14 @@ resource "files_event_target" "example_event_target" {
 
 ### Required
 
-- `config` (Dynamic) Event Target configuration.
+- `config` (Dynamic) Event Target configuration. Folder targets accept path and format (json or csv).
 - `name` (String) Event Target name.
 - `target_type` (String) Event Target type.
 
 ### Optional
 
 - `apply_to_all_workspaces` (Boolean) If true, this default-workspace target can receive events from all workspaces.
-- `delivery_policy` (Dynamic) Event Target delivery policy. Email targets support batch_interval in seconds, between 600 and 86400.
+- `delivery_policy` (Dynamic) Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400.
 - `enabled` (Boolean) Whether this Event Target can receive events.
 - `workspace_id` (Number) Workspace ID. 0 means the default workspace or site-wide.
 

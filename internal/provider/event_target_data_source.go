@@ -92,11 +92,11 @@ func (r *eventTargetDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Computed:    true,
 			},
 			"config": schema.DynamicAttribute{
-				Description: "Event Target configuration.",
+				Description: "Event Target configuration. Folder targets accept path and format (json or csv).",
 				Computed:    true,
 			},
 			"delivery_policy": schema.DynamicAttribute{
-				Description: "Event Target delivery policy. Email targets support batch_interval in seconds, between 600 and 86400.",
+				Description: "Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400.",
 				Computed:    true,
 			},
 			"created_at": schema.StringAttribute{
