@@ -42,6 +42,8 @@ resource "files_user" "example_user" {
   notify_on_all_expectation_failures           = true
   require_login_by                             = "2000-01-01T01:00:00Z"
   require_password_change                      = true
+  responsible_group_id                         = 1
+  responsible_user_id                          = 1
   restapi_permission                           = true
   self_managed                                 = true
   sftp_permission                              = true

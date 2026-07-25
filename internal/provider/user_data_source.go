@@ -92,6 +92,8 @@ type userDataSourceModel struct {
 	Active2fa                              types.Bool   `tfsdk:"active_2fa"`
 	RequirePasswordChange                  types.Bool   `tfsdk:"require_password_change"`
 	PasswordExpired                        types.Bool   `tfsdk:"password_expired"`
+	ResponsibleGroupId                     types.Int64  `tfsdk:"responsible_group_id"`
+	ResponsibleUserId                      types.Int64  `tfsdk:"responsible_user_id"`
 	ReadonlySiteAdmin                      types.Bool   `tfsdk:"readonly_site_admin"`
 	RestapiPermission                      types.Bool   `tfsdk:"restapi_permission"`
 	SelfManaged                            types.Bool   `tfsdk:"self_managed"`
@@ -400,6 +402,14 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Is user's password expired?",
 				Computed:    true,
 			},
+			"responsible_group_id": schema.Int64Attribute{
+				Description: "ID of the internal Group responsible for this Partner User, overriding the Partner default.",
+				Computed:    true,
+			},
+			"responsible_user_id": schema.Int64Attribute{
+				Description: "ID of the internal User responsible for this Partner User, overriding the Partner default.",
+				Computed:    true,
+			},
 			"readonly_site_admin": schema.BoolAttribute{
 				Description: "Is the user an allowed to view all (non-billing) site configuration for this site?",
 				Computed:    true,
@@ -665,6 +675,8 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.Active2fa = types.BoolPointerValue(user.Active2fa)
 	state.RequirePasswordChange = types.BoolPointerValue(user.RequirePasswordChange)
 	state.PasswordExpired = types.BoolPointerValue(user.PasswordExpired)
+	state.ResponsibleGroupId = types.Int64Value(user.ResponsibleGroupId)
+	state.ResponsibleUserId = types.Int64Value(user.ResponsibleUserId)
 	state.ReadonlySiteAdmin = types.BoolPointerValue(user.ReadonlySiteAdmin)
 	state.RestapiPermission = types.BoolPointerValue(user.RestapiPermission)
 	state.SelfManaged = types.BoolPointerValue(user.SelfManaged)

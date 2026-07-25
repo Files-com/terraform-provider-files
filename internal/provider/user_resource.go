@@ -78,6 +78,8 @@ type userResourceModel struct {
 	Require2fa                             types.String            `tfsdk:"require_2fa"`
 	RequireLoginBy                         types.String            `tfsdk:"require_login_by"`
 	RequirePasswordChange                  types.Bool              `tfsdk:"require_password_change"`
+	ResponsibleGroupId                     types.Int64             `tfsdk:"responsible_group_id"`
+	ResponsibleUserId                      types.Int64             `tfsdk:"responsible_user_id"`
 	ReadonlySiteAdmin                      types.Bool              `tfsdk:"readonly_site_admin"`
 	RestapiPermission                      types.Bool              `tfsdk:"restapi_permission"`
 	SelfManaged                            types.Bool              `tfsdk:"self_managed"`
@@ -486,6 +488,22 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"responsible_group_id": schema.Int64Attribute{
+				Description: "ID of the internal Group responsible for this Partner User, overriding the Partner default.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"responsible_user_id": schema.Int64Attribute{
+				Description: "ID of the internal User responsible for this Partner User, overriding the Partner default.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"readonly_site_admin": schema.BoolAttribute{
@@ -930,6 +948,8 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !plan.RequirePasswordChange.IsNull() && !plan.RequirePasswordChange.IsUnknown() {
 		paramsUserCreate.RequirePasswordChange = plan.RequirePasswordChange.ValueBoolPointer()
 	}
+	paramsUserCreate.ResponsibleGroupId = plan.ResponsibleGroupId.ValueInt64()
+	paramsUserCreate.ResponsibleUserId = plan.ResponsibleUserId.ValueInt64()
 	if !plan.RestapiPermission.IsNull() && !plan.RestapiPermission.IsUnknown() {
 		paramsUserCreate.RestapiPermission = plan.RestapiPermission.ValueBoolPointer()
 	}
@@ -1210,6 +1230,12 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.RequirePasswordChange.IsNull() && !config.RequirePasswordChange.IsUnknown() {
 		paramsUserUpdate["require_password_change"] = config.RequirePasswordChange.ValueBool()
 	}
+	if !config.ResponsibleGroupId.IsNull() && !config.ResponsibleGroupId.IsUnknown() {
+		paramsUserUpdate["responsible_group_id"] = config.ResponsibleGroupId.ValueInt64()
+	}
+	if !config.ResponsibleUserId.IsNull() && !config.ResponsibleUserId.IsUnknown() {
+		paramsUserUpdate["responsible_user_id"] = config.ResponsibleUserId.ValueInt64()
+	}
 	if !config.RestapiPermission.IsNull() && !config.RestapiPermission.IsUnknown() {
 		paramsUserUpdate["restapi_permission"] = config.RestapiPermission.ValueBool()
 	}
@@ -1468,6 +1494,8 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.Active2fa = types.BoolPointerValue(user.Active2fa)
 	state.RequirePasswordChange = types.BoolPointerValue(user.RequirePasswordChange)
 	state.PasswordExpired = types.BoolPointerValue(user.PasswordExpired)
+	state.ResponsibleGroupId = types.Int64Value(user.ResponsibleGroupId)
+	state.ResponsibleUserId = types.Int64Value(user.ResponsibleUserId)
 	state.ReadonlySiteAdmin = types.BoolPointerValue(user.ReadonlySiteAdmin)
 	state.RestapiPermission = types.BoolPointerValue(user.RestapiPermission)
 	state.SelfManaged = types.BoolPointerValue(user.SelfManaged)
