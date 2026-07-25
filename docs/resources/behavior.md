@@ -159,6 +159,14 @@ resource "files_behavior" "example_inbox_behavior" {
     whitelist                                             = ["john@test.com", "mydomain.com"]
     disable_web_upload                                    = true
     capture_email_body_filename                           = "_body.txt"
+    requested_upload_slots                                = [
+      {
+        name = "Photo ID"
+      },
+      {
+        name = "Proof of Address"
+      }
+    ]
   }
 }
 
