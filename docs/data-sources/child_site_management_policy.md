@@ -4,8 +4,8 @@ page_title: "files_child_site_management_policy Data Source - files"
 subcategory: ""
 description: |-
   A Child Site Management Policy is a centralized policy defined by a parent site to enforce consistent configurations across child sites. These policies allow parent sites to maintain control over specific aspects of their child sites' functionality and appearance.
-  Policies can be applied to all child sites, or specific sites can be exempted from policy management by adding their site ID to the skip_child_site_ids parameter.
-  The value field contains the policy configuration data, with the format varying based on the policy type. When a policy is active, its managed configurations are automatically enforced on applicable child sites, and attribute modifications are not permitted.
+  Non-default policies apply only to the child sites listed in child_site_ids, and each child site can be explicitly assigned to only one policy.
+  One policy can be designated as the default policy. It applies to every child site not explicitly assigned to another policy or listed in its skip_child_site_ids, including newly created child sites. Only a default policy can exclude child sites. The value field contains the policy configuration data, with the format varying based on the policy type. When a policy is active, its managed configurations are automatically enforced on applicable child sites, and attribute modifications are not permitted.
 ---
 
 # files_child_site_management_policy (Data Source)
@@ -14,11 +14,11 @@ A Child Site Management Policy is a centralized policy defined by a parent site 
 
 
 
-Policies can be applied to all child sites, or specific sites can be exempted from policy management by adding their site ID to the `skip_child_site_ids` parameter.
+Non-default policies apply only to the child sites listed in `child_site_ids`, and each child site can be explicitly assigned to only one policy.
 
 
 
-The `value` field contains the policy configuration data, with the format varying based on the policy type. When a policy is active, its managed configurations are automatically enforced on applicable child sites, and attribute modifications are not permitted.
+One policy can be designated as the default policy. It applies to every child site not explicitly assigned to another policy or listed in its `skip_child_site_ids`, including newly created child sites. Only a default policy can exclude child sites. The `value` field contains the policy configuration data, with the format varying based on the policy type. When a policy is active, its managed configurations are automatically enforced on applicable child sites, and attribute modifications are not permitted.
 
 ## Example Usage
 
@@ -38,10 +38,12 @@ data "files_child_site_management_policy" "example_child_site_management_policy"
 ### Read-Only
 
 - `applied_child_site_ids` (List of Number) IDs of child sites that this policy has been applied to. This field is read-only.
+- `child_site_ids` (List of Number) IDs of child sites explicitly assigned to this non-default policy.
 - `created_at` (String) When this policy was created.
+- `default_policy` (Boolean) Whether this policy applies to child sites not explicitly assigned to another policy.
 - `description` (String) Description for this policy.
 - `name` (String) Name for this policy.
 - `policy_type` (String) Type of policy.  Valid values: `settings`.
-- `skip_child_site_ids` (List of Number) IDs of child sites that this policy has been exempted from. If `skip_child_site_ids` is empty, the policy will be applied to all child sites. To apply a policy to a child site that has been exempted, remove it from `skip_child_site_ids` or set it to an empty array (`[]`).
+- `skip_child_site_ids` (List of Number) IDs of child sites excluded from this default policy.
 - `updated_at` (String) When this policy was last updated.
 - `value` (Dynamic) Policy configuration data. Attributes differ by policy type. For more information, refer to the Value Hash section of the developer documentation.

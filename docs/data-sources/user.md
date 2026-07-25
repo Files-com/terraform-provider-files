@@ -152,8 +152,8 @@ data "files_user" "example_user" {
 - `time_zone` (String) User time zone
 - `type_of_2fa` (String) Type(s) of 2FA methods in use, for programmatic use.  Will be either `sms`, `totp`, `webauthn`, `yubi`, `email`, or multiple values sorted alphabetically and joined by an underscore.  Does not specify whether user has more than one of a given method.
 - `type_of_2fa_for_display` (String) Type(s) of 2FA methods in use, formatted for displaying in the UI.  Unlike `type_of_2fa`, this value will make clear when a user has more than 1 of the same type of method.
-- `user_home` (String) Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface.
-- `user_root` (String) Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface.
+- `user_home` (String) Home folder for FTP/SFTP. For users with the partner_root filesystem layout, this path is relative to the Partner root folder. In all other cases, it is an absolute path. Only applies to FTP and SFTP, and not any other interface.
+- `user_root` (String) If filesystem layout is user_root, this path is the root path the user is fixed to for all interfaces. If the filesystem layout is site_root or partner_root, this acts as a root folder only for FTP and SFTP (SFTP applicability also requires a site-wide setting to be set). For partner_root layout, this path is relative to the Partner root folder for all callers and blank opts out of an additional protocol root. In this situation, this path is not applied to the API, Desktop, or Web interface.
 - `username` (String) User's username
 - `workspace_admin` (Boolean) Is the user a Workspace administrator?  Applicable only to the workspace ID related to this user, if one is set.
 - `workspace_id` (Number) Workspace ID

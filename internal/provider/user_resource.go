@@ -622,7 +622,7 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"user_root": schema.StringAttribute{
-				Description: "Root folder for FTP (and optionally SFTP if the appropriate site-wide setting is set).  Note that this is not used for API, Desktop, or Web interface.",
+				Description: "If filesystem layout is user_root, this path is the root path the user is fixed to for all interfaces. If the filesystem layout is site_root or partner_root, this acts as a root folder only for FTP and SFTP (SFTP applicability also requires a site-wide setting to be set). For partner_root layout, this path is relative to the Partner root folder for all callers and blank opts out of an additional protocol root. In this situation, this path is not applied to the API, Desktop, or Web interface.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -630,7 +630,7 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"user_home": schema.StringAttribute{
-				Description: "Home folder for FTP/SFTP.  Note that this is not used for API, Desktop, or Web interface.",
+				Description: "Home folder for FTP/SFTP. For users with the partner_root filesystem layout, this path is relative to the Partner root folder. In all other cases, it is an absolute path. Only applies to FTP and SFTP, and not any other interface.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{

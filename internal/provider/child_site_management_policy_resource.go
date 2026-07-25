@@ -14,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/dynamicplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
@@ -43,6 +44,8 @@ type childSiteManagementPolicyResourceModel struct {
 	Description         types.String  `tfsdk:"description"`
 	Value               types.Dynamic `tfsdk:"value"`
 	SkipChildSiteIds    types.List    `tfsdk:"skip_child_site_ids"`
+	ChildSiteIds        types.List    `tfsdk:"child_site_ids"`
+	DefaultPolicy       types.Bool    `tfsdk:"default_policy"`
 	Id                  types.Int64   `tfsdk:"id"`
 	AppliedChildSiteIds types.List    `tfsdk:"applied_child_site_ids"`
 	CreatedAt           types.String  `tfsdk:"created_at"`
@@ -74,7 +77,7 @@ func (r *childSiteManagementPolicyResource) Metadata(_ context.Context, req reso
 
 func (r *childSiteManagementPolicyResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Child Site Management Policy is a centralized policy defined by a parent site to enforce consistent configurations across child sites. These policies allow parent sites to maintain control over specific aspects of their child sites' functionality and appearance.\n\n\n\nPolicies can be applied to all child sites, or specific sites can be exempted from policy management by adding their site ID to the `skip_child_site_ids` parameter.\n\n\n\nThe `value` field contains the policy configuration data, with the format varying based on the policy type. When a policy is active, its managed configurations are automatically enforced on applicable child sites, and attribute modifications are not permitted.",
+		Description: "A Child Site Management Policy is a centralized policy defined by a parent site to enforce consistent configurations across child sites. These policies allow parent sites to maintain control over specific aspects of their child sites' functionality and appearance.\n\n\n\nNon-default policies apply only to the child sites listed in `child_site_ids`, and each child site can be explicitly assigned to only one policy.\n\n\n\nOne policy can be designated as the default policy. It applies to every child site not explicitly assigned to another policy or listed in its `skip_child_site_ids`, including newly created child sites. Only a default policy can exclude child sites. The `value` field contains the policy configuration data, with the format varying based on the policy type. When a policy is active, its managed configurations are automatically enforced on applicable child sites, and attribute modifications are not permitted.",
 		Attributes: map[string]schema.Attribute{
 			"policy_type": schema.StringAttribute{
 				Description: "Type of policy.  Valid values: `settings`.",
@@ -108,12 +111,29 @@ func (r *childSiteManagementPolicyResource) Schema(_ context.Context, _ resource
 				},
 			},
 			"skip_child_site_ids": schema.ListAttribute{
-				Description: "IDs of child sites that this policy has been exempted from. If `skip_child_site_ids` is empty, the policy will be applied to all child sites. To apply a policy to a child site that has been exempted, remove it from `skip_child_site_ids` or set it to an empty array (`[]`).",
+				Description: "IDs of child sites excluded from this default policy.",
 				Computed:    true,
 				Optional:    true,
 				ElementType: types.Int64Type,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"child_site_ids": schema.ListAttribute{
+				Description: "IDs of child sites explicitly assigned to this non-default policy.",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.Int64Type,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"default_policy": schema.BoolAttribute{
+				Description: "Whether this policy applies to child sites not explicitly assigned to another policy.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"id": schema.Int64Attribute{
@@ -161,6 +181,13 @@ func (r *childSiteManagementPolicyResource) Create(ctx context.Context, req reso
 	if !plan.SkipChildSiteIds.IsNull() && !plan.SkipChildSiteIds.IsUnknown() {
 		diags = plan.SkipChildSiteIds.ElementsAs(ctx, &paramsChildSiteManagementPolicyCreate.SkipChildSiteIds, false)
 		resp.Diagnostics.Append(diags...)
+	}
+	if !plan.ChildSiteIds.IsNull() && !plan.ChildSiteIds.IsUnknown() {
+		diags = plan.ChildSiteIds.ElementsAs(ctx, &paramsChildSiteManagementPolicyCreate.ChildSiteIds, false)
+		resp.Diagnostics.Append(diags...)
+	}
+	if !plan.DefaultPolicy.IsNull() && !plan.DefaultPolicy.IsUnknown() {
+		paramsChildSiteManagementPolicyCreate.DefaultPolicy = plan.DefaultPolicy.ValueBoolPointer()
 	}
 	paramsChildSiteManagementPolicyCreate.PolicyType = paramsChildSiteManagementPolicyCreate.PolicyType.Enum()[plan.PolicyType.ValueString()]
 	paramsChildSiteManagementPolicyCreate.Name = plan.Name.ValueString()
@@ -251,6 +278,15 @@ func (r *childSiteManagementPolicyResource) Update(ctx context.Context, req reso
 		resp.Diagnostics.Append(diags...)
 		paramsChildSiteManagementPolicyUpdate["skip_child_site_ids"] = updateSkipChildSiteIds
 	}
+	if !config.ChildSiteIds.IsNull() && !config.ChildSiteIds.IsUnknown() {
+		var updateChildSiteIds []int64
+		diags = config.ChildSiteIds.ElementsAs(ctx, &updateChildSiteIds, false)
+		resp.Diagnostics.Append(diags...)
+		paramsChildSiteManagementPolicyUpdate["child_site_ids"] = updateChildSiteIds
+	}
+	if !config.DefaultPolicy.IsNull() && !config.DefaultPolicy.IsUnknown() {
+		paramsChildSiteManagementPolicyUpdate["default_policy"] = config.DefaultPolicy.ValueBool()
+	}
 	if !config.PolicyType.IsNull() && !config.PolicyType.IsUnknown() {
 		paramsChildSiteManagementPolicyUpdate["policy_type"] = config.PolicyType.ValueString()
 	}
@@ -340,6 +376,9 @@ func (r *childSiteManagementPolicyResource) populateResourceModel(ctx context.Co
 	diags.Append(propDiags...)
 	state.SkipChildSiteIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, childSiteManagementPolicy.SkipChildSiteIds)
 	diags.Append(propDiags...)
+	state.ChildSiteIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, childSiteManagementPolicy.ChildSiteIds)
+	diags.Append(propDiags...)
+	state.DefaultPolicy = types.BoolPointerValue(childSiteManagementPolicy.DefaultPolicy)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), childSiteManagementPolicy.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files ChildSiteManagementPolicy",

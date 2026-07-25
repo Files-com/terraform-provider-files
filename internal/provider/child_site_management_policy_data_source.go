@@ -35,6 +35,8 @@ type childSiteManagementPolicyDataSourceModel struct {
 	Value               types.Dynamic `tfsdk:"value"`
 	AppliedChildSiteIds types.List    `tfsdk:"applied_child_site_ids"`
 	SkipChildSiteIds    types.List    `tfsdk:"skip_child_site_ids"`
+	ChildSiteIds        types.List    `tfsdk:"child_site_ids"`
+	DefaultPolicy       types.Bool    `tfsdk:"default_policy"`
 	CreatedAt           types.String  `tfsdk:"created_at"`
 	UpdatedAt           types.String  `tfsdk:"updated_at"`
 }
@@ -64,7 +66,7 @@ func (r *childSiteManagementPolicyDataSource) Metadata(_ context.Context, req da
 
 func (r *childSiteManagementPolicyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Child Site Management Policy is a centralized policy defined by a parent site to enforce consistent configurations across child sites. These policies allow parent sites to maintain control over specific aspects of their child sites' functionality and appearance.\n\n\n\nPolicies can be applied to all child sites, or specific sites can be exempted from policy management by adding their site ID to the `skip_child_site_ids` parameter.\n\n\n\nThe `value` field contains the policy configuration data, with the format varying based on the policy type. When a policy is active, its managed configurations are automatically enforced on applicable child sites, and attribute modifications are not permitted.",
+		Description: "A Child Site Management Policy is a centralized policy defined by a parent site to enforce consistent configurations across child sites. These policies allow parent sites to maintain control over specific aspects of their child sites' functionality and appearance.\n\n\n\nNon-default policies apply only to the child sites listed in `child_site_ids`, and each child site can be explicitly assigned to only one policy.\n\n\n\nOne policy can be designated as the default policy. It applies to every child site not explicitly assigned to another policy or listed in its `skip_child_site_ids`, including newly created child sites. Only a default policy can exclude child sites. The `value` field contains the policy configuration data, with the format varying based on the policy type. When a policy is active, its managed configurations are automatically enforced on applicable child sites, and attribute modifications are not permitted.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Policy ID.",
@@ -92,9 +94,18 @@ func (r *childSiteManagementPolicyDataSource) Schema(_ context.Context, _ dataso
 				ElementType: types.Int64Type,
 			},
 			"skip_child_site_ids": schema.ListAttribute{
-				Description: "IDs of child sites that this policy has been exempted from. If `skip_child_site_ids` is empty, the policy will be applied to all child sites. To apply a policy to a child site that has been exempted, remove it from `skip_child_site_ids` or set it to an empty array (`[]`).",
+				Description: "IDs of child sites excluded from this default policy.",
 				Computed:    true,
 				ElementType: types.Int64Type,
+			},
+			"child_site_ids": schema.ListAttribute{
+				Description: "IDs of child sites explicitly assigned to this non-default policy.",
+				Computed:    true,
+				ElementType: types.Int64Type,
+			},
+			"default_policy": schema.BoolAttribute{
+				Description: "Whether this policy applies to child sites not explicitly assigned to another policy.",
+				Computed:    true,
 			},
 			"created_at": schema.StringAttribute{
 				Description: "When this policy was created.",
@@ -151,6 +162,9 @@ func (r *childSiteManagementPolicyDataSource) populateDataSourceModel(ctx contex
 	diags.Append(propDiags...)
 	state.SkipChildSiteIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, childSiteManagementPolicy.SkipChildSiteIds)
 	diags.Append(propDiags...)
+	state.ChildSiteIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, childSiteManagementPolicy.ChildSiteIds)
+	diags.Append(propDiags...)
+	state.DefaultPolicy = types.BoolPointerValue(childSiteManagementPolicy.DefaultPolicy)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), childSiteManagementPolicy.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files ChildSiteManagementPolicy",
