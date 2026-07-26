@@ -391,7 +391,10 @@ resource "files_behavior" "example_remote_server_metadata_index_behavior" {
 
 - `attachment_url` (String) URL for attached file
 - `id` (Number) Folder behavior ID
+- `inherited` (Boolean) If true, this behavior is inherited from a higher scope rather than owned by the requested workspace.
+- `managed` (Boolean) If true, this behavior is controlled by a parent-site policy and cannot be modified locally.
 - `public_hosting_url` (String) Public URL for this publicly hosted folder when the `Serve Publicly` behavior has a key configured.  When a Custom Domain with `public_hosting` destination is attached to this behavior, the URL uses that domain.  Otherwise it uses the site's `subdomain.hosted-by-files.com` host.
+- `root_behavior_site_admin_only` (Boolean) If true, this behavior may only be modified by a site admin because it is at the site root or disables a root behavior.
 
 ## Import
 

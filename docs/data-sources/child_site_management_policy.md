@@ -46,4 +46,4 @@ data "files_child_site_management_policy" "example_child_site_management_policy"
 - `policy_type` (String) Type of policy.  Valid values: `settings`.
 - `skip_child_site_ids` (List of Number) IDs of child sites excluded from this default policy.
 - `updated_at` (String) When this policy was last updated.
-- `value` (Dynamic) Policy configuration data. Attributes differ by policy type. For more information, refer to the Value Hash section of the developer documentation.
+- `value` (Dynamic) Policy configuration data. Settings policies accept site settings plus an optional `folder_behaviors` array for parent-managed root behaviors on child sites. For more information, refer to the Value Hash section of the developer documentation.

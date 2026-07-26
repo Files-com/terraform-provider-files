@@ -38,6 +38,9 @@ type behaviorDataSourceModel struct {
 	PublicHostingUrl            types.String  `tfsdk:"public_hosting_url"`
 	DisableParentFolderBehavior types.Bool    `tfsdk:"disable_parent_folder_behavior"`
 	Recursive                   types.Bool    `tfsdk:"recursive"`
+	Inherited                   types.Bool    `tfsdk:"inherited"`
+	Managed                     types.Bool    `tfsdk:"managed"`
+	RootBehaviorSiteAdminOnly   types.Bool    `tfsdk:"root_behavior_site_admin_only"`
 }
 
 func (r *behaviorDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -107,6 +110,18 @@ func (r *behaviorDataSource) Schema(_ context.Context, _ datasource.SchemaReques
 				Description: "Whether this behavior is recursive for this record. `always` behaviors are always `true`, `never` behaviors are always `false`, and `sometimes` behaviors may be either value.",
 				Computed:    true,
 			},
+			"inherited": schema.BoolAttribute{
+				Description: "If true, this behavior is inherited from a higher scope rather than owned by the requested workspace.",
+				Computed:    true,
+			},
+			"managed": schema.BoolAttribute{
+				Description: "If true, this behavior is controlled by a parent-site policy and cannot be modified locally.",
+				Computed:    true,
+			},
+			"root_behavior_site_admin_only": schema.BoolAttribute{
+				Description: "If true, this behavior may only be modified by a site admin because it is at the site root or disables a root behavior.",
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -155,6 +170,9 @@ func (r *behaviorDataSource) populateDataSourceModel(ctx context.Context, behavi
 	state.PublicHostingUrl = types.StringValue(behavior.PublicHostingUrl)
 	state.DisableParentFolderBehavior = types.BoolPointerValue(behavior.DisableParentFolderBehavior)
 	state.Recursive = types.BoolPointerValue(behavior.Recursive)
+	state.Inherited = types.BoolPointerValue(behavior.Inherited)
+	state.Managed = types.BoolPointerValue(behavior.Managed)
+	state.RootBehaviorSiteAdminOnly = types.BoolPointerValue(behavior.RootBehaviorSiteAdminOnly)
 
 	return
 }

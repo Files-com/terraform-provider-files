@@ -50,7 +50,7 @@ resource "files_child_site_management_policy" "example_child_site_management_pol
 - `description` (String) Description for this policy.
 - `name` (String) Name for this policy.
 - `skip_child_site_ids` (List of Number) IDs of child sites excluded from this default policy.
-- `value` (Dynamic) Policy configuration data. Attributes differ by policy type. For more information, refer to the Value Hash section of the developer documentation.
+- `value` (Dynamic) Policy configuration data. Settings policies accept site settings plus an optional `folder_behaviors` array for parent-managed root behaviors on child sites. For more information, refer to the Value Hash section of the developer documentation.
 
 ### Read-Only
 

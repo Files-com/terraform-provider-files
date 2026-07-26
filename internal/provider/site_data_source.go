@@ -168,6 +168,8 @@ type siteDataSourceModel struct {
 	PreventRootPermissionsForNonSiteAdmins   types.Bool    `tfsdk:"prevent_root_permissions_for_non_site_admins"`
 	ProtocolAccessGroupsOnly                 types.Bool    `tfsdk:"protocol_access_groups_only"`
 	Require2fa                               types.Bool    `tfsdk:"require_2fa"`
+	RestrictRootFolderBehaviorsToSiteAdmins  types.Bool    `tfsdk:"restrict_root_folder_behaviors_to_site_admins"`
+	RootFolderBehaviorsApplyToWorkspaces     types.Bool    `tfsdk:"root_folder_behaviors_apply_to_workspaces"`
 	Require2faExemptAllSsoUsers              types.Bool    `tfsdk:"require_2fa_exempt_all_sso_users"`
 	Require2faStopTime                       types.String  `tfsdk:"require_2fa_stop_time"`
 	RevokeBundleAccessOnDisableOrDelete      types.Bool    `tfsdk:"revoke_bundle_access_on_disable_or_delete"`
@@ -806,6 +808,14 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Require two-factor authentication for all users?",
 				Computed:    true,
 			},
+			"restrict_root_folder_behaviors_to_site_admins": schema.BoolAttribute{
+				Description: "If true, only site admins may create, modify, or delete any behavior at the site root, or a skip that would disable one.",
+				Computed:    true,
+			},
+			"root_folder_behaviors_apply_to_workspaces": schema.BoolAttribute{
+				Description: "If true, supported protective behaviors at the site root also apply within named workspaces. Requires restrict_root_folder_behaviors_to_site_admins to be enabled.",
+				Computed:    true,
+			},
 			"require_2fa_exempt_all_sso_users": schema.BoolAttribute{
 				Description: "If true, SSO users using the default user-level two-factor authentication setting are exempt from the site-wide two-factor authentication requirement.",
 				Computed:    true,
@@ -1247,6 +1257,8 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.PreventRootPermissionsForNonSiteAdmins = types.BoolPointerValue(site.PreventRootPermissionsForNonSiteAdmins)
 	state.ProtocolAccessGroupsOnly = types.BoolPointerValue(site.ProtocolAccessGroupsOnly)
 	state.Require2fa = types.BoolPointerValue(site.Require2fa)
+	state.RestrictRootFolderBehaviorsToSiteAdmins = types.BoolPointerValue(site.RestrictRootFolderBehaviorsToSiteAdmins)
+	state.RootFolderBehaviorsApplyToWorkspaces = types.BoolPointerValue(site.RootFolderBehaviorsApplyToWorkspaces)
 	state.Require2faExemptAllSsoUsers = types.BoolPointerValue(site.Require2faExemptAllSsoUsers)
 	if err := lib.TimeToStringType(ctx, path.Root("require_2fa_stop_time"), site.Require2faStopTime, &state.Require2faStopTime); err != nil {
 		diags.AddError(

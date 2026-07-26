@@ -114,6 +114,8 @@ resource "files_site" "example_site" {
   document_edits_in_bundle_allowed              = false
   password_requirements_apply_to_bundles        = false
   prevent_root_permissions_for_non_site_admins  = false
+  restrict_root_folder_behaviors_to_site_admins = false
+  root_folder_behaviors_apply_to_workspaces     = false
   opt_out_global                                = false
   use_provided_modified_at                      = false
   custom_namespace                              = false
@@ -331,7 +333,9 @@ resource "files_site" "example_site" {
 - `require_2fa_exempt_all_sso_users` (Boolean) If true, SSO users using the default user-level two-factor authentication setting are exempt from the site-wide two-factor authentication requirement.
 - `require_2fa_user_type` (String) What type of user is required to use two-factor authentication (when require_2fa is set to `true` for this site)?
 - `require_logout_from_bundles_and_inboxes` (Boolean) If true, we will hide the 'Remember Me' box on Inbox and Bundle registration pages, requiring that the user logout and log back in every time they visit the page.
+- `restrict_root_folder_behaviors_to_site_admins` (Boolean) If true, only site admins may create, modify, or delete any behavior at the site root, or a skip that would disable one.
 - `revoke_bundle_access_on_disable_or_delete` (Boolean) Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period.
+- `root_folder_behaviors_apply_to_workspaces` (Boolean) If true, supported protective behaviors at the site root also apply within named workspaces. Requires restrict_root_folder_behaviors_to_site_admins to be enabled.
 - `session_expiry_minutes` (Number) Session expiry in minutes
 - `sftp_enabled` (Boolean) Is SFTP enabled?
 - `sftp_finalize_partial_uploads` (Boolean) Finalize partial SFTP uploads from interrupted connections? Default: true.

@@ -171,7 +171,9 @@ data "files_site" "example_site" {
 - `require_2fa_stop_time` (String) If set, requirement for two-factor authentication has been scheduled to end on this date-time.
 - `require_2fa_user_type` (String) What type of user is required to use two-factor authentication (when require_2fa is set to `true` for this site)?
 - `require_logout_from_bundles_and_inboxes` (Boolean) If true, we will hide the 'Remember Me' box on Inbox and Bundle registration pages, requiring that the user logout and log back in every time they visit the page.
+- `restrict_root_folder_behaviors_to_site_admins` (Boolean) If true, only site admins may create, modify, or delete any behavior at the site root, or a skip that would disable one.
 - `revoke_bundle_access_on_disable_or_delete` (Boolean) Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period.
+- `root_folder_behaviors_apply_to_workspaces` (Boolean) If true, supported protective behaviors at the site root also apply within named workspaces. Requires restrict_root_folder_behaviors_to_site_admins to be enabled.
 - `session` (String) Current session
 - `session_expiry_minutes` (Number) Session expiry in minutes
 - `sftp_enabled` (Boolean) Is SFTP enabled?

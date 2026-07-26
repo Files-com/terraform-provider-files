@@ -85,7 +85,7 @@ func (r *childSiteManagementPolicyDataSource) Schema(_ context.Context, _ dataso
 				Computed:    true,
 			},
 			"value": schema.DynamicAttribute{
-				Description: "Policy configuration data. Attributes differ by policy type. For more information, refer to the Value Hash section of the developer documentation.",
+				Description: "Policy configuration data. Settings policies accept site settings plus an optional `folder_behaviors` array for parent-managed root behaviors on child sites. For more information, refer to the Value Hash section of the developer documentation.",
 				Computed:    true,
 			},
 			"applied_child_site_ids": schema.ListAttribute{

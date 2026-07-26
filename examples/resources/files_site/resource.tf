@@ -94,6 +94,8 @@ resource "files_site" "example_site" {
   document_edits_in_bundle_allowed              = false
   password_requirements_apply_to_bundles        = false
   prevent_root_permissions_for_non_site_admins  = false
+  restrict_root_folder_behaviors_to_site_admins = false
+  root_folder_behaviors_apply_to_workspaces     = false
   opt_out_global                                = false
   use_provided_modified_at                      = false
   custom_namespace                              = false
