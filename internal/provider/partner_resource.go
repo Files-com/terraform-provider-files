@@ -50,6 +50,7 @@ type partnerResourceModel struct {
 	PartnerChannelTemplateId   types.Int64  `tfsdk:"partner_channel_template_id"`
 	ResponsibleGroupId         types.Int64  `tfsdk:"responsible_group_id"`
 	ResponsibleUserId          types.Int64  `tfsdk:"responsible_user_id"`
+	ShowPartnerChannelHomePage types.Bool   `tfsdk:"show_partner_channel_home_page"`
 	Tags                       types.String `tfsdk:"tags"`
 	Id                         types.Int64  `tfsdk:"id"`
 	PartnerAdminIds            types.List   `tfsdk:"partner_admin_ids"`
@@ -189,6 +190,14 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"show_partner_channel_home_page": schema.BoolAttribute{
+				Description: "Show Partner users a simplified home page built from this Partner's Channels.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"tags": schema.StringAttribute{
 				Description: "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.",
 				Computed:    true,
@@ -261,6 +270,9 @@ func (r *partnerResource) Create(ctx context.Context, req resource.CreateRequest
 	paramsPartnerCreate.PartnerChannelTemplateId = plan.PartnerChannelTemplateId.ValueInt64()
 	paramsPartnerCreate.ResponsibleGroupId = plan.ResponsibleGroupId.ValueInt64()
 	paramsPartnerCreate.ResponsibleUserId = plan.ResponsibleUserId.ValueInt64()
+	if !plan.ShowPartnerChannelHomePage.IsNull() && !plan.ShowPartnerChannelHomePage.IsUnknown() {
+		paramsPartnerCreate.ShowPartnerChannelHomePage = plan.ShowPartnerChannelHomePage.ValueBoolPointer()
+	}
 	paramsPartnerCreate.Tags = plan.Tags.ValueString()
 	paramsPartnerCreate.Name = plan.Name.ValueString()
 	paramsPartnerCreate.RootFolder = plan.RootFolder.ValueString()
@@ -375,6 +387,9 @@ func (r *partnerResource) Update(ctx context.Context, req resource.UpdateRequest
 	if !config.ResponsibleUserId.IsNull() && !config.ResponsibleUserId.IsUnknown() {
 		paramsPartnerUpdate["responsible_user_id"] = config.ResponsibleUserId.ValueInt64()
 	}
+	if !config.ShowPartnerChannelHomePage.IsNull() && !config.ShowPartnerChannelHomePage.IsUnknown() {
+		paramsPartnerUpdate["show_partner_channel_home_page"] = config.ShowPartnerChannelHomePage.ValueBool()
+	}
 	if !config.Tags.IsNull() && !config.Tags.IsUnknown() {
 		paramsPartnerUpdate["tags"] = config.Tags.ValueString()
 	}
@@ -472,6 +487,7 @@ func (r *partnerResource) populateResourceModel(ctx context.Context, partner fil
 	state.ResponsibleGroupId = types.Int64Value(partner.ResponsibleGroupId)
 	state.ResponsibleUserId = types.Int64Value(partner.ResponsibleUserId)
 	state.RootFolder = types.StringValue(partner.RootFolder)
+	state.ShowPartnerChannelHomePage = types.BoolPointerValue(partner.ShowPartnerChannelHomePage)
 	state.Tags = types.StringValue(partner.Tags)
 	state.UserIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, partner.UserIds)
 	diags.Append(propDiags...)

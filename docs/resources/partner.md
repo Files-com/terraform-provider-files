@@ -25,6 +25,7 @@ resource "files_partner" "example_partner" {
   partner_channel_template_id    = 1
   responsible_group_id           = 1
   responsible_user_id            = 1
+  show_partner_channel_home_page = false
   tags                           = "example"
   name                           = "Acme Corp"
   root_folder                    = "/AcmeCorp"
@@ -53,6 +54,7 @@ resource "files_partner" "example_partner" {
 - `partner_channel_template_id` (Number) ID of the Partner Channel Template assigned to this Partner.
 - `responsible_group_id` (Number) ID of the Group responsible for this Partner.
 - `responsible_user_id` (Number) ID of the User responsible for this Partner.
+- `show_partner_channel_home_page` (Boolean) Show Partner users a simplified home page built from this Partner's Channels.
 - `tags` (String) Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.
 - `workspace_id` (Number) ID of the Workspace associated with this Partner.
 

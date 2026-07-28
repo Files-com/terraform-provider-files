@@ -10,6 +10,7 @@ resource "files_partner" "example_partner" {
   partner_channel_template_id    = 1
   responsible_group_id           = 1
   responsible_user_id            = 1
+  show_partner_channel_home_page = false
   tags                           = "example"
   name                           = "Acme Corp"
   root_folder                    = "/AcmeCorp"

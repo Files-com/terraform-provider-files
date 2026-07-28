@@ -43,6 +43,7 @@ type partnerDataSourceModel struct {
 	ResponsibleGroupId         types.Int64  `tfsdk:"responsible_group_id"`
 	ResponsibleUserId          types.Int64  `tfsdk:"responsible_user_id"`
 	RootFolder                 types.String `tfsdk:"root_folder"`
+	ShowPartnerChannelHomePage types.Bool   `tfsdk:"show_partner_channel_home_page"`
 	Tags                       types.String `tfsdk:"tags"`
 	UserIds                    types.List   `tfsdk:"user_ids"`
 }
@@ -143,6 +144,10 @@ func (r *partnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Description: "The root folder path for this Partner.",
 				Computed:    true,
 			},
+			"show_partner_channel_home_page": schema.BoolAttribute{
+				Description: "Show Partner users a simplified home page built from this Partner's Channels.",
+				Computed:    true,
+			},
 			"tags": schema.StringAttribute{
 				Description: "Comma-separated list of Tags for this Partner. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.",
 				Computed:    true,
@@ -207,6 +212,7 @@ func (r *partnerDataSource) populateDataSourceModel(ctx context.Context, partner
 	state.ResponsibleGroupId = types.Int64Value(partner.ResponsibleGroupId)
 	state.ResponsibleUserId = types.Int64Value(partner.ResponsibleUserId)
 	state.RootFolder = types.StringValue(partner.RootFolder)
+	state.ShowPartnerChannelHomePage = types.BoolPointerValue(partner.ShowPartnerChannelHomePage)
 	state.Tags = types.StringValue(partner.Tags)
 	state.UserIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, partner.UserIds)
 	diags.Append(propDiags...)
