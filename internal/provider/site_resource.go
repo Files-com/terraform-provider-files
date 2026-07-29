@@ -105,6 +105,7 @@ type siteResourceModel struct {
 	DomainHstsHeader                         types.Bool    `tfsdk:"domain_hsts_header"`
 	DomainLetsencryptChain                   types.String  `tfsdk:"domain_letsencrypt_chain"`
 	Email                                    types.String  `tfsdk:"email"`
+	Fedramp                                  types.Bool    `tfsdk:"fedramp"`
 	FtpEnabled                               types.Bool    `tfsdk:"ftp_enabled"`
 	ReplyToEmail                             types.String  `tfsdk:"reply_to_email"`
 	NonSsoGroupsAllowed                      types.Bool    `tfsdk:"non_sso_groups_allowed"`
@@ -807,6 +808,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"fedramp": schema.BoolAttribute{
+				Description: "Are FedRAMP security restrictions enabled for this site?",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"ftp_enabled": schema.BoolAttribute{
@@ -1939,6 +1948,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.DisableFilesCertificateGeneration.IsNull() && !config.DisableFilesCertificateGeneration.IsUnknown() {
 		paramsSiteUpdate["disable_files_certificate_generation"] = config.DisableFilesCertificateGeneration.ValueBool()
 	}
+	if !config.Fedramp.IsNull() && !config.Fedramp.IsUnknown() {
+		paramsSiteUpdate["fedramp"] = config.Fedramp.ValueBool()
+	}
 	if !config.UserLockout.IsNull() && !config.UserLockout.IsUnknown() {
 		paramsSiteUpdate["user_lockout"] = config.UserLockout.ValueBool()
 	}
@@ -2406,6 +2418,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.DomainHstsHeader = types.BoolPointerValue(site.DomainHstsHeader)
 	state.DomainLetsencryptChain = types.StringValue(site.DomainLetsencryptChain)
 	state.Email = types.StringValue(site.Email)
+	state.Fedramp = types.BoolPointerValue(site.Fedramp)
 	state.FtpEnabled = types.BoolPointerValue(site.FtpEnabled)
 	state.ReplyToEmail = types.StringValue(site.ReplyToEmail)
 	state.NonSsoGroupsAllowed = types.BoolPointerValue(site.NonSsoGroupsAllowed)

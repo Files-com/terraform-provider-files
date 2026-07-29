@@ -59,6 +59,7 @@ resource "files_site" "example_site" {
   sftp_insecure_ciphers                         = false
   sftp_insecure_diffie_hellman                  = false
   disable_files_certificate_generation          = false
+  fedramp                                       = false
   user_lockout                                  = false
   user_lockout_tries                            = 1
   user_lockout_within                           = 1

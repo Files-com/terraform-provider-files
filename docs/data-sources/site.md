@@ -94,6 +94,7 @@ data "files_site" "example_site" {
 - `domain_letsencrypt_chain` (String) Letsencrypt chain to use when registering SSL Certificate for domain. No longer used as of 2026.
 - `email` (String) Main email for this site
 - `email_footer_custom_text` (String) Custom footer text for system-generated emails. Supports standard strftime date/time patterns like %Y (4-digit year), %m (month), %d (day).
+- `fedramp` (Boolean) Are FedRAMP security restrictions enabled for this site?
 - `folder_permissions_groups_only` (Boolean) If true, permissions for this site must be bound to a group (not a user).
 - `ftp_enabled` (Boolean) Is FTP enabled?
 - `group_admins_can_add_users` (Boolean) Allow group admins to create users in their groups

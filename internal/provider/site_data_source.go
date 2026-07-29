@@ -103,6 +103,7 @@ type siteDataSourceModel struct {
 	DomainHstsHeader                         types.Bool    `tfsdk:"domain_hsts_header"`
 	DomainLetsencryptChain                   types.String  `tfsdk:"domain_letsencrypt_chain"`
 	Email                                    types.String  `tfsdk:"email"`
+	Fedramp                                  types.Bool    `tfsdk:"fedramp"`
 	FtpEnabled                               types.Bool    `tfsdk:"ftp_enabled"`
 	ReplyToEmail                             types.String  `tfsdk:"reply_to_email"`
 	NonSsoGroupsAllowed                      types.Bool    `tfsdk:"non_sso_groups_allowed"`
@@ -546,6 +547,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"email": schema.StringAttribute{
 				Description: "Main email for this site",
+				Computed:    true,
+			},
+			"fedramp": schema.BoolAttribute{
+				Description: "Are FedRAMP security restrictions enabled for this site?",
 				Computed:    true,
 			},
 			"ftp_enabled": schema.BoolAttribute{
@@ -1144,6 +1149,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.DomainHstsHeader = types.BoolPointerValue(site.DomainHstsHeader)
 	state.DomainLetsencryptChain = types.StringValue(site.DomainLetsencryptChain)
 	state.Email = types.StringValue(site.Email)
+	state.Fedramp = types.BoolPointerValue(site.Fedramp)
 	state.FtpEnabled = types.BoolPointerValue(site.FtpEnabled)
 	state.ReplyToEmail = types.StringValue(site.ReplyToEmail)
 	state.NonSsoGroupsAllowed = types.BoolPointerValue(site.NonSsoGroupsAllowed)
