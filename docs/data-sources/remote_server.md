@@ -156,6 +156,7 @@ data "files_remote_server" "example_remote_server" {
 - `cloudflare_bucket` (String) Cloudflare: Bucket name
 - `cloudflare_endpoint` (String) Cloudflare: endpoint
 - `description` (String) Internal description for your reference
+- `direct_transfer_available` (Boolean) Whether the Files Agent Proxy recently validated a direct transfer connection. `true` means a direct connection was recently validated (actual availability can vary by client network), `false` means direct transfers are enabled but not currently available, and `null` means direct transfers are disabled or unsupported. Only provided for a connected Files Agent when showing a single Remote Server.
 - `disabled` (Boolean) If true, this Remote Server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.
 - `dropbox_teams` (Boolean) Dropbox: If true, list Team folders in root?
 - `enable_dedicated_ips` (Boolean) `true` if remote server only accepts connections from dedicated IPs

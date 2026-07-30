@@ -134,6 +134,7 @@ type remoteServerResourceModel struct {
 	FilesAgentUpToDate                      types.Bool   `tfsdk:"files_agent_up_to_date"`
 	FilesAgentLatestVersion                 types.String `tfsdk:"files_agent_latest_version"`
 	FilesAgentSupportsPushUpdates           types.Bool   `tfsdk:"files_agent_supports_push_updates"`
+	DirectTransferAvailable                 types.Bool   `tfsdk:"direct_transfer_available"`
 	FilesApiKeyPrefix                       types.String `tfsdk:"files_api_key_prefix"`
 	SupportsVersioning                      types.Bool   `tfsdk:"supports_versioning"`
 }
@@ -855,6 +856,10 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				Description: "Files Agent supports receiving push updates",
 				Computed:    true,
 			},
+			"direct_transfer_available": schema.BoolAttribute{
+				Description: "Whether the Files Agent Proxy recently validated a direct transfer connection. `true` means a direct connection was recently validated (actual availability can vary by client network), `false` means direct transfers are enabled but not currently available, and `null` means direct transfers are disabled or unsupported. Only provided for a connected Files Agent when showing a single Remote Server.",
+				Computed:    true,
+			},
 			"files_api_key_prefix": schema.StringAttribute{
 				Description: "Files.com direct link: paired API key prefix.",
 				Computed:    true,
@@ -1436,6 +1441,7 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.FilesAgentUpToDate = types.BoolPointerValue(remoteServer.FilesAgentUpToDate)
 	state.FilesAgentLatestVersion = types.StringValue(remoteServer.FilesAgentLatestVersion)
 	state.FilesAgentSupportsPushUpdates = types.BoolPointerValue(remoteServer.FilesAgentSupportsPushUpdates)
+	state.DirectTransferAvailable = types.BoolPointerValue(remoteServer.DirectTransferAvailable)
 	state.OutboundAgentId = types.Int64Value(remoteServer.OutboundAgentId)
 	state.FilebaseBucket = types.StringValue(remoteServer.FilebaseBucket)
 	state.FilebaseAccessKey = types.StringValue(remoteServer.FilebaseAccessKey)

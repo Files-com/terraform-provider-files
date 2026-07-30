@@ -91,6 +91,7 @@ type remoteServerDataSourceModel struct {
 	FilesAgentUpToDate                      types.Bool   `tfsdk:"files_agent_up_to_date"`
 	FilesAgentLatestVersion                 types.String `tfsdk:"files_agent_latest_version"`
 	FilesAgentSupportsPushUpdates           types.Bool   `tfsdk:"files_agent_supports_push_updates"`
+	DirectTransferAvailable                 types.Bool   `tfsdk:"direct_transfer_available"`
 	OutboundAgentId                         types.Int64  `tfsdk:"outbound_agent_id"`
 	FilebaseBucket                          types.String `tfsdk:"filebase_bucket"`
 	FilebaseAccessKey                       types.String `tfsdk:"filebase_access_key"`
@@ -392,6 +393,10 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Description: "Files Agent supports receiving push updates",
 				Computed:    true,
 			},
+			"direct_transfer_available": schema.BoolAttribute{
+				Description: "Whether the Files Agent Proxy recently validated a direct transfer connection. `true` means a direct connection was recently validated (actual availability can vary by client network), `false` means direct transfers are enabled but not currently available, and `null` means direct transfers are disabled or unsupported. Only provided for a connected Files Agent when showing a single Remote Server.",
+				Computed:    true,
+			},
 			"outbound_agent_id": schema.Int64Attribute{
 				Description: "Route traffic to outbound on a files-agent",
 				Computed:    true,
@@ -540,6 +545,7 @@ func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, re
 	state.FilesAgentUpToDate = types.BoolPointerValue(remoteServer.FilesAgentUpToDate)
 	state.FilesAgentLatestVersion = types.StringValue(remoteServer.FilesAgentLatestVersion)
 	state.FilesAgentSupportsPushUpdates = types.BoolPointerValue(remoteServer.FilesAgentSupportsPushUpdates)
+	state.DirectTransferAvailable = types.BoolPointerValue(remoteServer.DirectTransferAvailable)
 	state.OutboundAgentId = types.Int64Value(remoteServer.OutboundAgentId)
 	state.FilebaseBucket = types.StringValue(remoteServer.FilebaseBucket)
 	state.FilebaseAccessKey = types.StringValue(remoteServer.FilebaseAccessKey)
