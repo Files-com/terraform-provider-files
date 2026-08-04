@@ -31,6 +31,7 @@ type ssoStrategyDataSourceModel struct {
 	Provider_                        types.String `tfsdk:"provider_"`
 	Label                            types.String `tfsdk:"label"`
 	LogoUrl                          types.String `tfsdk:"logo_url"`
+	Enabled                          types.Bool   `tfsdk:"enabled"`
 	UserCount                        types.Int64  `tfsdk:"user_count"`
 	SamlProviderCertFingerprint      types.String `tfsdk:"saml_provider_cert_fingerprint"`
 	SamlProviderIssuerUrl            types.String `tfsdk:"saml_provider_issuer_url"`
@@ -67,7 +68,6 @@ type ssoStrategyDataSourceModel struct {
 	ProviderIdentifier               types.String `tfsdk:"provider_identifier"`
 	LdapBaseDn                       types.String `tfsdk:"ldap_base_dn"`
 	LdapDomain                       types.String `tfsdk:"ldap_domain"`
-	Enabled                          types.Bool   `tfsdk:"enabled"`
 	DisplayOnLoginPage               types.Bool   `tfsdk:"display_on_login_page"`
 	LdapHost                         types.String `tfsdk:"ldap_host"`
 	LdapHost2                        types.String `tfsdk:"ldap_host_2"`
@@ -125,6 +125,10 @@ func (r *ssoStrategyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 			},
 			"logo_url": schema.StringAttribute{
 				Description: "URL holding a custom logo for the SSO provider on the login page.",
+				Computed:    true,
+			},
+			"enabled": schema.BoolAttribute{
+				Description: "Is strategy enabled?  This may become automatically set to `false` after a high number and duration of failures.",
 				Computed:    true,
 			},
 			"user_count": schema.Int64Attribute{
@@ -270,10 +274,6 @@ func (r *ssoStrategyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Description: "Domain name that will be appended to LDAP usernames",
 				Computed:    true,
 			},
-			"enabled": schema.BoolAttribute{
-				Description: "Is strategy enabled?  This may become automatically set to `false` after a high number and duration of failures.",
-				Computed:    true,
-			},
 			"display_on_login_page": schema.BoolAttribute{
 				Description: "Should this strategy be displayed on the login page?",
 				Computed:    true,
@@ -354,6 +354,7 @@ func (r *ssoStrategyDataSource) populateDataSourceModel(ctx context.Context, sso
 	state.Label = types.StringValue(ssoStrategy.Label)
 	state.LogoUrl = types.StringValue(ssoStrategy.LogoUrl)
 	state.Id = types.Int64Value(ssoStrategy.Id)
+	state.Enabled = types.BoolPointerValue(ssoStrategy.Enabled)
 	state.UserCount = types.Int64Value(ssoStrategy.UserCount)
 	state.SamlProviderCertFingerprint = types.StringValue(ssoStrategy.SamlProviderCertFingerprint)
 	state.SamlProviderIssuerUrl = types.StringValue(ssoStrategy.SamlProviderIssuerUrl)
@@ -390,7 +391,6 @@ func (r *ssoStrategyDataSource) populateDataSourceModel(ctx context.Context, sso
 	state.ProviderIdentifier = types.StringValue(ssoStrategy.ProviderIdentifier)
 	state.LdapBaseDn = types.StringValue(ssoStrategy.LdapBaseDn)
 	state.LdapDomain = types.StringValue(ssoStrategy.LdapDomain)
-	state.Enabled = types.BoolPointerValue(ssoStrategy.Enabled)
 	state.DisplayOnLoginPage = types.BoolPointerValue(ssoStrategy.DisplayOnLoginPage)
 	state.LdapHost = types.StringValue(ssoStrategy.LdapHost)
 	state.LdapHost2 = types.StringValue(ssoStrategy.LdapHost2)

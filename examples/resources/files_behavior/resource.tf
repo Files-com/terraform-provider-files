@@ -329,3 +329,10 @@ resource "files_behavior" "example_remote_server_metadata_index_behavior" {
     initial_scan_completed = false
   }
 }
+
+resource "files_behavior" "example_malware_scanning_behavior" {
+  path     = "path"
+  behavior = "malware_scanning"
+  value    = {
+  }
+}
