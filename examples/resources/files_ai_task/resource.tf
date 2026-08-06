@@ -8,6 +8,7 @@ resource "files_ai_task" "example_ai_task" {
   permission_set        = "files_only"
   prompt                = "Summarize the uploaded file and identify follow-up actions."
   recurring_day         = 1
+  schedule_id           = 1
   schedule_days_of_week = [1, 3, 5]
   schedule_time_zone    = "Eastern Time (US & Canada)"
   schedule_times_of_day = ["06:30"]

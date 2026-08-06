@@ -41,6 +41,7 @@ type aiTaskDataSourceModel struct {
 	TriggerActions        types.List   `tfsdk:"trigger_actions"`
 	Interval              types.String `tfsdk:"interval"`
 	RecurringDay          types.Int64  `tfsdk:"recurring_day"`
+	ScheduleId            types.Int64  `tfsdk:"schedule_id"`
 	ScheduleDaysOfWeek    types.List   `tfsdk:"schedule_days_of_week"`
 	ScheduleTimesOfDay    types.List   `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone      types.String `tfsdk:"schedule_time_zone"`
@@ -132,13 +133,17 @@ func (r *aiTaskDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Description: "If trigger is `daily`, this selects the day number inside the chosen interval.",
 				Computed:    true,
 			},
+			"schedule_id": schema.Int64Attribute{
+				Description: "If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields.",
+				Computed:    true,
+			},
 			"schedule_days_of_week": schema.ListAttribute{
 				Description: "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.",
 				Computed:    true,
 				ElementType: types.Int64Type,
 			},
 			"schedule_times_of_day": schema.ListAttribute{
-				Description: "Times of day in HH:MM format for scheduled AI Tasks.",
+				Description: "Times of day in HH:MM format for the AI Task schedule.",
 				Computed:    true,
 				ElementType: types.StringType,
 			},
@@ -147,7 +152,7 @@ func (r *aiTaskDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Computed:    true,
 			},
 			"holiday_region": schema.StringAttribute{
-				Description: "Optional holiday region used by scheduled AI Tasks.",
+				Description: "Optional holiday region used by the AI Task schedule.",
 				Computed:    true,
 			},
 			"human_readable_schedule": schema.StringAttribute{
@@ -221,6 +226,7 @@ func (r *aiTaskDataSource) populateDataSourceModel(ctx context.Context, aiTask f
 	diags.Append(propDiags...)
 	state.Interval = types.StringValue(aiTask.Interval)
 	state.RecurringDay = types.Int64Value(aiTask.RecurringDay)
+	state.ScheduleId = types.Int64Value(aiTask.ScheduleId)
 	state.ScheduleDaysOfWeek, propDiags = types.ListValueFrom(ctx, types.Int64Type, aiTask.ScheduleDaysOfWeek)
 	diags.Append(propDiags...)
 	state.ScheduleTimesOfDay, propDiags = types.ListValueFrom(ctx, types.StringType, aiTask.ScheduleTimesOfDay)

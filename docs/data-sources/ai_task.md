@@ -30,7 +30,7 @@ data "files_ai_task" "example_ai_task" {
 - `created_at` (String) Creation time.
 - `description` (String) AI Task description.
 - `disabled` (Boolean) If true, this AI Task will not run.
-- `holiday_region` (String) Optional holiday region used by scheduled AI Tasks.
+- `holiday_region` (String) Optional holiday region used by the AI Task schedule.
 - `human_readable_schedule` (String) Human-readable schedule description.
 - `interval` (String) If trigger is `daily`, this specifies how often to run the AI Task.
 - `last_run_at` (String) Most recent successful invocation time.
@@ -41,8 +41,9 @@ data "files_ai_task" "example_ai_task" {
 - `prompt` (String) Prompt sent when this AI Task is invoked.
 - `recurring_day` (Number) If trigger is `daily`, this selects the day number inside the chosen interval.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.
+- `schedule_id` (Number) If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields.
 - `schedule_time_zone` (String) Time zone used by the AI Task schedule.
-- `schedule_times_of_day` (List of String) Times of day in HH:MM format for scheduled AI Tasks.
+- `schedule_times_of_day` (List of String) Times of day in HH:MM format for the AI Task schedule.
 - `source` (String) Source glob used with `path` for action-triggered AI Tasks.
 - `trigger` (String) How this AI Task is triggered.
 - `trigger_actions` (List of String) If trigger is `action`, the file action types that invoke this AI Task. Valid actions are create, copy, move, archived_delete, update, read, destroy.

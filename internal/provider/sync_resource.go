@@ -57,6 +57,7 @@ type syncResourceModel struct {
 	SyncIntervalMinutes    types.Int64  `tfsdk:"sync_interval_minutes"`
 	Interval               types.String `tfsdk:"interval"`
 	RecurringDay           types.Int64  `tfsdk:"recurring_day"`
+	ScheduleId             types.Int64  `tfsdk:"schedule_id"`
 	ScheduleDaysOfWeek     types.List   `tfsdk:"schedule_days_of_week"`
 	ScheduleTimesOfDay     types.List   `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone       types.String `tfsdk:"schedule_time_zone"`
@@ -249,6 +250,14 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"schedule_id": schema.Int64Attribute{
+				Description: "If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"schedule_days_of_week": schema.ListAttribute{
 				Description: "If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.",
 				Computed:    true,
@@ -268,7 +277,7 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"schedule_time_zone": schema.StringAttribute{
-				Description: "Time zone for scheduled times. If not set, times are interpreted as UTC.",
+				Description: "Time zone for the schedule. If not set, times are interpreted as UTC.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -276,7 +285,7 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"holiday_region": schema.StringAttribute{
-				Description: "Skip sync if there is a formal, observed holiday for this region.",
+				Description: "Skip the sync if there is a formal, observed holiday for this region.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -365,6 +374,7 @@ func (r *syncResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 	paramsSyncCreate.Name = plan.Name.ValueString()
 	paramsSyncCreate.RecurringDay = plan.RecurringDay.ValueInt64()
+	paramsSyncCreate.ScheduleId = plan.ScheduleId.ValueInt64()
 	if !plan.ScheduleDaysOfWeek.IsNull() && !plan.ScheduleDaysOfWeek.IsUnknown() {
 		diags = plan.ScheduleDaysOfWeek.ElementsAs(ctx, &paramsSyncCreate.ScheduleDaysOfWeek, false)
 		resp.Diagnostics.Append(diags...)
@@ -501,6 +511,9 @@ func (r *syncResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 	if !config.RecurringDay.IsNull() && !config.RecurringDay.IsUnknown() {
 		paramsSyncUpdate["recurring_day"] = config.RecurringDay.ValueInt64()
+	}
+	if !config.ScheduleId.IsNull() && !config.ScheduleId.IsUnknown() {
+		paramsSyncUpdate["schedule_id"] = config.ScheduleId.ValueInt64()
 	}
 	if !config.ScheduleDaysOfWeek.IsNull() && !config.ScheduleDaysOfWeek.IsUnknown() {
 		var updateScheduleDaysOfWeek []int64
@@ -643,6 +656,7 @@ func (r *syncResource) populateResourceModel(ctx context.Context, sync files_sdk
 	state.SyncIntervalMinutes = types.Int64Value(sync.SyncIntervalMinutes)
 	state.Interval = types.StringValue(sync.Interval)
 	state.RecurringDay = types.Int64Value(sync.RecurringDay)
+	state.ScheduleId = types.Int64Value(sync.ScheduleId)
 	state.ScheduleDaysOfWeek, propDiags = types.ListValueFrom(ctx, types.Int64Type, sync.ScheduleDaysOfWeek)
 	diags.Append(propDiags...)
 	state.ScheduleTimesOfDay, propDiags = types.ListValueFrom(ctx, types.StringType, sync.ScheduleTimesOfDay)

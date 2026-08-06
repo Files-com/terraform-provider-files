@@ -47,6 +47,7 @@ type scheduledExportResourceModel struct {
 	Trigger               types.String  `tfsdk:"trigger"`
 	Interval              types.String  `tfsdk:"interval"`
 	RecurringDay          types.Int64   `tfsdk:"recurring_day"`
+	ScheduleId            types.Int64   `tfsdk:"schedule_id"`
 	ScheduleDaysOfWeek    types.List    `tfsdk:"schedule_days_of_week"`
 	ScheduleTimesOfDay    types.List    `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone      types.String  `tfsdk:"schedule_time_zone"`
@@ -146,6 +147,14 @@ func (r *scheduledExportResource) Schema(_ context.Context, _ resource.SchemaReq
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"schedule_id": schema.Int64Attribute{
+				Description: "If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"schedule_days_of_week": schema.ListAttribute{
 				Description: "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.",
 				Computed:    true,
@@ -156,7 +165,7 @@ func (r *scheduledExportResource) Schema(_ context.Context, _ resource.SchemaReq
 				},
 			},
 			"schedule_times_of_day": schema.ListAttribute{
-				Description: "Times of day in HH:MM format for schedule-driven exports.",
+				Description: "Times of day in HH:MM format for the scheduled export schedule.",
 				Computed:    true,
 				Optional:    true,
 				ElementType: types.StringType,
@@ -165,7 +174,7 @@ func (r *scheduledExportResource) Schema(_ context.Context, _ resource.SchemaReq
 				},
 			},
 			"schedule_time_zone": schema.StringAttribute{
-				Description: "Time zone used by the scheduled export.",
+				Description: "Time zone used by the scheduled export schedule.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -173,7 +182,7 @@ func (r *scheduledExportResource) Schema(_ context.Context, _ resource.SchemaReq
 				},
 			},
 			"holiday_region": schema.StringAttribute{
-				Description: "Optional holiday region used by schedule-driven exports.",
+				Description: "Optional holiday region used by the scheduled export schedule.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -242,6 +251,7 @@ func (r *scheduledExportResource) Create(ctx context.Context, req resource.Creat
 	paramsScheduledExportCreate.Trigger = paramsScheduledExportCreate.Trigger.Enum()[plan.Trigger.ValueString()]
 	paramsScheduledExportCreate.Interval = plan.Interval.ValueString()
 	paramsScheduledExportCreate.RecurringDay = plan.RecurringDay.ValueInt64()
+	paramsScheduledExportCreate.ScheduleId = plan.ScheduleId.ValueInt64()
 	if !plan.ScheduleDaysOfWeek.IsNull() && !plan.ScheduleDaysOfWeek.IsUnknown() {
 		diags = plan.ScheduleDaysOfWeek.ElementsAs(ctx, &paramsScheduledExportCreate.ScheduleDaysOfWeek, false)
 		resp.Diagnostics.Append(diags...)
@@ -353,6 +363,9 @@ func (r *scheduledExportResource) Update(ctx context.Context, req resource.Updat
 	if !config.RecurringDay.IsNull() && !config.RecurringDay.IsUnknown() {
 		paramsScheduledExportUpdate["recurring_day"] = config.RecurringDay.ValueInt64()
 	}
+	if !config.ScheduleId.IsNull() && !config.ScheduleId.IsUnknown() {
+		paramsScheduledExportUpdate["schedule_id"] = config.ScheduleId.ValueInt64()
+	}
 	if !config.ScheduleDaysOfWeek.IsNull() && !config.ScheduleDaysOfWeek.IsUnknown() {
 		var updateScheduleDaysOfWeek []int64
 		diags = config.ScheduleDaysOfWeek.ElementsAs(ctx, &updateScheduleDaysOfWeek, false)
@@ -452,6 +465,7 @@ func (r *scheduledExportResource) populateResourceModel(ctx context.Context, sch
 	state.Trigger = types.StringValue(scheduledExport.Trigger)
 	state.Interval = types.StringValue(scheduledExport.Interval)
 	state.RecurringDay = types.Int64Value(scheduledExport.RecurringDay)
+	state.ScheduleId = types.Int64Value(scheduledExport.ScheduleId)
 	state.ScheduleDaysOfWeek, propDiags = types.ListValueFrom(ctx, types.Int64Type, scheduledExport.ScheduleDaysOfWeek)
 	diags.Append(propDiags...)
 	state.ScheduleTimesOfDay, propDiags = types.ListValueFrom(ctx, types.StringType, scheduledExport.ScheduleTimesOfDay)

@@ -31,7 +31,7 @@ data "files_scheduled_export" "example_scheduled_export" {
 - `disabled` (Boolean) If true, this scheduled export will not run.
 - `export_options` (Dynamic) Report-specific options. `permission_audit` supports `group_by` with `user` or `path`.
 - `export_type` (String) Export report type. Valid values: folder_size_audit, group_membership_audit, permission_audit, share_link_audit
-- `holiday_region` (String) Optional holiday region used by schedule-driven exports.
+- `holiday_region` (String) Optional holiday region used by the scheduled export schedule.
 - `human_readable_schedule` (String) Human-readable schedule description.
 - `interval` (String) If trigger is `daily`, this specifies how often to run the scheduled export.
 - `last_export_id` (Number) Most recent Export ID created by this schedule.
@@ -40,8 +40,9 @@ data "files_scheduled_export" "example_scheduled_export" {
 - `recurring_day` (Number) If trigger is `daily`, this selects the day number inside the chosen interval.
 - `report_name` (String) Human-readable report name.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.
-- `schedule_time_zone` (String) Time zone used by the scheduled export.
-- `schedule_times_of_day` (List of String) Times of day in HH:MM format for schedule-driven exports.
+- `schedule_id` (Number) If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields.
+- `schedule_time_zone` (String) Time zone used by the scheduled export schedule.
+- `schedule_times_of_day` (List of String) Times of day in HH:MM format for the scheduled export schedule.
 - `trigger` (String) Schedule trigger type: `daily` or `custom_schedule`.
 - `updated_at` (String) Last update time.
 - `user_id` (Number) Site Admin user who receives the completed export e-mail.

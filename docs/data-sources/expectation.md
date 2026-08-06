@@ -29,7 +29,7 @@ description: |-
   Expectations can open windows in three ways:
   
   daily: run on a recurring daily/weekly/monthly/quarterly/yearly cadence using interval and recurring_day.
-  custom_schedule: run on specific weekdays and times using schedule_days_of_week, schedule_times_of_day, and optional schedule_time_zone / holiday_region.
+  custom_schedule: run using either the reusable Site-level Schedule selected by schedule_id or specific weekdays and times stored on the Expectation.
   manual: an operator explicitly opens the window.
   Schedule-driven expectations define an on-time deadline and may optionally remain eligible to close as late during late_acceptance_interval.
   Manual expectations have no concept of late; they open when triggered and close based on inactivity or hard-stop timing.
@@ -135,7 +135,7 @@ Expectations can open windows in three ways:
 
 * `daily`: run on a recurring daily/weekly/monthly/quarterly/yearly cadence using `interval` and `recurring_day`.
 
-* `custom_schedule`: run on specific weekdays and times using `schedule_days_of_week`, `schedule_times_of_day`, and optional `schedule_time_zone` / `holiday_region`.
+* `custom_schedule`: run using either the reusable Site-level Schedule selected by `schedule_id` or specific weekdays and times stored on the Expectation.
 
 * `manual`: an operator explicitly opens the window.
 
@@ -230,7 +230,7 @@ data "files_expectation" "example_expectation" {
 - `disabled` (Boolean) If true, the expectation is disabled.
 - `exclude_pattern` (String) Optional source exclusion glob.
 - `expectations_version` (Number) Criteria schema version for this expectation.
-- `holiday_region` (String) Optional holiday region used by schedule-driven expectations.
+- `holiday_region` (String) Optional holiday region used by the Expectation schedule.
 - `inactivity_interval` (Number) How many quiet seconds are required before final closure.
 - `interval` (String) If trigger is `daily`, this specifies how often to run the expectation.
 - `last_evaluated_at` (String) Last time this expectation was evaluated.
@@ -244,8 +244,9 @@ data "files_expectation" "example_expectation" {
 - `path` (String) Path scope for the expectation. Supports workspace-relative presentation. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `recurring_day` (Number) If trigger is `daily`, this selects the day number inside the chosen interval.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.
-- `schedule_time_zone` (String) Time zone used by the expectation schedule.
-- `schedule_times_of_day` (List of String) Times of day in HH:MM format for schedule-driven expectations.
+- `schedule_id` (Number) If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields.
+- `schedule_time_zone` (String) Time zone used by the Expectation schedule.
+- `schedule_times_of_day` (List of String) Times of day in HH:MM format for the Expectation schedule.
 - `source` (String) Source glob used to select candidate files.
 - `trigger` (String) How this expectation opens windows.
 - `updated_at` (String) Last update time.
