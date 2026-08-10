@@ -28,7 +28,7 @@ description: |-
   Automations can be triggered in the following ways:
   
   custom_schedule : The automation will run according to either the reusable Site-level Schedule selected by schedule_id or its own custom schedule fields for days_of_week (0-based) and times_of_day. A time zone may be specified via time_zone in Rails TimeZone name format.
-  daily : The automation will run once in a picked interval. You can specify recurring_day to select day number inside a picked interval it should be run on.
+  daily : The automation will run in a picked interval. You can specify recurring_day or recurring_days to select one or more day numbers inside the interval.
   webhook : the automation will run when a request is sent to the corresponding webhook URL.
   action : The automation will run when a specific action happens, e.g. a file is created or downloaded.
   Future enhancements will allow Automations to be triggered by an incoming email, or by other services.
@@ -235,7 +235,7 @@ Automations can be triggered in the following ways:
 
 * `custom_schedule` : The automation will run according to either the reusable Site-level Schedule selected by `schedule_id` or its own custom schedule fields for `days_of_week` (0-based) and `times_of_day`. A time zone may be specified via `time_zone` in Rails TimeZone name format.
 
-* `daily` : The automation will run once in a picked `interval`. You can specify `recurring_day` to select day number inside a picked `interval` it should be run on.
+* `daily` : The automation will run in a picked `interval`. You can specify `recurring_day` or `recurring_days` to select one or more day numbers inside the interval.
 
 * `webhook` : the automation will run when a request is sent to the corresponding webhook URL.
 
@@ -626,6 +626,7 @@ resource "files_automation" "example_automation" {
     limit = 1
   }
   recurring_day                        = 25
+  recurring_days                       = [1, 15]
   automation                           = "create_folder"
   workspace_id                         = 0
 }
@@ -661,6 +662,7 @@ resource "files_automation" "example_automation" {
 - `path` (String) Path on which this Automation runs.  Supports globs, except on remote mounts. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `path_time_zone` (String) Timezone to use when rendering timestamps in paths.
 - `recurring_day` (Number) If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.
+- `recurring_days` (List of Number) If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.
 - `retry_on_failure_interval_in_minutes` (Number) If the Automation fails, retry at this interval (in minutes).  Acceptable values are 5 through 1440 (one day).  Set to null to disable.
 - `retry_on_failure_number_of_attempts` (Number) If the Automation fails, retry at most this many times.  Maximum allowed value: 10.  Set to null to disable.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. 0 is Sunday, 1 is Monday, etc.

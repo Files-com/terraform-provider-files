@@ -50,6 +50,7 @@ type aiTaskResourceModel struct {
 	TriggerActions        types.List   `tfsdk:"trigger_actions"`
 	Interval              types.String `tfsdk:"interval"`
 	RecurringDay          types.Int64  `tfsdk:"recurring_day"`
+	RecurringDays         types.List   `tfsdk:"recurring_days"`
 	ScheduleId            types.Int64  `tfsdk:"schedule_id"`
 	ScheduleDaysOfWeek    types.List   `tfsdk:"schedule_days_of_week"`
 	ScheduleTimesOfDay    types.List   `tfsdk:"schedule_times_of_day"`
@@ -185,6 +186,15 @@ func (r *aiTaskResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"recurring_days": schema.ListAttribute{
+				Description: "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.Int64Type,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"schedule_id": schema.Int64Attribute{
 				Description: "If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields.",
 				Computed:    true,
@@ -284,6 +294,10 @@ func (r *aiTaskResource) Create(ctx context.Context, req resource.CreateRequest,
 	paramsAiTaskCreate.PermissionSet = paramsAiTaskCreate.PermissionSet.Enum()[plan.PermissionSet.ValueString()]
 	paramsAiTaskCreate.Prompt = plan.Prompt.ValueString()
 	paramsAiTaskCreate.RecurringDay = plan.RecurringDay.ValueInt64()
+	if !plan.RecurringDays.IsNull() && !plan.RecurringDays.IsUnknown() {
+		diags = plan.RecurringDays.ElementsAs(ctx, &paramsAiTaskCreate.RecurringDays, false)
+		resp.Diagnostics.Append(diags...)
+	}
 	paramsAiTaskCreate.ScheduleId = plan.ScheduleId.ValueInt64()
 	if !plan.ScheduleDaysOfWeek.IsNull() && !plan.ScheduleDaysOfWeek.IsUnknown() {
 		diags = plan.ScheduleDaysOfWeek.ElementsAs(ctx, &paramsAiTaskCreate.ScheduleDaysOfWeek, false)
@@ -405,6 +419,12 @@ func (r *aiTaskResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if !config.RecurringDay.IsNull() && !config.RecurringDay.IsUnknown() {
 		paramsAiTaskUpdate["recurring_day"] = config.RecurringDay.ValueInt64()
 	}
+	if !config.RecurringDays.IsNull() && !config.RecurringDays.IsUnknown() {
+		var updateRecurringDays []int64
+		diags = config.RecurringDays.ElementsAs(ctx, &updateRecurringDays, false)
+		resp.Diagnostics.Append(diags...)
+		paramsAiTaskUpdate["recurring_days"] = updateRecurringDays
+	}
 	if !config.ScheduleId.IsNull() && !config.ScheduleId.IsUnknown() {
 		paramsAiTaskUpdate["schedule_id"] = config.ScheduleId.ValueInt64()
 	}
@@ -522,6 +542,8 @@ func (r *aiTaskResource) populateResourceModel(ctx context.Context, aiTask files
 	diags.Append(propDiags...)
 	state.Interval = types.StringValue(aiTask.Interval)
 	state.RecurringDay = types.Int64Value(aiTask.RecurringDay)
+	state.RecurringDays, propDiags = types.ListValueFrom(ctx, types.Int64Type, aiTask.RecurringDays)
+	diags.Append(propDiags...)
 	state.ScheduleId = types.Int64Value(aiTask.ScheduleId)
 	state.ScheduleDaysOfWeek, propDiags = types.ListValueFrom(ctx, types.Int64Type, aiTask.ScheduleDaysOfWeek)
 	diags.Append(propDiags...)

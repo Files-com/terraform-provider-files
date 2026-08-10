@@ -41,6 +41,7 @@ type aiTaskDataSourceModel struct {
 	TriggerActions        types.List   `tfsdk:"trigger_actions"`
 	Interval              types.String `tfsdk:"interval"`
 	RecurringDay          types.Int64  `tfsdk:"recurring_day"`
+	RecurringDays         types.List   `tfsdk:"recurring_days"`
 	ScheduleId            types.Int64  `tfsdk:"schedule_id"`
 	ScheduleDaysOfWeek    types.List   `tfsdk:"schedule_days_of_week"`
 	ScheduleTimesOfDay    types.List   `tfsdk:"schedule_times_of_day"`
@@ -132,6 +133,11 @@ func (r *aiTaskDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			"recurring_day": schema.Int64Attribute{
 				Description: "If trigger is `daily`, this selects the day number inside the chosen interval.",
 				Computed:    true,
+			},
+			"recurring_days": schema.ListAttribute{
+				Description: "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.",
+				Computed:    true,
+				ElementType: types.Int64Type,
 			},
 			"schedule_id": schema.Int64Attribute{
 				Description: "If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields.",
@@ -226,6 +232,8 @@ func (r *aiTaskDataSource) populateDataSourceModel(ctx context.Context, aiTask f
 	diags.Append(propDiags...)
 	state.Interval = types.StringValue(aiTask.Interval)
 	state.RecurringDay = types.Int64Value(aiTask.RecurringDay)
+	state.RecurringDays, propDiags = types.ListValueFrom(ctx, types.Int64Type, aiTask.RecurringDays)
+	diags.Append(propDiags...)
 	state.ScheduleId = types.Int64Value(aiTask.ScheduleId)
 	state.ScheduleDaysOfWeek, propDiags = types.ListValueFrom(ctx, types.Int64Type, aiTask.ScheduleDaysOfWeek)
 	diags.Append(propDiags...)

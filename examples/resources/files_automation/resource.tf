@@ -46,6 +46,7 @@ resource "files_automation" "example_automation" {
     limit = 1
   }
   recurring_day                        = 25
+  recurring_days                       = [1, 15]
   automation                           = "create_folder"
   workspace_id                         = 0
 }

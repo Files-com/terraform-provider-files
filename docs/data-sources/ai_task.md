@@ -40,6 +40,7 @@ data "files_ai_task" "example_ai_task" {
 - `permission_set` (String) Permissions used by the internal API key for this AI Task. Valid values are `full` and `files_only`.
 - `prompt` (String) Prompt sent when this AI Task is invoked.
 - `recurring_day` (Number) If trigger is `daily`, this selects the day number inside the chosen interval.
+- `recurring_days` (List of Number) If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.
 - `schedule_id` (Number) If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields.
 - `schedule_time_zone` (String) Time zone used by the AI Task schedule.

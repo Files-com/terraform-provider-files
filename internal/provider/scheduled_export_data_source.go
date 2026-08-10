@@ -38,6 +38,7 @@ type scheduledExportDataSourceModel struct {
 	Trigger               types.String  `tfsdk:"trigger"`
 	Interval              types.String  `tfsdk:"interval"`
 	RecurringDay          types.Int64   `tfsdk:"recurring_day"`
+	RecurringDays         types.List    `tfsdk:"recurring_days"`
 	ScheduleId            types.Int64   `tfsdk:"schedule_id"`
 	ScheduleDaysOfWeek    types.List    `tfsdk:"schedule_days_of_week"`
 	ScheduleTimesOfDay    types.List    `tfsdk:"schedule_times_of_day"`
@@ -116,6 +117,11 @@ func (r *scheduledExportDataSource) Schema(_ context.Context, _ datasource.Schem
 			"recurring_day": schema.Int64Attribute{
 				Description: "If trigger is `daily`, this selects the day number inside the chosen interval.",
 				Computed:    true,
+			},
+			"recurring_days": schema.ListAttribute{
+				Description: "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.",
+				Computed:    true,
+				ElementType: types.Int64Type,
 			},
 			"schedule_id": schema.Int64Attribute{
 				Description: "If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields.",
@@ -207,6 +213,8 @@ func (r *scheduledExportDataSource) populateDataSourceModel(ctx context.Context,
 	state.Trigger = types.StringValue(scheduledExport.Trigger)
 	state.Interval = types.StringValue(scheduledExport.Interval)
 	state.RecurringDay = types.Int64Value(scheduledExport.RecurringDay)
+	state.RecurringDays, propDiags = types.ListValueFrom(ctx, types.Int64Type, scheduledExport.RecurringDays)
+	diags.Append(propDiags...)
 	state.ScheduleId = types.Int64Value(scheduledExport.ScheduleId)
 	state.ScheduleDaysOfWeek, propDiags = types.ListValueFrom(ctx, types.Int64Type, scheduledExport.ScheduleDaysOfWeek)
 	diags.Append(propDiags...)

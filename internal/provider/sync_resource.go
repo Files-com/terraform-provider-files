@@ -57,6 +57,7 @@ type syncResourceModel struct {
 	SyncIntervalMinutes    types.Int64  `tfsdk:"sync_interval_minutes"`
 	Interval               types.String `tfsdk:"interval"`
 	RecurringDay           types.Int64  `tfsdk:"recurring_day"`
+	RecurringDays          types.List   `tfsdk:"recurring_days"`
 	ScheduleId             types.Int64  `tfsdk:"schedule_id"`
 	ScheduleDaysOfWeek     types.List   `tfsdk:"schedule_days_of_week"`
 	ScheduleTimesOfDay     types.List   `tfsdk:"schedule_times_of_day"`
@@ -250,6 +251,15 @@ func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"recurring_days": schema.ListAttribute{
+				Description: "If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.Int64Type,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"schedule_id": schema.Int64Attribute{
 				Description: "If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields.",
 				Computed:    true,
@@ -374,6 +384,10 @@ func (r *syncResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 	paramsSyncCreate.Name = plan.Name.ValueString()
 	paramsSyncCreate.RecurringDay = plan.RecurringDay.ValueInt64()
+	if !plan.RecurringDays.IsNull() && !plan.RecurringDays.IsUnknown() {
+		diags = plan.RecurringDays.ElementsAs(ctx, &paramsSyncCreate.RecurringDays, false)
+		resp.Diagnostics.Append(diags...)
+	}
 	paramsSyncCreate.ScheduleId = plan.ScheduleId.ValueInt64()
 	if !plan.ScheduleDaysOfWeek.IsNull() && !plan.ScheduleDaysOfWeek.IsUnknown() {
 		diags = plan.ScheduleDaysOfWeek.ElementsAs(ctx, &paramsSyncCreate.ScheduleDaysOfWeek, false)
@@ -511,6 +525,12 @@ func (r *syncResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 	if !config.RecurringDay.IsNull() && !config.RecurringDay.IsUnknown() {
 		paramsSyncUpdate["recurring_day"] = config.RecurringDay.ValueInt64()
+	}
+	if !config.RecurringDays.IsNull() && !config.RecurringDays.IsUnknown() {
+		var updateRecurringDays []int64
+		diags = config.RecurringDays.ElementsAs(ctx, &updateRecurringDays, false)
+		resp.Diagnostics.Append(diags...)
+		paramsSyncUpdate["recurring_days"] = updateRecurringDays
 	}
 	if !config.ScheduleId.IsNull() && !config.ScheduleId.IsUnknown() {
 		paramsSyncUpdate["schedule_id"] = config.ScheduleId.ValueInt64()
@@ -656,6 +676,8 @@ func (r *syncResource) populateResourceModel(ctx context.Context, sync files_sdk
 	state.SyncIntervalMinutes = types.Int64Value(sync.SyncIntervalMinutes)
 	state.Interval = types.StringValue(sync.Interval)
 	state.RecurringDay = types.Int64Value(sync.RecurringDay)
+	state.RecurringDays, propDiags = types.ListValueFrom(ctx, types.Int64Type, sync.RecurringDays)
+	diags.Append(propDiags...)
 	state.ScheduleId = types.Int64Value(sync.ScheduleId)
 	state.ScheduleDaysOfWeek, propDiags = types.ListValueFrom(ctx, types.Int64Type, sync.ScheduleDaysOfWeek)
 	diags.Append(propDiags...)

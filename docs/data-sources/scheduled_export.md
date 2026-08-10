@@ -38,6 +38,7 @@ data "files_scheduled_export" "example_scheduled_export" {
 - `last_run_at` (String) Most recent scheduled run time.
 - `name` (String) Name for this scheduled export.
 - `recurring_day` (Number) If trigger is `daily`, this selects the day number inside the chosen interval.
+- `recurring_days` (List of Number) If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.
 - `report_name` (String) Human-readable report name.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.
 - `schedule_id` (Number) If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields.

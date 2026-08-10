@@ -28,7 +28,7 @@ description: |-
   Trigger modes
   Expectations can open windows in three ways:
   
-  daily: run on a recurring daily/weekly/monthly/quarterly/yearly cadence using interval and recurring_day.
+  daily: run on a recurring daily/weekly/monthly/quarterly/yearly cadence using interval and either recurring_day or recurring_days.
   custom_schedule: run using either the reusable Site-level Schedule selected by schedule_id or specific weekdays and times stored on the Expectation.
   manual: an operator explicitly opens the window.
   Schedule-driven expectations define an on-time deadline and may optionally remain eligible to close as late during late_acceptance_interval.
@@ -133,7 +133,7 @@ Expectations can open windows in three ways:
 
 
 
-* `daily`: run on a recurring daily/weekly/monthly/quarterly/yearly cadence using `interval` and `recurring_day`.
+* `daily`: run on a recurring daily/weekly/monthly/quarterly/yearly cadence using `interval` and either `recurring_day` or `recurring_days`.
 
 * `custom_schedule`: run using either the reusable Site-level Schedule selected by `schedule_id` or specific weekdays and times stored on the Expectation.
 
@@ -220,6 +220,7 @@ resource "files_expectation" "example_expectation" {
   trigger                  = "manual"
   interval                 = "day"
   recurring_day            = 3
+  recurring_days           = [1, 15]
   schedule_id              = 1
   schedule_days_of_week    = [1, 3, 5]
   schedule_times_of_day    = ["06:00"]
@@ -257,6 +258,7 @@ resource "files_expectation" "example_expectation" {
 - `name` (String) Expectation name.
 - `path` (String) Path scope for the expectation. Supports workspace-relative presentation. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `recurring_day` (Number) If trigger is `daily`, this selects the day number inside the chosen interval.
+- `recurring_days` (List of Number) If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.
 - `schedule_id` (Number) If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields.
 - `schedule_time_zone` (String) Time zone used by the Expectation schedule.

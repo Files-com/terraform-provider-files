@@ -8,6 +8,7 @@ resource "files_expectation" "example_expectation" {
   trigger                  = "manual"
   interval                 = "day"
   recurring_day            = 3
+  recurring_days           = [1, 15]
   schedule_id              = 1
   schedule_days_of_week    = [1, 3, 5]
   schedule_times_of_day    = ["06:00"]

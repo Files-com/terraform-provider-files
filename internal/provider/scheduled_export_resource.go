@@ -47,6 +47,7 @@ type scheduledExportResourceModel struct {
 	Trigger               types.String  `tfsdk:"trigger"`
 	Interval              types.String  `tfsdk:"interval"`
 	RecurringDay          types.Int64   `tfsdk:"recurring_day"`
+	RecurringDays         types.List    `tfsdk:"recurring_days"`
 	ScheduleId            types.Int64   `tfsdk:"schedule_id"`
 	ScheduleDaysOfWeek    types.List    `tfsdk:"schedule_days_of_week"`
 	ScheduleTimesOfDay    types.List    `tfsdk:"schedule_times_of_day"`
@@ -145,6 +146,15 @@ func (r *scheduledExportResource) Schema(_ context.Context, _ resource.SchemaReq
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"recurring_days": schema.ListAttribute{
+				Description: "If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.Int64Type,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"schedule_id": schema.Int64Attribute{
@@ -251,6 +261,10 @@ func (r *scheduledExportResource) Create(ctx context.Context, req resource.Creat
 	paramsScheduledExportCreate.Trigger = paramsScheduledExportCreate.Trigger.Enum()[plan.Trigger.ValueString()]
 	paramsScheduledExportCreate.Interval = plan.Interval.ValueString()
 	paramsScheduledExportCreate.RecurringDay = plan.RecurringDay.ValueInt64()
+	if !plan.RecurringDays.IsNull() && !plan.RecurringDays.IsUnknown() {
+		diags = plan.RecurringDays.ElementsAs(ctx, &paramsScheduledExportCreate.RecurringDays, false)
+		resp.Diagnostics.Append(diags...)
+	}
 	paramsScheduledExportCreate.ScheduleId = plan.ScheduleId.ValueInt64()
 	if !plan.ScheduleDaysOfWeek.IsNull() && !plan.ScheduleDaysOfWeek.IsUnknown() {
 		diags = plan.ScheduleDaysOfWeek.ElementsAs(ctx, &paramsScheduledExportCreate.ScheduleDaysOfWeek, false)
@@ -363,6 +377,12 @@ func (r *scheduledExportResource) Update(ctx context.Context, req resource.Updat
 	if !config.RecurringDay.IsNull() && !config.RecurringDay.IsUnknown() {
 		paramsScheduledExportUpdate["recurring_day"] = config.RecurringDay.ValueInt64()
 	}
+	if !config.RecurringDays.IsNull() && !config.RecurringDays.IsUnknown() {
+		var updateRecurringDays []int64
+		diags = config.RecurringDays.ElementsAs(ctx, &updateRecurringDays, false)
+		resp.Diagnostics.Append(diags...)
+		paramsScheduledExportUpdate["recurring_days"] = updateRecurringDays
+	}
 	if !config.ScheduleId.IsNull() && !config.ScheduleId.IsUnknown() {
 		paramsScheduledExportUpdate["schedule_id"] = config.ScheduleId.ValueInt64()
 	}
@@ -465,6 +485,8 @@ func (r *scheduledExportResource) populateResourceModel(ctx context.Context, sch
 	state.Trigger = types.StringValue(scheduledExport.Trigger)
 	state.Interval = types.StringValue(scheduledExport.Interval)
 	state.RecurringDay = types.Int64Value(scheduledExport.RecurringDay)
+	state.RecurringDays, propDiags = types.ListValueFrom(ctx, types.Int64Type, scheduledExport.RecurringDays)
+	diags.Append(propDiags...)
 	state.ScheduleId = types.Int64Value(scheduledExport.ScheduleId)
 	state.ScheduleDaysOfWeek, propDiags = types.ListValueFrom(ctx, types.Int64Type, scheduledExport.ScheduleDaysOfWeek)
 	diags.Append(propDiags...)

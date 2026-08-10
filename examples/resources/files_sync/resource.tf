@@ -11,6 +11,7 @@ resource "files_sync" "example_sync" {
   keep_after_copy           = true
   name                      = "example"
   recurring_day             = 25
+  recurring_days            = [1, 15]
   schedule_id               = 1
   schedule_days_of_week     = [0, 2, 4]
   schedule_time_zone        = "Eastern Time (US & Canada)"

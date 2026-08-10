@@ -55,6 +55,7 @@ type syncDataSourceModel struct {
 	SyncIntervalMinutes    types.Int64  `tfsdk:"sync_interval_minutes"`
 	Interval               types.String `tfsdk:"interval"`
 	RecurringDay           types.Int64  `tfsdk:"recurring_day"`
+	RecurringDays          types.List   `tfsdk:"recurring_days"`
 	ScheduleId             types.Int64  `tfsdk:"schedule_id"`
 	ScheduleDaysOfWeek     types.List   `tfsdk:"schedule_days_of_week"`
 	ScheduleTimesOfDay     types.List   `tfsdk:"schedule_times_of_day"`
@@ -196,6 +197,11 @@ func (r *syncDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.",
 				Computed:    true,
 			},
+			"recurring_days": schema.ListAttribute{
+				Description: "If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.",
+				Computed:    true,
+				ElementType: types.Int64Type,
+			},
 			"schedule_id": schema.Int64Attribute{
 				Description: "If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields.",
 				Computed:    true,
@@ -297,6 +303,8 @@ func (r *syncDataSource) populateDataSourceModel(ctx context.Context, sync files
 	state.SyncIntervalMinutes = types.Int64Value(sync.SyncIntervalMinutes)
 	state.Interval = types.StringValue(sync.Interval)
 	state.RecurringDay = types.Int64Value(sync.RecurringDay)
+	state.RecurringDays, propDiags = types.ListValueFrom(ctx, types.Int64Type, sync.RecurringDays)
+	diags.Append(propDiags...)
 	state.ScheduleId = types.Int64Value(sync.ScheduleId)
 	state.ScheduleDaysOfWeek, propDiags = types.ListValueFrom(ctx, types.Int64Type, sync.ScheduleDaysOfWeek)
 	diags.Append(propDiags...)

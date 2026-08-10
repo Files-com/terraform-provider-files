@@ -49,6 +49,7 @@ data "files_sync" "example_sync" {
 - `latest_sync_run` (String) The latest run of this sync
 - `name` (String) Name for this sync job
 - `recurring_day` (Number) If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.
+- `recurring_days` (List of Number) If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, Custom schedule description for when the sync should be run. 0-based days of the week. 0 is Sunday, 1 is Monday, etc.
 - `schedule_id` (Number) If trigger is `custom_schedule`, the reusable Schedule used instead of the sync's schedule fields.
 - `schedule_time_zone` (String) Time zone for the schedule. If not set, times are interpreted as UTC.

@@ -24,6 +24,7 @@ resource "files_scheduled_export" "example_scheduled_export" {
   trigger               = "daily"
   interval              = "month"
   recurring_day         = 1
+  recurring_days        = [1, 15]
   schedule_id           = 1
   schedule_days_of_week = [1, 3, 5]
   schedule_times_of_day = ["06:30"]
@@ -47,6 +48,7 @@ resource "files_scheduled_export" "example_scheduled_export" {
 - `holiday_region` (String) Optional holiday region used by the scheduled export schedule.
 - `interval` (String) If trigger is `daily`, this specifies how often to run the scheduled export.
 - `recurring_day` (Number) If trigger is `daily`, this selects the day number inside the chosen interval.
+- `recurring_days` (List of Number) If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.
 - `schedule_id` (Number) If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields.
 - `schedule_time_zone` (String) Time zone used by the scheduled export schedule.
