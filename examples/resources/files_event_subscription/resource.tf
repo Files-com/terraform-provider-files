@@ -3,6 +3,8 @@ resource "files_event_subscription" "example_event_subscription" {
   workspace_id            = 1
   apply_to_all_workspaces = true
   name                    = "example"
+  subject                 = "example"
+  message                 = "example"
   enabled                 = true
   event_types             = ["example"]
   delivery_policy         = "example"

@@ -35,6 +35,8 @@ data "files_event_subscription" "example_event_subscription" {
 - `event_target_ids` (List of Number) Event Target IDs this subscription sends to.
 - `event_types` (List of String) Event type strings matched by this subscription. Blank means all event types.
 - `filter` (Dynamic) Structured event payload filter.
+- `message` (String) Custom message to include in notification emails.
 - `name` (String) Event Subscription name.
+- `subject` (String) Custom subject line to use for notification emails.
 - `updated_at` (String) Event Subscription update date/time.
 - `workspace_id` (Number) Workspace ID. 0 means the default workspace or site-wide.

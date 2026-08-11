@@ -18,6 +18,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -40,6 +41,8 @@ type eventSubscriptionResourceModel struct {
 	EventChannelId       types.Int64   `tfsdk:"event_channel_id"`
 	WorkspaceId          types.Int64   `tfsdk:"workspace_id"`
 	ApplyToAllWorkspaces types.Bool    `tfsdk:"apply_to_all_workspaces"`
+	Subject              types.String  `tfsdk:"subject"`
+	Message              types.String  `tfsdk:"message"`
 	Enabled              types.Bool    `tfsdk:"enabled"`
 	EventTypes           types.List    `tfsdk:"event_types"`
 	Filter               types.Dynamic `tfsdk:"filter"`
@@ -103,6 +106,22 @@ func (r *eventSubscriptionResource) Schema(_ context.Context, _ resource.SchemaR
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"subject": schema.StringAttribute{
+				Description: "Custom subject line to use for notification emails.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"message": schema.StringAttribute{
+				Description: "Custom message to include in notification emails.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"enabled": schema.BoolAttribute{
@@ -187,6 +206,8 @@ func (r *eventSubscriptionResource) Create(ctx context.Context, req resource.Cre
 		paramsEventSubscriptionCreate.ApplyToAllWorkspaces = plan.ApplyToAllWorkspaces.ValueBoolPointer()
 	}
 	paramsEventSubscriptionCreate.Name = plan.Name.ValueString()
+	paramsEventSubscriptionCreate.Subject = plan.Subject.ValueString()
+	paramsEventSubscriptionCreate.Message = plan.Message.ValueString()
 	if !plan.Enabled.IsNull() && !plan.Enabled.IsUnknown() {
 		paramsEventSubscriptionCreate.Enabled = plan.Enabled.ValueBoolPointer()
 	}
@@ -293,6 +314,12 @@ func (r *eventSubscriptionResource) Update(ctx context.Context, req resource.Upd
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
 		paramsEventSubscriptionUpdate["name"] = config.Name.ValueString()
 	}
+	if !config.Subject.IsNull() && !config.Subject.IsUnknown() {
+		paramsEventSubscriptionUpdate["subject"] = config.Subject.ValueString()
+	}
+	if !config.Message.IsNull() && !config.Message.IsUnknown() {
+		paramsEventSubscriptionUpdate["message"] = config.Message.ValueString()
+	}
 	if !config.Enabled.IsNull() && !config.Enabled.IsUnknown() {
 		paramsEventSubscriptionUpdate["enabled"] = config.Enabled.ValueBool()
 	}
@@ -389,6 +416,8 @@ func (r *eventSubscriptionResource) populateResourceModel(ctx context.Context, e
 	state.WorkspaceId = types.Int64Value(eventSubscription.WorkspaceId)
 	state.ApplyToAllWorkspaces = types.BoolPointerValue(eventSubscription.ApplyToAllWorkspaces)
 	state.Name = types.StringValue(eventSubscription.Name)
+	state.Subject = types.StringValue(eventSubscription.Subject)
+	state.Message = types.StringValue(eventSubscription.Message)
 	state.Enabled = types.BoolPointerValue(eventSubscription.Enabled)
 	state.EventTypes, propDiags = types.ListValueFrom(ctx, types.StringType, eventSubscription.EventTypes)
 	diags.Append(propDiags...)

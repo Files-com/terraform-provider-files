@@ -33,6 +33,8 @@ type eventSubscriptionDataSourceModel struct {
 	WorkspaceId          types.Int64   `tfsdk:"workspace_id"`
 	ApplyToAllWorkspaces types.Bool    `tfsdk:"apply_to_all_workspaces"`
 	Name                 types.String  `tfsdk:"name"`
+	Subject              types.String  `tfsdk:"subject"`
+	Message              types.String  `tfsdk:"message"`
 	Enabled              types.Bool    `tfsdk:"enabled"`
 	EventTypes           types.List    `tfsdk:"event_types"`
 	Filter               types.Dynamic `tfsdk:"filter"`
@@ -87,6 +89,14 @@ func (r *eventSubscriptionDataSource) Schema(_ context.Context, _ datasource.Sch
 			},
 			"name": schema.StringAttribute{
 				Description: "Event Subscription name.",
+				Computed:    true,
+			},
+			"subject": schema.StringAttribute{
+				Description: "Custom subject line to use for notification emails.",
+				Computed:    true,
+			},
+			"message": schema.StringAttribute{
+				Description: "Custom message to include in notification emails.",
 				Computed:    true,
 			},
 			"enabled": schema.BoolAttribute{
@@ -161,6 +171,8 @@ func (r *eventSubscriptionDataSource) populateDataSourceModel(ctx context.Contex
 	state.WorkspaceId = types.Int64Value(eventSubscription.WorkspaceId)
 	state.ApplyToAllWorkspaces = types.BoolPointerValue(eventSubscription.ApplyToAllWorkspaces)
 	state.Name = types.StringValue(eventSubscription.Name)
+	state.Subject = types.StringValue(eventSubscription.Subject)
+	state.Message = types.StringValue(eventSubscription.Message)
 	state.Enabled = types.BoolPointerValue(eventSubscription.Enabled)
 	state.EventTypes, propDiags = types.ListValueFrom(ctx, types.StringType, eventSubscription.EventTypes)
 	diags.Append(propDiags...)
