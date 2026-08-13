@@ -65,6 +65,7 @@ data "files_bundle" "example_bundle" {
 - `paths` (List of String) A list of paths in this bundle.  For performance reasons, this is not provided when listing bundles.
 - `permissions` (String) Permissions that apply to Folders in this Share Link.
 - `preview_only` (Boolean)
+- `requested_upload_slots` (Dynamic) Upload slots requested by the associated Inbox. Each slot contains a name used as its label and destination subfolder name.
 - `require_logout` (Boolean) If true, we will hide the 'Remember Me' box on the Bundle registration page, requiring that the user logout and log back in every time they visit the page.
 - `require_registration` (Boolean) Show a registration page that captures the downloader's name and email address?
 - `require_share_recipient` (Boolean) Only allow access to recipients who have explicitly received the share via an email sent through the Files.com UI?

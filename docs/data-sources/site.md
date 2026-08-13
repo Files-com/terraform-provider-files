@@ -58,6 +58,7 @@ data "files_site" "example_site" {
 - `bundle_require_note` (Boolean) Do Bundles require internal notes?
 - `bundle_require_registration` (Boolean) Do Bundles require registration?
 - `bundle_require_share_recipient` (Boolean) Do Bundles require recipients for sharing?
+- `bundle_send_one_time_password_to_recipient_at_registration` (Boolean) If true, new Share Links must send a one-time password to the recipient when they register. Requires bundle_require_share_recipient and cannot be enabled with bundle_password_required.
 - `bundle_send_shared_receipts` (Boolean) Do Bundle creators receive receipts of invitations?
 - `bundle_upload_receipt_notifications` (String) Do Bundle uploaders receive upload confirmation notifications?
 - `bundle_watermark_attachment` (String) Preview watermark image applied to all bundle items.

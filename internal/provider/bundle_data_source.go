@@ -74,6 +74,7 @@ type bundleDataSourceModel struct {
 	WorkspaceId                                  types.Int64   `tfsdk:"workspace_id"`
 	HasInbox                                     types.Bool    `tfsdk:"has_inbox"`
 	DontAllowFoldersInUploads                    types.Bool    `tfsdk:"dont_allow_folders_in_uploads"`
+	RequestedUploadSlots                         types.Dynamic `tfsdk:"requested_upload_slots"`
 	Paths                                        types.List    `tfsdk:"paths"`
 	Bundlepaths                                  types.Dynamic `tfsdk:"bundlepaths"`
 }
@@ -284,6 +285,10 @@ func (r *bundleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Description: "Should folder uploads be prevented?",
 				Computed:    true,
 			},
+			"requested_upload_slots": schema.DynamicAttribute{
+				Description: "Upload slots requested by the associated Inbox. Each slot contains a name used as its label and destination subfolder name.",
+				Computed:    true,
+			},
 			"paths": schema.ListAttribute{
 				Description: "A list of paths in this bundle.  For performance reasons, this is not provided when listing bundles.",
 				Computed:    true,
@@ -410,6 +415,8 @@ func (r *bundleDataSource) populateDataSourceModel(ctx context.Context, bundle f
 	state.WorkspaceId = types.Int64Value(bundle.WorkspaceId)
 	state.HasInbox = types.BoolPointerValue(bundle.HasInbox)
 	state.DontAllowFoldersInUploads = types.BoolPointerValue(bundle.DontAllowFoldersInUploads)
+	state.RequestedUploadSlots, propDiags = lib.ToDynamic(ctx, path.Root("requested_upload_slots"), bundle.RequestedUploadSlots, state.RequestedUploadSlots.UnderlyingValue())
+	diags.Append(propDiags...)
 	state.Paths, propDiags = types.ListValueFrom(ctx, types.StringType, bundle.Paths)
 	diags.Append(propDiags...)
 	state.Bundlepaths, propDiags = lib.ToDynamic(ctx, path.Root("bundlepaths"), bundle.Bundlepaths, state.Bundlepaths.UnderlyingValue())

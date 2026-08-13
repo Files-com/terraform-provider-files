@@ -114,6 +114,7 @@ resource "files_bundle" "example_bundle" {
 - `id` (Number) Bundle ID
 - `password_protected` (Boolean) Is this bundle password protected?
 - `preview_only` (Boolean)
+- `requested_upload_slots` (Dynamic) Upload slots requested by the associated Inbox. Each slot contains a name used as its label and destination subfolder name.
 - `require_logout` (Boolean) If true, we will hide the 'Remember Me' box on the Bundle registration page, requiring that the user logout and log back in every time they visit the page.
 - `url` (String) Public URL of Share Link
 - `username` (String) Bundle creator username
