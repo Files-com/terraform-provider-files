@@ -23,11 +23,11 @@ data "files_holiday_calendar" "example_holiday_calendar" {
 
 ### Required
 
-- `id` (Number) Holiday Calendar ID. Use `custom_<id>` as a scheduled resource's `holiday_region`.
+- `id` (Number) Holiday Calendar ID. Set a scheduled resource's `holiday_region` to `custom_` followed by this ID to make it skip the days in this calendar.
 
 ### Read-Only
 
 - `created_at` (String) Creation time.
-- `definition` (Dynamic) Holiday rules for the calendar. For more information, refer to the Holiday Calendars section of the Files.com documentation.
+- `definition` (Dynamic) Holiday rules for the calendar.
 - `name` (String) Holiday Calendar name.
 - `updated_at` (String) Last update time.

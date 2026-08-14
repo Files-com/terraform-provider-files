@@ -597,6 +597,7 @@ resource "files_automation" "example_automation" {
   always_overwrite_size_matching_files = true
   always_serialize_jobs                = true
   description                          = "example"
+  definition                           = "example"
   disabled                             = true
   exclude_pattern                      = "path/to/exclude/*"
   import_urls                          = [
@@ -643,6 +644,7 @@ resource "files_automation" "example_automation" {
 
 - `always_overwrite_size_matching_files` (Boolean) Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`.
 - `always_serialize_jobs` (Boolean) Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance.
+- `definition` (Dynamic) Automation v2 graph definition.
 - `description` (String) Description for the this Automation.
 - `destination_replace_from` (String) If set, this string in the destination path will be replaced with the value in `destination_replace_to`.
 - `destination_replace_to` (String) If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.
@@ -679,7 +681,6 @@ resource "files_automation" "example_automation" {
 
 ### Read-Only
 
-- `definition` (Dynamic) Automation v2 graph definition.
 - `deleted` (Boolean) Indicates if the automation has been deleted.
 - `human_readable_schedule` (String) If trigger is `custom_schedule` or `daily` with times, Human readable schedule description for when the automation should be run.
 - `id` (Number) Automation ID

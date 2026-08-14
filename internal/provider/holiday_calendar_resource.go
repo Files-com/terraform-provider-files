@@ -34,8 +34,8 @@ type holidayCalendarResource struct {
 
 type holidayCalendarResourceModel struct {
 	Name       types.String  `tfsdk:"name"`
-	Id         types.Int64   `tfsdk:"id"`
 	Definition types.Dynamic `tfsdk:"definition"`
+	Id         types.Int64   `tfsdk:"id"`
 	CreatedAt  types.String  `tfsdk:"created_at"`
 	UpdatedAt  types.String  `tfsdk:"updated_at"`
 }
@@ -71,16 +71,16 @@ func (r *holidayCalendarResource) Schema(_ context.Context, _ resource.SchemaReq
 				Description: "Holiday Calendar name.",
 				Required:    true,
 			},
+			"definition": schema.DynamicAttribute{
+				Description: "Holiday rules for the calendar.",
+				Required:    true,
+			},
 			"id": schema.Int64Attribute{
-				Description: "Holiday Calendar ID. Use `custom_<id>` as a scheduled resource's `holiday_region`.",
+				Description: "Holiday Calendar ID. Set a scheduled resource's `holiday_region` to `custom_` followed by this ID to make it skip the days in this calendar.",
 				Computed:    true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
-			},
-			"definition": schema.DynamicAttribute{
-				Description: "Holiday rules for the calendar. For more information, refer to the Holiday Calendars section of the Files.com documentation.",
-				Computed:    true,
 			},
 			"created_at": schema.StringAttribute{
 				Description: "Creation time.",
@@ -109,6 +109,9 @@ func (r *holidayCalendarResource) Create(ctx context.Context, req resource.Creat
 	}
 
 	paramsHolidayCalendarCreate := files_sdk.HolidayCalendarCreateParams{}
+	createDefinition, diags := lib.DynamicToInterface(ctx, path.Root("definition"), plan.Definition)
+	resp.Diagnostics.Append(diags...)
+	paramsHolidayCalendarCreate.Definition = createDefinition
 	paramsHolidayCalendarCreate.Name = plan.Name.ValueString()
 
 	if resp.Diagnostics.HasError() {
@@ -187,6 +190,9 @@ func (r *holidayCalendarResource) Update(ctx context.Context, req resource.Updat
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
 		paramsHolidayCalendarUpdate["id"] = plan.Id.ValueInt64()
 	}
+	updateDefinition, diags := lib.DynamicToInterface(ctx, path.Root("definition"), config.Definition)
+	resp.Diagnostics.Append(diags...)
+	paramsHolidayCalendarUpdate["definition"] = updateDefinition
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
 		paramsHolidayCalendarUpdate["name"] = config.Name.ValueString()
 	}

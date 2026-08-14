@@ -44,6 +44,7 @@ type automationResourceModel struct {
 	AlwaysSerializeJobs              types.Bool    `tfsdk:"always_serialize_jobs"`
 	AlwaysOverwriteSizeMatchingFiles types.Bool    `tfsdk:"always_overwrite_size_matching_files"`
 	Description                      types.String  `tfsdk:"description"`
+	Definition                       types.Dynamic `tfsdk:"definition"`
 	DestinationReplaceFrom           types.String  `tfsdk:"destination_replace_from"`
 	DestinationReplaceTo             types.String  `tfsdk:"destination_replace_to"`
 	Destinations                     types.List    `tfsdk:"destinations"`
@@ -77,7 +78,6 @@ type automationResourceModel struct {
 	HolidayRegion                    types.String  `tfsdk:"holiday_region"`
 	Id                               types.Int64   `tfsdk:"id"`
 	Deleted                          types.Bool    `tfsdk:"deleted"`
-	Definition                       types.Dynamic `tfsdk:"definition"`
 	InboundEmailAddress              types.String  `tfsdk:"inbound_email_address"`
 	LastModifiedAt                   types.String  `tfsdk:"last_modified_at"`
 	Version                          types.Int64   `tfsdk:"version"`
@@ -152,6 +152,14 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"definition": schema.DynamicAttribute{
+				Description: "Automation v2 graph definition.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Dynamic{
+					dynamicplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"destination_replace_from": schema.StringAttribute{
@@ -425,10 +433,6 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Description: "Indicates if the automation has been deleted.",
 				Computed:    true,
 			},
-			"definition": schema.DynamicAttribute{
-				Description: "Automation v2 graph definition.",
-				Computed:    true,
-			},
 			"inbound_email_address": schema.StringAttribute{
 				Description: "If trigger is `email`, this is the address that triggers the Automation.",
 				Computed:    true,
@@ -511,6 +515,9 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 		paramsAutomationCreate.AlwaysSerializeJobs = plan.AlwaysSerializeJobs.ValueBoolPointer()
 	}
 	paramsAutomationCreate.Description = plan.Description.ValueString()
+	createDefinition, diags := lib.DynamicToInterface(ctx, path.Root("definition"), plan.Definition)
+	resp.Diagnostics.Append(diags...)
+	paramsAutomationCreate.Definition = createDefinition
 	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
 		paramsAutomationCreate.Disabled = plan.Disabled.ValueBoolPointer()
 	}
@@ -696,6 +703,9 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 	if !config.Description.IsNull() && !config.Description.IsUnknown() {
 		paramsAutomationUpdate["description"] = config.Description.ValueString()
 	}
+	updateDefinition, diags := lib.DynamicToInterface(ctx, path.Root("definition"), config.Definition)
+	resp.Diagnostics.Append(diags...)
+	paramsAutomationUpdate["definition"] = updateDefinition
 	if !config.Disabled.IsNull() && !config.Disabled.IsUnknown() {
 		paramsAutomationUpdate["disabled"] = config.Disabled.ValueBool()
 	}

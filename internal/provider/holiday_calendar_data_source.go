@@ -63,7 +63,7 @@ func (r *holidayCalendarDataSource) Schema(_ context.Context, _ datasource.Schem
 		Description: "A Holiday Calendar defines site-wide holiday dates and optional partial-day windows that scheduled resources skip.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
-				Description: "Holiday Calendar ID. Use `custom_<id>` as a scheduled resource's `holiday_region`.",
+				Description: "Holiday Calendar ID. Set a scheduled resource's `holiday_region` to `custom_` followed by this ID to make it skip the days in this calendar.",
 				Required:    true,
 			},
 			"name": schema.StringAttribute{
@@ -71,7 +71,7 @@ func (r *holidayCalendarDataSource) Schema(_ context.Context, _ datasource.Schem
 				Computed:    true,
 			},
 			"definition": schema.DynamicAttribute{
-				Description: "Holiday rules for the calendar. For more information, refer to the Holiday Calendars section of the Files.com documentation.",
+				Description: "Holiday rules for the calendar.",
 				Computed:    true,
 			},
 			"created_at": schema.StringAttribute{

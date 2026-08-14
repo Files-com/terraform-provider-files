@@ -1,4 +1,5 @@
 resource "files_holiday_calendar" "example_holiday_calendar" {
-  name = "Company Holidays"
+  definition = "example"
+  name       = "Company Holidays"
 }
 

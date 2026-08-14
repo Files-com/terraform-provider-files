@@ -14,7 +14,8 @@ A Holiday Calendar defines site-wide holiday dates and optional partial-day wind
 
 ```terraform
 resource "files_holiday_calendar" "example_holiday_calendar" {
-  name = "Company Holidays"
+  definition = "example"
+  name       = "Company Holidays"
 }
 ```
 
@@ -23,13 +24,13 @@ resource "files_holiday_calendar" "example_holiday_calendar" {
 
 ### Required
 
+- `definition` (Dynamic) Holiday rules for the calendar.
 - `name` (String) Holiday Calendar name.
 
 ### Read-Only
 
 - `created_at` (String) Creation time.
-- `definition` (Dynamic) Holiday rules for the calendar. For more information, refer to the Holiday Calendars section of the Files.com documentation.
-- `id` (Number) Holiday Calendar ID. Use `custom_<id>` as a scheduled resource's `holiday_region`.
+- `id` (Number) Holiday Calendar ID. Set a scheduled resource's `holiday_region` to `custom_` followed by this ID to make it skip the days in this calendar.
 - `updated_at` (String) Last update time.
 
 ## Import

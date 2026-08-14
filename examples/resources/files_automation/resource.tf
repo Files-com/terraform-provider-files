@@ -17,6 +17,7 @@ resource "files_automation" "example_automation" {
   always_overwrite_size_matching_files = true
   always_serialize_jobs                = true
   description                          = "example"
+  definition                           = "example"
   disabled                             = true
   exclude_pattern                      = "path/to/exclude/*"
   import_urls                          = [
