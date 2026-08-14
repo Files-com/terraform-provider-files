@@ -17,7 +17,30 @@ resource "files_automation" "example_automation" {
   always_overwrite_size_matching_files = true
   always_serialize_jobs                = true
   description                          = "example"
-  definition                           = "example"
+  definition                           = {
+    schema_version = 1
+    nodes          = [
+      {
+        trigger_manual = {
+          id = "trigger"
+        }
+      },
+      {
+        create_folder = {
+          id     = "create_reports"
+          config = {
+            destinations = ["reports/"]
+          }
+        }
+      }
+    ]
+    edges          = [
+      {
+        from = "trigger"
+        to   = "create_reports"
+      }
+    ]
+  }
   disabled                             = true
   exclude_pattern                      = "path/to/exclude/*"
   import_urls                          = [

@@ -6,6 +6,7 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	metadata_category "github.com/Files-com/files-sdk-go/v3/metadatacategory"
+
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"

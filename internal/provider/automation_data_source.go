@@ -35,7 +35,7 @@ type automationDataSourceModel struct {
 	Automation                       types.String  `tfsdk:"automation"`
 	Deleted                          types.Bool    `tfsdk:"deleted"`
 	Description                      types.String  `tfsdk:"description"`
-	Definition                       types.Dynamic `tfsdk:"definition"`
+	Definition                       types.Object  `tfsdk:"definition"`
 	DestinationReplaceFrom           types.String  `tfsdk:"destination_replace_from"`
 	DestinationReplaceTo             types.String  `tfsdk:"destination_replace_to"`
 	Destinations                     types.List    `tfsdk:"destinations"`
@@ -131,9 +131,1312 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Description: "Description for the this Automation.",
 				Computed:    true,
 			},
-			"definition": schema.DynamicAttribute{
+			"definition": schema.SingleNestedAttribute{
 				Description: "Automation v2 graph definition.",
 				Computed:    true,
+				Attributes: map[string]schema.Attribute{
+					"schema_version": schema.Int64Attribute{
+						Description: "Automation definition schema version.",
+						Computed:    true,
+					},
+					"nodes": schema.ListNestedAttribute{
+						Description: "Flat list of nodes. Every node requires a unique id and a type, accepts the node-specific config fields documented below, and action or control-flow nodes may set return to true to include their output in the Automation result.",
+						Computed:    true,
+						NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+							"trigger_scheduled": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"interval": schema.StringAttribute{
+												Computed: true,
+											},
+											"recurring_day": schema.Int64Attribute{
+												Computed: true,
+											},
+											"recurring_days": schema.ListAttribute{
+												Computed:    true,
+												ElementType: types.Int64Type,
+											},
+											"schedule_id": schema.Int64Attribute{
+												Computed: true,
+											},
+											"schedule_days_of_week": schema.ListAttribute{
+												Computed:    true,
+												ElementType: types.Int64Type,
+											},
+											"schedule_times_of_day": schema.ListAttribute{
+												Computed:    true,
+												ElementType: types.StringType,
+											},
+											"schedule_time_zone": schema.StringAttribute{
+												Computed: true,
+											},
+											"holiday_region": schema.StringAttribute{
+												Computed: true,
+											},
+											"path": schema.StringAttribute{
+												Computed: true,
+											},
+											"source": schema.StringAttribute{
+												Computed: true,
+											},
+											"limit": schema.Int64Attribute{
+												Computed: true,
+											},
+											"exclude_pattern": schema.StringAttribute{
+												Computed: true,
+											},
+											"path_time_zone": schema.StringAttribute{
+												Computed: true,
+											},
+										},
+									},
+								},
+							},
+							"trigger_manual": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"path": schema.StringAttribute{
+												Computed: true,
+											},
+											"source": schema.StringAttribute{
+												Computed: true,
+											},
+											"limit": schema.Int64Attribute{
+												Computed: true,
+											},
+											"exclude_pattern": schema.StringAttribute{
+												Computed: true,
+											},
+											"path_time_zone": schema.StringAttribute{
+												Computed: true,
+											},
+										},
+									},
+								},
+							},
+							"trigger_action": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"trigger_actions": schema.ListAttribute{
+												Computed:    true,
+												ElementType: types.StringType,
+											},
+											"path": schema.StringAttribute{
+												Computed: true,
+											},
+											"source": schema.StringAttribute{
+												Computed: true,
+											},
+											"exclude_pattern": schema.StringAttribute{
+												Computed: true,
+											},
+											"path_time_zone": schema.StringAttribute{
+												Computed: true,
+											},
+										},
+									},
+								},
+							},
+							"trigger_webhook": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"path": schema.StringAttribute{
+												Computed: true,
+											},
+											"source": schema.StringAttribute{
+												Computed: true,
+											},
+											"limit": schema.Int64Attribute{
+												Computed: true,
+											},
+											"exclude_pattern": schema.StringAttribute{
+												Computed: true,
+											},
+											"path_time_zone": schema.StringAttribute{
+												Computed: true,
+											},
+										},
+									},
+								},
+							},
+							"trigger_email": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"allowed_senders": schema.ListAttribute{
+												Computed:    true,
+												ElementType: types.StringType,
+											},
+											"save_body": schema.BoolAttribute{
+												Computed: true,
+											},
+											"source": schema.StringAttribute{
+												Computed: true,
+											},
+											"limit": schema.Int64Attribute{
+												Computed: true,
+											},
+											"exclude_pattern": schema.StringAttribute{
+												Computed: true,
+											},
+											"path_time_zone": schema.StringAttribute{
+												Computed: true,
+											},
+										},
+									},
+								},
+							},
+							"create_folder": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"destinations": schema.ListAttribute{
+												Description: "One or more destination path templates.",
+												Computed:    true,
+												ElementType: types.StringType,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"copy_file": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"destinations": schema.ListAttribute{
+												Description: "One or more destination path templates.",
+												Computed:    true,
+												ElementType: types.StringType,
+											},
+											"destination_replace_from": schema.StringAttribute{
+												Computed: true,
+											},
+											"destination_replace_to": schema.StringAttribute{
+												Computed: true,
+											},
+											"overwrite_files": schema.BoolAttribute{
+												Computed: true,
+											},
+											"always_overwrite_size_matching_files": schema.BoolAttribute{
+												Computed: true,
+											},
+											"flatten_destination_structure": schema.BoolAttribute{
+												Computed: true,
+											},
+											"exclude_pattern": schema.StringAttribute{
+												Computed: true,
+											},
+											"ignore_locked_folders": schema.BoolAttribute{
+												Computed: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"move_file": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"destinations": schema.ListAttribute{
+												Description: "One or more destination path templates.",
+												Computed:    true,
+												ElementType: types.StringType,
+											},
+											"destination_replace_from": schema.StringAttribute{
+												Computed: true,
+											},
+											"destination_replace_to": schema.StringAttribute{
+												Computed: true,
+											},
+											"overwrite_files": schema.BoolAttribute{
+												Computed: true,
+											},
+											"flatten_destination_structure": schema.BoolAttribute{
+												Computed: true,
+											},
+											"exclude_pattern": schema.StringAttribute{
+												Computed: true,
+											},
+											"ignore_locked_folders": schema.BoolAttribute{
+												Computed: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"delete_file": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"exclude_pattern": schema.StringAttribute{
+												Computed: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"import_file": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"url": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Computed:    true,
+											},
+											"destination": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Computed:    true,
+											},
+											"method": schema.StringAttribute{
+												Computed: true,
+											},
+											"headers": schema.MapAttribute{
+												Computed:    true,
+												ElementType: types.StringType,
+											},
+											"content": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Computed:    true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"run_sync": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"legacy_sync_ids": schema.ListAttribute{
+												Computed:    true,
+												ElementType: types.Int64Type,
+											},
+											"sync_ids": schema.ListAttribute{
+												Computed:    true,
+												ElementType: types.Int64Type,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"as2_send": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"as2_station_id": schema.Int64Attribute{
+												Computed: true,
+											},
+											"as2_partner_id": schema.Int64Attribute{
+												Computed: true,
+											},
+											"as2_subject": schema.StringAttribute{
+												Computed: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"send_email": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"from": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Computed:    true,
+											},
+											"to": schema.ListAttribute{
+												Computed:    true,
+												ElementType: types.StringType,
+											},
+											"cc": schema.ListAttribute{
+												Computed:    true,
+												ElementType: types.StringType,
+											},
+											"bcc": schema.ListAttribute{
+												Computed:    true,
+												ElementType: types.StringType,
+											},
+											"subject": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Computed:    true,
+											},
+											"body": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Computed:    true,
+											},
+											"attachments": schema.ListAttribute{
+												Computed:    true,
+												ElementType: types.StringType,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"agent_compute": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"remote_server_id": schema.Int64Attribute{
+												Computed: true,
+											},
+											"command": schema.StringAttribute{
+												Computed: true,
+											},
+											"arguments": schema.MapAttribute{
+												Computed:    true,
+												ElementType: types.StringType,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"set_metadata": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"metadata": schema.MapAttribute{
+												Computed:    true,
+												ElementType: types.StringType,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"extract": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"include_metadata": schema.BoolAttribute{
+												Computed: true,
+											},
+											"include_content": schema.BoolAttribute{
+												Computed: true,
+											},
+											"content_mode": schema.StringAttribute{
+												Computed: true,
+											},
+											"max_chars": schema.Int64Attribute{
+												Computed: true,
+											},
+											"max_pages": schema.Int64Attribute{
+												Computed: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"document_convert": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"target_format": schema.StringAttribute{
+												Computed: true,
+											},
+											"destination": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Computed:    true,
+											},
+											"overwrite_files": schema.BoolAttribute{
+												Computed: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"image_convert": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"target_format": schema.StringAttribute{
+												Computed: true,
+											},
+											"width": schema.Int64Attribute{
+												Computed: true,
+											},
+											"height": schema.Int64Attribute{
+												Computed: true,
+											},
+											"destination": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Computed:    true,
+											},
+											"overwrite_files": schema.BoolAttribute{
+												Computed: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"zip": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"destination": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Computed:    true,
+											},
+											"overwrite_files": schema.BoolAttribute{
+												Computed: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"unzip": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"destination": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Computed:    true,
+											},
+											"overwrite_files": schema.BoolAttribute{
+												Computed: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"gpg_encrypt": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"gpg_key_id": schema.Int64Attribute{
+												Computed: true,
+											},
+											"destination": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Computed:    true,
+											},
+											"overwrite_files": schema.BoolAttribute{
+												Computed: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"gpg_decrypt": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"gpg_key_id": schema.Int64Attribute{
+												Computed: true,
+											},
+											"destination": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Computed:    true,
+											},
+											"overwrite_files": schema.BoolAttribute{
+												Computed: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"if": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"condition": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Computed:    true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"switch": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"cases": schema.ListNestedAttribute{
+												Description: "Switch cases. Each item contains a unique output name and the condition that sends items to it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"name": schema.StringAttribute{
+														Description: "Identifier used to connect nodes and named inputs or outputs.",
+														Computed:    true,
+													},
+													"condition": schema.StringAttribute{
+														Description: "A bare Files TransformScript expression, no braces.",
+														Computed:    true,
+													},
+												},
+												},
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"filter": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"condition": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Computed:    true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"join": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"join_type": schema.StringAttribute{
+												Computed: true,
+											},
+											"left_key": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Computed:    true,
+											},
+											"right_key": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Computed:    true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"aggregate": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"wait": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"delay_seconds": schema.Int64Attribute{
+												Computed: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"transform": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"fts": schema.StringAttribute{
+												Computed: true,
+											},
+											"destination": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Computed:    true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"run_automation": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"automation_id": schema.Int64Attribute{
+												Computed: true,
+											},
+											"automation_version": schema.Int64Attribute{
+												Computed: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+						},
+						},
+					},
+					"edges": schema.ListNestedAttribute{
+						Description: "Directed connections between nodes.",
+						Computed:    true,
+						NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+							"from": schema.StringAttribute{
+								Description: "Source node ID.",
+								Computed:    true,
+							},
+							"to": schema.StringAttribute{
+								Description: "Destination node ID.",
+								Computed:    true,
+							},
+							"output": schema.StringAttribute{
+								Description: "Named source output. Omit for the main output.",
+								Computed:    true,
+							},
+							"input": schema.StringAttribute{
+								Description: "Named destination input. Omit for the main input.",
+								Computed:    true,
+							},
+						},
+						},
+					},
+				},
 			},
 			"destination_replace_from": schema.StringAttribute{
 				Description: "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.",
@@ -340,7 +1643,10 @@ func (r *automationDataSource) populateDataSourceModel(ctx context.Context, auto
 	state.Automation = types.StringValue(automation.Automation)
 	state.Deleted = types.BoolPointerValue(automation.Deleted)
 	state.Description = types.StringValue(automation.Description)
-	state.Definition, propDiags = lib.ToDynamic(ctx, path.Root("definition"), automation.Definition, state.Definition.UnderlyingValue())
+	definitionValue := interface{}(automation.Definition)
+	definitionValue, transformDiags0 := lib.WrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
+	diags.Append(transformDiags0...)
+	state.Definition, propDiags = lib.ToObject(ctx, path.Root("definition"), definitionValue, state.Definition)
 	diags.Append(propDiags...)
 	state.DestinationReplaceFrom = types.StringValue(automation.DestinationReplaceFrom)
 	state.DestinationReplaceTo = types.StringValue(automation.DestinationReplaceTo)

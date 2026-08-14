@@ -14,7 +14,57 @@ A Holiday Calendar defines site-wide holiday dates and optional partial-day wind
 
 ```terraform
 resource "files_holiday_calendar" "example_holiday_calendar" {
-  definition = "example"
+  definition = {
+    months = {
+      "0"  = {
+        calculated_rules = [
+          {
+            name              = "Good Friday"
+            function          = "easter(year)"
+            function_modifier = -2
+          }
+        ]
+      }
+      "1"  = {
+        fixed_rules   = [
+          {
+            name     = "New Year's Day"
+            mday     = 1
+            observed = "to_weekday_if_weekend(date)"
+          }
+        ]
+        weekday_rules = [
+          {
+            name = "Third Monday"
+            week = 3
+            wday = 1
+          }
+        ]
+      }
+      "11" = {
+        weekday_rules = [
+          {
+            name = "Thanksgiving"
+            week = 4
+            wday = 4
+          }
+        ]
+      }
+      "12" = {
+        fixed_rules = [
+          {
+            name        = "Christmas Eve Early Close"
+            mday        = 24
+            start_time  = "13:00"
+            end_time    = "17:00"
+            year_ranges = {
+              from = 2026
+            }
+          }
+        ]
+      }
+    }
+  }
   name       = "Company Holidays"
 }
 ```
@@ -24,7 +74,7 @@ resource "files_holiday_calendar" "example_holiday_calendar" {
 
 ### Required
 
-- `definition` (Dynamic) Holiday rules for the calendar.
+- `definition` (Attributes) Holiday rules for the calendar. (see [below for nested schema](#nestedatt--definition))
 - `name` (String) Holiday Calendar name.
 
 ### Read-Only
@@ -32,6 +82,129 @@ resource "files_holiday_calendar" "example_holiday_calendar" {
 - `created_at` (String) Creation time.
 - `id` (Number) Holiday Calendar ID. Set a scheduled resource's `holiday_region` to `custom_` followed by this ID to make it skip the days in this calendar.
 - `updated_at` (String) Last update time.
+
+<a id="nestedatt--definition"></a>
+### Nested Schema for `definition`
+
+Required:
+
+- `months` (Attributes Map) Keys 1 through 12 contain rules for that month. Key 0 contains calculated-date rules. At most 366 rules are allowed across all months. (see [below for nested schema](#nestedatt--definition--months))
+
+<a id="nestedatt--definition--months"></a>
+### Nested Schema for `definition.months`
+
+Optional:
+
+- `calculated_rules` (Attributes List) (see [below for nested schema](#nestedatt--definition--months--calculated_rules))
+- `fixed_rules` (Attributes List) (see [below for nested schema](#nestedatt--definition--months--fixed_rules))
+- `weekday_rules` (Attributes List) (see [below for nested schema](#nestedatt--definition--months--weekday_rules))
+
+<a id="nestedatt--definition--months--calculated_rules"></a>
+### Nested Schema for `definition.months.calculated_rules`
+
+Required:
+
+- `function` (String) Supported calculated-date function.
+
+Optional:
+
+- `end_time` (String) Exclusive end of a partial-day window in 24-hour HH:MM or HH:MM:SS format. Must be later than start_time.
+- `function_modifier` (Number) Number of days to add to or subtract from the calculated date.
+- `name` (String) Optional rule name.
+- `observed` (String) Optional function used to move the selected date when it falls on a weekend.
+- `start_time` (String) Inclusive start of a partial-day window in 24-hour HH:MM or HH:MM:SS format. Must be earlier than end_time.
+- `year_ranges` (Attributes) Optional inclusive year restriction. (see [below for nested schema](#nestedatt--definition--months--calculated_rules--year_ranges))
+
+<a id="nestedatt--definition--months--calculated_rules--year_ranges"></a>
+### Nested Schema for `definition.months.calculated_rules.year_ranges`
+
+Optional:
+
+- `between` (Attributes) Required start and end years. (see [below for nested schema](#nestedatt--definition--months--calculated_rules--year_ranges--between))
+- `from` (Number) First year in which the rule applies.
+- `limited` (List of Number) Years in which the rule applies.
+- `until` (Number) Last year in which the rule applies.
+
+<a id="nestedatt--definition--months--calculated_rules--year_ranges--between"></a>
+### Nested Schema for `definition.months.calculated_rules.year_ranges.between`
+
+Required:
+
+- `end` (Number)
+- `start` (Number)
+
+
+
+
+<a id="nestedatt--definition--months--fixed_rules"></a>
+### Nested Schema for `definition.months.fixed_rules`
+
+Required:
+
+- `mday` (Number) Day of the month. Must be valid for the selected month.
+
+Optional:
+
+- `end_time` (String) Exclusive end of a partial-day window in 24-hour HH:MM or HH:MM:SS format. Must be later than start_time.
+- `name` (String) Optional rule name.
+- `observed` (String) Optional function used to move the selected date when it falls on a weekend.
+- `start_time` (String) Inclusive start of a partial-day window in 24-hour HH:MM or HH:MM:SS format. Must be earlier than end_time.
+- `year_ranges` (Attributes) Optional inclusive year restriction. (see [below for nested schema](#nestedatt--definition--months--fixed_rules--year_ranges))
+
+<a id="nestedatt--definition--months--fixed_rules--year_ranges"></a>
+### Nested Schema for `definition.months.fixed_rules.year_ranges`
+
+Optional:
+
+- `between` (Attributes) Required start and end years. (see [below for nested schema](#nestedatt--definition--months--fixed_rules--year_ranges--between))
+- `from` (Number) First year in which the rule applies.
+- `limited` (List of Number) Years in which the rule applies.
+- `until` (Number) Last year in which the rule applies.
+
+<a id="nestedatt--definition--months--fixed_rules--year_ranges--between"></a>
+### Nested Schema for `definition.months.fixed_rules.year_ranges.between`
+
+Required:
+
+- `end` (Number)
+- `start` (Number)
+
+
+
+
+<a id="nestedatt--definition--months--weekday_rules"></a>
+### Nested Schema for `definition.months.weekday_rules`
+
+Required:
+
+- `wday` (Number) Day of the week, where 0 is Sunday and 6 is Saturday.
+- `week` (Number) Occurrence of the weekday in the month. Negative values count from the end of the month.
+
+Optional:
+
+- `end_time` (String) Exclusive end of a partial-day window in 24-hour HH:MM or HH:MM:SS format. Must be later than start_time.
+- `name` (String) Optional rule name.
+- `observed` (String) Optional function used to move the selected date when it falls on a weekend.
+- `start_time` (String) Inclusive start of a partial-day window in 24-hour HH:MM or HH:MM:SS format. Must be earlier than end_time.
+- `year_ranges` (Attributes) Optional inclusive year restriction. (see [below for nested schema](#nestedatt--definition--months--weekday_rules--year_ranges))
+
+<a id="nestedatt--definition--months--weekday_rules--year_ranges"></a>
+### Nested Schema for `definition.months.weekday_rules.year_ranges`
+
+Optional:
+
+- `between` (Attributes) Required start and end years. (see [below for nested schema](#nestedatt--definition--months--weekday_rules--year_ranges--between))
+- `from` (Number) First year in which the rule applies.
+- `limited` (List of Number) Years in which the rule applies.
+- `until` (Number) Last year in which the rule applies.
+
+<a id="nestedatt--definition--months--weekday_rules--year_ranges--between"></a>
+### Nested Schema for `definition.months.weekday_rules.year_ranges.between`
+
+Required:
+
+- `end` (Number)
+- `start` (Number)
 
 ## Import
 

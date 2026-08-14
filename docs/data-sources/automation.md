@@ -595,7 +595,7 @@ data "files_automation" "example_automation" {
 - `always_overwrite_size_matching_files` (Boolean) Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`.
 - `always_serialize_jobs` (Boolean) Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance.
 - `automation` (String) Automation type
-- `definition` (Dynamic) Automation v2 graph definition.
+- `definition` (Attributes) Automation v2 graph definition. (see [below for nested schema](#nestedatt--definition))
 - `deleted` (Boolean) Indicates if the automation has been deleted.
 - `description` (String) Description for the this Automation.
 - `destination_replace_from` (String) If set, this string in the destination path will be replaced with the value in `destination_replace_to`.
@@ -637,3 +637,926 @@ data "files_automation" "example_automation" {
 - `version` (Number) Current Automation v2 definition version.
 - `webhook_url` (String) If trigger is `webhook`, this is the URL of the webhook to trigger the Automation.
 - `workspace_id` (Number) Workspace ID
+
+<a id="nestedatt--definition"></a>
+### Nested Schema for `definition`
+
+Read-Only:
+
+- `edges` (Attributes List) Directed connections between nodes. (see [below for nested schema](#nestedatt--definition--edges))
+- `nodes` (Attributes List) Flat list of nodes. Every node requires a unique id and a type, accepts the node-specific config fields documented below, and action or control-flow nodes may set return to true to include their output in the Automation result. (see [below for nested schema](#nestedatt--definition--nodes))
+- `schema_version` (Number) Automation definition schema version.
+
+<a id="nestedatt--definition--edges"></a>
+### Nested Schema for `definition.edges`
+
+Read-Only:
+
+- `from` (String) Source node ID.
+- `input` (String) Named destination input. Omit for the main input.
+- `output` (String) Named source output. Omit for the main output.
+- `to` (String) Destination node ID.
+
+
+<a id="nestedatt--definition--nodes"></a>
+### Nested Schema for `definition.nodes`
+
+Read-Only:
+
+- `agent_compute` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--agent_compute))
+- `aggregate` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--aggregate))
+- `as2_send` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--as2_send))
+- `copy_file` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--copy_file))
+- `create_folder` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--create_folder))
+- `delete_file` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--delete_file))
+- `document_convert` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--document_convert))
+- `extract` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--extract))
+- `filter` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--filter))
+- `gpg_decrypt` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--gpg_decrypt))
+- `gpg_encrypt` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--gpg_encrypt))
+- `if` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--if))
+- `image_convert` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--image_convert))
+- `import_file` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--import_file))
+- `join` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--join))
+- `move_file` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--move_file))
+- `run_automation` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--run_automation))
+- `run_sync` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--run_sync))
+- `send_email` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--send_email))
+- `set_metadata` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--set_metadata))
+- `switch` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--switch))
+- `transform` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--transform))
+- `trigger_action` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_action))
+- `trigger_email` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_email))
+- `trigger_manual` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_manual))
+- `trigger_scheduled` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_scheduled))
+- `trigger_webhook` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_webhook))
+- `unzip` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--unzip))
+- `wait` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--wait))
+- `zip` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--zip))
+
+<a id="nestedatt--definition--nodes--agent_compute"></a>
+### Nested Schema for `definition.nodes.agent_compute`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--agent_compute--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--agent_compute--config"></a>
+### Nested Schema for `definition.nodes.agent_compute.config`
+
+Read-Only:
+
+- `arguments` (Map of String)
+- `command` (String)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--agent_compute--config--on_error))
+- `remote_server_id` (Number)
+
+<a id="nestedatt--definition--nodes--agent_compute--config--on_error"></a>
+### Nested Schema for `definition.nodes.agent_compute.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--aggregate"></a>
+### Nested Schema for `definition.nodes.aggregate`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--aggregate--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--aggregate--config"></a>
+### Nested Schema for `definition.nodes.aggregate.config`
+
+Read-Only:
+
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--aggregate--config--on_error))
+
+<a id="nestedatt--definition--nodes--aggregate--config--on_error"></a>
+### Nested Schema for `definition.nodes.aggregate.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--as2_send"></a>
+### Nested Schema for `definition.nodes.as2_send`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--as2_send--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--as2_send--config"></a>
+### Nested Schema for `definition.nodes.as2_send.config`
+
+Read-Only:
+
+- `as2_partner_id` (Number)
+- `as2_station_id` (Number)
+- `as2_subject` (String)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--as2_send--config--on_error))
+
+<a id="nestedatt--definition--nodes--as2_send--config--on_error"></a>
+### Nested Schema for `definition.nodes.as2_send.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--copy_file"></a>
+### Nested Schema for `definition.nodes.copy_file`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--copy_file--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--copy_file--config"></a>
+### Nested Schema for `definition.nodes.copy_file.config`
+
+Read-Only:
+
+- `always_overwrite_size_matching_files` (Boolean)
+- `destination_replace_from` (String)
+- `destination_replace_to` (String)
+- `destinations` (List of String) One or more destination path templates.
+- `exclude_pattern` (String)
+- `flatten_destination_structure` (Boolean)
+- `ignore_locked_folders` (Boolean)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--copy_file--config--on_error))
+- `overwrite_files` (Boolean)
+
+<a id="nestedatt--definition--nodes--copy_file--config--on_error"></a>
+### Nested Schema for `definition.nodes.copy_file.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--create_folder"></a>
+### Nested Schema for `definition.nodes.create_folder`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--create_folder--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--create_folder--config"></a>
+### Nested Schema for `definition.nodes.create_folder.config`
+
+Read-Only:
+
+- `destinations` (List of String) One or more destination path templates.
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--create_folder--config--on_error))
+
+<a id="nestedatt--definition--nodes--create_folder--config--on_error"></a>
+### Nested Schema for `definition.nodes.create_folder.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--delete_file"></a>
+### Nested Schema for `definition.nodes.delete_file`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--delete_file--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--delete_file--config"></a>
+### Nested Schema for `definition.nodes.delete_file.config`
+
+Read-Only:
+
+- `exclude_pattern` (String)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--delete_file--config--on_error))
+
+<a id="nestedatt--definition--nodes--delete_file--config--on_error"></a>
+### Nested Schema for `definition.nodes.delete_file.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--document_convert"></a>
+### Nested Schema for `definition.nodes.document_convert`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--document_convert--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--document_convert--config"></a>
+### Nested Schema for `definition.nodes.document_convert.config`
+
+Read-Only:
+
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--document_convert--config--on_error))
+- `overwrite_files` (Boolean)
+- `target_format` (String)
+
+<a id="nestedatt--definition--nodes--document_convert--config--on_error"></a>
+### Nested Schema for `definition.nodes.document_convert.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--extract"></a>
+### Nested Schema for `definition.nodes.extract`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--extract--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--extract--config"></a>
+### Nested Schema for `definition.nodes.extract.config`
+
+Read-Only:
+
+- `content_mode` (String)
+- `include_content` (Boolean)
+- `include_metadata` (Boolean)
+- `max_chars` (Number)
+- `max_pages` (Number)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--extract--config--on_error))
+
+<a id="nestedatt--definition--nodes--extract--config--on_error"></a>
+### Nested Schema for `definition.nodes.extract.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--filter"></a>
+### Nested Schema for `definition.nodes.filter`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--filter--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--filter--config"></a>
+### Nested Schema for `definition.nodes.filter.config`
+
+Read-Only:
+
+- `condition` (String) A bare Files TransformScript expression, no braces.
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--filter--config--on_error))
+
+<a id="nestedatt--definition--nodes--filter--config--on_error"></a>
+### Nested Schema for `definition.nodes.filter.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--gpg_decrypt"></a>
+### Nested Schema for `definition.nodes.gpg_decrypt`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--gpg_decrypt--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--gpg_decrypt--config"></a>
+### Nested Schema for `definition.nodes.gpg_decrypt.config`
+
+Read-Only:
+
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `gpg_key_id` (Number)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--gpg_decrypt--config--on_error))
+- `overwrite_files` (Boolean)
+
+<a id="nestedatt--definition--nodes--gpg_decrypt--config--on_error"></a>
+### Nested Schema for `definition.nodes.gpg_decrypt.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--gpg_encrypt"></a>
+### Nested Schema for `definition.nodes.gpg_encrypt`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--gpg_encrypt--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--gpg_encrypt--config"></a>
+### Nested Schema for `definition.nodes.gpg_encrypt.config`
+
+Read-Only:
+
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `gpg_key_id` (Number)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--gpg_encrypt--config--on_error))
+- `overwrite_files` (Boolean)
+
+<a id="nestedatt--definition--nodes--gpg_encrypt--config--on_error"></a>
+### Nested Schema for `definition.nodes.gpg_encrypt.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--if"></a>
+### Nested Schema for `definition.nodes.if`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--if--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--if--config"></a>
+### Nested Schema for `definition.nodes.if.config`
+
+Read-Only:
+
+- `condition` (String) A bare Files TransformScript expression, no braces.
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--if--config--on_error))
+
+<a id="nestedatt--definition--nodes--if--config--on_error"></a>
+### Nested Schema for `definition.nodes.if.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--image_convert"></a>
+### Nested Schema for `definition.nodes.image_convert`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--image_convert--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--image_convert--config"></a>
+### Nested Schema for `definition.nodes.image_convert.config`
+
+Read-Only:
+
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `height` (Number)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--image_convert--config--on_error))
+- `overwrite_files` (Boolean)
+- `target_format` (String)
+- `width` (Number)
+
+<a id="nestedatt--definition--nodes--image_convert--config--on_error"></a>
+### Nested Schema for `definition.nodes.image_convert.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--import_file"></a>
+### Nested Schema for `definition.nodes.import_file`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--import_file--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--import_file--config"></a>
+### Nested Schema for `definition.nodes.import_file.config`
+
+Read-Only:
+
+- `content` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `headers` (Map of String)
+- `method` (String)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--import_file--config--on_error))
+- `url` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+
+<a id="nestedatt--definition--nodes--import_file--config--on_error"></a>
+### Nested Schema for `definition.nodes.import_file.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--join"></a>
+### Nested Schema for `definition.nodes.join`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--join--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--join--config"></a>
+### Nested Schema for `definition.nodes.join.config`
+
+Read-Only:
+
+- `join_type` (String)
+- `left_key` (String) A bare Files TransformScript expression, no braces.
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--join--config--on_error))
+- `right_key` (String) A bare Files TransformScript expression, no braces.
+
+<a id="nestedatt--definition--nodes--join--config--on_error"></a>
+### Nested Schema for `definition.nodes.join.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--move_file"></a>
+### Nested Schema for `definition.nodes.move_file`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--move_file--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--move_file--config"></a>
+### Nested Schema for `definition.nodes.move_file.config`
+
+Read-Only:
+
+- `destination_replace_from` (String)
+- `destination_replace_to` (String)
+- `destinations` (List of String) One or more destination path templates.
+- `exclude_pattern` (String)
+- `flatten_destination_structure` (Boolean)
+- `ignore_locked_folders` (Boolean)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--move_file--config--on_error))
+- `overwrite_files` (Boolean)
+
+<a id="nestedatt--definition--nodes--move_file--config--on_error"></a>
+### Nested Schema for `definition.nodes.move_file.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--run_automation"></a>
+### Nested Schema for `definition.nodes.run_automation`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--run_automation--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--run_automation--config"></a>
+### Nested Schema for `definition.nodes.run_automation.config`
+
+Read-Only:
+
+- `automation_id` (Number)
+- `automation_version` (Number)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--run_automation--config--on_error))
+
+<a id="nestedatt--definition--nodes--run_automation--config--on_error"></a>
+### Nested Schema for `definition.nodes.run_automation.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--run_sync"></a>
+### Nested Schema for `definition.nodes.run_sync`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--run_sync--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--run_sync--config"></a>
+### Nested Schema for `definition.nodes.run_sync.config`
+
+Read-Only:
+
+- `legacy_sync_ids` (List of Number)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--run_sync--config--on_error))
+- `sync_ids` (List of Number)
+
+<a id="nestedatt--definition--nodes--run_sync--config--on_error"></a>
+### Nested Schema for `definition.nodes.run_sync.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--send_email"></a>
+### Nested Schema for `definition.nodes.send_email`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--send_email--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--send_email--config"></a>
+### Nested Schema for `definition.nodes.send_email.config`
+
+Read-Only:
+
+- `attachments` (List of String)
+- `bcc` (List of String)
+- `body` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `cc` (List of String)
+- `from` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--send_email--config--on_error))
+- `subject` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `to` (List of String)
+
+<a id="nestedatt--definition--nodes--send_email--config--on_error"></a>
+### Nested Schema for `definition.nodes.send_email.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--set_metadata"></a>
+### Nested Schema for `definition.nodes.set_metadata`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--set_metadata--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--set_metadata--config"></a>
+### Nested Schema for `definition.nodes.set_metadata.config`
+
+Read-Only:
+
+- `metadata` (Map of String)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--set_metadata--config--on_error))
+
+<a id="nestedatt--definition--nodes--set_metadata--config--on_error"></a>
+### Nested Schema for `definition.nodes.set_metadata.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--switch"></a>
+### Nested Schema for `definition.nodes.switch`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--switch--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--switch--config"></a>
+### Nested Schema for `definition.nodes.switch.config`
+
+Read-Only:
+
+- `cases` (Attributes List) Switch cases. Each item contains a unique output name and the condition that sends items to it. (see [below for nested schema](#nestedatt--definition--nodes--switch--config--cases))
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--switch--config--on_error))
+
+<a id="nestedatt--definition--nodes--switch--config--cases"></a>
+### Nested Schema for `definition.nodes.switch.config.cases`
+
+Read-Only:
+
+- `condition` (String) A bare Files TransformScript expression, no braces.
+- `name` (String) Identifier used to connect nodes and named inputs or outputs.
+
+
+<a id="nestedatt--definition--nodes--switch--config--on_error"></a>
+### Nested Schema for `definition.nodes.switch.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--transform"></a>
+### Nested Schema for `definition.nodes.transform`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--transform--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--transform--config"></a>
+### Nested Schema for `definition.nodes.transform.config`
+
+Read-Only:
+
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `fts` (String)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--transform--config--on_error))
+
+<a id="nestedatt--definition--nodes--transform--config--on_error"></a>
+### Nested Schema for `definition.nodes.transform.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--trigger_action"></a>
+### Nested Schema for `definition.nodes.trigger_action`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--trigger_action--config))
+- `id` (String) Unique node ID within the graph.
+
+<a id="nestedatt--definition--nodes--trigger_action--config"></a>
+### Nested Schema for `definition.nodes.trigger_action.config`
+
+Read-Only:
+
+- `exclude_pattern` (String)
+- `path` (String)
+- `path_time_zone` (String)
+- `source` (String)
+- `trigger_actions` (List of String)
+
+
+
+<a id="nestedatt--definition--nodes--trigger_email"></a>
+### Nested Schema for `definition.nodes.trigger_email`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--trigger_email--config))
+- `id` (String) Unique node ID within the graph.
+
+<a id="nestedatt--definition--nodes--trigger_email--config"></a>
+### Nested Schema for `definition.nodes.trigger_email.config`
+
+Read-Only:
+
+- `allowed_senders` (List of String)
+- `exclude_pattern` (String)
+- `limit` (Number)
+- `path_time_zone` (String)
+- `save_body` (Boolean)
+- `source` (String)
+
+
+
+<a id="nestedatt--definition--nodes--trigger_manual"></a>
+### Nested Schema for `definition.nodes.trigger_manual`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--trigger_manual--config))
+- `id` (String) Unique node ID within the graph.
+
+<a id="nestedatt--definition--nodes--trigger_manual--config"></a>
+### Nested Schema for `definition.nodes.trigger_manual.config`
+
+Read-Only:
+
+- `exclude_pattern` (String)
+- `limit` (Number)
+- `path` (String)
+- `path_time_zone` (String)
+- `source` (String)
+
+
+
+<a id="nestedatt--definition--nodes--trigger_scheduled"></a>
+### Nested Schema for `definition.nodes.trigger_scheduled`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--trigger_scheduled--config))
+- `id` (String) Unique node ID within the graph.
+
+<a id="nestedatt--definition--nodes--trigger_scheduled--config"></a>
+### Nested Schema for `definition.nodes.trigger_scheduled.config`
+
+Read-Only:
+
+- `exclude_pattern` (String)
+- `holiday_region` (String)
+- `interval` (String)
+- `limit` (Number)
+- `path` (String)
+- `path_time_zone` (String)
+- `recurring_day` (Number)
+- `recurring_days` (List of Number)
+- `schedule_days_of_week` (List of Number)
+- `schedule_id` (Number)
+- `schedule_time_zone` (String)
+- `schedule_times_of_day` (List of String)
+- `source` (String)
+
+
+
+<a id="nestedatt--definition--nodes--trigger_webhook"></a>
+### Nested Schema for `definition.nodes.trigger_webhook`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--trigger_webhook--config))
+- `id` (String) Unique node ID within the graph.
+
+<a id="nestedatt--definition--nodes--trigger_webhook--config"></a>
+### Nested Schema for `definition.nodes.trigger_webhook.config`
+
+Read-Only:
+
+- `exclude_pattern` (String)
+- `limit` (Number)
+- `path` (String)
+- `path_time_zone` (String)
+- `source` (String)
+
+
+
+<a id="nestedatt--definition--nodes--unzip"></a>
+### Nested Schema for `definition.nodes.unzip`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--unzip--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--unzip--config"></a>
+### Nested Schema for `definition.nodes.unzip.config`
+
+Read-Only:
+
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--unzip--config--on_error))
+- `overwrite_files` (Boolean)
+
+<a id="nestedatt--definition--nodes--unzip--config--on_error"></a>
+### Nested Schema for `definition.nodes.unzip.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--wait"></a>
+### Nested Schema for `definition.nodes.wait`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--wait--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--wait--config"></a>
+### Nested Schema for `definition.nodes.wait.config`
+
+Read-Only:
+
+- `delay_seconds` (Number)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--wait--config--on_error))
+
+<a id="nestedatt--definition--nodes--wait--config--on_error"></a>
+### Nested Schema for `definition.nodes.wait.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--zip"></a>
+### Nested Schema for `definition.nodes.zip`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--zip--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--zip--config"></a>
+### Nested Schema for `definition.nodes.zip.config`
+
+Read-Only:
+
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--zip--config--on_error))
+- `overwrite_files` (Boolean)
+
+<a id="nestedatt--definition--nodes--zip--config--on_error"></a>
+### Nested Schema for `definition.nodes.zip.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.

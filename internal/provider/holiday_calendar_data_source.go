@@ -28,11 +28,11 @@ type holidayCalendarDataSource struct {
 }
 
 type holidayCalendarDataSourceModel struct {
-	Id         types.Int64   `tfsdk:"id"`
-	Name       types.String  `tfsdk:"name"`
-	Definition types.Dynamic `tfsdk:"definition"`
-	CreatedAt  types.String  `tfsdk:"created_at"`
-	UpdatedAt  types.String  `tfsdk:"updated_at"`
+	Id         types.Int64  `tfsdk:"id"`
+	Name       types.String `tfsdk:"name"`
+	Definition types.Object `tfsdk:"definition"`
+	CreatedAt  types.String `tfsdk:"created_at"`
+	UpdatedAt  types.String `tfsdk:"updated_at"`
 }
 
 func (r *holidayCalendarDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -70,9 +70,197 @@ func (r *holidayCalendarDataSource) Schema(_ context.Context, _ datasource.Schem
 				Description: "Holiday Calendar name.",
 				Computed:    true,
 			},
-			"definition": schema.DynamicAttribute{
+			"definition": schema.SingleNestedAttribute{
 				Description: "Holiday rules for the calendar.",
 				Computed:    true,
+				Attributes: map[string]schema.Attribute{
+					"months": schema.MapNestedAttribute{
+						Description: "Keys 1 through 12 contain rules for that month. Key 0 contains calculated-date rules. At most 366 rules are allowed across all months.",
+						Computed:    true,
+						NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+							"calculated_rules": schema.ListNestedAttribute{
+								Computed: true,
+								NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+									"name": schema.StringAttribute{
+										Description: "Optional rule name.",
+										Computed:    true,
+									},
+									"observed": schema.StringAttribute{
+										Description: "Optional function used to move the selected date when it falls on a weekend.",
+										Computed:    true,
+									},
+									"start_time": schema.StringAttribute{
+										Description: "Inclusive start of a partial-day window in 24-hour HH:MM or HH:MM:SS format. Must be earlier than end_time.",
+										Computed:    true,
+									},
+									"end_time": schema.StringAttribute{
+										Description: "Exclusive end of a partial-day window in 24-hour HH:MM or HH:MM:SS format. Must be later than start_time.",
+										Computed:    true,
+									},
+									"year_ranges": schema.SingleNestedAttribute{
+										Description: "Optional inclusive year restriction.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"from": schema.Int64Attribute{
+												Description: "First year in which the rule applies.",
+												Computed:    true,
+											},
+											"until": schema.Int64Attribute{
+												Description: "Last year in which the rule applies.",
+												Computed:    true,
+											},
+											"between": schema.SingleNestedAttribute{
+												Description: "Required start and end years.",
+												Computed:    true,
+												Attributes: map[string]schema.Attribute{
+													"start": schema.Int64Attribute{
+														Computed: true,
+													},
+													"end": schema.Int64Attribute{
+														Computed: true,
+													},
+												},
+											},
+											"limited": schema.ListAttribute{
+												Description: "Years in which the rule applies.",
+												Computed:    true,
+												ElementType: types.Int64Type,
+											},
+										},
+									},
+									"function": schema.StringAttribute{
+										Description: "Supported calculated-date function.",
+										Computed:    true,
+									},
+									"function_modifier": schema.Int64Attribute{
+										Description: "Number of days to add to or subtract from the calculated date.",
+										Computed:    true,
+									},
+								},
+								},
+							},
+							"fixed_rules": schema.ListNestedAttribute{
+								Computed: true,
+								NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+									"name": schema.StringAttribute{
+										Description: "Optional rule name.",
+										Computed:    true,
+									},
+									"observed": schema.StringAttribute{
+										Description: "Optional function used to move the selected date when it falls on a weekend.",
+										Computed:    true,
+									},
+									"start_time": schema.StringAttribute{
+										Description: "Inclusive start of a partial-day window in 24-hour HH:MM or HH:MM:SS format. Must be earlier than end_time.",
+										Computed:    true,
+									},
+									"end_time": schema.StringAttribute{
+										Description: "Exclusive end of a partial-day window in 24-hour HH:MM or HH:MM:SS format. Must be later than start_time.",
+										Computed:    true,
+									},
+									"year_ranges": schema.SingleNestedAttribute{
+										Description: "Optional inclusive year restriction.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"from": schema.Int64Attribute{
+												Description: "First year in which the rule applies.",
+												Computed:    true,
+											},
+											"until": schema.Int64Attribute{
+												Description: "Last year in which the rule applies.",
+												Computed:    true,
+											},
+											"between": schema.SingleNestedAttribute{
+												Description: "Required start and end years.",
+												Computed:    true,
+												Attributes: map[string]schema.Attribute{
+													"start": schema.Int64Attribute{
+														Computed: true,
+													},
+													"end": schema.Int64Attribute{
+														Computed: true,
+													},
+												},
+											},
+											"limited": schema.ListAttribute{
+												Description: "Years in which the rule applies.",
+												Computed:    true,
+												ElementType: types.Int64Type,
+											},
+										},
+									},
+									"mday": schema.Int64Attribute{
+										Description: "Day of the month. Must be valid for the selected month.",
+										Computed:    true,
+									},
+								},
+								},
+							},
+							"weekday_rules": schema.ListNestedAttribute{
+								Computed: true,
+								NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+									"name": schema.StringAttribute{
+										Description: "Optional rule name.",
+										Computed:    true,
+									},
+									"observed": schema.StringAttribute{
+										Description: "Optional function used to move the selected date when it falls on a weekend.",
+										Computed:    true,
+									},
+									"start_time": schema.StringAttribute{
+										Description: "Inclusive start of a partial-day window in 24-hour HH:MM or HH:MM:SS format. Must be earlier than end_time.",
+										Computed:    true,
+									},
+									"end_time": schema.StringAttribute{
+										Description: "Exclusive end of a partial-day window in 24-hour HH:MM or HH:MM:SS format. Must be later than start_time.",
+										Computed:    true,
+									},
+									"year_ranges": schema.SingleNestedAttribute{
+										Description: "Optional inclusive year restriction.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"from": schema.Int64Attribute{
+												Description: "First year in which the rule applies.",
+												Computed:    true,
+											},
+											"until": schema.Int64Attribute{
+												Description: "Last year in which the rule applies.",
+												Computed:    true,
+											},
+											"between": schema.SingleNestedAttribute{
+												Description: "Required start and end years.",
+												Computed:    true,
+												Attributes: map[string]schema.Attribute{
+													"start": schema.Int64Attribute{
+														Computed: true,
+													},
+													"end": schema.Int64Attribute{
+														Computed: true,
+													},
+												},
+											},
+											"limited": schema.ListAttribute{
+												Description: "Years in which the rule applies.",
+												Computed:    true,
+												ElementType: types.Int64Type,
+											},
+										},
+									},
+									"week": schema.Int64Attribute{
+										Description: "Occurrence of the weekday in the month. Negative values count from the end of the month.",
+										Computed:    true,
+									},
+									"wday": schema.Int64Attribute{
+										Description: "Day of the week, where 0 is Sunday and 6 is Saturday.",
+										Computed:    true,
+									},
+								},
+								},
+							},
+						},
+						},
+					},
+				},
 			},
 			"created_at": schema.StringAttribute{
 				Description: "Creation time.",
@@ -121,7 +309,10 @@ func (r *holidayCalendarDataSource) populateDataSourceModel(ctx context.Context,
 
 	state.Id = types.Int64Value(holidayCalendar.Id)
 	state.Name = types.StringValue(holidayCalendar.Name)
-	state.Definition, propDiags = lib.ToDynamic(ctx, path.Root("definition"), holidayCalendar.Definition, state.Definition.UnderlyingValue())
+	definitionValue := interface{}(holidayCalendar.Definition)
+	definitionValue, transformDiags0 := lib.GroupStructuralUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"months"}, []lib.JSONSchemaVariant{{Name: "calculated_rules", Required: []string{"function"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "function", "function_modifier"}}, {Name: "fixed_rules", Required: []string{"mday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "mday"}}, {Name: "weekday_rules", Required: []string{"week", "wday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "week", "wday"}}})
+	diags.Append(transformDiags0...)
+	state.Definition, propDiags = lib.ToObject(ctx, path.Root("definition"), definitionValue, state.Definition)
 	diags.Append(propDiags...)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), holidayCalendar.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(

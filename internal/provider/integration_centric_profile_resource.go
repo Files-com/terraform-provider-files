@@ -9,12 +9,14 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	integration_centric_profile "github.com/Files-com/files-sdk-go/v3/integrationcentricprofile"
 	"github.com/Files-com/terraform-provider-files/lib"
+
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )

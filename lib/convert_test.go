@@ -153,6 +153,97 @@ func TestDynamicToStringMapSlice(t *testing.T) {
 	}
 }
 
+func TestNullScalarConversion(t *testing.T) {
+	value, diags := AttributeToInterface(context.Background(), path.Root("value"), types.BoolNull())
+	assert.False(t, diags.HasError())
+	assert.Equal(t, false, value)
+
+	value, diags = SchemaAttributeToInterface(context.Background(), path.Root("value"), types.BoolNull())
+	assert.False(t, diags.HasError())
+	assert.Nil(t, value)
+}
+
+func TestSchemaObjectRoundTrip(t *testing.T) {
+	stepTypes := map[string]attr.Type{"path": types.StringType, "delay": types.Int64Type}
+	definitionTypes := map[string]attr.Type{
+		"version":  types.Int64Type,
+		"labels":   types.MapType{ElemType: types.StringType},
+		"steps":    types.ListType{ElemType: types.ObjectType{AttrTypes: stepTypes}},
+		"optional": types.StringType,
+	}
+	source := map[string]interface{}{
+		"version": 1,
+		"labels":  map[string]interface{}{"team": "operations"},
+		"steps":   []interface{}{map[string]interface{}{"path": "incoming/", "delay": 30}},
+	}
+
+	value, diags := ToObject(context.Background(), path.Root("definition"), source, types.ObjectNull(definitionTypes))
+	assert.False(t, diags.HasError())
+	result, diags := SchemaAttributeToInterface(context.Background(), path.Root("definition"), value)
+	assert.False(t, diags.HasError())
+	assert.Equal(t, map[string]interface{}{
+		"version": int64(1),
+		"labels":  map[string]interface{}{"team": "operations"},
+		"steps":   []interface{}{map[string]interface{}{"path": "incoming/", "delay": int64(30)}},
+	}, result)
+}
+
+func TestDiscriminatedUnionRoundTrip(t *testing.T) {
+	variants := []JSONSchemaVariant{{Name: "trigger_manual", Value: "trigger_manual"}, {Name: "copy_file", Value: "copy_file"}}
+	apiValue := map[string]interface{}{"nodes": []interface{}{
+		map[string]interface{}{"id": "trigger", "type": "trigger_manual"},
+		map[string]interface{}{"id": "archive", "type": "copy_file", "config": map[string]interface{}{"destinations": []interface{}{"archive/"}}},
+	}}
+
+	terraformValue, diags := WrapDiscriminatedUnionAtPath(context.Background(), path.Root("definition"), apiValue, []string{"nodes"}, "type", variants)
+	assert.False(t, diags.HasError())
+	assert.Equal(t, map[string]interface{}{"nodes": []interface{}{
+		map[string]interface{}{"trigger_manual": map[string]interface{}{"id": "trigger"}},
+		map[string]interface{}{"copy_file": map[string]interface{}{"id": "archive", "config": map[string]interface{}{"destinations": []interface{}{"archive/"}}}},
+	}}, terraformValue)
+
+	result, diags := UnwrapDiscriminatedUnionAtPath(context.Background(), path.Root("definition"), terraformValue, []string{"nodes"}, "type", variants)
+	assert.False(t, diags.HasError())
+	assert.Equal(t, apiValue, result)
+
+	terraformValue, diags = WrapDiscriminatedUnionAtPath(context.Background(), path.Root("definition"), nil, []string{"nodes"}, "type", variants)
+	assert.False(t, diags.HasError())
+	assert.Nil(t, terraformValue)
+
+	result, diags = UnwrapDiscriminatedUnionAtPath(context.Background(), path.Root("definition"), nil, []string{"nodes"}, "type", variants)
+	assert.False(t, diags.HasError())
+	assert.Nil(t, result)
+
+	_, diags = UnwrapDiscriminatedUnionAtPath(context.Background(), path.Root("definition"), map[string]interface{}{"nodes": []interface{}{map[string]interface{}{"trigger_manual": map[string]interface{}{}, "copy_file": map[string]interface{}{}}}}, []string{"nodes"}, "type", variants)
+	assert.True(t, diags.HasError())
+}
+
+func TestStructuralUnionRoundTrip(t *testing.T) {
+	variants := []JSONSchemaVariant{
+		{Name: "calculated_rules", Required: []string{"function"}, Allowed: []string{"name", "function"}},
+		{Name: "fixed_rules", Required: []string{"mday"}, Allowed: []string{"name", "mday"}},
+		{Name: "weekday_rules", Required: []string{"week", "wday"}, Allowed: []string{"name", "week", "wday"}},
+	}
+	apiValue := map[string]interface{}{"months": map[string]interface{}{"1": []interface{}{
+		map[string]interface{}{"name": "New Year's Day", "mday": int64(1)},
+		map[string]interface{}{"name": "Third Monday", "week": int64(3), "wday": int64(1)},
+	}}}
+
+	terraformValue, diags := GroupStructuralUnionAtPath(context.Background(), path.Root("definition"), apiValue, []string{"months"}, variants)
+	assert.False(t, diags.HasError())
+	assert.Equal(t, map[string]interface{}{"months": map[string]interface{}{"1": map[string]interface{}{
+		"fixed_rules":   []interface{}{map[string]interface{}{"name": "New Year's Day", "mday": int64(1)}},
+		"weekday_rules": []interface{}{map[string]interface{}{"name": "Third Monday", "week": int64(3), "wday": int64(1)}},
+	}}}, terraformValue)
+
+	result, diags := UngroupStructuralUnionAtPath(context.Background(), path.Root("definition"), terraformValue, []string{"months"}, variants)
+	assert.False(t, diags.HasError())
+	assert.Equal(t, apiValue, result)
+
+	_, diags = GroupStructuralUnionAtPath(context.Background(), path.Root("definition"), map[string]interface{}{"months": map[string]interface{}{"1": []interface{}{map[string]interface{}{"name": "No selector"}}}}, []string{"months"}, variants)
+	assert.True(t, diags.HasError())
+}
+
 func TestListValueToString(t *testing.T) {
 	tests := []struct {
 		message   string
