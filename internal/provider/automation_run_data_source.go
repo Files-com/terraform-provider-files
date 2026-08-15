@@ -32,6 +32,7 @@ type automationRunDataSourceModel struct {
 	Id                   types.Int64   `tfsdk:"id"`
 	AutomationId         types.Int64   `tfsdk:"automation_id"`
 	AutomationVersionId  types.Int64   `tfsdk:"automation_version_id"`
+	Version              types.Int64   `tfsdk:"version"`
 	WorkspaceId          types.Int64   `tfsdk:"workspace_id"`
 	CancelRequestedAt    types.String  `tfsdk:"cancel_requested_at"`
 	CompletedAt          types.String  `tfsdk:"completed_at"`
@@ -90,6 +91,10 @@ func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaR
 			},
 			"automation_version_id": schema.Int64Attribute{
 				Description: "ID of the immutable Automation version pinned by this run.",
+				Computed:    true,
+			},
+			"version": schema.Int64Attribute{
+				Description: "Pinned Automation v2 definition version.",
 				Computed:    true,
 			},
 			"workspace_id": schema.Int64Attribute{
@@ -208,6 +213,7 @@ func (r *automationRunDataSource) populateDataSourceModel(ctx context.Context, a
 	state.Id = types.Int64Value(automationRun.Id)
 	state.AutomationId = types.Int64Value(automationRun.AutomationId)
 	state.AutomationVersionId = types.Int64Value(automationRun.AutomationVersionId)
+	state.Version = types.Int64Value(automationRun.Version)
 	state.WorkspaceId = types.Int64Value(automationRun.WorkspaceId)
 	if err := lib.TimeToStringType(ctx, path.Root("cancel_requested_at"), automationRun.CancelRequestedAt, &state.CancelRequestedAt); err != nil {
 		diags.AddError(

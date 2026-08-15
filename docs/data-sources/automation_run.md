@@ -57,4 +57,5 @@ data "files_automation_run" "example_automation_run" {
 - `status` (String) The status of the AutomationRun. One of `queued`, `running`, `success`, `partial_failure`, `failure`, `skipped`, or `canceled`.
 - `status_messages_url` (String) Link to status messages log file.
 - `successful_operations` (Number) Count of successful operations.
+- `version` (Number) Pinned Automation v2 definition version.
 - `workspace_id` (Number) Workspace ID.
