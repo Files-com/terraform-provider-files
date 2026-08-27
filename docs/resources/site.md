@@ -136,6 +136,7 @@ resource "files_site" "example_site" {
   show_user_notifications_log_in_link                        = false
   sftp_host_key_type                                         = "default"
   active_sftp_host_key_id                                    = 1
+  active_sftp_host_key_ids                                   = [1]
   protocol_access_groups_only                                = false
   revoke_bundle_access_on_disable_or_delete                  = false
   bundle_watermark_value                                     = {
@@ -214,6 +215,7 @@ resource "files_site" "example_site" {
 ### Optional
 
 - `active_sftp_host_key_id` (Number) Id of the currently selected custom SFTP Host Key
+- `active_sftp_host_key_ids` (List of Number) Ids of the selected custom SFTP Host Keys
 - `additional_text_file_types` (List of String) Additional extensions that are considered text files
 - `admins_bypass_locked_subfolders` (Boolean) Allow admins to bypass the locked subfolders setting.
 - `ai_feature_availability` (Dynamic) Availability settings for AI features by user class

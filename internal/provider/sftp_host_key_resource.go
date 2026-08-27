@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -35,9 +36,11 @@ type sftpHostKeyResource struct {
 }
 
 type sftpHostKeyResourceModel struct {
+	Active            types.Bool   `tfsdk:"active"`
 	Name              types.String `tfsdk:"name"`
 	PrivateKey        types.String `tfsdk:"private_key"`
 	Id                types.Int64  `tfsdk:"id"`
+	KeyType           types.String `tfsdk:"key_type"`
 	FingerprintMd5    types.String `tfsdk:"fingerprint_md5"`
 	FingerprintSha256 types.String `tfsdk:"fingerprint_sha256"`
 }
@@ -69,6 +72,14 @@ func (r *sftpHostKeyResource) Schema(_ context.Context, _ resource.SchemaRequest
 	resp.Schema = schema.Schema{
 		Description: "An SFTP Host Key is a cryptographic key used to verify the identity of the server during an SFTP connection. This allows the client to be sure that it is connecting to the intended server, preventing man-in-the-middle attacks and ensuring secure communication between the client and Files.com.\n\n\n\nFiles.com allows you to provide custom SFTP Host Keys, which is particularly useful when migrating to Files.com from an existing SFTP server, allowing the Files.com platform to match your previously-installed host key for a seamless transition.",
 		Attributes: map[string]schema.Attribute{
+			"active": schema.BoolAttribute{
+				Description: "If true, use this SFTP Host Key.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"name": schema.StringAttribute{
 				Description: "The friendly name of this SFTP Host Key.",
 				Computed:    true,
@@ -88,6 +99,10 @@ func (r *sftpHostKeyResource) Schema(_ context.Context, _ resource.SchemaRequest
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
+			},
+			"key_type": schema.StringAttribute{
+				Description: "SSH key type",
+				Computed:    true,
 			},
 			"fingerprint_md5": schema.StringAttribute{
 				Description: "MD5 Fingerprint of the public key",
@@ -116,6 +131,9 @@ func (r *sftpHostKeyResource) Create(ctx context.Context, req resource.CreateReq
 	}
 
 	paramsSftpHostKeyCreate := files_sdk.SftpHostKeyCreateParams{}
+	if !plan.Active.IsNull() && !plan.Active.IsUnknown() {
+		paramsSftpHostKeyCreate.Active = plan.Active.ValueBoolPointer()
+	}
 	paramsSftpHostKeyCreate.Name = plan.Name.ValueString()
 	paramsSftpHostKeyCreate.PrivateKey = config.PrivateKey.ValueString()
 
@@ -195,6 +213,9 @@ func (r *sftpHostKeyResource) Update(ctx context.Context, req resource.UpdateReq
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
 		paramsSftpHostKeyUpdate["id"] = plan.Id.ValueInt64()
 	}
+	if !config.Active.IsNull() && !config.Active.IsUnknown() {
+		paramsSftpHostKeyUpdate["active"] = config.Active.ValueBool()
+	}
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
 		paramsSftpHostKeyUpdate["name"] = config.Name.ValueString()
 	}
@@ -269,8 +290,10 @@ func (r *sftpHostKeyResource) ImportState(ctx context.Context, req resource.Impo
 }
 
 func (r *sftpHostKeyResource) populateResourceModel(ctx context.Context, sftpHostKey files_sdk.SftpHostKey, state *sftpHostKeyResourceModel) (diags diag.Diagnostics) {
+	state.Active = types.BoolPointerValue(sftpHostKey.Active)
 	state.Id = types.Int64Value(sftpHostKey.Id)
 	state.Name = types.StringValue(sftpHostKey.Name)
+	state.KeyType = types.StringValue(sftpHostKey.KeyType)
 	state.FingerprintMd5 = types.StringValue(sftpHostKey.FingerprintMd5)
 	state.FingerprintSha256 = types.StringValue(sftpHostKey.FingerprintSha256)
 

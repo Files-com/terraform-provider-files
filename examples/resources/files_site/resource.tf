@@ -116,6 +116,7 @@ resource "files_site" "example_site" {
   show_user_notifications_log_in_link                        = false
   sftp_host_key_type                                         = "default"
   active_sftp_host_key_id                                    = 1
+  active_sftp_host_key_ids                                   = [1]
   protocol_access_groups_only                                = false
   revoke_bundle_access_on_disable_or_delete                  = false
   bundle_watermark_value                                     = {

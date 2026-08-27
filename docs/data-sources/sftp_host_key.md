@@ -32,6 +32,8 @@ data "files_sftp_host_key" "example_sftp_host_key" {
 
 ### Read-Only
 
+- `active` (Boolean) If true, use this SFTP Host Key.
 - `fingerprint_md5` (String) MD5 Fingerprint of the public key
 - `fingerprint_sha256` (String) SHA256 Fingerprint of the public key
+- `key_type` (String) SSH key type
 - `name` (String) The friendly name of this SFTP Host Key.

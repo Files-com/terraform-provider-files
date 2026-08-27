@@ -28,6 +28,7 @@ data "files_site" "example_site" {
 ### Read-Only
 
 - `active_sftp_host_key_id` (Number) Id of the currently selected custom SFTP Host Key
+- `active_sftp_host_key_ids` (List of Number) Ids of the selected custom SFTP Host Keys
 - `additional_text_file_types` (List of String) Additional extensions that are considered text files
 - `admin_user_id` (Number) User ID for the main site administrator
 - `admins_bypass_locked_subfolders` (Boolean) Allow admins to bypass the locked subfolders setting.

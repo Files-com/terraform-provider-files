@@ -28,7 +28,9 @@ type sftpHostKeyDataSource struct {
 
 type sftpHostKeyDataSourceModel struct {
 	Id                types.Int64  `tfsdk:"id"`
+	Active            types.Bool   `tfsdk:"active"`
 	Name              types.String `tfsdk:"name"`
+	KeyType           types.String `tfsdk:"key_type"`
 	FingerprintMd5    types.String `tfsdk:"fingerprint_md5"`
 	FingerprintSha256 types.String `tfsdk:"fingerprint_sha256"`
 }
@@ -64,8 +66,16 @@ func (r *sftpHostKeyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Description: "SFTP Host Key ID",
 				Required:    true,
 			},
+			"active": schema.BoolAttribute{
+				Description: "If true, use this SFTP Host Key.",
+				Computed:    true,
+			},
 			"name": schema.StringAttribute{
 				Description: "The friendly name of this SFTP Host Key.",
+				Computed:    true,
+			},
+			"key_type": schema.StringAttribute{
+				Description: "SSH key type",
 				Computed:    true,
 			},
 			"fingerprint_md5": schema.StringAttribute{
@@ -111,8 +121,10 @@ func (r *sftpHostKeyDataSource) Read(ctx context.Context, req datasource.ReadReq
 }
 
 func (r *sftpHostKeyDataSource) populateDataSourceModel(ctx context.Context, sftpHostKey files_sdk.SftpHostKey, state *sftpHostKeyDataSourceModel) (diags diag.Diagnostics) {
+	state.Active = types.BoolPointerValue(sftpHostKey.Active)
 	state.Id = types.Int64Value(sftpHostKey.Id)
 	state.Name = types.StringValue(sftpHostKey.Name)
+	state.KeyType = types.StringValue(sftpHostKey.KeyType)
 	state.FingerprintMd5 = types.StringValue(sftpHostKey.FingerprintMd5)
 	state.FingerprintSha256 = types.StringValue(sftpHostKey.FingerprintSha256)
 

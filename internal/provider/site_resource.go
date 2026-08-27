@@ -170,6 +170,7 @@ type siteResourceModel struct {
 	SftpFinalizePartialUploads                         types.Bool    `tfsdk:"sftp_finalize_partial_uploads"`
 	SftpHostKeyType                                    types.String  `tfsdk:"sftp_host_key_type"`
 	ActiveSftpHostKeyId                                types.Int64   `tfsdk:"active_sftp_host_key_id"`
+	ActiveSftpHostKeyIds                               types.List    `tfsdk:"active_sftp_host_key_ids"`
 	SftpInsecureCiphers                                types.Bool    `tfsdk:"sftp_insecure_ciphers"`
 	SftpInsecureDiffieHellman                          types.Bool    `tfsdk:"sftp_insecure_diffie_hellman"`
 	SftpUserRootEnabled                                types.Bool    `tfsdk:"sftp_user_root_enabled"`
@@ -1326,6 +1327,15 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"active_sftp_host_key_ids": schema.ListAttribute{
+				Description: "Ids of the selected custom SFTP Host Keys",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.Int64Type,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"sftp_insecure_ciphers": schema.BoolAttribute{
 				Description: "If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility.",
 				Computed:    true,
@@ -2127,6 +2137,12 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.ActiveSftpHostKeyId.IsNull() && !config.ActiveSftpHostKeyId.IsUnknown() {
 		paramsSiteUpdate["active_sftp_host_key_id"] = config.ActiveSftpHostKeyId.ValueInt64()
 	}
+	if !config.ActiveSftpHostKeyIds.IsNull() && !config.ActiveSftpHostKeyIds.IsUnknown() {
+		var updateActiveSftpHostKeyIds []int64
+		diags = config.ActiveSftpHostKeyIds.ElementsAs(ctx, &updateActiveSftpHostKeyIds, false)
+		resp.Diagnostics.Append(diags...)
+		paramsSiteUpdate["active_sftp_host_key_ids"] = updateActiveSftpHostKeyIds
+	}
 	if !config.ProtocolAccessGroupsOnly.IsNull() && !config.ProtocolAccessGroupsOnly.IsUnknown() {
 		paramsSiteUpdate["protocol_access_groups_only"] = config.ProtocolAccessGroupsOnly.ValueBool()
 	}
@@ -2571,6 +2587,8 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.SftpFinalizePartialUploads = types.BoolPointerValue(site.SftpFinalizePartialUploads)
 	state.SftpHostKeyType = types.StringValue(site.SftpHostKeyType)
 	state.ActiveSftpHostKeyId = types.Int64Value(site.ActiveSftpHostKeyId)
+	state.ActiveSftpHostKeyIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, site.ActiveSftpHostKeyIds)
+	diags.Append(propDiags...)
 	state.SftpInsecureCiphers = types.BoolPointerValue(site.SftpInsecureCiphers)
 	state.SftpInsecureDiffieHellman = types.BoolPointerValue(site.SftpInsecureDiffieHellman)
 	state.SftpUserRootEnabled = types.BoolPointerValue(site.SftpUserRootEnabled)

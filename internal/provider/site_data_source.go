@@ -183,6 +183,7 @@ type siteDataSourceModel struct {
 	SftpFinalizePartialUploads                         types.Bool    `tfsdk:"sftp_finalize_partial_uploads"`
 	SftpHostKeyType                                    types.String  `tfsdk:"sftp_host_key_type"`
 	ActiveSftpHostKeyId                                types.Int64   `tfsdk:"active_sftp_host_key_id"`
+	ActiveSftpHostKeyIds                               types.List    `tfsdk:"active_sftp_host_key_ids"`
 	SftpInsecureCiphers                                types.Bool    `tfsdk:"sftp_insecure_ciphers"`
 	SftpInsecureDiffieHellman                          types.Bool    `tfsdk:"sftp_insecure_diffie_hellman"`
 	SftpUserRootEnabled                                types.Bool    `tfsdk:"sftp_user_root_enabled"`
@@ -867,6 +868,11 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Id of the currently selected custom SFTP Host Key",
 				Computed:    true,
 			},
+			"active_sftp_host_key_ids": schema.ListAttribute{
+				Description: "Ids of the selected custom SFTP Host Keys",
+				Computed:    true,
+				ElementType: types.Int64Type,
+			},
 			"sftp_insecure_ciphers": schema.BoolAttribute{
 				Description: "If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility.",
 				Computed:    true,
@@ -1294,6 +1300,8 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.SftpFinalizePartialUploads = types.BoolPointerValue(site.SftpFinalizePartialUploads)
 	state.SftpHostKeyType = types.StringValue(site.SftpHostKeyType)
 	state.ActiveSftpHostKeyId = types.Int64Value(site.ActiveSftpHostKeyId)
+	state.ActiveSftpHostKeyIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, site.ActiveSftpHostKeyIds)
+	diags.Append(propDiags...)
 	state.SftpInsecureCiphers = types.BoolPointerValue(site.SftpInsecureCiphers)
 	state.SftpInsecureDiffieHellman = types.BoolPointerValue(site.SftpInsecureDiffieHellman)
 	state.SftpUserRootEnabled = types.BoolPointerValue(site.SftpUserRootEnabled)
