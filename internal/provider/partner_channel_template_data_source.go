@@ -29,6 +29,7 @@ type partnerChannelTemplateDataSource struct {
 type partnerChannelTemplateDataSourceModel struct {
 	Id                             types.Int64  `tfsdk:"id"`
 	WorkspaceId                    types.Int64  `tfsdk:"workspace_id"`
+	Direction                      types.String `tfsdk:"direction"`
 	Name                           types.String `tfsdk:"name"`
 	Path                           types.String `tfsdk:"path"`
 	ToPartnerFolderName            types.String `tfsdk:"to_partner_folder_name"`
@@ -74,6 +75,10 @@ func (r *partnerChannelTemplateDataSource) Schema(_ context.Context, _ datasourc
 			},
 			"workspace_id": schema.Int64Attribute{
 				Description: "ID of the Workspace associated with this Partner Channel Template.",
+				Computed:    true,
+			},
+			"direction": schema.StringAttribute{
+				Description: "Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads.",
 				Computed:    true,
 			},
 			"name": schema.StringAttribute{
@@ -157,6 +162,7 @@ func (r *partnerChannelTemplateDataSource) populateDataSourceModel(ctx context.C
 
 	state.Id = types.Int64Value(partnerChannelTemplate.Id)
 	state.WorkspaceId = types.Int64Value(partnerChannelTemplate.WorkspaceId)
+	state.Direction = types.StringValue(partnerChannelTemplate.Direction)
 	state.Name = types.StringValue(partnerChannelTemplate.Name)
 	state.Path = types.StringValue(partnerChannelTemplate.Path)
 	state.ToPartnerFolderName = types.StringValue(partnerChannelTemplate.ToPartnerFolderName)

@@ -27,6 +27,7 @@ data "files_partner_channel_template" "example_partner_channel_template" {
 
 ### Read-Only
 
+- `direction` (String) Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads.
 - `effective_from_partner_folder_name` (String) Resolved from-Partner folder name after Template override and default.
 - `effective_to_partner_folder_name` (String) Resolved to-Partner folder name after Template override and default.
 - `from_partner_folder_name` (String) Optional Channel-level from-Partner folder name override.

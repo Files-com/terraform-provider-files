@@ -14,6 +14,7 @@ A PartnerChannelTemplate defines reusable Partner Channel configuration that can
 
 ```terraform
 resource "files_partner_channel_template" "example_partner_channel_template" {
+  direction                         = "two_way"
   from_partner_folder_name          = "incoming"
   from_partner_managed_folder_paths = ["claims/received"]
   from_partner_route_path_pattern   = "processing/{{partner_name}}/from-partner"
@@ -36,6 +37,7 @@ resource "files_partner_channel_template" "example_partner_channel_template" {
 
 ### Optional
 
+- `direction` (String) Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads.
 - `from_partner_folder_name` (String) Optional Channel-level from-Partner folder name override.
 - `from_partner_managed_folder_paths` (List of String) Managed folder paths inside the from-Partner folder.
 - `from_partner_route_path_pattern` (String) Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}.

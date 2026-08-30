@@ -1,9 +1,9 @@
 module github.com/Files-com/terraform-provider-files
 
-go 1.25.8
+go 1.26.0
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.3.237
+	github.com/Files-com/files-sdk-go/v3 v3.3.238
 	github.com/hashicorp/terraform-plugin-docs v0.24.0
 	github.com/hashicorp/terraform-plugin-framework v1.19.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.19.0
@@ -12,7 +12,7 @@ require (
 
 require (
 	github.com/quic-go/qpack v0.6.0 // indirect
-	github.com/quic-go/quic-go v0.61.0 // indirect
+	github.com/quic-go/quic-go v0.62.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 )
 

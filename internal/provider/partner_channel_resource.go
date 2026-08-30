@@ -9,6 +9,7 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	partner_channel "github.com/Files-com/files-sdk-go/v3/partnerchannel"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
@@ -18,6 +19,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -39,6 +41,7 @@ type partnerChannelResourceModel struct {
 	PartnerId                      types.Int64  `tfsdk:"partner_id"`
 	Path                           types.String `tfsdk:"path"`
 	WorkspaceId                    types.Int64  `tfsdk:"workspace_id"`
+	Direction                      types.String `tfsdk:"direction"`
 	ToPartnerFolderName            types.String `tfsdk:"to_partner_folder_name"`
 	FromPartnerFolderName          types.String `tfsdk:"from_partner_folder_name"`
 	FromPartnerRoutePath           types.String `tfsdk:"from_partner_route_path"`
@@ -99,6 +102,17 @@ func (r *partnerChannelResource) Schema(_ context.Context, _ resource.SchemaRequ
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 					int64planmodifier.RequiresReplace(),
+				},
+			},
+			"direction": schema.StringAttribute{
+				Description: "Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads.",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("two_way", "to_partner", "from_partner"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"to_partner_folder_name": schema.StringAttribute{
@@ -201,6 +215,7 @@ func (r *partnerChannelResource) Create(ctx context.Context, req resource.Create
 	}
 
 	paramsPartnerChannelCreate := files_sdk.PartnerChannelCreateParams{}
+	paramsPartnerChannelCreate.Direction = paramsPartnerChannelCreate.Direction.Enum()[plan.Direction.ValueString()]
 	paramsPartnerChannelCreate.FromPartnerFolderName = plan.FromPartnerFolderName.ValueString()
 	if !plan.FromPartnerManagedFolderPaths.IsNull() && !plan.FromPartnerManagedFolderPaths.IsUnknown() {
 		diags = plan.FromPartnerManagedFolderPaths.ElementsAs(ctx, &paramsPartnerChannelCreate.FromPartnerManagedFolderPaths, false)
@@ -292,6 +307,9 @@ func (r *partnerChannelResource) Update(ctx context.Context, req resource.Update
 	paramsPartnerChannelUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
 		paramsPartnerChannelUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.Direction.IsNull() && !config.Direction.IsUnknown() {
+		paramsPartnerChannelUpdate["direction"] = config.Direction.ValueString()
 	}
 	if !config.FromPartnerFolderName.IsNull() && !config.FromPartnerFolderName.IsUnknown() {
 		paramsPartnerChannelUpdate["from_partner_folder_name"] = config.FromPartnerFolderName.ValueString()
@@ -392,6 +410,7 @@ func (r *partnerChannelResource) populateResourceModel(ctx context.Context, part
 
 	state.Id = types.Int64Value(partnerChannel.Id)
 	state.WorkspaceId = types.Int64Value(partnerChannel.WorkspaceId)
+	state.Direction = types.StringValue(partnerChannel.Direction)
 	state.PartnerId = types.Int64Value(partnerChannel.PartnerId)
 	state.PartnerChannelTemplateId = types.Int64Value(partnerChannel.PartnerChannelTemplateId)
 	state.Path = types.StringValue(partnerChannel.Path)
