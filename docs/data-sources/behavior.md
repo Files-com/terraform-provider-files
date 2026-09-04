@@ -7,7 +7,7 @@ description: |-
   Depending on the behavior, it may also operate on child folders. It may be overridable at the child folder level or maybe can be added to at the child folder level. The exact options for each behavior type are explained in the table below.
   Each behavior type also has a recursion mode in the behavior type documentation. always means the behavior is always recursive, never means it is never recursive, and sometimes means callers may choose the value of the recursive field.
   Additionally, some behaviors are visible to non-admins, and others are even settable by non-admins. All the details are below.
-  Each behavior uses a different format for storing its settings value. Next to each behavior type is an example value. Our API and SDKs currently require that the value for behaviors be sent as raw JSON within the value field. Our SDK generator and API documentation generator doesn't fully keep up with this requirement, so if you need any help finding the exact syntax to use for your language or use case, just reach out.
+  Each behavior uses a different format for its settings value. The accepted fields and an example are shown with each behavior type. In the REST API, send these settings as JSON within the value field.
   Note: Append Timestamp behavior removed. Check Override Upload Filename behavior which have even more functionality to modify name on upload.
 ---
 
@@ -29,7 +29,7 @@ Additionally, some behaviors are visible to non-admins, and others are even sett
 
 
 
-Each behavior uses a different format for storing its settings value. Next to each behavior type is an example value. Our API and SDKs currently require that the value for behaviors be sent as raw JSON within the `value` field. Our SDK generator and API documentation generator doesn't fully keep up with this requirement, so if you need any help finding the exact syntax to use for your language or use case, just reach out.
+Each behavior uses a different format for its settings value. The accepted fields and an example are shown with each behavior type. In the REST API, send these settings as JSON within the `value` field.
 
 
 
@@ -39,7 +39,8 @@ Note: Append Timestamp behavior removed. Check [Override Upload Filename](#overr
 
 ```terraform
 data "files_behavior" "example_behavior" {
-  id = 1
+  id           = 1
+  value_format = "typed"
 }
 ```
 
@@ -49,6 +50,10 @@ data "files_behavior" "example_behavior" {
 ### Required
 
 - `id` (Number) Folder behavior ID
+
+### Optional
+
+- `value_format` (String) Set to `typed` to return the future files_behavior.value output shape before it becomes the default on March 1, 2027. Omit this attribute to keep the current output until then.
 
 ### Read-Only
 
@@ -63,4 +68,4 @@ data "files_behavior" "example_behavior" {
 - `public_hosting_url` (String) Public URL for this publicly hosted folder when the `Serve Publicly` behavior has a key configured.  When a Custom Domain with `public_hosting` destination is attached to this behavior, the URL uses that domain.  Otherwise it uses the site's `subdomain.hosted-by-files.com` host.
 - `recursive` (Boolean) Whether this behavior is recursive for this record. `always` behaviors are always `true`, `never` behaviors are always `false`, and `sometimes` behaviors may be either value.
 - `root_behavior_site_admin_only` (Boolean) If true, this behavior may only be modified by a site admin because it is at the site root or disables a root behavior.
-- `value` (Dynamic) Settings for this behavior.  See the section above for an example value to provide here.  Formatting is different for each Behavior type.  May be sent as nested JSON or a single JSON-encoded string.  If using XML encoding for the API call, this data must be sent as a JSON-encoded string.
+- `value` (Dynamic) Settings for this behavior. Set `value_format = "typed"` to return the future typed shape under the selected behavior name.

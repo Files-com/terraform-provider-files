@@ -1,0 +1,101 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{"behavior":"storage_region","path":"Storage","value":"us-east-1"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors
+    method: POST
+  response:
+    body: '{"id":300001,"path":"Storage","behavior":"storage_region","value":"us-east-1"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/300001
+    method: GET
+  response:
+    body: '{"id":300001,"path":"Storage","behavior":"storage_region","value":"us-east-1"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/300001
+    method: GET
+  response:
+    body: '{"id":300001,"path":"Storage","behavior":"storage_region","value":"us-east-1"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"path":"Storage","value":"us-east-1"}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/300001
+    method: PATCH
+  response:
+    body: '{"id":300001,"path":"Storage","behavior":"storage_region","value":"us-east-1"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/300001
+    method: GET
+  response:
+    body: '{"id":300001,"path":"Storage","behavior":"storage_region","value":"us-east-1"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/300001
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""

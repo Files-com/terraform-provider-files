@@ -2,7 +2,7 @@
 version: 1
 interactions:
 - request:
-    body: '{"behavior":"serve_publicly","path":"Bar","value":{"key":"Bar","show_index":true}}'
+    body: '{"behavior":"serve_publicly","path":"Bar","value":{"key":"Bar","show_index":true,"force_download":false,"password":"secret"}}'
     form: {}
     headers:
       Content-Type:
@@ -12,7 +12,7 @@ interactions:
     url: https://app.files.com/api/rest/v1/behaviors
     method: POST
   response:
-    body: '{"id":272843,"path":"Bar","behavior":"serve_publicly","name":null,"description":null,"value":{"key":"Bar","show_index":true}}'
+    body: '{"id":272843,"path":"Bar","behavior":"serve_publicly","name":null,"description":null,"value":{"key":"Bar","show_index":true,"force_download":false,"cors_enabled":false,"require_site_authentication":false,"password_required":true}}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
@@ -42,7 +42,7 @@ interactions:
     url: https://app.files.com/api/rest/v1/behaviors/272843
     method: GET
   response:
-    body: '{"id":272843,"path":"Bar","behavior":"serve_publicly","name":null,"description":null,"value":{"key":"Bar","show_index":true}}'
+    body: '{"id":272843,"path":"Bar","behavior":"serve_publicly","name":null,"description":null,"value":{"key":"Bar","show_index":true,"force_download":false,"cors_enabled":false,"require_site_authentication":false,"password_required":true}}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
@@ -70,7 +70,7 @@ interactions:
     url: https://app.files.com/api/rest/v1/behaviors/272843
     method: GET
   response:
-    body: '{"id":272843,"path":"Bar","behavior":"serve_publicly","name":null,"description":null,"value":{"key":"Bar","show_index":true}}'
+    body: '{"id":272843,"path":"Bar","behavior":"serve_publicly","name":null,"description":null,"value":{"key":"Bar","show_index":true,"force_download":false,"cors_enabled":false,"require_site_authentication":false,"password_required":true}}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
@@ -90,7 +90,7 @@ interactions:
     code: 200
     duration: ""
 - request:
-    body: '{"path":"Bar","value":{"key":"Bar","show_index":false}}'
+    body: '{"path":"Bar","value":{"key":"Bar","show_index":true,"force_download":false,"password":"secret"}}'
     form: {}
     headers:
       Content-Type:
@@ -100,7 +100,7 @@ interactions:
     url: https://app.files.com/api/rest/v1/behaviors/272843
     method: PATCH
   response:
-    body: '{"id":272843,"path":"Bar","behavior":"serve_publicly","name":null,"description":null,"value":{"key":"Bar","show_index":false}}'
+    body: '{"id":272843,"path":"Bar","behavior":"serve_publicly","name":null,"description":null,"value":{"key":"Bar","show_index":true,"force_download":false,"cors_enabled":false,"require_site_authentication":false,"password_required":true}}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
@@ -128,7 +128,7 @@ interactions:
     url: https://app.files.com/api/rest/v1/behaviors/272843
     method: GET
   response:
-    body: '{"id":272843,"path":"Bar","behavior":"serve_publicly","name":null,"description":null,"value":{"key":"Bar","show_index":false}}'
+    body: '{"id":272843,"path":"Bar","behavior":"serve_publicly","name":null,"description":null,"value":{"key":"Bar","show_index":true,"force_download":false,"cors_enabled":false,"require_site_authentication":false,"password_required":true}}'
     headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
@@ -170,112 +170,6 @@ interactions:
       - files.com
       X-Request-Id:
       - d4f8e4a9c7c759a0312684d8c3dded6f
-    status: 204 No Content
-    code: 204
-    duration: ""
-- request:
-    body: '{"behavior":"file_expiration","path":"Bar","value":14}'
-    form: {}
-    headers:
-      Content-Type:
-      - application/json
-      User-Agent:
-      - Files.com Go SDK 1.0
-    url: https://app.files.com/api/rest/v1/behaviors
-    method: POST
-  response:
-    body: '{"id":272843,"behavior":"file_expiration","path":"Bar","value":14}'
-    headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Content-Length:
-      - "90"
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Jun 2024 00:06:28 GMT
-      Expires:
-      - Fri, 01 Jan 1990 00:00:00 GMT
-      Pragma:
-      - no-cache
-      Server:
-      - files.com
-      X-Request-Id:
-      - 6547c40d27231fbb0345fa6557fe0316
-    status: 201 Created
-    code: 201
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Files.com Go SDK 1.0
-    url: https://app.files.com/api/rest/v1/behaviors/272843
-    method: GET
-  response:
-    body: '{"id":272843,"behavior":"file_expiration","path":"Bar","value":14}'
-    headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Content-Type:
-      - application/json
-      Server:
-      - files.com
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Files.com Go SDK 1.0
-    url: https://app.files.com/api/rest/v1/behaviors/272843
-    method: GET
-  response:
-    body: '{"id":272843,"behavior":"file_expiration","path":"Bar","value":14}'
-    headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Content-Type:
-      - application/json
-      Date:
-      - Thu, 27 Jun 2024 00:06:30 GMT
-      Expires:
-      - Fri, 01 Jan 1990 00:00:00 GMT
-      Pragma:
-      - no-cache
-      Server:
-      - files.com
-      X-Request-Id:
-      - 5470d9d0eacf7c2ee2e974a7ac401e11
-    status: 200 OK
-    code: 200
-    duration: ""
-- request:
-    body: ""
-    form: {}
-    headers:
-      User-Agent:
-      - Files.com Go SDK 1.0
-    url: https://app.files.com/api/rest/v1/behaviors/272843
-    method: DELETE
-  response:
-    body: ""
-    headers:
-      Cache-Control:
-      - no-cache, no-store, max-age=0, must-revalidate
-      Date:
-      - Thu, 27 Jun 2024 00:06:30 GMT
-      Expires:
-      - Fri, 01 Jan 1990 00:00:00 GMT
-      Pragma:
-      - no-cache
-      Server:
-      - files.com
-      X-Request-Id:
-      - d4f8e4a9c7c759a0312684d8c3dded70
     status: 204 No Content
     code: 204
     duration: ""

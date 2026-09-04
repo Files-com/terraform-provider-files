@@ -40,6 +40,54 @@ interactions:
   response:
     body: '{"id":272834,"path":"Foo","behavior":"file_expiration","name":null,"description":null,"path":"Foo","value":14}'
     headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/272834
+    method: GET
+  response:
+    body: '{"id":272834,"path":"Foo","behavior":"file_expiration","name":null,"description":null,"path":"Foo","value":14}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/272834
+    method: GET
+  response:
+    body: '{"id":272834,"path":"Foo","behavior":"file_expiration","name":null,"description":null,"path":"Foo","value":14}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/272834
+    method: GET
+  response:
+    body: '{"id":272834,"path":"Foo","behavior":"file_expiration","name":null,"description":null,"path":"Foo","value":14}'
+    headers:
       Cache-Control:
       - no-cache, no-store, max-age=0, must-revalidate
       Content-Type:
@@ -85,3 +133,37 @@ interactions:
     status: 200 OK
     code: 200
     duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/272843
+    method: GET
+  response: &serve_publicly_response
+    body: '{"id":272843,"path":"Bar","behavior":"serve_publicly","name":null,"description":null,"value":{"key":"Bar","show_index":true,"force_download":false,"cors_enabled":false,"require_site_authentication":false,"password_required":true}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/272843
+    method: GET
+  response: *serve_publicly_response
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/272843
+    method: GET
+  response: *serve_publicly_response

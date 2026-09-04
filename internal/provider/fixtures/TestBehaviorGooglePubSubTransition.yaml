@@ -1,0 +1,80 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{"behavior":"google_pub_sub","path":"Google","value":{"projects_topics":[{"project_id":"my-project","topic_id":"files-events"}],"google_credentials":{"type":"service_account","project_id":"my-project","private_key":"secret","universe_domain":"googleapis.com","quota_project_id":"billing-project"}}}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors
+    method: POST
+  response:
+    body: '{"id":300005,"path":"Google","behavior":"google_pub_sub","name":null,"description":null,"value":{"projects_topics":[{"project_id":"my-project","topic_id":"files-events"}],"google_credentials":{"type":"service_account","project_id":"my-project","universe_domain":"googleapis.com","quota_project_id":"billing-project"}}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/300005
+    method: GET
+  response: &google_pub_sub_response
+    body: '{"id":300005,"path":"Google","behavior":"google_pub_sub","name":null,"description":null,"value":{"projects_topics":[{"project_id":"my-project","topic_id":"files-events"}],"google_credentials":{"type":"service_account","project_id":"my-project","universe_domain":"googleapis.com","quota_project_id":"billing-project"}}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/300005
+    method: GET
+  response: *google_pub_sub_response
+- request:
+    body: '{"path":"Google","value":{"projects_topics":[{"project_id":"my-project","topic_id":"files-events"}],"google_credentials":{"type":"service_account","project_id":"my-project","private_key":"secret","universe_domain":"googleapis.com","quota_project_id":"billing-project"}}}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/300005
+    method: PATCH
+  response: *google_pub_sub_response
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/300005
+    method: GET
+  response: *google_pub_sub_response
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/300005
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""

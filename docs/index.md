@@ -42,11 +42,11 @@ resource "files_behavior" "example_serve_publicly_behavior" {
   path     = files_folder.example_folder.path
   behavior = "serve_publicly"
   value    = {
-    key                         = "public-photos"
-    show_index                  = true
-    force_download              = true
-    cors_enabled                = false
-    require_site_authentication = false
+    serve_publicly = {
+      key            = "public-files"
+      show_index     = true
+      force_download = false
+    }
   }
 }
 ```

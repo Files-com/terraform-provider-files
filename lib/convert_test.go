@@ -163,6 +163,20 @@ func TestNullScalarConversion(t *testing.T) {
 	assert.Nil(t, value)
 }
 
+func TestSchemaInt64StringConversion(t *testing.T) {
+	value, diags := schemaValue(context.Background(), path.Root("value"), "5", types.Int64Type)
+	assert.False(t, diags.HasError())
+	assert.Equal(t, types.Int64Value(5), value)
+
+	value, diags = schemaValue(context.Background(), path.Root("value"), "", types.Int64Type)
+	assert.False(t, diags.HasError())
+	assert.Equal(t, types.Int64Null(), value)
+
+	value, diags = schemaValue(context.Background(), path.Root("value"), "not-an-integer", types.Int64Type)
+	assert.True(t, diags.HasError())
+	assert.Nil(t, value)
+}
+
 func TestSchemaObjectRoundTrip(t *testing.T) {
 	stepTypes := map[string]attr.Type{"path": types.StringType, "delay": types.Int64Type}
 	definitionTypes := map[string]attr.Type{
@@ -216,6 +230,56 @@ func TestDiscriminatedUnionRoundTrip(t *testing.T) {
 
 	_, diags = UnwrapDiscriminatedUnionAtPath(context.Background(), path.Root("definition"), map[string]interface{}{"nodes": []interface{}{map[string]interface{}{"trigger_manual": map[string]interface{}{}, "copy_file": map[string]interface{}{}}}}, []string{"nodes"}, "type", variants)
 	assert.True(t, diags.HasError())
+}
+
+func TestSiblingDiscriminatorRoundTrip(t *testing.T) {
+	variants := []JSONSchemaVariant{{Name: "webhook", Value: "webhook"}, {Name: "storage_region", Value: "storage_region"}, {Name: "limit_file_regex", Value: "limit_file_regex"}}
+	tests := []struct {
+		selector string
+		apiValue any
+	}{
+		{selector: "webhook", apiValue: map[string]interface{}{"urls": []interface{}{"https://example.com/webhook"}}},
+		{selector: "storage_region", apiValue: "us-east-1"},
+		{selector: "limit_file_regex", apiValue: []interface{}{`/Document-.*/`}},
+	}
+
+	for _, test := range tests {
+		terraformValue, diags := WrapSiblingDiscriminator(context.Background(), path.Root("value"), test.apiValue, test.selector, variants)
+		assert.False(t, diags.HasError())
+		assert.Equal(t, map[string]interface{}{test.selector: test.apiValue}, terraformValue)
+
+		result, diags := UnwrapSiblingDiscriminator(context.Background(), path.Root("value"), terraformValue, test.selector, variants)
+		assert.False(t, diags.HasError())
+		assert.Equal(t, test.apiValue, result)
+	}
+
+	_, diags := UnwrapSiblingDiscriminator(context.Background(), path.Root("value"), map[string]interface{}{"webhook": map[string]interface{}{}}, "storage_region", variants)
+	assert.True(t, diags.HasError())
+}
+
+func TestSiblingDiscriminatorWrapsLegacyValues(t *testing.T) {
+	variants := []JSONSchemaVariant{
+		{Name: "file_expiration", Value: "file_expiration", LegacyProperty: "days_to_retain"},
+		{Name: "webhook", Value: "webhook", LegacyProperty: "urls", LegacyList: true},
+	}
+
+	result, diags := WrapSiblingDiscriminator(context.Background(), path.Root("value"), float64(14), "file_expiration", variants)
+	assert.False(t, diags.HasError())
+	assert.Equal(t, map[string]interface{}{"file_expiration": map[string]interface{}{"days_to_retain": float64(14)}}, result)
+
+	result, diags = WrapSiblingDiscriminator(context.Background(), path.Root("value"), "https://example.com/webhook", "webhook", variants)
+	assert.False(t, diags.HasError())
+	assert.Equal(t, map[string]interface{}{"webhook": map[string]interface{}{"urls": []interface{}{"https://example.com/webhook"}}}, result)
+
+	result, diags = WrapSiblingDiscriminator(context.Background(), path.Root("value"), "", "file_expiration", variants)
+	assert.False(t, diags.HasError())
+	assert.Nil(t, result)
+}
+
+func TestSchemaValueReadsLegacyBooleanStrings(t *testing.T) {
+	value, diags := schemaValue(context.Background(), path.Root("armor"), "true", types.BoolType)
+	assert.False(t, diags.HasError())
+	assert.Equal(t, types.BoolValue(true), value)
 }
 
 func TestStructuralUnionRoundTrip(t *testing.T) {

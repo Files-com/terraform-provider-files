@@ -1,0 +1,71 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{"behavior":"file_expiration","path":"Bar","value":14}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors
+    method: POST
+  response:
+    body: '{"id":272843,"behavior":"file_expiration","path":"Bar","value":{"days_to_retain":14,"delete_empty_folders":false}}'
+    headers:
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Content-Type:
+      - application/json
+      Server:
+      - files.com
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/272843
+    method: GET
+  response:
+    body: '{"id":272843,"behavior":"file_expiration","path":"Bar","value":{"days_to_retain":14,"delete_empty_folders":false}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/272843
+    method: GET
+  response:
+    body: '{"id":272843,"behavior":"file_expiration","path":"Bar","value":{"days_to_retain":14,"delete_empty_folders":false}}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/272843
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""

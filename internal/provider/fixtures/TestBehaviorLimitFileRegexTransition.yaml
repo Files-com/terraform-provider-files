@@ -1,0 +1,101 @@
+---
+version: 1
+interactions:
+- request:
+    body: '{"behavior":"limit_file_regex","path":"Regex","value":["/Document-.*/"]}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors
+    method: POST
+  response:
+    body: '{"id":300002,"path":"Regex","behavior":"limit_file_regex","value":["/Document-.*/"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 201 Created
+    code: 201
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/300002
+    method: GET
+  response:
+    body: '{"id":300002,"path":"Regex","behavior":"limit_file_regex","value":["/Document-.*/"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/300002
+    method: GET
+  response:
+    body: '{"id":300002,"path":"Regex","behavior":"limit_file_regex","value":["/Document-.*/"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: '{"path":"Regex","value":["/Document-.*/"]}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/300002
+    method: PATCH
+  response:
+    body: '{"id":300002,"path":"Regex","behavior":"limit_file_regex","value":["/Document-.*/"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/300002
+    method: GET
+  response:
+    body: '{"id":300002,"path":"Regex","behavior":"limit_file_regex","value":["/Document-.*/"]}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/behaviors/300002
+    method: DELETE
+  response:
+    body: ""
+    headers: {}
+    status: 204 No Content
+    code: 204
+    duration: ""

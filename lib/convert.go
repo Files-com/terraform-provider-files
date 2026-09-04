@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"maps"
 	"math"
+	"math/big"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -18,10 +20,15 @@ import (
 )
 
 type JSONSchemaVariant struct {
-	Name     string
-	Value    string
-	Required []string
-	Allowed  []string
+	Name           string
+	Value          string
+	RootType       string
+	Required       []string
+	Allowed        []string
+	Writable       []string
+	WriteOnly      []string
+	LegacyProperty string
+	LegacyList     bool
 }
 
 func TimeToStringType(ctx context.Context, path path.Path, source *time.Time, dest *types.String) error {
@@ -284,6 +291,68 @@ func WrapDiscriminatedUnionAtPath(ctx context.Context, attributePath path.Path, 
 	})
 }
 
+func UnwrapSiblingDiscriminator(_ context.Context, attributePath path.Path, source any, discriminator string, variants []JSONSchemaVariant) (any, diag.Diagnostics) {
+	if source == nil {
+		return nil, nil
+	}
+	wrapper, ok := source.(map[string]interface{})
+	if !ok {
+		return jsonSchemaTransformError(attributePath, "expected an object")
+	}
+	variant, ok := findJSONSchemaVariant(variants, discriminator)
+	if !ok {
+		return jsonSchemaTransformError(attributePath, "unknown sibling discriminator "+discriminator)
+	}
+	var selected string
+	var value any
+	for name, candidate := range wrapper {
+		if candidate == nil {
+			continue
+		}
+		if selected != "" {
+			return jsonSchemaTransformError(attributePath, "expected exactly one variant")
+		}
+		selected = name
+		value = candidate
+	}
+	if selected != variant.Name {
+		return jsonSchemaTransformError(attributePath, "value variant must match sibling discriminator "+discriminator)
+	}
+	return value, nil
+}
+
+func WrapSiblingDiscriminator(_ context.Context, attributePath path.Path, source any, discriminator string, variants []JSONSchemaVariant) (any, diag.Diagnostics) {
+	if source == nil {
+		return nil, nil
+	}
+	source, _ = decodeJSONString(source)
+	variant, ok := findJSONSchemaVariant(variants, discriminator)
+	if !ok {
+		return jsonSchemaTransformError(attributePath, "unknown sibling discriminator "+discriminator)
+	}
+	legacy, shapeDiags := siblingDiscriminatorValueIsLegacy(attributePath, source, discriminator, variants)
+	if shapeDiags.HasError() {
+		return nil, shapeDiags
+	}
+	if !legacy {
+		return source, nil
+	}
+	if variant.LegacyProperty != "" {
+		if value, ok := source.(string); ok && value == "" {
+			return nil, nil
+		}
+		if _, ok := source.(map[string]interface{}); !ok {
+			if variant.LegacyList {
+				if _, ok := source.([]interface{}); !ok {
+					source = []interface{}{source}
+				}
+			}
+			source = map[string]interface{}{variant.LegacyProperty: source}
+		}
+	}
+	return map[string]interface{}{variant.Name: source}, nil
+}
+
 func UngroupStructuralUnionAtPath(ctx context.Context, attributePath path.Path, source any, names []string, variants []JSONSchemaVariant) (any, diag.Diagnostics) {
 	return transformJSONSchemaAtPath(attributePath, source, names, func(valuePath path.Path, value any) (any, diag.Diagnostics) {
 		entries, ok := value.(map[string]interface{})
@@ -492,11 +561,15 @@ func schemaValue(ctx context.Context, path path.Path, source any, target attr.Ty
 		}
 		return types.StringValue(value), nil
 	case basetypes.BoolType:
-		value, ok := source.(bool)
-		if !ok {
-			return schemaConversionError(path, target, source)
+		switch value := source.(type) {
+		case bool:
+			return types.BoolValue(value), nil
+		case string:
+			if value == "true" || value == "false" {
+				return types.BoolValue(value == "true"), nil
+			}
 		}
-		return types.BoolValue(value), nil
+		return schemaConversionError(path, target, source)
 	case basetypes.Int64Type:
 		switch value := source.(type) {
 		case int:
@@ -506,6 +579,14 @@ func schemaValue(ctx context.Context, path path.Path, source any, target attr.Ty
 		case float64:
 			if math.Trunc(value) == value {
 				return types.Int64Value(int64(value)), nil
+			}
+		case string:
+			value = strings.TrimSpace(value)
+			if value == "" {
+				return types.Int64Null(), nil
+			}
+			if integer, err := strconv.ParseInt(value, 10, 64); err == nil {
+				return types.Int64Value(integer), nil
 			}
 		}
 		return schemaConversionError(path, target, source)
@@ -626,7 +707,18 @@ func ToDynamic(ctx context.Context, path path.Path, source any, plan attr.Value)
 		dest = types.DynamicValue(types.StringValue(actualValue))
 	case float64:
 		tflog.Info(ctx, "Converting float64 to Float64Value")
-		dest = types.DynamicValue(types.Float64Value(actualValue))
+		if _, ok := plan.(types.Number); ok {
+			dest = types.DynamicValue(types.NumberValue(big.NewFloat(actualValue)))
+		} else {
+			dest = types.DynamicValue(types.Float64Value(actualValue))
+		}
+	case int64:
+		tflog.Info(ctx, "Converting int64 to Int64Value")
+		if _, ok := plan.(types.Number); ok {
+			dest = types.DynamicValue(types.NumberValue(new(big.Float).SetInt64(actualValue)))
+		} else {
+			dest = types.DynamicValue(types.Int64Value(actualValue))
+		}
 	case nil:
 		tflog.Info(ctx, "Skipping nil value")
 	default:
