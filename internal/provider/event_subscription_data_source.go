@@ -37,6 +37,7 @@ type eventSubscriptionDataSourceModel struct {
 	Name                 types.String  `tfsdk:"name"`
 	Subject              types.String  `tfsdk:"subject"`
 	Message              types.String  `tfsdk:"message"`
+	MessageOnly          types.Bool    `tfsdk:"message_only"`
 	Enabled              types.Bool    `tfsdk:"enabled"`
 	EventTypes           types.List    `tfsdk:"event_types"`
 	Filter               types.Dynamic `tfsdk:"filter"`
@@ -99,6 +100,10 @@ func (r *eventSubscriptionDataSource) Schema(_ context.Context, _ datasource.Sch
 			},
 			"message": schema.StringAttribute{
 				Description: "Custom message to include in notification emails.",
+				Computed:    true,
+			},
+			"message_only": schema.BoolAttribute{
+				Description: "If true, notification email bodies contain only the custom message, omitting event details and the review button. Requires a custom message, defaults to false, and does not affect non-email targets.",
 				Computed:    true,
 			},
 			"enabled": schema.BoolAttribute{
@@ -175,6 +180,7 @@ func (r *eventSubscriptionDataSource) populateDataSourceModel(ctx context.Contex
 	state.Name = types.StringValue(eventSubscription.Name)
 	state.Subject = types.StringValue(eventSubscription.Subject)
 	state.Message = types.StringValue(eventSubscription.Message)
+	state.MessageOnly = types.BoolPointerValue(eventSubscription.MessageOnly)
 	state.Enabled = types.BoolPointerValue(eventSubscription.Enabled)
 	state.EventTypes, propDiags = types.ListValueFrom(ctx, types.StringType, eventSubscription.EventTypes)
 	diags.Append(propDiags...)

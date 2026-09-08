@@ -5,6 +5,7 @@ resource "files_event_subscription" "example_event_subscription" {
   name                    = "example"
   subject                 = "example"
   message                 = "example"
+  message_only            = true
   enabled                 = true
   event_types             = ["example"]
   delivery_policy         = "example"

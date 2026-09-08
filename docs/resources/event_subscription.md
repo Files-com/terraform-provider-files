@@ -20,6 +20,7 @@ resource "files_event_subscription" "example_event_subscription" {
   name                    = "example"
   subject                 = "example"
   message                 = "example"
+  message_only            = true
   enabled                 = true
   event_types             = ["example"]
   delivery_policy         = "example"
@@ -44,6 +45,7 @@ resource "files_event_subscription" "example_event_subscription" {
 - `event_types` (List of String) Event type strings matched by this subscription. Blank means all event types.
 - `filter` (Dynamic) Structured event payload filter.
 - `message` (String) Custom message to include in notification emails.
+- `message_only` (Boolean) If true, notification email bodies contain only the custom message, omitting event details and the review button. Requires a custom message, defaults to false, and does not affect non-email targets.
 - `subject` (String) Custom subject line to use for notification emails.
 - `workspace_id` (Number) Workspace ID. 0 means the default workspace or site-wide.
 

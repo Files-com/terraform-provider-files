@@ -36,6 +36,7 @@ data "files_event_subscription" "example_event_subscription" {
 - `event_types` (List of String) Event type strings matched by this subscription. Blank means all event types.
 - `filter` (Dynamic) Structured event payload filter.
 - `message` (String) Custom message to include in notification emails.
+- `message_only` (Boolean) If true, notification email bodies contain only the custom message, omitting event details and the review button. Requires a custom message, defaults to false, and does not affect non-email targets.
 - `name` (String) Event Subscription name.
 - `subject` (String) Custom subject line to use for notification emails.
 - `updated_at` (String) Event Subscription update date/time.

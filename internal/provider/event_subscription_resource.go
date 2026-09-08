@@ -48,6 +48,7 @@ type eventSubscriptionResourceModel struct {
 	ApplyToAllWorkspaces types.Bool    `tfsdk:"apply_to_all_workspaces"`
 	Subject              types.String  `tfsdk:"subject"`
 	Message              types.String  `tfsdk:"message"`
+	MessageOnly          types.Bool    `tfsdk:"message_only"`
 	Enabled              types.Bool    `tfsdk:"enabled"`
 	EventTypes           types.List    `tfsdk:"event_types"`
 	Filter               types.Dynamic `tfsdk:"filter"`
@@ -127,6 +128,14 @@ func (r *eventSubscriptionResource) Schema(_ context.Context, _ resource.SchemaR
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"message_only": schema.BoolAttribute{
+				Description: "If true, notification email bodies contain only the custom message, omitting event details and the review button. Requires a custom message, defaults to false, and does not affect non-email targets.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"enabled": schema.BoolAttribute{
@@ -213,6 +222,9 @@ func (r *eventSubscriptionResource) Create(ctx context.Context, req resource.Cre
 	paramsEventSubscriptionCreate.Name = plan.Name.ValueString()
 	paramsEventSubscriptionCreate.Subject = plan.Subject.ValueString()
 	paramsEventSubscriptionCreate.Message = plan.Message.ValueString()
+	if !plan.MessageOnly.IsNull() && !plan.MessageOnly.IsUnknown() {
+		paramsEventSubscriptionCreate.MessageOnly = plan.MessageOnly.ValueBoolPointer()
+	}
 	if !plan.Enabled.IsNull() && !plan.Enabled.IsUnknown() {
 		paramsEventSubscriptionCreate.Enabled = plan.Enabled.ValueBoolPointer()
 	}
@@ -325,6 +337,9 @@ func (r *eventSubscriptionResource) Update(ctx context.Context, req resource.Upd
 	if !config.Message.IsNull() && !config.Message.IsUnknown() {
 		paramsEventSubscriptionUpdate["message"] = config.Message.ValueString()
 	}
+	if !config.MessageOnly.IsNull() && !config.MessageOnly.IsUnknown() {
+		paramsEventSubscriptionUpdate["message_only"] = config.MessageOnly.ValueBool()
+	}
 	if !config.Enabled.IsNull() && !config.Enabled.IsUnknown() {
 		paramsEventSubscriptionUpdate["enabled"] = config.Enabled.ValueBool()
 	}
@@ -423,6 +438,7 @@ func (r *eventSubscriptionResource) populateResourceModel(ctx context.Context, e
 	state.Name = types.StringValue(eventSubscription.Name)
 	state.Subject = types.StringValue(eventSubscription.Subject)
 	state.Message = types.StringValue(eventSubscription.Message)
+	state.MessageOnly = types.BoolPointerValue(eventSubscription.MessageOnly)
 	state.Enabled = types.BoolPointerValue(eventSubscription.Enabled)
 	state.EventTypes, propDiags = types.ListValueFrom(ctx, types.StringType, eventSubscription.EventTypes)
 	diags.Append(propDiags...)
