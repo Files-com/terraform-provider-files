@@ -1,9 +1,9 @@
 module github.com/Files-com/terraform-provider-files
 
-go 1.26.0
+go 1.26.8
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.3.244
+	github.com/Files-com/files-sdk-go/v3 v3.3.245
 	github.com/hashicorp/terraform-plugin-docs v0.24.0
 	github.com/hashicorp/terraform-plugin-framework v1.19.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.19.0
