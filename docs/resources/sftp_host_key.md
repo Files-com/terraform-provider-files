@@ -19,8 +19,9 @@ Files.com allows you to provide custom SFTP Host Keys, which is particularly use
 
 ```terraform
 resource "files_sftp_host_key" "example_sftp_host_key" {
-  active = true
-  name   = "My Key"
+  active           = true
+  custom_domain_id = 1
+  name             = "My Key"
 }
 ```
 
@@ -32,6 +33,7 @@ resource "files_sftp_host_key" "example_sftp_host_key" {
 > **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
 
 - `active` (Boolean) If true, use this SFTP Host Key.
+- `custom_domain_id` (Number) Custom Domain ID. If set, this key is used only for that Custom Domain.
 - `name` (String) The friendly name of this SFTP Host Key.
 - `private_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) The private key data.
 

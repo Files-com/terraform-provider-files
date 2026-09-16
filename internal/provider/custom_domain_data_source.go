@@ -37,6 +37,7 @@ type customDomainDataSourceModel struct {
 	SslCertificateId types.Int64  `tfsdk:"ssl_certificate_id"`
 	BrickManaged     types.Bool   `tfsdk:"brick_managed"`
 	FolderBehaviorId types.Int64  `tfsdk:"folder_behavior_id"`
+	IpAddresses      types.List   `tfsdk:"ip_addresses"`
 	CreatedAt        types.String `tfsdk:"created_at"`
 	UpdatedAt        types.String `tfsdk:"updated_at"`
 }
@@ -96,6 +97,11 @@ func (r *customDomainDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Description: "Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`.",
 				Computed:    true,
 			},
+			"ip_addresses": schema.ListAttribute{
+				Description: "Dedicated public IP addresses allocated to this Custom Domain.",
+				Computed:    true,
+				ElementType: types.StringType,
+			},
 			"created_at": schema.StringAttribute{
 				Description: "When this Custom Domain was created.",
 				Computed:    true,
@@ -139,6 +145,8 @@ func (r *customDomainDataSource) Read(ctx context.Context, req datasource.ReadRe
 }
 
 func (r *customDomainDataSource) populateDataSourceModel(ctx context.Context, customDomain files_sdk.CustomDomain, state *customDomainDataSourceModel) (diags diag.Diagnostics) {
+	var propDiags diag.Diagnostics
+
 	state.Id = types.Int64Value(customDomain.Id)
 	state.Domain = types.StringValue(customDomain.Domain)
 	state.Destination = types.StringValue(customDomain.Destination)
@@ -146,6 +154,8 @@ func (r *customDomainDataSource) populateDataSourceModel(ctx context.Context, cu
 	state.SslCertificateId = types.Int64Value(customDomain.SslCertificateId)
 	state.BrickManaged = types.BoolPointerValue(customDomain.BrickManaged)
 	state.FolderBehaviorId = types.Int64Value(customDomain.FolderBehaviorId)
+	state.IpAddresses, propDiags = types.ListValueFrom(ctx, types.StringType, customDomain.IpAddresses)
+	diags.Append(propDiags...)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), customDomain.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files CustomDomain",

@@ -30,6 +30,7 @@ type sftpHostKeyDataSource struct {
 type sftpHostKeyDataSourceModel struct {
 	Id                types.Int64  `tfsdk:"id"`
 	Active            types.Bool   `tfsdk:"active"`
+	CustomDomainId    types.Int64  `tfsdk:"custom_domain_id"`
 	Name              types.String `tfsdk:"name"`
 	KeyType           types.String `tfsdk:"key_type"`
 	FingerprintMd5    types.String `tfsdk:"fingerprint_md5"`
@@ -69,6 +70,10 @@ func (r *sftpHostKeyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 			},
 			"active": schema.BoolAttribute{
 				Description: "If true, use this SFTP Host Key.",
+				Computed:    true,
+			},
+			"custom_domain_id": schema.Int64Attribute{
+				Description: "Custom Domain ID. If set, this key is used only for that Custom Domain.",
 				Computed:    true,
 			},
 			"name": schema.StringAttribute{
@@ -123,6 +128,7 @@ func (r *sftpHostKeyDataSource) Read(ctx context.Context, req datasource.ReadReq
 
 func (r *sftpHostKeyDataSource) populateDataSourceModel(ctx context.Context, sftpHostKey files_sdk.SftpHostKey, state *sftpHostKeyDataSourceModel) (diags diag.Diagnostics) {
 	state.Active = types.BoolPointerValue(sftpHostKey.Active)
+	state.CustomDomainId = types.Int64Value(sftpHostKey.CustomDomainId)
 	state.Id = types.Int64Value(sftpHostKey.Id)
 	state.Name = types.StringValue(sftpHostKey.Name)
 	state.KeyType = types.StringValue(sftpHostKey.KeyType)

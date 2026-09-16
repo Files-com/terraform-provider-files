@@ -40,6 +40,7 @@ type sftpHostKeyResource struct {
 
 type sftpHostKeyResourceModel struct {
 	Active            types.Bool   `tfsdk:"active"`
+	CustomDomainId    types.Int64  `tfsdk:"custom_domain_id"`
 	Name              types.String `tfsdk:"name"`
 	PrivateKey        types.String `tfsdk:"private_key"`
 	Id                types.Int64  `tfsdk:"id"`
@@ -81,6 +82,14 @@ func (r *sftpHostKeyResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"custom_domain_id": schema.Int64Attribute{
+				Description: "Custom Domain ID. If set, this key is used only for that Custom Domain.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"name": schema.StringAttribute{
@@ -137,6 +146,7 @@ func (r *sftpHostKeyResource) Create(ctx context.Context, req resource.CreateReq
 	if !plan.Active.IsNull() && !plan.Active.IsUnknown() {
 		paramsSftpHostKeyCreate.Active = plan.Active.ValueBoolPointer()
 	}
+	paramsSftpHostKeyCreate.CustomDomainId = plan.CustomDomainId.ValueInt64()
 	paramsSftpHostKeyCreate.Name = plan.Name.ValueString()
 	paramsSftpHostKeyCreate.PrivateKey = config.PrivateKey.ValueString()
 
@@ -219,6 +229,9 @@ func (r *sftpHostKeyResource) Update(ctx context.Context, req resource.UpdateReq
 	if !config.Active.IsNull() && !config.Active.IsUnknown() {
 		paramsSftpHostKeyUpdate["active"] = config.Active.ValueBool()
 	}
+	if !config.CustomDomainId.IsNull() && !config.CustomDomainId.IsUnknown() {
+		paramsSftpHostKeyUpdate["custom_domain_id"] = config.CustomDomainId.ValueInt64()
+	}
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
 		paramsSftpHostKeyUpdate["name"] = config.Name.ValueString()
 	}
@@ -294,6 +307,7 @@ func (r *sftpHostKeyResource) ImportState(ctx context.Context, req resource.Impo
 
 func (r *sftpHostKeyResource) populateResourceModel(ctx context.Context, sftpHostKey files_sdk.SftpHostKey, state *sftpHostKeyResourceModel) (diags diag.Diagnostics) {
 	state.Active = types.BoolPointerValue(sftpHostKey.Active)
+	state.CustomDomainId = types.Int64Value(sftpHostKey.CustomDomainId)
 	state.Id = types.Int64Value(sftpHostKey.Id)
 	state.Name = types.StringValue(sftpHostKey.Name)
 	state.KeyType = types.StringValue(sftpHostKey.KeyType)

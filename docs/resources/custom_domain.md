@@ -40,6 +40,7 @@ resource "files_custom_domain" "example_custom_domain" {
 - `created_at` (String) When this Custom Domain was created.
 - `dns_status` (String) Current DNS verification status.
 - `id` (Number) Custom Domain ID.
+- `ip_addresses` (List of String) Dedicated public IP addresses allocated to this Custom Domain.
 - `updated_at` (String) When this Custom Domain was last updated.
 
 ## Import

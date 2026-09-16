@@ -47,6 +47,7 @@ type customDomainResourceModel struct {
 	Id               types.Int64  `tfsdk:"id"`
 	DnsStatus        types.String `tfsdk:"dns_status"`
 	BrickManaged     types.Bool   `tfsdk:"brick_managed"`
+	IpAddresses      types.List   `tfsdk:"ip_addresses"`
 	CreatedAt        types.String `tfsdk:"created_at"`
 	UpdatedAt        types.String `tfsdk:"updated_at"`
 }
@@ -126,6 +127,11 @@ func (r *customDomainResource) Schema(_ context.Context, _ resource.SchemaReques
 			"brick_managed": schema.BoolAttribute{
 				Description: "Is this domain's SSL certificate automatically managed and renewed by Files.com?",
 				Computed:    true,
+			},
+			"ip_addresses": schema.ListAttribute{
+				Description: "Dedicated public IP addresses allocated to this Custom Domain.",
+				Computed:    true,
+				ElementType: types.StringType,
 			},
 			"created_at": schema.StringAttribute{
 				Description: "When this Custom Domain was created.",
@@ -315,6 +321,8 @@ func (r *customDomainResource) ImportState(ctx context.Context, req resource.Imp
 }
 
 func (r *customDomainResource) populateResourceModel(ctx context.Context, customDomain files_sdk.CustomDomain, state *customDomainResourceModel) (diags diag.Diagnostics) {
+	var propDiags diag.Diagnostics
+
 	state.Id = types.Int64Value(customDomain.Id)
 	state.Domain = types.StringValue(customDomain.Domain)
 	state.Destination = types.StringValue(customDomain.Destination)
@@ -322,6 +330,8 @@ func (r *customDomainResource) populateResourceModel(ctx context.Context, custom
 	state.SslCertificateId = types.Int64Value(customDomain.SslCertificateId)
 	state.BrickManaged = types.BoolPointerValue(customDomain.BrickManaged)
 	state.FolderBehaviorId = types.Int64Value(customDomain.FolderBehaviorId)
+	state.IpAddresses, propDiags = types.ListValueFrom(ctx, types.StringType, customDomain.IpAddresses)
+	diags.Append(propDiags...)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), customDomain.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files CustomDomain",

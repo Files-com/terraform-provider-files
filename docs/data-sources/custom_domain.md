@@ -33,5 +33,6 @@ data "files_custom_domain" "example_custom_domain" {
 - `dns_status` (String) Current DNS verification status.
 - `domain` (String) Customer-owned domain name.
 - `folder_behavior_id` (Number) Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`.
+- `ip_addresses` (List of String) Dedicated public IP addresses allocated to this Custom Domain.
 - `ssl_certificate_id` (Number) Current SSL certificate ID.
 - `updated_at` (String) When this Custom Domain was last updated.

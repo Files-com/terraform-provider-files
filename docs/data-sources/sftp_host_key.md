@@ -33,6 +33,7 @@ data "files_sftp_host_key" "example_sftp_host_key" {
 ### Read-Only
 
 - `active` (Boolean) If true, use this SFTP Host Key.
+- `custom_domain_id` (Number) Custom Domain ID. If set, this key is used only for that Custom Domain.
 - `fingerprint_md5` (String) MD5 Fingerprint of the public key
 - `fingerprint_sha256` (String) SHA256 Fingerprint of the public key
 - `key_type` (String) SSH key type
