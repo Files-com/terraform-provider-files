@@ -81,7 +81,7 @@ data "files_sso_strategy" "example_sso_strategy" {
 - `saml_provider_slo_target_url` (String) Identity provider SLO endpoint
 - `saml_provider_sso_target_url` (String) Identity provider SSO endpoint if saml_provider_metadata_url is not available.
 - `scim_authentication_method` (String) SCIM authentication type.
-- `scim_oauth_access_token` (String) SCIM OAuth Access Token.
+- `scim_oauth_access_token` (String) SCIM OAuth Access Token. Only returned when the token is first issued or reset.
 - `scim_oauth_access_token_expires_at` (String) SCIM OAuth Access Token Expiration Time.
 - `scim_username` (String) SCIM username.
 - `subdomain` (String) Subdomain or domain name for your auth provider.   Example: `https://[subdomain].okta.com/`

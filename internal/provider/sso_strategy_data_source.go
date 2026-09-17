@@ -170,7 +170,7 @@ func (r *ssoStrategyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Computed:    true,
 			},
 			"scim_oauth_access_token": schema.StringAttribute{
-				Description: "SCIM OAuth Access Token.",
+				Description: "SCIM OAuth Access Token. Only returned when the token is first issued or reset.",
 				Computed:    true,
 			},
 			"scim_oauth_access_token_expires_at": schema.StringAttribute{
