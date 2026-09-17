@@ -88,7 +88,6 @@ type remoteServerDataSourceModel struct {
 	EnableDedicatedIps                      types.Bool   `tfsdk:"enable_dedicated_ips"`
 	FilesAgentPermissionSet                 types.String `tfsdk:"files_agent_permission_set"`
 	FilesAgentRoot                          types.String `tfsdk:"files_agent_root"`
-	FilesAgentApiToken                      types.String `tfsdk:"files_agent_api_token"`
 	FilesAgentVersion                       types.String `tfsdk:"files_agent_version"`
 	FilesAgentUpToDate                      types.Bool   `tfsdk:"files_agent_up_to_date"`
 	FilesAgentLatestVersion                 types.String `tfsdk:"files_agent_latest_version"`
@@ -140,7 +139,7 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Required:    true,
 			},
 			"disabled": schema.BoolAttribute{
-				Description: "If true, this Remote Server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.",
+				Description: "If true, this Remote Server is disabled. Updating it clears this flag, except for retired Agent v1 records, which remain disabled.",
 				Computed:    true,
 			},
 			"authentication_method": schema.StringAttribute{
@@ -375,10 +374,6 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Description: "Agent local root path",
 				Computed:    true,
 			},
-			"files_agent_api_token": schema.StringAttribute{
-				Description: "Files Agent API Token",
-				Computed:    true,
-			},
 			"files_agent_version": schema.StringAttribute{
 				Description: "Files Agent version",
 				Computed:    true,
@@ -542,7 +537,6 @@ func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, re
 	state.EnableDedicatedIps = types.BoolPointerValue(remoteServer.EnableDedicatedIps)
 	state.FilesAgentPermissionSet = types.StringValue(remoteServer.FilesAgentPermissionSet)
 	state.FilesAgentRoot = types.StringValue(remoteServer.FilesAgentRoot)
-	state.FilesAgentApiToken = types.StringValue(remoteServer.FilesAgentApiToken)
 	state.FilesAgentVersion = types.StringValue(remoteServer.FilesAgentVersion)
 	state.FilesAgentUpToDate = types.BoolPointerValue(remoteServer.FilesAgentUpToDate)
 	state.FilesAgentLatestVersion = types.StringValue(remoteServer.FilesAgentLatestVersion)

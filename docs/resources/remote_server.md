@@ -288,8 +288,7 @@ resource "files_remote_server" "example_remote_server" {
 - `auth_status` (String) Either `in_setup` or `complete`
 - `authentication_method` (String) Type of authentication method to use
 - `direct_transfer_available` (Boolean) Whether the Files Agent Proxy recently validated a direct transfer connection. `true` means a direct connection was recently validated (actual availability can vary by client network), `false` means direct transfers are enabled but not currently available, and `null` means direct transfers are disabled or unsupported. Only provided for a connected Files Agent when showing a single Remote Server.
-- `disabled` (Boolean) If true, this Remote Server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.
-- `files_agent_api_token` (String) Files Agent API Token
+- `disabled` (Boolean) If true, this Remote Server is disabled. Updating it clears this flag, except for retired Agent v1 records, which remain disabled.
 - `files_agent_latest_version` (String) Latest available Files Agent version
 - `files_agent_supports_push_updates` (Boolean) Files Agent supports receiving push updates
 - `files_agent_up_to_date` (Boolean) If true, the Files Agent is up to date.

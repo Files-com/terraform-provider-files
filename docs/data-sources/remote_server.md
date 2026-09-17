@@ -157,12 +157,11 @@ data "files_remote_server" "example_remote_server" {
 - `cloudflare_endpoint` (String) Cloudflare: endpoint
 - `description` (String) Internal description for your reference
 - `direct_transfer_available` (Boolean) Whether the Files Agent Proxy recently validated a direct transfer connection. `true` means a direct connection was recently validated (actual availability can vary by client network), `false` means direct transfers are enabled but not currently available, and `null` means direct transfers are disabled or unsupported. Only provided for a connected Files Agent when showing a single Remote Server.
-- `disabled` (Boolean) If true, this Remote Server has been disabled due to failures.  Make any change or set disabled to false to clear this flag.
+- `disabled` (Boolean) If true, this Remote Server is disabled. Updating it clears this flag, except for retired Agent v1 records, which remain disabled.
 - `dropbox_teams` (Boolean) Dropbox: If true, list Team folders in root?
 - `enable_dedicated_ips` (Boolean) `true` if remote server only accepts connections from dedicated IPs
 - `filebase_access_key` (String) Filebase: Access Key.
 - `filebase_bucket` (String) Filebase: Bucket name
-- `files_agent_api_token` (String) Files Agent API Token
 - `files_agent_latest_version` (String) Latest available Files Agent version
 - `files_agent_permission_set` (String) Local permissions for files agent. read_only, write_only, or read_write
 - `files_agent_root` (String) Agent local root path
