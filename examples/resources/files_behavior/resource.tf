@@ -310,7 +310,7 @@ resource "files_behavior" "example_auto_unzip_behavior" {
   behavior = "auto_unzip"
   value    = {
     auto_unzip = {
-      destination_path = "/Uploads/Unzipped/%Y/%m/%d"
+      destination_path = "foo/bar/unzipped/%Y/%m/%d"
     }
   }
 }

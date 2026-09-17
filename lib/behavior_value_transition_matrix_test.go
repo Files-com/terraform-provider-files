@@ -43,7 +43,7 @@ func TestGeneratedBehaviorValueTransitionMatrix(t *testing.T) {
 		{name: "archive_overwritten_or_deleted_files", apiValue: "{\"archive_path\":\"/Archive\"}"},
 		{name: "auto_recrypt", apiValue: "{\"decrypt_gpg_key_ids\":[1],\"encrypt_gpg_key_ids\":[2],\"ignore_mdc_error\":false,\"armor\":false}"},
 		{name: "metadata_category", apiValue: "{\"metadata_category_id\":1}"},
-		{name: "auto_unzip", apiValue: "{\"destination_path\":\"/Uploads/Unzipped/%Y/%m/%d\"}"},
+		{name: "auto_unzip", apiValue: "{\"destination_path\":\"foo/bar/unzipped/%Y/%m/%d\"}"},
 		{name: "remote_server_metadata_index", apiValue: "{\"interval_minutes\":1440}"},
 		{name: "malware_scanning", apiValue: "{}"},
 	}
