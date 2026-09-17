@@ -80,7 +80,7 @@ func (r *automationRunDataSource) Metadata(_ context.Context, req datasource.Met
 
 func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "An AutomationRun is a record with information about a single execution of a given Automation.\n\n\n\nAutomation Runs can be retried upon `failure` or `partial_failure` by setting the `retry_on_failure_interval_in_minutes` and `retry_on_failure_number_of_attempts` settings on the associated Automation.\n\n\n\nWhen retries occur, a new AutomationRun will be created for each retry. The property `retry_at` on the original run, if set, represents when that run will be retried next. The properties `retried_at` and `retried_in_run_id` will be set in the original run that failed, at the time of retry. The property `retry_of_run_id` will be set in the new run.",
+		Description: "An AutomationRun is a record with information about a single execution of a given Automation.\n\nAutomation Runs can be retried upon `failure` or `partial_failure` by setting the `retry_on_failure_interval_in_minutes` and `retry_on_failure_number_of_attempts` settings on the associated Automation.\n\nWhen retries occur, a new AutomationRun will be created for each retry.  The property `retry_at` on the original run, if set, represents when that run will be retried next.  The properties `retried_at` and `retried_in_run_id` will be set in the original run that failed, at the time of retry.  The property `retry_of_run_id` will be set in the new run.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "ID.",

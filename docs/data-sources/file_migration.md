@@ -11,8 +11,6 @@ description: |-
 
 A FileMigration is a background operation on one or more files, such as a copy or a region migration.
 
-
-
 If no `operation` or `dest_path` is present, then the record represents a region migration.
 
 ## Example Usage

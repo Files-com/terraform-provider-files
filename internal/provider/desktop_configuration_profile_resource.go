@@ -21,6 +21,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -81,6 +82,9 @@ func (r *desktopConfigurationProfileResource) Schema(_ context.Context, _ resour
 			"mount_mappings": schema.DynamicAttribute{
 				Description: "Mount point mappings for the desktop app. Keys must be a single uppercase Windows drive letter other than A, B, or C, and values are Files.com paths to mount there.",
 				Required:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_desktop_configuration_profile.mount_mappings", "mount_mappings = {\n  W = \"Americas\"\n}", "March 1, 2027"),
+				},
 			},
 			"workspace_id": schema.Int64Attribute{
 				Description: "Workspace ID",
@@ -133,7 +137,7 @@ func (r *desktopConfigurationProfileResource) Create(ctx context.Context, req re
 
 	paramsDesktopConfigurationProfileCreate := files_sdk.DesktopConfigurationProfileCreateParams{}
 	paramsDesktopConfigurationProfileCreate.Name = plan.Name.ValueString()
-	createMountMappings, diags := lib.DynamicToInterface(ctx, path.Root("mount_mappings"), plan.MountMappings)
+	createMountMappings, diags := lib.JSONValueToAPI(ctx, path.Root("mount_mappings"), config.MountMappings)
 	resp.Diagnostics.Append(diags...)
 	paramsDesktopConfigurationProfileCreate.MountMappings = createMountMappings
 	paramsDesktopConfigurationProfileCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
@@ -215,6 +219,12 @@ func (r *desktopConfigurationProfileResource) Update(ctx context.Context, req re
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var state desktopConfigurationProfileResourceModel
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsDesktopConfigurationProfileUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
@@ -226,9 +236,11 @@ func (r *desktopConfigurationProfileResource) Update(ctx context.Context, req re
 	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
 		paramsDesktopConfigurationProfileUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
-	updateMountMappings, diags := lib.DynamicToInterface(ctx, path.Root("mount_mappings"), config.MountMappings)
-	resp.Diagnostics.Append(diags...)
-	paramsDesktopConfigurationProfileUpdate["mount_mappings"] = updateMountMappings
+	if !config.MountMappings.IsNull() && !config.MountMappings.IsUnknown() {
+		updateMountMappings, diags := lib.JSONValueToAPI(ctx, path.Root("mount_mappings"), config.MountMappings)
+		resp.Diagnostics.Append(diags...)
+		paramsDesktopConfigurationProfileUpdate["mount_mappings"] = updateMountMappings
+	}
 	if !config.UseForAllUsers.IsNull() && !config.UseForAllUsers.IsUnknown() {
 		paramsDesktopConfigurationProfileUpdate["use_for_all_users"] = config.UseForAllUsers.ValueBool()
 	}
@@ -310,7 +322,7 @@ func (r *desktopConfigurationProfileResource) populateResourceModel(ctx context.
 	state.WorkspaceId = types.Int64Value(desktopConfigurationProfile.WorkspaceId)
 	state.UseForAllUsers = types.BoolPointerValue(desktopConfigurationProfile.UseForAllUsers)
 	state.DisableDriveMounting = types.BoolPointerValue(desktopConfigurationProfile.DisableDriveMounting)
-	state.MountMappings, propDiags = lib.ToDynamic(ctx, path.Root("mount_mappings"), desktopConfigurationProfile.MountMappings, state.MountMappings.UnderlyingValue())
+	state.MountMappings, propDiags = lib.APIToDynamicJSON(ctx, path.Root("mount_mappings"), desktopConfigurationProfile.MountMappings, state.MountMappings, []string{""}, []string{}, "mount_mappings")
 	diags.Append(propDiags...)
 
 	return

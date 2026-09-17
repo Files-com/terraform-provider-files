@@ -17,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
@@ -99,8 +100,13 @@ func (r *fileResource) Metadata(_ context.Context, req resource.MetadataRequest,
 }
 
 func (r *fileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = schema.Schema{
-		Description: "",
+	resp.Schema = r.resourceSchema()
+}
+
+func (r *fileResource) resourceSchema() schema.Schema {
+	return schema.Schema{
+		Description: "A File object represents a file or folder on your Files.com site. The `type` field is `file` for files and `directory` for folders.",
+
 		Attributes: map[string]schema.Attribute{
 			"source": schema.StringAttribute{
 				Description: "Path to a file that will be read and uploaded.",
@@ -129,6 +135,9 @@ func (r *fileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "Custom metadata map of keys and values. Limited to 32 keys, 256 characters per key and 1024 characters per value.",
 				Computed:    true,
 				Optional:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_file.custom_metadata", "custom_metadata = {\n  department = \"finance\"\n}", "March 1, 2027"),
+				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
 				},
@@ -289,6 +298,11 @@ func (r *fileResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config fileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	err := r.client.Upload(file.UploadWithContext(ctx), file.UploadWithFile(plan.Source.ValueString()), file.UploadWithDestinationPath(plan.Path.ValueString()))
 	if err != nil {
@@ -301,7 +315,7 @@ func (r *fileResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	paramsFileUpdate := files_sdk.FileUpdateParams{}
 	paramsFileUpdate.Path = plan.Path.ValueString()
-	updateCustomMetadata, diags := lib.DynamicToInterface(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
+	updateCustomMetadata, diags := lib.JSONValueToAPI(ctx, path.Root("custom_metadata"), config.CustomMetadata)
 	resp.Diagnostics.Append(diags...)
 	paramsFileUpdate.CustomMetadata = updateCustomMetadata
 	if !plan.ProvidedMtime.IsNull() {
@@ -321,6 +335,10 @@ func (r *fileResource) Create(ctx context.Context, req resource.CreateRequest, r
 		}
 	}
 	paramsFileUpdate.PriorityColor = plan.PriorityColor.ValueString()
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -390,6 +408,11 @@ func (r *fileResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config fileResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	var state fileResourceModel
 	diags = req.State.Get(ctx, &state)
@@ -419,7 +442,7 @@ func (r *fileResource) Update(ctx context.Context, req resource.UpdateRequest, r
 
 	paramsFileUpdate := files_sdk.FileUpdateParams{}
 	paramsFileUpdate.Path = plan.Path.ValueString()
-	updateCustomMetadata, diags := lib.DynamicToInterface(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
+	updateCustomMetadata, diags := lib.JSONValueToAPI(ctx, path.Root("custom_metadata"), config.CustomMetadata)
 	resp.Diagnostics.Append(diags...)
 	paramsFileUpdate.CustomMetadata = updateCustomMetadata
 	if !plan.ProvidedMtime.IsNull() {
@@ -439,6 +462,10 @@ func (r *fileResource) Update(ctx context.Context, req resource.UpdateRequest, r
 		}
 	}
 	paramsFileUpdate.PriorityColor = plan.PriorityColor.ValueString()
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -500,7 +527,7 @@ func (r *fileResource) populateResourceModel(ctx context.Context, file files_sdk
 	state.CreatedByInboxId = types.Int64Value(file.CreatedByInboxId)
 	state.CreatedByRemoteServerId = types.Int64Value(file.CreatedByRemoteServerId)
 	state.CreatedBySyncId = types.Int64Value(file.CreatedBySyncId)
-	state.CustomMetadata, propDiags = lib.ToDynamic(ctx, path.Root("custom_metadata"), file.CustomMetadata, state.CustomMetadata.UnderlyingValue())
+	state.CustomMetadata, propDiags = lib.APIToDynamicJSON(ctx, path.Root("custom_metadata"), file.CustomMetadata, state.CustomMetadata, []string{""}, []string{}, "empty_object")
 	diags.Append(propDiags...)
 	state.DisplayName = types.StringValue(file.DisplayName)
 	state.Type = types.StringValue(file.Type)

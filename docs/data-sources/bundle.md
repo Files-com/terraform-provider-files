@@ -11,10 +11,7 @@ description: |-
 # files_bundle (Data Source)
 
 A Bundle is the API/SDK term for the feature called Share Links in the web interface.
-
 The API provides the full set of actions related to Share Links, including sending them via E-Mail.
-
-
 
 Please note that we very closely monitor the E-Mailing feature and any abuse will result in disabling of your site.
 
@@ -82,3 +79,28 @@ data "files_bundle" "example_bundle" {
 - `watermark_attachment` (String) Preview watermark image applied to all bundle items.
 - `watermark_value` (Dynamic) Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value
 - `workspace_id` (Number) Workspace ID. `0` means the default workspace.
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027.
+
+#### watermark_value
+
+Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value
+
+| Field in `watermark_value` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `gravity` | string | No | Where to locate the watermark?  Valid values: `Center`, `East`, `NorthEast`, `North`, `NorthWest`, `SouthEast`, `South`, `SouthWest`, `West`. |
+| `max_height_or_width` | integer | No | Max width/height as percent of image preview. |
+| `transparency` | integer | No | Percentage applied to the watermark. |
+| `dynamic_text` | string | No | Watermark text. Use {{user}} to embed a username into the string. |
+
+#### requested_upload_slots
+
+Upload slots requested by the associated Inbox. Each slot contains a name used as its label and destination subfolder name.
+
+List of objects.
+
+| Field in `requested_upload_slots` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `name` | string | Yes | Upload slot label and destination subfolder name. |

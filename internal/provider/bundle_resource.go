@@ -19,9 +19,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/dynamicplanmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -68,6 +68,7 @@ type bundleResourceModel struct {
 	GroupId                                      types.Int64   `tfsdk:"group_id"`
 	ClickwrapId                                  types.Int64   `tfsdk:"clickwrap_id"`
 	InboxId                                      types.Int64   `tfsdk:"inbox_id"`
+	WatermarkValue                               types.Dynamic `tfsdk:"watermark_value"`
 	SendOneTimePasswordToRecipientAtRegistration types.Bool    `tfsdk:"send_one_time_password_to_recipient_at_registration"`
 	WorkspaceId                                  types.Int64   `tfsdk:"workspace_id"`
 	Password                                     types.String  `tfsdk:"password"`
@@ -91,7 +92,6 @@ type bundleResourceModel struct {
 	DeletedAt                                    types.String  `tfsdk:"deleted_at"`
 	Username                                     types.String  `tfsdk:"username"`
 	WatermarkAttachment                          types.String  `tfsdk:"watermark_attachment"`
-	WatermarkValue                               types.Dynamic `tfsdk:"watermark_value"`
 	HasInbox                                     types.Bool    `tfsdk:"has_inbox"`
 	DontAllowFoldersInUploads                    types.Bool    `tfsdk:"dont_allow_folders_in_uploads"`
 	RequestedUploadSlots                         types.Dynamic `tfsdk:"requested_upload_slots"`
@@ -123,7 +123,7 @@ func (r *bundleResource) Metadata(_ context.Context, req resource.MetadataReques
 
 func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Bundle is the API/SDK term for the feature called Share Links in the web interface.\n\nThe API provides the full set of actions related to Share Links, including sending them via E-Mail.\n\n\n\nPlease note that we very closely monitor the E-Mailing feature and any abuse will result in disabling of your site.",
+		Description: "A Bundle is the API/SDK term for the feature called Share Links in the web interface.\nThe API provides the full set of actions related to Share Links, including sending them via E-Mail.\n\nPlease note that we very closely monitor the E-Mailing feature and any abuse will result in disabling of your site.",
 		Attributes: map[string]schema.Attribute{
 			"paths": schema.ListAttribute{
 				Description: "A list of paths in this bundle.  For performance reasons, this is not provided when listing bundles.",
@@ -318,6 +318,17 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"watermark_value": schema.DynamicAttribute{
+				Description: "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_bundle.watermark_value", "watermark_value = {\n  gravity             = \"SouthWest\"\n  max_height_or_width = 20\n  transparency        = 25\n}", "March 1, 2027"),
+				},
+				PlanModifiers: []planmodifier.Dynamic{
+					dynamicplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"send_one_time_password_to_recipient_at_registration": schema.BoolAttribute{
 				Description: "If true, require_share_recipient bundles will send a one-time password to the recipient when they register. Cannot be enabled if the bundle has a password set.",
 				Computed:    true,
@@ -422,10 +433,6 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			},
 			"watermark_attachment": schema.StringAttribute{
 				Description: "Preview watermark image applied to all bundle items.",
-				Computed:    true,
-			},
-			"watermark_value": schema.DynamicAttribute{
-				Description: "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value",
 				Computed:    true,
 			},
 			"has_inbox": schema.BoolAttribute{
@@ -548,6 +555,9 @@ func (r *bundleResource) Create(ctx context.Context, req resource.CreateRequest,
 	}
 	paramsBundleCreate.SnapshotId = plan.SnapshotId.ValueInt64()
 	paramsBundleCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
+	createWatermarkValue, diags := lib.JSONValueToAPI(ctx, path.Root("watermark_value"), config.WatermarkValue)
+	resp.Diagnostics.Append(diags...)
+	paramsBundleCreate.WatermarkValue = createWatermarkValue
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -616,6 +626,12 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 	}
 	var config bundleResourceModel
 	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var state bundleResourceModel
+	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -737,6 +753,11 @@ func (r *bundleResource) Update(ctx context.Context, req resource.UpdateRequest,
 	}
 	if !config.UserId.IsNull() && !config.UserId.IsUnknown() {
 		paramsBundleUpdate["user_id"] = config.UserId.ValueInt64()
+	}
+	if !config.WatermarkValue.IsNull() && !config.WatermarkValue.IsUnknown() {
+		updateWatermarkValue, diags := lib.JSONValueToAPI(ctx, path.Root("watermark_value"), config.WatermarkValue)
+		resp.Diagnostics.Append(diags...)
+		paramsBundleUpdate["watermark_value"] = updateWatermarkValue
 	}
 	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
 		paramsBundleUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
@@ -885,13 +906,13 @@ func (r *bundleResource) populateResourceModel(ctx context.Context, bundle files
 		)
 	}
 	state.WatermarkAttachment = types.StringValue(string(respWatermarkAttachment))
-	state.WatermarkValue, propDiags = lib.ToDynamic(ctx, path.Root("watermark_value"), bundle.WatermarkValue, state.WatermarkValue.UnderlyingValue())
+	state.WatermarkValue, propDiags = lib.APIToDynamicJSON(ctx, path.Root("watermark_value"), bundle.WatermarkValue, state.WatermarkValue, []string{}, []string{}, "watermark")
 	diags.Append(propDiags...)
 	state.SendOneTimePasswordToRecipientAtRegistration = types.BoolPointerValue(bundle.SendOneTimePasswordToRecipientAtRegistration)
 	state.WorkspaceId = types.Int64Value(bundle.WorkspaceId)
 	state.HasInbox = types.BoolPointerValue(bundle.HasInbox)
 	state.DontAllowFoldersInUploads = types.BoolPointerValue(bundle.DontAllowFoldersInUploads)
-	state.RequestedUploadSlots, propDiags = lib.ToDynamic(ctx, path.Root("requested_upload_slots"), bundle.RequestedUploadSlots, state.RequestedUploadSlots.UnderlyingValue())
+	state.RequestedUploadSlots, propDiags = lib.ToDynamic(ctx, path.Root("requested_upload_slots"), bundle.RequestedUploadSlots, nil)
 	diags.Append(propDiags...)
 	state.Paths, propDiags = types.ListValueFrom(ctx, types.StringType, bundle.Paths)
 	diags.Append(propDiags...)

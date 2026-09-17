@@ -89,7 +89,7 @@ func (r *apiKeyResource) Metadata(_ context.Context, req resource.MetadataReques
 
 func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "An APIKey is a key that allows programmatic access to your Site.\n\n\n\nAPI keys confer all the permissions of the user who owns them unless the key uses a restricted permission set.\n\nIf an API key is created without a user owner, it is considered a site-wide API key. Site-wide API keys with the `files_only` permission set are restricted to file-user permissions and workspace scoping.\n\n\n\nWe recommend registering API keys to service users wherever possible and then using User or Group Permissions to restrict that API Key appropriately.",
+		Description: "An APIKey is a key that allows programmatic access to your Site.\n\nAPI keys confer all the permissions of the user who owns them unless the key uses a restricted permission set.\nIf an API key is created without a user owner, it is considered a site-wide API key. Site-wide API keys with the `files_only` permission set are restricted to file-user permissions and workspace scoping.\n\nWe recommend registering API keys to service users wherever possible and then using User or Group Permissions to restrict that API Key appropriately.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Internal name for the API Key.  For your use.",

@@ -11,8 +11,6 @@ description: |-
 
 A Site is the place you'll come to update site settings, as well as manage site-wide API keys.
 
-
-
 Most site settings can be set via the API.
 
 ## Example Usage
@@ -222,3 +220,18 @@ data "files_site" "example_site" {
 - `welcome_email_subject` (String) Include this email subject in welcome emails if enabled
 - `welcome_screen` (String) Does the welcome screen appear?
 - `windows_mode_ftp` (Boolean) Does FTP user Windows emulation mode?
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027.
+
+#### bundle_watermark_value
+
+Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value
+
+| Field in `bundle_watermark_value` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `gravity` | string | No | Where to locate the watermark?  Valid values: `Center`, `East`, `NorthEast`, `North`, `NorthWest`, `SouthEast`, `South`, `SouthWest`, `West`. |
+| `max_height_or_width` | integer | No | Max width/height as percent of image preview. |
+| `transparency` | integer | No | Percentage applied to the watermark. |
+| `dynamic_text` | string | No | Watermark text. Use {{user}} to embed a username into the string. |

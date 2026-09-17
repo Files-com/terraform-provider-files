@@ -13,13 +13,8 @@ description: |-
 
 An APIKey is a key that allows programmatic access to your Site.
 
-
-
 API keys confer all the permissions of the user who owns them unless the key uses a restricted permission set.
-
 If an API key is created without a user owner, it is considered a site-wide API key. Site-wide API keys with the `files_only` permission set are restricted to file-user permissions and workspace scoping.
-
-
 
 We recommend registering API keys to service users wherever possible and then using User or Group Permissions to restrict that API Key appropriately.
 

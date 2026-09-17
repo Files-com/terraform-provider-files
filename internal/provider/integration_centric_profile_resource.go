@@ -21,6 +21,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -71,7 +72,7 @@ func (r *integrationCentricProfileResource) Metadata(_ context.Context, req reso
 
 func (r *integrationCentricProfileResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "An Integration Centric Profile defines the Remote Server integrations a user is expected to add and connect during integration-centric onboarding.\n\n\n\nUse this to automate setup guidance for users who need access to multiple business systems without sending long manual instructions. Common scenarios include ongoing access to systems such as SharePoint, bridging Google, Microsoft, and Box environments after M&A activity, and migrations where users connect legacy EFSS accounts during transition work.",
+		Description: "An Integration Centric Profile defines the Remote Server integrations a user is expected to add and connect during integration-centric onboarding.\n\nUse this to automate setup guidance for users who need access to multiple business systems without sending long manual instructions. Common scenarios include ongoing access to systems such as SharePoint, bridging Google, Microsoft, and Box environments after M&A activity, and migrations where users connect legacy EFSS accounts during transition work.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Profile name",
@@ -80,6 +81,9 @@ func (r *integrationCentricProfileResource) Schema(_ context.Context, _ resource
 			"expected_remote_servers": schema.DynamicAttribute{
 				Description: "Remote Server integrations the user is expected to add and connect. Each entry requires `server_type` and may include a display `name`.",
 				Required:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_integration_centric_profile.expected_remote_servers", "expected_remote_servers = [\n  {\n    server_type = \"dropbox\"\n    name        = \"Dropbox\"\n  }\n]", "March 1, 2027"),
+				},
 			},
 			"workspace_id": schema.Int64Attribute{
 				Description: "Workspace ID",
@@ -124,7 +128,9 @@ func (r *integrationCentricProfileResource) Create(ctx context.Context, req reso
 
 	paramsIntegrationCentricProfileCreate := files_sdk.IntegrationCentricProfileCreateParams{}
 	paramsIntegrationCentricProfileCreate.Name = plan.Name.ValueString()
-	paramsIntegrationCentricProfileCreate.ExpectedRemoteServers, diags = lib.DynamicToStringMapSlice(ctx, path.Root("expected_remote_servers"), plan.ExpectedRemoteServers)
+	createExpectedRemoteServers, diags := lib.JSONValueToAPI(ctx, path.Root("expected_remote_servers"), config.ExpectedRemoteServers)
+	resp.Diagnostics.Append(diags...)
+	paramsIntegrationCentricProfileCreate.ExpectedRemoteServers, diags = lib.JSONToStringMapSlice(path.Root("expected_remote_servers"), createExpectedRemoteServers)
 	resp.Diagnostics.Append(diags...)
 	paramsIntegrationCentricProfileCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	if !plan.UseForAllUsers.IsNull() && !plan.UseForAllUsers.IsUnknown() {
@@ -202,6 +208,12 @@ func (r *integrationCentricProfileResource) Update(ctx context.Context, req reso
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var state integrationCentricProfileResourceModel
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsIntegrationCentricProfileUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
@@ -214,7 +226,7 @@ func (r *integrationCentricProfileResource) Update(ctx context.Context, req reso
 		paramsIntegrationCentricProfileUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
 	if !config.ExpectedRemoteServers.IsNull() && !config.ExpectedRemoteServers.IsUnknown() {
-		updateExpectedRemoteServers, diags := lib.DynamicToStringMapSlice(ctx, path.Root("expected_remote_servers"), config.ExpectedRemoteServers)
+		updateExpectedRemoteServers, diags := lib.JSONValueToAPI(ctx, path.Root("expected_remote_servers"), config.ExpectedRemoteServers)
 		resp.Diagnostics.Append(diags...)
 		paramsIntegrationCentricProfileUpdate["expected_remote_servers"] = updateExpectedRemoteServers
 	}
@@ -295,7 +307,7 @@ func (r *integrationCentricProfileResource) populateResourceModel(ctx context.Co
 	state.Name = types.StringValue(integrationCentricProfile.Name)
 	state.WorkspaceId = types.Int64Value(integrationCentricProfile.WorkspaceId)
 	state.UseForAllUsers = types.BoolPointerValue(integrationCentricProfile.UseForAllUsers)
-	state.ExpectedRemoteServers, propDiags = lib.ToDynamic(ctx, path.Root("expected_remote_servers"), integrationCentricProfile.ExpectedRemoteServers, state.ExpectedRemoteServers.UnderlyingValue())
+	state.ExpectedRemoteServers, propDiags = lib.APIToDynamicJSON(ctx, path.Root("expected_remote_servers"), integrationCentricProfile.ExpectedRemoteServers, state.ExpectedRemoteServers, []string{}, []string{}, "expected_remote_servers")
 	diags.Append(propDiags...)
 
 	return

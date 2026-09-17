@@ -7,7 +7,6 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	integration_centric_profile "github.com/Files-com/files-sdk-go/v3/integrationcentricprofile"
 	"github.com/Files-com/terraform-provider-files/lib"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -62,7 +61,7 @@ func (r *integrationCentricProfileDataSource) Metadata(_ context.Context, req da
 
 func (r *integrationCentricProfileDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "An Integration Centric Profile defines the Remote Server integrations a user is expected to add and connect during integration-centric onboarding.\n\n\n\nUse this to automate setup guidance for users who need access to multiple business systems without sending long manual instructions. Common scenarios include ongoing access to systems such as SharePoint, bridging Google, Microsoft, and Box environments after M&A activity, and migrations where users connect legacy EFSS accounts during transition work.",
+		Description: "An Integration Centric Profile defines the Remote Server integrations a user is expected to add and connect during integration-centric onboarding.\n\nUse this to automate setup guidance for users who need access to multiple business systems without sending long manual instructions. Common scenarios include ongoing access to systems such as SharePoint, bridging Google, Microsoft, and Box environments after M&A activity, and migrations where users connect legacy EFSS accounts during transition work.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Integration Centric Profile ID",
@@ -125,7 +124,7 @@ func (r *integrationCentricProfileDataSource) populateDataSourceModel(ctx contex
 	state.Name = types.StringValue(integrationCentricProfile.Name)
 	state.WorkspaceId = types.Int64Value(integrationCentricProfile.WorkspaceId)
 	state.UseForAllUsers = types.BoolPointerValue(integrationCentricProfile.UseForAllUsers)
-	state.ExpectedRemoteServers, propDiags = lib.ToDynamic(ctx, path.Root("expected_remote_servers"), integrationCentricProfile.ExpectedRemoteServers, state.ExpectedRemoteServers.UnderlyingValue())
+	state.ExpectedRemoteServers, propDiags = lib.ToDynamic(ctx, path.Root("expected_remote_servers"), integrationCentricProfile.ExpectedRemoteServers, nil)
 	diags.Append(propDiags...)
 
 	return

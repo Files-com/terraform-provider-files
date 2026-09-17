@@ -11,8 +11,6 @@ description: |-
 
 A Site is the place you'll come to update site settings, as well as manage site-wide API keys.
 
-
-
 Most site settings can be set via the API.
 
 ## Example Usage
@@ -139,9 +137,6 @@ resource "files_site" "example_site" {
   active_sftp_host_key_ids                                   = [1]
   protocol_access_groups_only                                = false
   revoke_bundle_access_on_disable_or_delete                  = false
-  bundle_watermark_value                                     = {
-    key = "example value"
-  }
   group_admins_can_add_users                                 = false
   group_admins_can_manage_group_memberships                  = false
   group_admins_can_delete_users                              = false
@@ -197,6 +192,11 @@ resource "files_site" "example_site" {
   ldap_group_inclusion                                       = "example"
   ldap_base_dn                                               = "example"
   uploads_via_email_authentication                           = false
+  bundle_watermark_value                                     = {
+    gravity             = "SouthWest"
+    max_height_or_width = 20
+    transparency        = 25
+  }
   icon16_delete                                              = false
   icon32_delete                                              = false
   icon48_delete                                              = false
@@ -412,6 +412,41 @@ resource "files_site" "example_site" {
 - `trial_days_left` (Number) Number of days left in trial
 - `trial_until` (String) When does this Site trial expire?
 - `user` (String) User of current session
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027. Until then, JSON-encoded configuration remains supported with a deprecation warning.
+
+#### bundle_watermark_value
+
+Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value
+
+| Field in `bundle_watermark_value` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `gravity` | string | No | Where to locate the watermark?  Valid values: `Center`, `East`, `NorthEast`, `North`, `NorthWest`, `SouthEast`, `South`, `SouthWest`, `West`. |
+| `max_height_or_width` | integer | No | Max width/height as percent of image preview. |
+| `transparency` | integer | No | Percentage applied to the watermark. |
+| `dynamic_text` | string | No | Watermark text. Use {{user}} to embed a username into the string. |
+
+#### Migrating JSON-encoded configuration
+
+Replace `jsonencode(...)` with native HCL, keeping the same keys and nesting.
+
+```hcl
+# Legacy JSON encoding
+bundle_watermark_value = jsonencode({
+  gravity             = "SouthWest"
+  max_height_or_width = 20
+  transparency        = 25
+})
+
+# Native HCL, same keys and nesting
+bundle_watermark_value = {
+  gravity             = "SouthWest"
+  max_height_or_width = 20
+  transparency        = 25
+}
+```
 
 ## Import
 

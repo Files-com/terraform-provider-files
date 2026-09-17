@@ -91,7 +91,7 @@ func (r *as2PartnerResource) Metadata(_ context.Context, req resource.MetadataRe
 
 func (r *as2PartnerResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "An AS2Partner is a counterparty of the Files.com site's AS2 connectivity. Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.",
+		Description: "An AS2Partner is a counterparty of the Files.com site's AS2 connectivity.  Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.",
 		Attributes: map[string]schema.Attribute{
 			"as2_station_id": schema.Int64Attribute{
 				Description: "ID of the AS2 Station associated with this partner.",
@@ -135,6 +135,9 @@ func (r *as2PartnerResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Description: "Additional HTTP Headers for outgoing message sent to this partner.",
 				Computed:    true,
 				Optional:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_as2_partner.additional_http_headers", "additional_http_headers = {\n  X-Partner = \"acme\"\n}", "March 1, 2027"),
+				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
 				},
@@ -249,7 +252,7 @@ func (r *as2PartnerResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsAs2PartnerCreate.SignatureValidationLevel = paramsAs2PartnerCreate.SignatureValidationLevel.Enum()[plan.SignatureValidationLevel.ValueString()]
 	paramsAs2PartnerCreate.ServerCertificate = paramsAs2PartnerCreate.ServerCertificate.Enum()[plan.ServerCertificate.ValueString()]
 	paramsAs2PartnerCreate.DefaultMimeType = plan.DefaultMimeType.ValueString()
-	createAdditionalHttpHeaders, diags := lib.DynamicToInterface(ctx, path.Root("additional_http_headers"), plan.AdditionalHttpHeaders)
+	createAdditionalHttpHeaders, diags := lib.JSONValueToAPI(ctx, path.Root("additional_http_headers"), config.AdditionalHttpHeaders)
 	resp.Diagnostics.Append(diags...)
 	paramsAs2PartnerCreate.AdditionalHttpHeaders = createAdditionalHttpHeaders
 	paramsAs2PartnerCreate.As2StationId = plan.As2StationId.ValueInt64()
@@ -328,6 +331,12 @@ func (r *as2PartnerResource) Update(ctx context.Context, req resource.UpdateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var state as2PartnerResourceModel
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsAs2PartnerUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
@@ -354,9 +363,11 @@ func (r *as2PartnerResource) Update(ctx context.Context, req resource.UpdateRequ
 	if !config.DefaultMimeType.IsNull() && !config.DefaultMimeType.IsUnknown() {
 		paramsAs2PartnerUpdate["default_mime_type"] = config.DefaultMimeType.ValueString()
 	}
-	updateAdditionalHttpHeaders, diags := lib.DynamicToInterface(ctx, path.Root("additional_http_headers"), config.AdditionalHttpHeaders)
-	resp.Diagnostics.Append(diags...)
-	paramsAs2PartnerUpdate["additional_http_headers"] = updateAdditionalHttpHeaders
+	if !config.AdditionalHttpHeaders.IsNull() && !config.AdditionalHttpHeaders.IsUnknown() {
+		updateAdditionalHttpHeaders, diags := lib.JSONValueToAPI(ctx, path.Root("additional_http_headers"), config.AdditionalHttpHeaders)
+		resp.Diagnostics.Append(diags...)
+		paramsAs2PartnerUpdate["additional_http_headers"] = updateAdditionalHttpHeaders
+	}
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
 		paramsAs2PartnerUpdate["name"] = config.Name.ValueString()
 	}
@@ -443,7 +454,7 @@ func (r *as2PartnerResource) populateResourceModel(ctx context.Context, as2Partn
 	state.Uri = types.StringValue(as2Partner.Uri)
 	state.ServerCertificate = types.StringValue(as2Partner.ServerCertificate)
 	state.HttpAuthUsername = types.StringValue(as2Partner.HttpAuthUsername)
-	state.AdditionalHttpHeaders, propDiags = lib.ToDynamic(ctx, path.Root("additional_http_headers"), as2Partner.AdditionalHttpHeaders, state.AdditionalHttpHeaders.UnderlyingValue())
+	state.AdditionalHttpHeaders, propDiags = lib.APIToDynamicJSON(ctx, path.Root("additional_http_headers"), as2Partner.AdditionalHttpHeaders, state.AdditionalHttpHeaders, []string{""}, []string{}, "")
 	diags.Append(propDiags...)
 	state.DefaultMimeType = types.StringValue(as2Partner.DefaultMimeType)
 	state.MdnValidationLevel = types.StringValue(as2Partner.MdnValidationLevel)

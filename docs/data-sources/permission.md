@@ -9,7 +9,7 @@ description: |-
   The following table sets forth the available Permission types:
   | Permission | Access Level Granted | Automatically Also Includes/Implies Permissions |
   | --- | ----------- | --------------------- |
-  | `admin` | Able to manage Folder Behaviors, Permissions, and Notifications for the folder. Also grants all other permissions. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |
+  | `admin` | Able to manage Folder Behaviors, Permissions, and Notifications for the folder.  Also grants all other permissions. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |
   | `bundle` | Able to share files and folders via a Bundle (share link). | `readonly`, `list` |
   | `full` | Able to read, write, move, delete, and rename files and folders. Also grants the ability to overwrite files upon upload. | `writeonly`, `readonly`, `list` |
   | `history` | Able to view the history of files and folders and to create email notifications for themselves. | `list` |
@@ -24,40 +24,22 @@ description: |-
 
 A Permission object represents a grant of access permission on a specific Path to a User or Group.
 
-
-
 They can be optionally recursive or nonrecursive into the subfolders of that path.
-
-
 
 A Permission may be applied to a User *or* a Group, but not both at once.
 
-
-
 The following table sets forth the available Permission types:
 
-
-
 | Permission | Access Level Granted | Automatically Also Includes/Implies Permissions |
-
 | --- | ----------- | --------------------- |
-
-| `admin` | Able to manage Folder Behaviors, Permissions, and Notifications for the folder. Also grants all other permissions. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |
-
+| `admin` | Able to manage Folder Behaviors, Permissions, and Notifications for the folder.  Also grants all other permissions. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |
 | `bundle` | Able to share files and folders via a Bundle (share link). | `readonly`, `list` |
-
 | `full` | Able to read, write, move, delete, and rename files and folders. Also grants the ability to overwrite files upon upload. | `writeonly`, `readonly`, `list` |
-
 | `history` | Able to view the history of files and folders and to create email notifications for themselves. | `list` |
-
 | `list` | Able to list files and folders, but not download. | none |
-
 | `readonly` | Able to list, preview, and download files and folders. | `list` |
-
 | `readonly_site_admin` | Able to behave as a read-only Site Admin on a given child site. Only applies to child sites. | `readonly`, `list`, `history` |
-
 | `site_admin` | Able to behave as a Site Admin on a given child site. Only applies to child sites. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |
-
 | `writeonly` | Able to upload files, create folders and list subfolders the user has write permission to. | none |
 
 ## Example Usage

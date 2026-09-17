@@ -91,7 +91,7 @@ func (r *syncDataSource) Metadata(_ context.Context, req datasource.MetadataRequ
 
 func (r *syncDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Sync represents a file synchronization job between two locations (local-remote, remote-remote, local-child_site, etc). \n\nIt can be scheduled, run manually, or triggered by custom logic. \n\nSyncs track their runs, status, and configuration.",
+		Description: "A Sync represents a file synchronization job between two locations (local-remote, remote-remote, local-child_site, etc). \nIt can be scheduled, run manually, or triggered by custom logic. \nSyncs track their runs, status, and configuration.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Sync ID",

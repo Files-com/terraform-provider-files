@@ -132,7 +132,7 @@ func (r *siemHttpDestinationResource) Metadata(_ context.Context, req resource.M
 
 func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "",
+		Description: "A SIEM HTTP Destination defines where Files.com sends the log types you select.\nFor HTTP destinations, Files.com sends JSON to the configured endpoint.\nFor file destinations, Files.com writes JSON or CSV files to the configured folder.",
 		Attributes: map[string]schema.Attribute{
 			"destination_type": schema.StringAttribute{
 				Description: "Destination Type",
@@ -188,6 +188,10 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 				Description: "Additional HTTP Headers included in calls to the destination URL",
 				Computed:    true,
 				Optional:    true,
+				Sensitive:   true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_siem_http_destination.additional_headers", "additional_headers = {\n  Authorization = \"Bearer YOUR_TOKEN\"\n}", "March 1, 2027"),
+				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
 				},
@@ -524,7 +528,7 @@ func (r *siemHttpDestinationResource) Create(ctx context.Context, req resource.C
 
 	paramsSiemHttpDestinationCreate := files_sdk.SiemHttpDestinationCreateParams{}
 	paramsSiemHttpDestinationCreate.Name = plan.Name.ValueString()
-	createAdditionalHeaders, diags := lib.DynamicToInterface(ctx, path.Root("additional_headers"), plan.AdditionalHeaders)
+	createAdditionalHeaders, diags := lib.JSONValueToAPI(ctx, path.Root("additional_headers"), config.AdditionalHeaders)
 	resp.Diagnostics.Append(diags...)
 	paramsSiemHttpDestinationCreate.AdditionalHeaders = createAdditionalHeaders
 	if !plan.SendingActive.IsNull() && !plan.SendingActive.IsUnknown() {
@@ -656,6 +660,12 @@ func (r *siemHttpDestinationResource) Update(ctx context.Context, req resource.U
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var state siemHttpDestinationResourceModel
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsSiemHttpDestinationUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
@@ -664,9 +674,11 @@ func (r *siemHttpDestinationResource) Update(ctx context.Context, req resource.U
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
 		paramsSiemHttpDestinationUpdate["name"] = config.Name.ValueString()
 	}
-	updateAdditionalHeaders, diags := lib.DynamicToInterface(ctx, path.Root("additional_headers"), config.AdditionalHeaders)
-	resp.Diagnostics.Append(diags...)
-	paramsSiemHttpDestinationUpdate["additional_headers"] = updateAdditionalHeaders
+	if !config.AdditionalHeaders.IsNull() && !config.AdditionalHeaders.IsUnknown() {
+		updateAdditionalHeaders, diags := lib.JSONValueToAPI(ctx, path.Root("additional_headers"), config.AdditionalHeaders)
+		resp.Diagnostics.Append(diags...)
+		paramsSiemHttpDestinationUpdate["additional_headers"] = updateAdditionalHeaders
+	}
 	if !config.SendingActive.IsNull() && !config.SendingActive.IsUnknown() {
 		paramsSiemHttpDestinationUpdate["sending_active"] = config.SendingActive.ValueBool()
 	}
@@ -837,7 +849,7 @@ func (r *siemHttpDestinationResource) populateResourceModel(ctx context.Context,
 	state.FileDestinationPath = types.StringValue(siemHttpDestination.FileDestinationPath)
 	state.FileFormat = types.StringValue(siemHttpDestination.FileFormat)
 	state.FileIntervalMinutes = types.Int64Value(siemHttpDestination.FileIntervalMinutes)
-	state.AdditionalHeaders, propDiags = lib.ToDynamic(ctx, path.Root("additional_headers"), siemHttpDestination.AdditionalHeaders, state.AdditionalHeaders.UnderlyingValue())
+	state.AdditionalHeaders, propDiags = lib.APIToDynamicJSON(ctx, path.Root("additional_headers"), siemHttpDestination.AdditionalHeaders, state.AdditionalHeaders, []string{""}, []string{}, "")
 	diags.Append(propDiags...)
 	state.SendingActive = types.BoolPointerValue(siemHttpDestination.SendingActive)
 	state.GenericPayloadType = types.StringValue(siemHttpDestination.GenericPayloadType)

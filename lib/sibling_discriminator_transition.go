@@ -244,7 +244,7 @@ func siblingDiscriminatorStateValue(ctx context.Context, attributePath path.Path
 	return value, diags
 }
 
-func configuredDynamicStateValue(source any, sourceExists bool, configured any, writeOnly []string, currentPath string) (any, bool) {
+func configuredDynamicStateValue(source any, sourceExists bool, configured any, writeOnly []string, currentPath string, mapPaths ...string) (any, bool) {
 	switch configuredValue := configured.(type) {
 	case map[string]interface{}:
 		sourceValue := map[string]interface{}{}
@@ -256,13 +256,18 @@ func configuredDynamicStateValue(source any, sourceExists bool, configured any, 
 			}
 		}
 		result := make(map[string]interface{}, len(configuredValue))
+		if slices.Contains(mapPaths, currentPath) {
+			for key, entry := range sourceValue {
+				result[key] = entry
+			}
+		}
 		for key, configuredEntry := range configuredValue {
 			entryPath := key
 			if currentPath != "" {
 				entryPath = currentPath + "." + key
 			}
 			sourceEntry, exists := sourceValue[key]
-			if value, keep := configuredDynamicStateValue(sourceEntry, exists, configuredEntry, writeOnly, entryPath); keep {
+			if value, keep := configuredDynamicStateValue(sourceEntry, exists, configuredEntry, writeOnly, entryPath, mapPaths...); keep {
 				result[key] = value
 			}
 		}
@@ -278,7 +283,7 @@ func configuredDynamicStateValue(source any, sourceExists bool, configured any, 
 		result := make([]interface{}, len(sourceValue))
 		for index, sourceEntry := range sourceValue {
 			if index < len(configuredValue) {
-				result[index], _ = configuredDynamicStateValue(sourceEntry, true, configuredValue[index], writeOnly, currentPath)
+				result[index], _ = configuredDynamicStateValue(sourceEntry, true, configuredValue[index], writeOnly, currentPath, mapPaths...)
 			} else {
 				result[index] = sourceEntry
 			}

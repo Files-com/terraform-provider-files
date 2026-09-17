@@ -65,7 +65,7 @@ func (r *fileMigrationDataSource) Metadata(_ context.Context, req datasource.Met
 
 func (r *fileMigrationDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A FileMigration is a background operation on one or more files, such as a copy or a region migration.\n\n\n\nIf no `operation` or `dest_path` is present, then the record represents a region migration.",
+		Description: "A FileMigration is a background operation on one or more files, such as a copy or a region migration.\n\nIf no `operation` or `dest_path` is present, then the record represents a region migration.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "File migration ID",

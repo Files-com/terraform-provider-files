@@ -3,12 +3,12 @@
 page_title: "files_file Resource - files"
 subcategory: ""
 description: |-
-  
+  A File object represents a file or folder on your Files.com site. The type field is file for files and directory for folders.
 ---
 
 # files_file (Resource)
 
-
+A File object represents a file or folder on your Files.com site. The `type` field is `file` for files and `directory` for folders.
 
 ## Example Usage
 
@@ -18,7 +18,7 @@ resource "files_file" "example_file" {
   md5             = "17c54824e9931a4688ca032d03f6663c"
   path            = "path"
   custom_metadata = {
-    key = "value"
+    department = "finance"
   }
   provided_mtime  = "2000-01-01T01:00:00Z"
   priority_color  = "red"
@@ -73,6 +73,34 @@ resource "files_file" "example_file" {
 - `sha256` (String) File SHA256 checksum. This is sometimes delayed, so if you get a blank response, wait and try again.
 - `subfolders_locked` (Boolean) Are subfolders locked and unable to be modified?
 - `type` (String) Type: `directory` or `file`.
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027. Until then, JSON-encoded configuration remains supported with a deprecation warning.
+
+#### custom_metadata
+
+Custom metadata map of keys and values. Limited to 32 keys, 256 characters per key and 1024 characters per value.
+
+| Field in `custom_metadata` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `[key]` | string | No |  |
+
+#### Migrating JSON-encoded configuration
+
+Replace `jsonencode(...)` with native HCL, keeping the same keys and nesting.
+
+```hcl
+# Legacy JSON encoding
+custom_metadata = jsonencode({
+  department = "finance"
+})
+
+# Native HCL, same keys and nesting
+custom_metadata = {
+  department = "finance"
+}
+```
 
 ## Import
 

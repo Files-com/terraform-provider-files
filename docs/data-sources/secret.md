@@ -11,8 +11,6 @@ description: |-
 
 A Secret stores named, typed secret material for later use by features that reference the Secret by ID.
 
-
-
 Secret values are encrypted at rest and are write-only. API responses include metadata and configured value field names, but never include the stored secret values.
 
 ## Example Usage
@@ -40,3 +38,17 @@ data "files_secret" "example_secret" {
 - `updated_at` (String) Secret update date/time.
 - `value_field_names` (List of String) Names of configured secret value fields. Secret values are never returned.
 - `workspace_id` (Number) Workspace ID. 0 means the default workspace.
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027.
+
+#### metadata
+
+Non-secret metadata for the Secret type.
+
+| Field in `metadata` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `username` | string | No | Required for basic secrets. Not allowed for other secret types. |
+| `header_name` | string | No | For token secrets only. Cannot be combined with query_parameter_name. |
+| `query_parameter_name` | string | No | For token secrets only. Cannot be combined with header_name. |

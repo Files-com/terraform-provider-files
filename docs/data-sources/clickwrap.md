@@ -5,29 +5,18 @@ subcategory: ""
 description: |-
   A Clickwrap is a legal agreement (such as an NDA or Terms of Use) that your Users and/or Bundle/Inbox participants will need to agree to via a "Clickwrap" UI before accessing the site, bundle, or inbox.
   The values for use_with_users, use_with_bundles, use_with_inboxes are explained as follows:
-  
-  none - This Clickwrap may not be used in this context.
-  available_to_all_users - This Clickwrap may be assigned in this context by any user.
-  available - This Clickwrap may be assigned in this context, but only by Site Admins. We recognize that the name of this setting is somewhat ambiguous, but we maintain it for legacy reasons.
-  required - This Clickwrap will always be used in this context, and may not be overridden.
+  none - This Clickwrap may not be used in this context.available_to_all_users - This Clickwrap may be assigned in this context by any user.available - This Clickwrap may be assigned in this context, but only by Site Admins.  We recognize that the name of this setting is somewhat ambiguous, but we maintain it for legacy reasons.required - This Clickwrap will always be used in this context, and may not be overridden.
 ---
 
 # files_clickwrap (Data Source)
 
 A Clickwrap is a legal agreement (such as an NDA or Terms of Use) that your Users and/or Bundle/Inbox participants will need to agree to via a "Clickwrap" UI before accessing the site, bundle, or inbox.
 
-
-
 The values for `use_with_users`, `use_with_bundles`, `use_with_inboxes` are explained as follows:
 
-
-
 * `none` - This Clickwrap may not be used in this context.
-
 * `available_to_all_users` - This Clickwrap may be assigned in this context by any user.
-
-* `available` - This Clickwrap may be assigned in this context, but only by Site Admins. We recognize that the name of this setting is somewhat ambiguous, but we maintain it for legacy reasons.
-
+* `available` - This Clickwrap may be assigned in this context, but only by Site Admins.  We recognize that the name of this setting is somewhat ambiguous, but we maintain it for legacy reasons.
 * `required` - This Clickwrap will always be used in this context, and may not be overridden.
 
 ## Example Usage

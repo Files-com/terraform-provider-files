@@ -13,15 +13,9 @@ description: |-
 
 A UserLifecycleRule represents a rule that applies to users based on their inactivity, state and authentication method.
 
-
-
 The rule either disable or delete users who have been inactive or disabled for a specified number of days.
 
-
-
 The authentication_method property specifies the authentication method for the rule, which can be set to "all", "all_non_sso", or a specific authentication method.
-
-
 
 The rule can also include or exclude site and folder admins from the action.
 

@@ -7,7 +7,6 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	secret "github.com/Files-com/files-sdk-go/v3/secret"
 	"github.com/Files-com/terraform-provider-files/lib"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -66,7 +65,7 @@ func (r *secretDataSource) Metadata(_ context.Context, req datasource.MetadataRe
 
 func (r *secretDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Secret stores named, typed secret material for later use by features that reference the Secret by ID.\n\n\n\nSecret values are encrypted at rest and are write-only. API responses include metadata and configured value field names, but never include the stored secret values.",
+		Description: "A Secret stores named, typed secret material for later use by features that reference the Secret by ID.\n\nSecret values are encrypted at rest and are write-only. API responses include metadata and configured value field names, but never include the stored secret values.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Secret ID.",
@@ -147,7 +146,7 @@ func (r *secretDataSource) populateDataSourceModel(ctx context.Context, secret f
 	state.Name = types.StringValue(secret.Name)
 	state.Description = types.StringValue(secret.Description)
 	state.SecretType = types.StringValue(secret.SecretType)
-	state.Metadata, propDiags = lib.ToDynamic(ctx, path.Root("metadata"), secret.Metadata, state.Metadata.UnderlyingValue())
+	state.Metadata, propDiags = lib.ToDynamic(ctx, path.Root("metadata"), secret.Metadata, nil)
 	diags.Append(propDiags...)
 	state.ValueFieldNames, propDiags = types.ListValueFrom(ctx, types.StringType, secret.ValueFieldNames)
 	diags.Append(propDiags...)

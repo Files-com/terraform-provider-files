@@ -8,7 +8,6 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	file "github.com/Files-com/files-sdk-go/v3/file"
 	"github.com/Files-com/terraform-provider-files/lib"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -94,7 +93,7 @@ func (r *fileDataSource) Metadata(_ context.Context, req datasource.MetadataRequ
 
 func (r *fileDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "",
+		Description: "A File object represents a file or folder on your Files.com site. The `type` field is `file` for files and `directory` for folders.",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
 				Description: "File/Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
@@ -288,7 +287,7 @@ func (r *fileDataSource) populateDataSourceModel(ctx context.Context, file files
 	state.CreatedByInboxId = types.Int64Value(file.CreatedByInboxId)
 	state.CreatedByRemoteServerId = types.Int64Value(file.CreatedByRemoteServerId)
 	state.CreatedBySyncId = types.Int64Value(file.CreatedBySyncId)
-	state.CustomMetadata, propDiags = lib.ToDynamic(ctx, path.Root("custom_metadata"), file.CustomMetadata, state.CustomMetadata.UnderlyingValue())
+	state.CustomMetadata, propDiags = lib.ToDynamic(ctx, path.Root("custom_metadata"), file.CustomMetadata, nil)
 	diags.Append(propDiags...)
 	state.DisplayName = types.StringValue(file.DisplayName)
 	state.Type = types.StringValue(file.Type)

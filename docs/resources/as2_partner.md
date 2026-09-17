@@ -3,12 +3,12 @@
 page_title: "files_as2_partner Resource - files"
 subcategory: ""
 description: |-
-  An AS2Partner is a counterparty of the Files.com site's AS2 connectivity. Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.
+  An AS2Partner is a counterparty of the Files.com site's AS2 connectivity.  Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.
 ---
 
 # files_as2_partner (Resource)
 
-An AS2Partner is a counterparty of the Files.com site's AS2 connectivity. Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.
+An AS2Partner is a counterparty of the Files.com site's AS2 connectivity.  Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.
 
 ## Example Usage
 
@@ -21,7 +21,7 @@ resource "files_as2_partner" "example_as2_partner" {
   server_certificate         = "require_match"
   default_mime_type          = "application/octet-stream"
   additional_http_headers    = {
-    key = "example value"
+    X-Partner = "acme"
   }
   as2_station_id             = 1
   name                       = "AS2 Partner Name"
@@ -64,6 +64,34 @@ resource "files_as2_partner" "example_as2_partner" {
 - `public_certificate_serial` (String) Serial of public certificate used for message security.
 - `public_certificate_subject` (String) Subject of public certificate used for message security.
 - `workspace_id` (Number) ID of the Workspace associated with this AS2 Partner.
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027. Until then, JSON-encoded configuration remains supported with a deprecation warning.
+
+#### additional_http_headers
+
+Additional HTTP Headers for outgoing message sent to this partner.
+
+| Field in `additional_http_headers` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `[key]` | string | No |  |
+
+#### Migrating JSON-encoded configuration
+
+Replace `jsonencode(...)` with native HCL, keeping the same keys and nesting.
+
+```hcl
+# Legacy JSON encoding
+additional_http_headers = jsonencode({
+  X-Partner = "acme"
+})
+
+# Native HCL, same keys and nesting
+additional_http_headers = {
+  X-Partner = "acme"
+}
+```
 
 ## Import
 

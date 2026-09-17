@@ -18,6 +18,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/dynamicplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
@@ -102,8 +103,13 @@ func (r *folderResource) Metadata(_ context.Context, req resource.MetadataReques
 }
 
 func (r *folderResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = schema.Schema{
-		Description: "",
+	resp.Schema = r.resourceSchema()
+}
+
+func (r *folderResource) resourceSchema() schema.Schema {
+	return schema.Schema{
+
+		Description: "A File object represents a file or folder on your Files.com site. The `type` field is `file` for files and `directory` for folders.",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
 				Description: "File/Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
@@ -116,6 +122,9 @@ func (r *folderResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Description: "Custom metadata map of keys and values. Limited to 32 keys, 256 characters per key and 1024 characters per value.",
 				Computed:    true,
 				Optional:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_folder.custom_metadata", "custom_metadata = {\n  department = \"finance\"\n}", "March 1, 2027"),
+				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
 				},
@@ -316,6 +325,10 @@ func (r *folderResource) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
 	_, err := r.folderClient.Create(paramsFolderCreate, files_sdk.WithContext(ctx))
 	if err != nil {
 		resp.Diagnostics.AddError(
@@ -327,7 +340,7 @@ func (r *folderResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	paramsFolderUpdate := files_sdk.FileUpdateParams{}
 	paramsFolderUpdate.Path = plan.Path.ValueString()
-	updateCustomMetadata, diags := lib.DynamicToInterface(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
+	updateCustomMetadata, diags := lib.JSONValueToAPI(ctx, path.Root("custom_metadata"), config.CustomMetadata)
 	resp.Diagnostics.Append(diags...)
 	paramsFolderUpdate.CustomMetadata = updateCustomMetadata
 	if !plan.ProvidedMtime.IsNull() {
@@ -347,6 +360,10 @@ func (r *folderResource) Create(ctx context.Context, req resource.CreateRequest,
 		}
 	}
 	paramsFolderUpdate.PriorityColor = plan.PriorityColor.ValueString()
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -416,6 +433,11 @@ func (r *folderResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var config folderResourceModel
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	var state folderResourceModel
 	diags = req.State.Get(ctx, &state)
@@ -445,7 +467,7 @@ func (r *folderResource) Update(ctx context.Context, req resource.UpdateRequest,
 
 	paramsFolderUpdate := files_sdk.FileUpdateParams{}
 	paramsFolderUpdate.Path = plan.Path.ValueString()
-	updateCustomMetadata, diags := lib.DynamicToInterface(ctx, path.Root("custom_metadata"), plan.CustomMetadata)
+	updateCustomMetadata, diags := lib.JSONValueToAPI(ctx, path.Root("custom_metadata"), config.CustomMetadata)
 	resp.Diagnostics.Append(diags...)
 	paramsFolderUpdate.CustomMetadata = updateCustomMetadata
 	if !plan.ProvidedMtime.IsNull() {
@@ -465,6 +487,10 @@ func (r *folderResource) Update(ctx context.Context, req resource.UpdateRequest,
 		}
 	}
 	paramsFolderUpdate.PriorityColor = plan.PriorityColor.ValueString()
+
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -526,7 +552,7 @@ func (r *folderResource) populateResourceModel(ctx context.Context, folder files
 	state.CreatedByInboxId = types.Int64Value(folder.CreatedByInboxId)
 	state.CreatedByRemoteServerId = types.Int64Value(folder.CreatedByRemoteServerId)
 	state.CreatedBySyncId = types.Int64Value(folder.CreatedBySyncId)
-	state.CustomMetadata, propDiags = lib.ToDynamic(ctx, path.Root("custom_metadata"), folder.CustomMetadata, state.CustomMetadata.UnderlyingValue())
+	state.CustomMetadata, propDiags = lib.APIToDynamicJSON(ctx, path.Root("custom_metadata"), folder.CustomMetadata, state.CustomMetadata, []string{""}, []string{}, "empty_object")
 	diags.Append(propDiags...)
 	state.DisplayName = types.StringValue(folder.DisplayName)
 	state.Type = types.StringValue(folder.Type)

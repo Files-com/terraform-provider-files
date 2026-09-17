@@ -40,22 +40,23 @@ type groupResource struct {
 }
 
 type groupResourceModel struct {
-	Name                          types.String            `tfsdk:"name"`
-	AllowedIps                    types.String            `tfsdk:"allowed_ips"`
-	AdminIds                      lib.SortedElementString `tfsdk:"admin_ids"`
-	Notes                         types.String            `tfsdk:"notes"`
-	UserIds                       lib.SortedElementString `tfsdk:"user_ids"`
-	AiAssistantPersonalityId      types.Int64             `tfsdk:"ai_assistant_personality_id"`
-	FtpPermission                 types.Bool              `tfsdk:"ftp_permission"`
-	SftpPermission                types.Bool              `tfsdk:"sftp_permission"`
-	DavPermission                 types.Bool              `tfsdk:"dav_permission"`
-	RestapiPermission             types.Bool              `tfsdk:"restapi_permission"`
-	DesktopConfigurationProfileId types.Int64             `tfsdk:"desktop_configuration_profile_id"`
-	IntegrationCentricProfileId   types.Int64             `tfsdk:"integration_centric_profile_id"`
-	WorkspaceId                   types.Int64             `tfsdk:"workspace_id"`
-	Id                            types.Int64             `tfsdk:"id"`
-	Usernames                     types.String            `tfsdk:"usernames"`
-	SiteId                        types.Int64             `tfsdk:"site_id"`
+	Name                           types.String            `tfsdk:"name"`
+	AllowedIps                     types.String            `tfsdk:"allowed_ips"`
+	AdminIds                       lib.SortedElementString `tfsdk:"admin_ids"`
+	Notes                          types.String            `tfsdk:"notes"`
+	UserIds                        lib.SortedElementString `tfsdk:"user_ids"`
+	AiAssistantPersonalityId       types.Int64             `tfsdk:"ai_assistant_personality_id"`
+	FtpPermission                  types.Bool              `tfsdk:"ftp_permission"`
+	SftpPermission                 types.Bool              `tfsdk:"sftp_permission"`
+	DavPermission                  types.Bool              `tfsdk:"dav_permission"`
+	RestapiPermission              types.Bool              `tfsdk:"restapi_permission"`
+	S3CompatibleEndpointPermission types.Bool              `tfsdk:"s3_compatible_endpoint_permission"`
+	DesktopConfigurationProfileId  types.Int64             `tfsdk:"desktop_configuration_profile_id"`
+	IntegrationCentricProfileId    types.Int64             `tfsdk:"integration_centric_profile_id"`
+	WorkspaceId                    types.Int64             `tfsdk:"workspace_id"`
+	Id                             types.Int64             `tfsdk:"id"`
+	Usernames                      types.String            `tfsdk:"usernames"`
+	SiteId                         types.Int64             `tfsdk:"site_id"`
 }
 
 func (r *groupResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -83,7 +84,7 @@ func (r *groupResource) Metadata(_ context.Context, req resource.MetadataRequest
 
 func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Group is a powerful tool for permissions and user management on Files.com. Users can belong to multiple groups.\n\n\n\nAll permissions can be managed via Groups, and Groups can also be synced to your identity platform via LDAP or SCIM.\n\n\n\nFiles.com's Group Admin feature allows you to define Group Admins, who then have access to add and remove users within their groups.",
+		Description: "A Group is a powerful tool for permissions and user management on Files.com.  Users can belong to multiple groups.\n\nAll permissions can be managed via Groups, and Groups can also be synced to your identity platform via LDAP or SCIM.\n\nFiles.com's Group Admin feature allows you to define Group Admins, who then have access to add and remove users within their groups.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Group name",
@@ -157,6 +158,14 @@ func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 			},
 			"restapi_permission": schema.BoolAttribute{
 				Description: "If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"s3_compatible_endpoint_permission": schema.BoolAttribute{
+				Description: "If true, users in this group can access the S3-compatible endpoint. This will override a false value of `s3_compatible_endpoint_permission` on the user level. Defaults to false.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -237,6 +246,9 @@ func (r *groupResource) Create(ctx context.Context, req resource.CreateRequest, 
 	}
 	if !plan.RestapiPermission.IsNull() && !plan.RestapiPermission.IsUnknown() {
 		paramsGroupCreate.RestapiPermission = plan.RestapiPermission.ValueBoolPointer()
+	}
+	if !plan.S3CompatibleEndpointPermission.IsNull() && !plan.S3CompatibleEndpointPermission.IsUnknown() {
+		paramsGroupCreate.S3CompatibleEndpointPermission = plan.S3CompatibleEndpointPermission.ValueBoolPointer()
 	}
 	paramsGroupCreate.DesktopConfigurationProfileId = plan.DesktopConfigurationProfileId.ValueInt64()
 	paramsGroupCreate.IntegrationCentricProfileId = plan.IntegrationCentricProfileId.ValueInt64()
@@ -344,6 +356,9 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	if !config.RestapiPermission.IsNull() && !config.RestapiPermission.IsUnknown() {
 		paramsGroupUpdate["restapi_permission"] = config.RestapiPermission.ValueBool()
 	}
+	if !config.S3CompatibleEndpointPermission.IsNull() && !config.S3CompatibleEndpointPermission.IsUnknown() {
+		paramsGroupUpdate["s3_compatible_endpoint_permission"] = config.S3CompatibleEndpointPermission.ValueBool()
+	}
 	if !config.DesktopConfigurationProfileId.IsNull() && !config.DesktopConfigurationProfileId.IsUnknown() {
 		paramsGroupUpdate["desktop_configuration_profile_id"] = config.DesktopConfigurationProfileId.ValueInt64()
 	}
@@ -436,6 +451,7 @@ func (r *groupResource) populateResourceModel(ctx context.Context, group files_s
 	state.SftpPermission = types.BoolPointerValue(group.SftpPermission)
 	state.DavPermission = types.BoolPointerValue(group.DavPermission)
 	state.RestapiPermission = types.BoolPointerValue(group.RestapiPermission)
+	state.S3CompatibleEndpointPermission = types.BoolPointerValue(group.S3CompatibleEndpointPermission)
 	state.DesktopConfigurationProfileId = types.Int64Value(group.DesktopConfigurationProfileId)
 	state.IntegrationCentricProfileId = types.Int64Value(group.IntegrationCentricProfileId)
 	state.SiteId = types.Int64Value(group.SiteId)

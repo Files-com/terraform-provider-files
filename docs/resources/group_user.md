@@ -13,12 +13,8 @@ description: |-
 
 A GroupUser is a record about membership of a User within a Group.
 
-
-
 ## Creating GroupUsers
-
 GroupUsers can be created via the normal `create` action. When using the `update` action, if the
-
 GroupUser record does not exist for the given user/group IDs it will be created.
 
 ## Example Usage

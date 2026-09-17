@@ -11,8 +11,6 @@ description: |-
 
 An Integration Centric Profile defines the Remote Server integrations a user is expected to add and connect during integration-centric onboarding.
 
-
-
 Use this to automate setup guidance for users who need access to multiple business systems without sending long manual instructions. Common scenarios include ongoing access to systems such as SharePoint, bridging Google, Microsoft, and Box environments after M&A activity, and migrations where users connect legacy EFSS accounts during transition work.
 
 ## Example Usage
@@ -36,3 +34,18 @@ data "files_integration_centric_profile" "example_integration_centric_profile" {
 - `name` (String) Profile name
 - `use_for_all_users` (Boolean) Whether this profile applies to all users in the Workspace by default
 - `workspace_id` (Number) Workspace ID
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027.
+
+#### expected_remote_servers
+
+Remote Server integrations the user is expected to add and connect. Each entry requires `server_type` and may include a display `name`. Names are trimmed. Blank names are omitted. Each server_type/name pair must be unique. Name comparisons ignore letter case.
+
+List of objects.
+
+| Field in `expected_remote_servers` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `server_type` | string | Yes | Remote Server type. |
+| `name` | string | No | Display name for the Remote Server. |

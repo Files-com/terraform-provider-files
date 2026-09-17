@@ -14,8 +14,8 @@ description: |-
   Additionally, paths in Automations can refer to folders which don't yet exist.
   Path Globs
   Although Automations may have a path specified, it can be a glob (which includes wildcards), which affects multiple folders.
-  * matches any folder at that level of the path, but not subfolders. For example, path/to/* matches path/to/folder1 and path/to/folder2, but not path/to/folder1/subfolder.
-  ** matches subfolders recursively. For example, path/to/** matches path/to/folder1, path/to/folder1/subfolder, path/to/folder2, path/to/folder2/subfolder, etc.
+  * matches any folder at that level of the path, but not subfolders.  For example, path/to/* matches path/to/folder1 and path/to/folder2, but not path/to/folder1/subfolder.
+  ** matches subfolders recursively.  For example, path/to/** matches path/to/folder1, path/to/folder1/subfolder, path/to/folder2, path/to/folder2/subfolder, etc.
   ? matches any one character.
   Use square brackets [] to match any character from a set. This works like a regular expression, including negation using ^.
   Curly brackets {} can be used to denote parts of a pattern which will accept a number of alternatives, separated by commas ,.
@@ -23,31 +23,22 @@ description: |-
   For example {Mon,Tue,Wed,Thu,Fri} would match abbreviated weekdays, and 202{3-{0[7-9],1?},4-0[1-6]}-* would match dates from 2023-07-01 through 2024-06-30.
   To match any of the special characters literally, precede it with a backslash and enclose that pair with square brackets. For example to match a literal ?, use [\?].
   Globs are supported on path, source, and exclude_pattern fields. Globs are not supported on remote paths of any kind or for any field.
-  By default, Copy and Move automations that use globs will implicitly replicate matched folder structures at the destination. If you want to flatten the folder structure, set flatten_destination_structure to true.
+  By default, Copy and Move automations that use globs will implicitly replicate matched folder structures at the destination.  If you want to flatten the folder structure, set flatten_destination_structure to true.
   Automation Triggers
   Automations can be triggered in the following ways:
-  
-  custom_schedule : The automation will run according to either the reusable Site-level Schedule selected by schedule_id or its own custom schedule fields for days_of_week (0-based) and times_of_day. A time zone may be specified via time_zone in Rails TimeZone name format.
-  daily : The automation will run in a picked interval. You can specify recurring_day or recurring_days to select one or more day numbers inside the interval.
-  webhook : the automation will run when a request is sent to the corresponding webhook URL.
-  action : The automation will run when a specific action happens, e.g. a file is created or downloaded.
+  custom_schedule : The automation will run according to either the reusable Site-level Schedule selected by schedule_id or its own custom schedule fields for days_of_week (0-based) and times_of_day. A time zone may be specified via time_zone in Rails TimeZone name format.daily : The automation will run in a picked interval. You can specify recurring_day or recurring_days to select one or more day numbers inside the interval.webhook : the automation will run when a request is sent to the corresponding webhook URL.action : The automation will run when a specific action happens, e.g. a file is created or downloaded.
   Future enhancements will allow Automations to be triggered by an incoming email, or by other services.
-  Currently, all Automation types support all triggers, with the following exceptions: Create Folder and Run Remote Server Sync are not supported by the action trigger.
+  Currently, all Automation types support all triggers, with the following exceptions: Create Folder and  Run Remote Server Sync are not supported by the action trigger.
   Automations can be triggered manually if trigger is not set to action.
   Destinations
   The destinations parameter is a list of paths where files will be copied, moved, or created. It may include formatting parameters to dynamically determine the destination at runtime.
   Relative vs. Absolute Paths
   In order to specify a relative path, it must start with either ./ or ../. All other paths are considered absolute. In general, leading slashes should never be used on Files.com paths, including here. Paths are interpreted as absolute in all contexts, even without a leading slash.
   Files vs. Folders
-  If the destination path ends with a /, the filename from the source path will be preserved and put into the folder of this name. If the destination path does not end with a /, it will be interpreted as a filename and will override the source file's filename entirely.
+  If the destination path ends with a /, the filename from the source path will be preserved and put into the folder of this name.  If the destination path does not end with a /, it will be interpreted as a filename and will override the source file's filename entirely.
   Formatting Parameters
   Action-Triggered Automations
-  
-  %tf : The name of the file that triggered the automation.
-  %tp : The path of the file that triggered the automation.
-  %td : The directory of the file that triggered the automation.
-  %tb : The name of the file (without extension) that triggered the automation.
-  %te : The extension of the file that triggered the automation.
+  %tf : The name of the file that triggered the automation.%tp : The path of the file that triggered the automation.%td : The directory of the file that triggered the automation.%tb : The name of the file (without extension) that triggered the automation.%te : The extension of the file that triggered the automation.
   For example, if the triggering file is at path/to/file.txt, then the automation destination path/to/dest/incoming-%tf will result in the actual destination being path/to/dest/incoming-file.txt.
   Parent Folders
   To reference the parent folder of a source file, use %p1, %p2, %p3, etc. for the first, second, third, etc. parent folder, respectively.
@@ -56,41 +47,23 @@ description: |-
   If the source file is at partner/app/team/inbound/file.txt, then the automation destination path/to/dest/%P1/%P3/%P4/file.txt will result in the actual destination being path/to/dest/partner/team/inbound/file.txt.
   Source File Name
   To reference the name of the source file being processed, use the following tokens:
-  
-  %Ff : The name of the source file, with extension.
-  %Fb : The name of the source file, without extension.
-  %Fe : The extension of the source file.
-  %Fl : The name of the source file, with extension, converted to lowercase.
-  %Fn : The name of the source file, without non-alphanumeric characters, with extension.
-  %Fp : The name of the source file, with extension, spaces removed, lowercase, non-ASCII normalized.
+  %Ff : The name of the source file, with extension.%Fb : The name of the source file, without extension.%Fe : The extension of the source file.%Fl : The name of the source file, with extension, converted to lowercase.%Fn : The name of the source file, without non-alphanumeric characters, with extension.%Fp : The name of the source file, with extension, spaces removed, lowercase, non-ASCII normalized.
   For example, if the source file is Daily Report.xlsx and the destination is archive/%Y-%m-%d/%Fb.xlsx, the resolved destination will be archive/2024-01-15/Daily Report.xlsx.
   Dates and Times
-  
-  %Y : The current year (4 digits)
-  %m : The current month (2 digits)
-  %B : The current month (full name)
-  %d : The current day (2 digits)
-  %H : The current hour (2 digits, 24-hour clock)
-  %M : The current minute (2 digits)
-  %S : The current second (2 digits)
-  %z : UTC Time Zone (e.g. -0900)
+  %Y  : The current year (4 digits)%m  : The current month (2 digits)%B  : The current month (full name)%d  : The current day (2 digits)%H  : The current hour (2 digits, 24-hour clock)%M  : The current minute (2 digits)%S  : The current second (2 digits)%z  : UTC Time Zone (e.g. -0900)
   For example, if the current date is June 23, 2023 and the source file is named daily_sales.csv, then the following automation destination path/to/dest/%Y/%m/%d/ will result in the actual destination being path/to/dest/2023/06/23/daily_sales.csv.
   Replacing Text
   To replace text in the source filename, use the destination_replace_from and destination_replace_to parameters. This will perform a simple text replacement on the source filename before inserting it into the destination path.
   For example, if the destination_replace_from is incoming and the destination_replace_to is outgoing, then path/to/incoming.txt will translate to path/to/outgoing.txt.
   Automation Types
-  There are several types of automations: Create Folder, Copy File, Move File, Delete File and, Run Remote Server Sync.
+  There are several types of automations:  Create Folder, Copy File, Move File, Delete File and, Run Remote Server Sync.
   Create Folder
   Creates the folder with named by destinations in the path named by path.
   Destination may include formatting parameters to insert the date/time into the destination name.
-  Example Use case: Our business files sales tax for each division in 11 states every quarter.
+  Example Use case:  Our business files sales tax for each division in 11 states every quarter.
   I want to create the folders where those sales tax forms and data will be collected.
   I could create a Create Folder automation as follows:
-  
-  Trigger: daily
-  Interval: quarter_end
-  Path: AccountingAndTax/SalesTax/State/*/
-  Destinations: %Y/Quarter-ending-%m-%d
+  Trigger: dailyInterval: quarter_endPath: AccountingAndTax/SalesTax/State/*/Destinations: %Y/Quarter-ending-%m-%d
   Note this assumes you have folders in AccountingAndTax/SalesTax/State/ already created for each state, e.g. AccountingAndTax/SalesTax/State/CA/.
   Delete File
   Deletes the file with path matching source (wildcards allowed) in the path named by path.
@@ -111,43 +84,26 @@ description: |-
   Retrieves files from one or more URLs and saves the results under the path specified in destinations.
   The URLs to retrieve are specified as a JSON array in the import_urls property.
   
-  
   [
-  
-   {
-  
-   "name": "response.json",
-  
-   "url": "https://example.com/api",
-  
-   "method": "post",
-  
-   "headers": {
-  
-   "Content-Type": "application/json"
-  
-   },
-  
-   "content": { "trigger-file": "%tp" }
-  
-   }
-  
+    {
+      "name": "response.json",
+      "url": "https://example.com/api",
+      "method": "post",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "content": { "trigger-file": "%tp" }
+    }
   ]
   
-  
   The recognized keys are:
-  
-  name: The file name which will be used to save the returned content. Required. % tokens will be replaced as described under Formatting Parameters.
-  url: The URL which will be requested. Required.
-  method: The HTTP method to be used for the request. May be either get or post (case insensitive). Defaults to get.
-  headers: Optional headers to be included in the request. % tokens in the values will be replaced as described under Formatting Parameters.
-  content: Optional body to send for POST request. If supplied as a string, % tokens will be expanded. If supplied as a JSON Object, % tokens will be expanded for top-level values. Other JSON types will be sent as-is.
+  name: The file name which will be used to save the returned content. Required. % tokens will be replaced as described under Formatting Parameters.url: The URL which will be requested. Required.method: The HTTP method to be used for the request. May be either get or post (case insensitive). Defaults to get.headers: Optional headers to be included in the request. % tokens in the values will be replaced as described under Formatting Parameters.content: Optional body to send for POST request. If supplied as a string, % tokens will be expanded. If supplied as a JSON Object, % tokens will be expanded for top-level values. Other JSON types will be sent as-is.
   Help us build the future of Automations
-  Do you have an idea for something that would work well as a Files.com Automation? Let us know!
+  Do you have an idea for something that would work well as a Files.com Automation?  Let us know!
   We are actively improving the types of automations offered on our platform.
   Retrying Failures
-  Automations will automatically retry individual action steps up to 3 times, with pauses between retries that increase from 15 seconds to 1 minute. If individual action steps fail after our 3rd attempt, that action will fail. If every action step in an Automation Run fails, that automation run will move to a failure status. If at least one step succeeds and one step fails, that automation run will move to a partial_failure status.
-  Automation Runs can be retried automatically when they enter a failure or partial_failure status as described above. A retry will re-run the automation from scratch, including the "planning" phase, which expands globs (wildcards) and identifies which files to transfer or skip.
+  Automations will automatically retry individual action steps up to 3 times, with pauses between retries that increase from 15 seconds to 1 minute.  If individual action steps fail after our 3rd attempt, that action will fail.  If every action step in an Automation Run fails, that automation run will move to a failure status.  If at least one step succeeds and one step fails, that automation run will move to a partial_failure status.
+  Automation Runs can be retried automatically when they enter a failure or partial_failure status as described above.  A retry will re-run the automation from scratch, including the "planning" phase, which expands globs (wildcards) and identifies which files to transfer or skip.
   Retrying of entire Automation Runs must be explicitly enabled by setting the retry_on_failure_interval_in_minutes and retry_on_failure_number_of_attempts values on the Automation.
 ---
 
@@ -155,423 +111,213 @@ description: |-
 
 An Automation is an automated process of controlling workflows on your Files.com site.
 
-
-
 Automations are different from Behaviors because Behaviors are associated with a current folder, while Automations apply across your entire site.
-
-
 
 Automations are never removed when folders are removed, while Behaviors are removed when the associated folder is removed.
 
-
-
 ## Path Matching
 
-
-
 The `path` attribute specifies which folders this automation applies to.
-
 It gets combined with the `source` attribute to determine which files are actually affected by the automation.
-
 Note that the `path` attribute supports globs, and only refers to _folders_.
-
 It's the `source` attribute, which also supports globs, combined with the `path` attribute that determines which files are affected, and automations only operate on the files themselves.
-
 Additionally, paths in Automations can refer to folders which don't yet exist.
-
-
 
 ### Path Globs
 
-
-
 Although Automations may have a `path` specified, it can be a glob (which includes wildcards), which affects multiple folders.
 
+`*` matches any folder at that level of the path, but not subfolders.  For example, `path/to/*` matches `path/to/folder1` and `path/to/folder2`, but not `path/to/folder1/subfolder`.
 
-
-`*` matches any folder at that level of the path, but not subfolders. For example, `path/to/*` matches `path/to/folder1` and `path/to/folder2`, but not `path/to/folder1/subfolder`.
-
-
-
-`**` matches subfolders recursively. For example, `path/to/**` matches `path/to/folder1`, `path/to/folder1/subfolder`, `path/to/folder2`, `path/to/folder2/subfolder`, etc.
-
-
+`**` matches subfolders recursively.  For example, `path/to/**` matches `path/to/folder1`, `path/to/folder1/subfolder`, `path/to/folder2`, `path/to/folder2/subfolder`, etc.
 
 `?` matches any one character.
 
-
-
 Use square brackets `[]` to match any character from a set. This works like a regular expression, including negation using `^`.
 
-
-
 Curly brackets `{}` can be used to denote parts of a pattern which will accept a number of alternatives, separated by commas `,`.
-
 These alternatives can either be literal text or include special characters including nested curly brackets.
-
 For example `{Mon,Tue,Wed,Thu,Fri}` would match abbreviated weekdays, and `202{3-{0[7-9],1?},4-0[1-6]}-*` would match dates from `2023-07-01` through `2024-06-30`.
-
-
 
 To match any of the special characters literally, precede it with a backslash and enclose that pair with square brackets. For example to match a literal `?`, use `[\?]`.
 
-
-
 Globs are supported on `path`, `source`, and `exclude_pattern` fields. Globs are not supported on remote paths of any kind or for any field.
 
-
-
-By default, Copy and Move automations that use globs will implicitly replicate matched folder structures at the destination. If you want to flatten the folder structure, set `flatten_destination_structure` to `true`.
-
-
+By default, Copy and Move automations that use globs will implicitly replicate matched folder structures at the destination.  If you want to flatten the folder structure, set `flatten_destination_structure` to `true`.
 
 ## Automation Triggers
 
-
-
 Automations can be triggered in the following ways:
 
-
-
 * `custom_schedule` : The automation will run according to either the reusable Site-level Schedule selected by `schedule_id` or its own custom schedule fields for `days_of_week` (0-based) and `times_of_day`. A time zone may be specified via `time_zone` in Rails TimeZone name format.
-
 * `daily` : The automation will run in a picked `interval`. You can specify `recurring_day` or `recurring_days` to select one or more day numbers inside the interval.
-
 * `webhook` : the automation will run when a request is sent to the corresponding webhook URL.
-
 * `action` : The automation will run when a specific action happens, e.g. a file is created or downloaded.
-
-
 
 Future enhancements will allow Automations to be triggered by an incoming email, or by other services.
 
-
-
-Currently, all Automation types support all triggers, with the following exceptions: `Create Folder` and `Run Remote Server Sync` are not supported by the `action` trigger.
-
-
+Currently, all Automation types support all triggers, with the following exceptions: `Create Folder` and  `Run Remote Server Sync` are not supported by the `action` trigger.
 
 Automations can be triggered manually if trigger is not set to `action`.
 
-
-
 ## Destinations
-
-
 
 The `destinations` parameter is a list of paths where files will be copied, moved, or created. It may include formatting parameters to dynamically determine the destination at runtime.
 
-
-
 ### Relative vs. Absolute Paths
-
-
 
 In order to specify a relative path, it must start with either `./` or `../`. All other paths are considered absolute. In general, leading slashes should never be used on Files.com paths, including here. Paths are interpreted as absolute in all contexts, even without a leading slash.
 
-
-
 ### Files vs. Folders
 
-
-
-If the destination path ends with a `/`, the filename from the source path will be preserved and put into the folder of this name. If the destination path does not end with a `/`, it will be interpreted as a filename and will override the source file's filename entirely.
-
-
+If the destination path ends with a `/`, the filename from the source path will be preserved and put into the folder of this name.  If the destination path does not end with a `/`, it will be interpreted as a filename and will override the source file's filename entirely.
 
 ### Formatting Parameters
 
-
-
 **Action-Triggered Automations**
 
-
-
 * `%tf` : The name of the file that triggered the automation.
-
 * `%tp` : The path of the file that triggered the automation.
-
 * `%td` : The directory of the file that triggered the automation.
-
 * `%tb` : The name of the file (without extension) that triggered the automation.
-
 * `%te` : The extension of the file that triggered the automation.
-
-
 
 For example, if the triggering file is at `path/to/file.txt`, then the automation destination `path/to/dest/incoming-%tf` will result in the actual destination being `path/to/dest/incoming-file.txt`.
 
-
-
 **Parent Folders**
-
-
 
 To reference the parent folder of a source file, use `%p1`, `%p2`, `%p3`, etc. for the first, second, third, etc. parent folder, respectively.
 
-
-
 To reference path components from the root downward, use `%P1`, `%P2`, `%P3`, etc. for the first, second, third, etc. path component, respectively.
-
-
 
 For example, if the source file is at `accounts/file.txt`, then the automation destination `path/to/dest/%p1/some_file_name.txt` will result in the actual destination being `path/to/dest/accounts/some_file_name.txt`.
 
-
-
 If the source file is at `partner/app/team/inbound/file.txt`, then the automation destination `path/to/dest/%P1/%P3/%P4/file.txt` will result in the actual destination being `path/to/dest/partner/team/inbound/file.txt`.
-
-
 
 **Source File Name**
 
-
-
 To reference the name of the source file being processed, use the following tokens:
 
-
-
 * `%Ff` : The name of the source file, with extension.
-
 * `%Fb` : The name of the source file, without extension.
-
 * `%Fe` : The extension of the source file.
-
 * `%Fl` : The name of the source file, with extension, converted to lowercase.
-
 * `%Fn` : The name of the source file, without non-alphanumeric characters, with extension.
-
 * `%Fp` : The name of the source file, with extension, spaces removed, lowercase, non-ASCII normalized.
-
-
 
 For example, if the source file is `Daily Report.xlsx` and the destination is `archive/%Y-%m-%d/%Fb.xlsx`, the resolved destination will be `archive/2024-01-15/Daily Report.xlsx`.
 
-
-
 **Dates and Times**
 
-
-
-* `%Y` : The current year (4 digits)
-
-* `%m` : The current month (2 digits)
-
-* `%B` : The current month (full name)
-
-* `%d` : The current day (2 digits)
-
-* `%H` : The current hour (2 digits, 24-hour clock)
-
-* `%M` : The current minute (2 digits)
-
-* `%S` : The current second (2 digits)
-
-* `%z` : UTC Time Zone (e.g. -0900)
-
-
+* `%Y`  : The current year (4 digits)
+* `%m`  : The current month (2 digits)
+* `%B`  : The current month (full name)
+* `%d`  : The current day (2 digits)
+* `%H`  : The current hour (2 digits, 24-hour clock)
+* `%M`  : The current minute (2 digits)
+* `%S`  : The current second (2 digits)
+* `%z`  : UTC Time Zone (e.g. -0900)
 
 For example, if the current date is June 23, 2023 and the source file is named `daily_sales.csv`, then the following automation destination `path/to/dest/%Y/%m/%d/` will result in the actual destination being `path/to/dest/2023/06/23/daily_sales.csv`.
 
-
-
 ### Replacing Text
 
-
-
 To replace text in the source filename, use the `destination_replace_from` and `destination_replace_to` parameters. This will perform a simple text replacement on the source filename before inserting it into the destination path.
-
-
 
 For example, if the `destination_replace_from` is `incoming` and the `destination_replace_to` is `outgoing`, then `path/to/incoming.txt` will translate to `path/to/outgoing.txt`.
 
 
-
-
-
 ## Automation Types
 
-
-
-There are several types of automations: Create Folder, Copy File, Move File, Delete File and, Run Remote Server Sync.
-
-
-
+There are several types of automations:  Create Folder, Copy File, Move File, Delete File and, Run Remote Server Sync.
 
 
 ### Create Folder
 
-
-
 Creates the folder with named by `destinations` in the path named by `path`.
-
 Destination may include formatting parameters to insert the date/time into the destination name.
 
-
-
-Example Use case: Our business files sales tax for each division in 11 states every quarter.
-
+Example Use case:  Our business files sales tax for each division in 11 states every quarter.
 I want to create the folders where those sales tax forms and data will be collected.
-
-
 
 I could create a Create Folder automation as follows:
 
-
-
 * Trigger: `daily`
-
 * Interval: `quarter_end`
-
 * Path: `AccountingAndTax/SalesTax/State/*/`
-
 * Destinations: `%Y/Quarter-ending-%m-%d`
-
-
 
 Note this assumes you have folders in `AccountingAndTax/SalesTax/State/` already created for each state, e.g. `AccountingAndTax/SalesTax/State/CA/`.
 
 
-
-
-
 ### Delete File
-
-
 
 Deletes the file with path matching `source` (wildcards allowed) in the path named by `path`.
 
 
-
-
-
 ### Copy File
 
-
-
 Copies files in the folder named by `path` to the path specified in `destinations`.
-
 The automation will only fire on files matching the `source` (wildcards allowed). In the case of an action-triggered automation, it will only operate on the actual file that triggered the automation.
-
 If the parameter `limit` exists, the automation will only copy the newest `limit` files in each matching folder.
-
-
-
 
 
 ### Move File
 
-
-
 Moves files in the folder named by `path` to the path specified in `destinations`.
-
 The automation will only fire on files matching the `source` (wildcards allowed). In the case of an action-triggered automation, it will only operate on the actual file that triggered the automation.
-
 If the parameter `limit` exists, the automation will only move the newest `limit` files in each matching folder.
-
 Note that for a move with multiple destinations, all but one destination is treated as a copy.
-
-
-
 
 
 ### Run Remote Server Sync
 
-
-
 The Run Remote Server Sync automation runs the remote server syncs specified by the `sync_ids`.
 
-
-
 Typically when this automation is used, the remote server syncs in question are set to the manual
-
 scheduling mode (`manual` to `true` via the API) to disable the built in sync scheduler.
-
-
-
 
 
 ### Import File
 
-
-
 Retrieves files from one or more URLs and saves the results under the path specified in `destinations`.
-
-
 
 The URLs to retrieve are specified as a JSON array in the `import_urls` property.
 
-
-
 ```json
-
 [
-
- {
-
- "name": "response.json",
-
- "url": "https://example.com/api",
-
- "method": "post",
-
- "headers": {
-
- "Content-Type": "application/json"
-
- },
-
- "content": { "trigger-file": "%tp" }
-
- }
-
+  {
+    "name": "response.json",
+    "url": "https://example.com/api",
+    "method": "post",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "content": { "trigger-file": "%tp" }
+  }
 ]
-
 ```
-
-
 
 The recognized keys are:
 
-
-
 * `name`: The file name which will be used to save the returned content. Required. `%` tokens will be replaced as described under Formatting Parameters.
-
 * `url`: The URL which will be requested. Required.
-
 * `method`: The HTTP method to be used for the request. May be either `get` or `post` (case insensitive). Defaults to `get`.
-
 * `headers`: Optional headers to be included in the request. `%` tokens in the values will be replaced as described under Formatting Parameters.
-
 * `content`: Optional body to send for POST request. If supplied as a string, `%` tokens will be expanded. If supplied as a JSON Object, `%` tokens will be expanded for top-level values. Other JSON types will be sent as-is.
-
-
-
 
 
 ### Help us build the future of Automations
 
-
-
-Do you have an idea for something that would work well as a Files.com Automation? Let us know!
-
+Do you have an idea for something that would work well as a Files.com Automation?  Let us know!
 We are actively improving the types of automations offered on our platform.
-
-
-
 
 
 ## Retrying Failures
 
+Automations will automatically retry individual action steps up to 3 times, with pauses between retries that increase from 15 seconds to 1 minute.  If individual action steps fail after our 3rd attempt, that action will fail.  If every action step in an Automation Run fails, that automation run will move to a `failure` status.  If at least one step succeeds and one step fails, that automation run will move to a `partial_failure` status.
 
-
-Automations will automatically retry individual action steps up to 3 times, with pauses between retries that increase from 15 seconds to 1 minute. If individual action steps fail after our 3rd attempt, that action will fail. If every action step in an Automation Run fails, that automation run will move to a `failure` status. If at least one step succeeds and one step fails, that automation run will move to a `partial_failure` status.
-
-
-
-Automation Runs can be retried automatically when they enter a `failure` or `partial_failure` status as described above. A retry will re-run the automation from scratch, including the "planning" phase, which expands globs (wildcards) and identifies which files to transfer or skip.
-
-
+Automation Runs can be retried automatically when they enter a `failure` or `partial_failure` status as described above.  A retry will re-run the automation from scratch, including the "planning" phase, which expands globs (wildcards) and identifies which files to transfer or skip.
 
 Retrying of entire Automation Runs must be explicitly enabled by setting the `retry_on_failure_interval_in_minutes` and `retry_on_failure_number_of_attempts` values on the Automation.
 
@@ -647,7 +393,7 @@ resource "files_automation" "example_automation" {
   trigger                              = "daily"
   trigger_actions                      = ["create"]
   value                                = {
-    limit = 1
+    limit = "1"
   }
   recurring_day                        = 25
   recurring_days                       = [1, 15]
@@ -1780,6 +1526,34 @@ Required:
 
 - `action` (String)
 - `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027. Until then, JSON-encoded configuration remains supported with a deprecation warning.
+
+#### value
+
+A Hash of attributes specific to the automation type.
+
+| Field in `value` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `[key]` | string | No |  |
+
+#### Migrating JSON-encoded configuration
+
+Replace `jsonencode(...)` with native HCL, keeping the same keys and nesting.
+
+```hcl
+# Legacy JSON encoding
+value = jsonencode({
+  limit = "1"
+})
+
+# Native HCL, same keys and nesting
+value = {
+  limit = "1"
+}
+```
 
 ## Import
 

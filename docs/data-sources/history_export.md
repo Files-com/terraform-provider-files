@@ -4,79 +4,50 @@ page_title: "files_history_export Data Source - files"
 subcategory: ""
 description: |-
   A History Export is a resource on the API that is used to export historical action (history) logs.
-  All queries against the archive must be submitted as Exports. (Even our Web UI creates an Export behind
+  All queries against the archive must be submitted as Exports.  (Even our Web UI creates an Export behind
   the scenes.)
   We use Amazon Athena behind the scenes for processing these queries, and as such, have powerful
-  search capabilities. We've done our best to expose search capabilities via this History Export API.
-  In any query field in this API, you may specify multiple values separated by commas. That means that commas
+  search capabilities.  We've done our best to expose search capabilities via this History Export API.
+  In any query field in this API, you may specify multiple values separated by commas.  That means that commas
   cannot be searched for themselves, and neither can single quotation marks.
   We do not currently partition data by date on the backend, so all queries result in a full scan of the entire
-  data lake. This means that all queries will take about the same amount of time to complete, and we incur about
-  the same cost per query internally. We don't typically bill our customers for these queries, assuming
+  data lake.  This means that all queries will take about the same amount of time to complete, and we incur about
+  the same cost per query internally.  We don't typically bill our customers for these queries, assuming
   usage is occasional and manual.
   If you intend to use this API for high volume or automated use, please contact us with more information
-  about your use case. We may decide to change the backend data schema to match your use case more closely, and
+  about your use case.  We may decide to change the backend data schema to match your use case more closely, and
   we may also need to charge an additional cost per query.
   Example History Queries
-  
-  History for a user: { "query_user_id": 123 }
-  History for a range of time: { "start_at": "2021-03-18 12:00:00", "end_at": "2021-03-19 12:00:00" }
-  History of logins and failed logins: { "query_action": "login,failedlogin" }
-  A Complex query: { "query_folder": "uploads", "query_action": "create,copy,move", "start_at": "2021-03-18 12:00:00", "end_at": "2021-03-19 12:00:00" }
+  History for a user: { "query_user_id": 123 }History for a range of time: { "start_at": "2021-03-18 12:00:00", "end_at": "2021-03-19 12:00:00" }History of logins and failed logins: { "query_action": "login,failedlogin" }A Complex query: { "query_folder": "uploads", "query_action": "create,copy,move", "start_at": "2021-03-18 12:00:00", "end_at": "2021-03-19 12:00:00" }
 ---
 
 # files_history_export (Data Source)
 
 A History Export is a resource on the API that is used to export historical action (history) logs.
 
-
-
-All queries against the archive must be submitted as Exports. (Even our Web UI creates an Export behind
-
+All queries against the archive must be submitted as Exports.  (Even our Web UI creates an Export behind
 the scenes.)
 
-
-
 We use Amazon Athena behind the scenes for processing these queries, and as such, have powerful
+search capabilities.  We've done our best to expose search capabilities via this History Export API.
 
-search capabilities. We've done our best to expose search capabilities via this History Export API.
-
-
-
-In any query field in this API, you may specify multiple values separated by commas. That means that commas
-
+In any query field in this API, you may specify multiple values separated by commas.  That means that commas
 cannot be searched for themselves, and neither can single quotation marks.
 
-
-
 We do not currently partition data by date on the backend, so all queries result in a full scan of the entire
-
-data lake. This means that all queries will take about the same amount of time to complete, and we incur about
-
-the same cost per query internally. We don't typically bill our customers for these queries, assuming
-
+data lake.  This means that all queries will take about the same amount of time to complete, and we incur about
+the same cost per query internally.  We don't typically bill our customers for these queries, assuming
 usage is occasional and manual.
 
-
-
 If you intend to use this API for high volume or automated use, please contact us with more information
-
-about your use case. We may decide to change the backend data schema to match your use case more closely, and
-
+about your use case.  We may decide to change the backend data schema to match your use case more closely, and
 we may also need to charge an additional cost per query.
-
-
 
 ## Example History Queries
 
-
-
 * History for a user: `{ "query_user_id": 123 }`
-
 * History for a range of time: `{ "start_at": "2021-03-18 12:00:00", "end_at": "2021-03-19 12:00:00" }`
-
 * History of logins and failed logins: `{ "query_action": "login,failedlogin" }`
-
 * A Complex query: `{ "query_folder": "uploads", "query_action": "create,copy,move", "start_at": "2021-03-18 12:00:00", "end_at": "2021-03-19 12:00:00" }`
 
 ## Example Usage
@@ -100,7 +71,7 @@ data "files_history_export" "example_history_export" {
 - `history_version` (String) Version of the history for the export.
 - `query_action` (String) Filter results by this this action type. Valid values: `create`, `read`, `update`, `destroy`, `move`, `login`, `failedlogin`, `copy`, `user_create`, `user_update`, `user_destroy`, `group_create`, `group_update`, `group_destroy`, `permission_create`, `permission_destroy`, `api_key_create`, `api_key_update`, `api_key_destroy`, `archived_delete`
 - `query_destination` (String) Return results that are file moves with paths matching this pattern as destination.
-- `query_failure_type` (String) If searching for Histories about login failures, this parameter restricts results to failures of this specific type.  Valid values: `expired_trial`, `account_overdue`, `locked_out`, `ip_mismatch`, `password_mismatch`, `site_mismatch`, `username_not_found`, `none`, `no_ftp_permission`, `no_web_permission`, `no_directory`, `errno_enoent`, `no_sftp_permission`, `no_dav_permission`, `no_restapi_permission`, `key_mismatch`, `region_mismatch`, `expired_access`, `desktop_ip_mismatch`, `desktop_api_key_not_used_quickly_enough`, `disabled`, `country_mismatch`, `insecure_ftp`, `insecure_cipher`, `rate_limited`
+- `query_failure_type` (String) If searching for Histories about login failures, this parameter restricts results to failures of this specific type.  Valid values: `expired_trial`, `account_overdue`, `locked_out`, `ip_mismatch`, `password_mismatch`, `site_mismatch`, `username_not_found`, `none`, `no_ftp_permission`, `no_web_permission`, `no_directory`, `errno_enoent`, `no_sftp_permission`, `no_dav_permission`, `no_restapi_permission`, `key_mismatch`, `region_mismatch`, `expired_access`, `desktop_ip_mismatch`, `desktop_api_key_not_used_quickly_enough`, `disabled`, `country_mismatch`, `insecure_ftp`, `insecure_cipher`, `rate_limited`, `no_s3_compatible_endpoint_permission`
 - `query_file_id` (String) Return results that are file actions related to the file indicated by this File ID
 - `query_folder` (String) Return results that are file actions related to files or folders inside folder paths matching this pattern.
 - `query_interface` (String) Filter results by this this interface type. Valid values: `web`, `ftp`, `robot`, `jsapi`, `webdesktopapi`, `sftp`, `dav`, `desktop`, `restapi`, `scim`, `office`, `mobile`, `as2`, `inbound_email`, `remote`, `inbound_s3`

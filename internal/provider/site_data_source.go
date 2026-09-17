@@ -8,7 +8,6 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	site "github.com/Files-com/files-sdk-go/v3/site"
 	"github.com/Files-com/terraform-provider-files/lib"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -253,7 +252,7 @@ func (r *siteDataSource) Metadata(_ context.Context, req datasource.MetadataRequ
 
 func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Site is the place you'll come to update site settings, as well as manage site-wide API keys.\n\n\n\nMost site settings can be set via the API.",
+		Description: "A Site is the place you'll come to update site settings, as well as manage site-wide API keys.\n\nMost site settings can be set via the API.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Site Id",
@@ -1119,7 +1118,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 		)
 	}
 	state.BundleWatermarkAttachment = types.StringValue(string(respBundleWatermarkAttachment))
-	state.BundleWatermarkValue, propDiags = lib.ToDynamic(ctx, path.Root("bundle_watermark_value"), site.BundleWatermarkValue, state.BundleWatermarkValue.UnderlyingValue())
+	state.BundleWatermarkValue, propDiags = lib.ToDynamic(ctx, path.Root("bundle_watermark_value"), site.BundleWatermarkValue, nil)
 	diags.Append(propDiags...)
 	state.CalculateFileChecksumsCrc32 = types.BoolPointerValue(site.CalculateFileChecksumsCrc32)
 	state.CalculateFileChecksumsMd5 = types.BoolPointerValue(site.CalculateFileChecksumsMd5)

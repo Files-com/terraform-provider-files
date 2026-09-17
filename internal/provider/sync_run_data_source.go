@@ -80,7 +80,7 @@ func (r *syncRunDataSource) Metadata(_ context.Context, req datasource.MetadataR
 
 func (r *syncRunDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A SyncRun represents a single execution (run) of a Sync job.\n\nIt tracks status, statistics, logs, and timing for each sync operation.",
+		Description: "A SyncRun represents a single execution (run) of a Sync job.\nIt tracks status, statistics, logs, and timing for each sync operation.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "SyncRun ID",

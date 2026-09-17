@@ -87,6 +87,7 @@ type userResourceModel struct {
 	ResponsibleUserId                      types.Int64             `tfsdk:"responsible_user_id"`
 	ReadonlySiteAdmin                      types.Bool              `tfsdk:"readonly_site_admin"`
 	RestapiPermission                      types.Bool              `tfsdk:"restapi_permission"`
+	S3CompatibleEndpointPermission         types.Bool              `tfsdk:"s3_compatible_endpoint_permission"`
 	SelfManaged                            types.Bool              `tfsdk:"self_managed"`
 	SftpPermission                         types.Bool              `tfsdk:"sftp_permission"`
 	SiteAdmin                              types.Bool              `tfsdk:"site_admin"`
@@ -167,7 +168,7 @@ func (r *userResource) Metadata(_ context.Context, req resource.MetadataRequest,
 
 func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A User represents a human or system/service user with the ability to connect to Files.com via any of the available connectivity methods (unless restricted to specific protocols).\n\n\n\nUsers are associated with API Keys, SSH (SFTP) Keys, Notifications, Permissions, and Group memberships.\n\n\n\n\n\n## Authentication\n\n\n\nThe `authentication_method` property on a User determines exactly how that user can login and authenticate to their Files.com account. Files.com offers a variety of authentication methods to ensure flexibility, security, migration, and compliance.\n\n\n\nThese authentication methods can be configured during user creation and can be modified at any time by site administrators. The meanings of the available values are as follows:\n\n\n\n* `password` - Allows authentication via a password. If API Keys or SSH (SFTP) Keys are also configured, those can be used *instead* of the password. If Two Factor Authentication (2FA) methods are also configured, a valid 2nd factor is required in addition to the password.\n\n* `email_signup` - When set upon user creation, an email will be sent to the new user with a link for them to create their password. Once the user has created their password, their authentication type will change to `password`.\n\n* `sso` - Allows authentication via a linked Single Sign On provider. If API Keys or SSH (SFTP) Keys are also configured, those can be used *instead* of Single Sign On. If Two Factor Authentication (2FA) methods are also configured, a valid 2nd factor is required in addition to Single Sign On. When using this method, you must also provide a valid `sso_strategy_id` to associate the User to the appropriate SSO provider.\n\n* `password_with_imported_hash` - Works like the `password` method but allows importing a hashed password in MD5, SHA-1, or SHA-256 format. Provide the imported hash in the field `imported_password_hash`. Upon first use, the password will be converted to Files.com's internal storage format and the authentication type will change to `password`. Typically only used when migrating to Files.com from another MFT solution.\n\n* `none` - Does not allow authentication via username and password, but does allow authentication via API Key or SSH (SFTP) Key. Typically only used for service users.\n\n* `password_and_ssh_key` - Allows authentication only by providing a password and also a valid SSH (SFTP) Key in a single attempt. If API Keys are also configured, those can be used *instead* of the password and key combination. This method only works with (typically enterprise) SSH/SFTP clients capable of sending both authentication methods at once. Typically only used for service users.",
+		Description: "A User represents a human or system/service user with the ability to connect to Files.com via any of the available connectivity methods (unless restricted to specific protocols).\n\nUsers are associated with API Keys, SSH (SFTP) Keys, Notifications, Permissions, and Group memberships.\n\n\n## Authentication\n\nThe `authentication_method` property on a User determines exactly how that user can login and authenticate to their Files.com account. Files.com offers a variety of authentication methods to ensure flexibility, security, migration, and compliance.\n\nThese authentication methods can be configured during user creation and can be modified at any time by site administrators. The meanings of the available values are as follows:\n\n* `password` - Allows authentication via a password.  If API Keys or SSH (SFTP) Keys are also configured, those can be used *instead* of the password.  If Two Factor Authentication (2FA) methods are also configured, a valid 2nd factor is required in addition to the password.\n* `email_signup` - When set upon user creation, an email will be sent to the new user with a link for them to create their password. Once the user has created their password, their authentication type will change to `password`.\n* `sso` - Allows authentication via a linked Single Sign On provider.  If API Keys or SSH (SFTP) Keys are also configured, those can be used *instead* of Single Sign On.  If Two Factor Authentication (2FA) methods are also configured, a valid 2nd factor is required in addition to Single Sign On.  When using this method, you must also provide a valid `sso_strategy_id` to associate the User to the appropriate SSO provider.\n* `password_with_imported_hash` - Works like the `password` method but allows importing a hashed password in MD5, SHA-1, or SHA-256 format.  Provide the imported hash in the field `imported_password_hash`.  Upon first use, the password will be converted to Files.com's internal storage format and the authentication type will change to `password`. Typically only used when migrating to Files.com from another MFT solution.\n* `none` - Does not allow authentication via username and password, but does allow authentication via API Key or SSH (SFTP) Key.  Typically only used for service users.\n* `password_and_ssh_key` - Allows authentication only by providing a password and also a valid SSH (SFTP) Key in a single attempt.  If API Keys are also configured, those can be used *instead* of the password and key combination.  This method only works with (typically enterprise) SSH/SFTP clients capable of sending both authentication methods at once.  Typically only used for service users.",
 		Attributes: map[string]schema.Attribute{
 			"username": schema.StringAttribute{
 				Description: "User's username",
@@ -521,6 +522,14 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"restapi_permission": schema.BoolAttribute{
 				Description: "Can this user access the Web app, Desktop app, SDKs, or REST API?  (All of these tools use the API internally, so this is one unified permission set.)",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"s3_compatible_endpoint_permission": schema.BoolAttribute{
+				Description: "Can the user access the S3-compatible endpoint? Defaults to true.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -958,6 +967,9 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !plan.RestapiPermission.IsNull() && !plan.RestapiPermission.IsUnknown() {
 		paramsUserCreate.RestapiPermission = plan.RestapiPermission.ValueBoolPointer()
 	}
+	if !plan.S3CompatibleEndpointPermission.IsNull() && !plan.S3CompatibleEndpointPermission.IsUnknown() {
+		paramsUserCreate.S3CompatibleEndpointPermission = plan.S3CompatibleEndpointPermission.ValueBoolPointer()
+	}
 	if !plan.SelfManaged.IsNull() && !plan.SelfManaged.IsUnknown() {
 		paramsUserCreate.SelfManaged = plan.SelfManaged.ValueBoolPointer()
 	}
@@ -1244,6 +1256,9 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.RestapiPermission.IsNull() && !config.RestapiPermission.IsUnknown() {
 		paramsUserUpdate["restapi_permission"] = config.RestapiPermission.ValueBool()
 	}
+	if !config.S3CompatibleEndpointPermission.IsNull() && !config.S3CompatibleEndpointPermission.IsUnknown() {
+		paramsUserUpdate["s3_compatible_endpoint_permission"] = config.S3CompatibleEndpointPermission.ValueBool()
+	}
 	if !config.SelfManaged.IsNull() && !config.SelfManaged.IsUnknown() {
 		paramsUserUpdate["self_managed"] = config.SelfManaged.ValueBool()
 	}
@@ -1503,6 +1518,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.ResponsibleUserId = types.Int64Value(user.ResponsibleUserId)
 	state.ReadonlySiteAdmin = types.BoolPointerValue(user.ReadonlySiteAdmin)
 	state.RestapiPermission = types.BoolPointerValue(user.RestapiPermission)
+	state.S3CompatibleEndpointPermission = types.BoolPointerValue(user.S3CompatibleEndpointPermission)
 	state.SelfManaged = types.BoolPointerValue(user.SelfManaged)
 	state.SftpPermission = types.BoolPointerValue(user.SftpPermission)
 	state.SiteAdmin = types.BoolPointerValue(user.SiteAdmin)

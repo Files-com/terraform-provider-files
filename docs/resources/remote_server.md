@@ -6,15 +6,12 @@ description: |-
   A RemoteServer is a specific type of Behavior called remote_server_sync.
   Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, SharePoint, Google Drive, Azure Blob Storage, or Files.com direct link.
   Not every attribute will apply to every remote server.
-  FTP Servers require that you specify their hostname, port, username, password, and a value for ssl. Optionally, provide server_certificate.
-  SFTP Servers require that you specify their hostname, port, username, password or private_key, and a value for ssl. Optionally, provide server_certificate, private_key_passphrase.
-  S3 Buckets require that you specify their s3_bucket name, and s3_region. Optionally provide a aws_access_key, and aws_secret_key. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.
+  FTP Servers require that you specify their hostname, port, username, password, and a value for ssl.  Optionally, provide server_certificate.
+  SFTP Servers require that you specify their hostname, port, username, password or private_key, and a value for ssl.  Optionally, provide server_certificate, private_key_passphrase.
+  S3 Buckets require that you specify their s3_bucket name, and s3_region.  Optionally provide a aws_access_key, and aws_secret_key.  If you don't provide credentials, you will need to use AWS to grant us access to your bucket.
   S3-Compatible Buckets require that you specify s3_compatible_bucket, s3_compatible_endpoint, s3_compatible_access_key, and s3_compatible_secret_key. Optionally provide s3_compatible_virtual_hosted_style to use virtual-hosted-style URLs instead of path-style URLs.
   Google Cloud Storage requires that you specify google_cloud_storage_bucket, and then one of the following sets of authentication credentials, selected by google_cloud_storage_authentication_method (defaults to json):
-  
-  for JSON authentication: google_cloud_storage_project_id, and google_cloud_storage_credentials_json
-  for HMAC (S3-Compatible) authentication: google_cloud_storage_s3_compatible_access_key, and google_cloud_storage_s3_compatible_secret_key
-  for OAuth authentication: google_cloud_storage_oauth_scope, then follow the auth_setup_link and login with Google
+  for JSON authentication: google_cloud_storage_project_id, and google_cloud_storage_credentials_jsonfor HMAC (S3-Compatible) authentication: google_cloud_storage_s3_compatible_access_key, and google_cloud_storage_s3_compatible_secret_keyfor OAuth authentication: google_cloud_storage_oauth_scope, then follow the auth_setup_link and login with Google
   Wasabi requires wasabi_bucket, wasabi_region, wasabi_access_key, and wasabi_secret_key.
   Backblaze B2 Cloud Storage backblaze_b2_bucket, backblaze_b2_s3_endpoint, backblaze_b2_application_key, and backblaze_b2_key_id. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453
   WebDAV Servers require that you specify their hostname, username, and password.
@@ -34,89 +31,46 @@ description: |-
 
 A RemoteServer is a specific type of Behavior called `remote_server_sync`.
 
-
-
 Remote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, SharePoint, Google Drive, Azure Blob Storage, or Files.com direct link.
-
-
 
 Not every attribute will apply to every remote server.
 
+FTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`.  Optionally, provide `server_certificate`.
 
+SFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`.  Optionally, provide `server_certificate`, `private_key_passphrase`.
 
-FTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`. Optionally, provide `server_certificate`.
-
-
-
-SFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`. Optionally, provide `server_certificate`, `private_key_passphrase`.
-
-
-
-S3 Buckets require that you specify their `s3_bucket` name, and `s3_region`. Optionally provide a `aws_access_key`, and `aws_secret_key`. If you don't provide credentials, you will need to use AWS to grant us access to your bucket.
-
-
+S3 Buckets require that you specify their `s3_bucket` name, and `s3_region`.  Optionally provide a `aws_access_key`, and `aws_secret_key`.  If you don't provide credentials, you will need to use AWS to grant us access to your bucket.
 
 S3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`. Optionally provide `s3_compatible_virtual_hosted_style` to use virtual-hosted-style URLs instead of path-style URLs.
 
-
-
 Google Cloud Storage requires that you specify `google_cloud_storage_bucket`, and then one of the following sets of authentication credentials, selected by `google_cloud_storage_authentication_method` (defaults to `json`):
-
- - for JSON authentication: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`
-
- - for HMAC (S3-Compatible) authentication: `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`
-
- - for OAuth authentication: `google_cloud_storage_oauth_scope`, then follow the `auth_setup_link` and login with Google
-
-
+  - for JSON authentication: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`
+  - for HMAC (S3-Compatible) authentication: `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`
+  - for OAuth authentication: `google_cloud_storage_oauth_scope`, then follow the `auth_setup_link` and login with Google
 
 Wasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.
 
-
-
 Backblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453
-
-
 
 WebDAV Servers require that you specify their `hostname`, `username`, and `password`.
 
-
-
 OneDrive follow the `auth_setup_link` and login with Microsoft.
-
-
 
 SharePoint supports delegated authentication through `auth_setup_link`, or app-only authentication with `sharepoint_tenant_id`, `sharepoint_client_id`, and either `sharepoint_client_secret` or `sharepoint_client_certificate`. Set `sharepoint_site_url` to scope the remote server to a site granted through Microsoft Graph `Sites.Selected`; leave it blank to browse all sites.
 
-
-
 Box follow the `auth_setup_link` and login with Box.
-
-
 
 Dropbox specify if `dropbox_teams` then follow the `auth_setup_link` and login with Dropbox.
 
-
-
 Google Drive follow the `auth_setup_link` and login with Google.
-
-
 
 Azure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`, `azure_blob_storage_dns_suffix`
 
-
-
 Azure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`, `azure_files_storage_dns_suffix`
-
-
 
 Filebase requires `filebase_bucket`, `filebase_access_key`, and `filebase_secret_key`.
 
-
-
 Cloudflare requires `cloudflare_bucket`, `cloudflare_access_key`, `cloudflare_secret_key` and `cloudflare_endpoint`.
-
-
 
 Linode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `linode_region`.
 

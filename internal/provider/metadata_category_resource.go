@@ -68,7 +68,7 @@ func (r *metadataCategoryResource) Metadata(_ context.Context, req resource.Meta
 
 func (r *metadataCategoryResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A MetadataCategory defines a reusable set of Custom Metadata rules that can be assigned to folders\n\nvia a folder behavior. Each category specifies named metadata keys with optional allowed-value\n\nconstraints, and a set of default columns to display in the UI.\n\n\n\nIf a key's `allowed_values` array is empty, it is treated as a free-form text field.\n\nIf the array is non-empty, the key is constrained to those values in the Web UI.",
+		Description: "A MetadataCategory defines a reusable set of Custom Metadata rules that can be assigned to folders\nvia a folder behavior. Each category specifies named metadata keys with optional allowed-value\nconstraints, and a set of default columns to display in the UI.\n\nIf a key's `allowed_values` array is empty, it is treated as a free-form text field.\nIf the array is non-empty, the key is constrained to those values in the Web UI.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Name of the metadata category.",

@@ -7,7 +7,6 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	as2_partner "github.com/Files-com/files-sdk-go/v3/as2partner"
 	"github.com/Files-com/terraform-provider-files/lib"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -77,7 +76,7 @@ func (r *as2PartnerDataSource) Metadata(_ context.Context, req datasource.Metada
 
 func (r *as2PartnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "An AS2Partner is a counterparty of the Files.com site's AS2 connectivity. Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.",
+		Description: "An AS2Partner is a counterparty of the Files.com site's AS2 connectivity.  Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "ID of the AS2 Partner.",
@@ -203,7 +202,7 @@ func (r *as2PartnerDataSource) populateDataSourceModel(ctx context.Context, as2P
 	state.Uri = types.StringValue(as2Partner.Uri)
 	state.ServerCertificate = types.StringValue(as2Partner.ServerCertificate)
 	state.HttpAuthUsername = types.StringValue(as2Partner.HttpAuthUsername)
-	state.AdditionalHttpHeaders, propDiags = lib.ToDynamic(ctx, path.Root("additional_http_headers"), as2Partner.AdditionalHttpHeaders, state.AdditionalHttpHeaders.UnderlyingValue())
+	state.AdditionalHttpHeaders, propDiags = lib.ToDynamic(ctx, path.Root("additional_http_headers"), as2Partner.AdditionalHttpHeaders, nil)
 	diags.Append(propDiags...)
 	state.DefaultMimeType = types.StringValue(as2Partner.DefaultMimeType)
 	state.MdnValidationLevel = types.StringValue(as2Partner.MdnValidationLevel)

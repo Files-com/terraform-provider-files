@@ -3,12 +3,16 @@
 page_title: "files_siem_http_destination Resource - files"
 subcategory: ""
 description: |-
-  
+  A SIEM HTTP Destination defines where Files.com sends the log types you select.
+  For HTTP destinations, Files.com sends JSON to the configured endpoint.
+  For file destinations, Files.com writes JSON or CSV files to the configured folder.
 ---
 
 # files_siem_http_destination (Resource)
 
-
+A SIEM HTTP Destination defines where Files.com sends the log types you select.
+For HTTP destinations, Files.com sends JSON to the configured endpoint.
+For file destinations, Files.com writes JSON or CSV files to the configured folder.
 
 ## Example Usage
 
@@ -16,7 +20,7 @@ description: |-
 resource "files_siem_http_destination" "example_siem_http_destination" {
   name                                     = "example"
   additional_headers                       = {
-    key = "example value"
+    Authorization = "Bearer YOUR_TOKEN"
   }
   sending_active                           = true
   generic_payload_type                     = "example"
@@ -57,7 +61,7 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
 > **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
 
 - `action_send_enabled` (Boolean) Whether or not sending is enabled for action logs.
-- `additional_headers` (Dynamic) Additional HTTP Headers included in calls to the destination URL
+- `additional_headers` (Dynamic, Sensitive) Additional HTTP Headers included in calls to the destination URL
 - `api_request_send_enabled` (Boolean) Whether or not sending is enabled for api_request logs.
 - `automation_send_enabled` (Boolean) Whether or not sending is enabled for automation logs.
 - `azure_dcr_immutable_id` (String) Applicable only for destination types: azure, azure_legacy. Immutable ID of the Data Collection Rule.
@@ -120,6 +124,34 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
 - `splunk_token_masked` (String) Applicable only for destination types: splunk, splunk_compatible. Authentication token for the destination.
 - `sync_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `web_dav_action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027. Until then, JSON-encoded configuration remains supported with a deprecation warning.
+
+#### additional_headers
+
+Additional HTTP Headers included in calls to the destination URL
+
+| Field in `additional_headers` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `[key]` | string | No |  |
+
+#### Migrating JSON-encoded configuration
+
+Replace `jsonencode(...)` with native HCL, keeping the same keys and nesting.
+
+```hcl
+# Legacy JSON encoding
+additional_headers = jsonencode({
+  Authorization = "Bearer YOUR_TOKEN"
+})
+
+# Native HCL, same keys and nesting
+additional_headers = {
+  Authorization = "Bearer YOUR_TOKEN"
+}
+```
 
 ## Import
 

@@ -61,7 +61,7 @@ func (r *siteSubdomainRedirectDataSource) Metadata(_ context.Context, req dataso
 
 func (r *siteSubdomainRedirectDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A SiteSubdomainRedirect object represents an old Files.com subdomain that continues to work after the site's Files.com subdomain changes.\n\nHTTPS requests redirect to the current subdomain, and other protocols such as FTP and SFTP are routed through DNS.",
+		Description: "A SiteSubdomainRedirect object represents an old Files.com subdomain that continues to work after the site's Files.com subdomain changes.\nHTTPS requests redirect to the current subdomain, and other protocols such as FTP and SFTP are routed through DNS.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Site subdomain redirect ID.",

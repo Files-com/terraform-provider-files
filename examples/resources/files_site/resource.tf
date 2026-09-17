@@ -119,9 +119,6 @@ resource "files_site" "example_site" {
   active_sftp_host_key_ids                                   = [1]
   protocol_access_groups_only                                = false
   revoke_bundle_access_on_disable_or_delete                  = false
-  bundle_watermark_value                                     = {
-    key = "example value"
-  }
   group_admins_can_add_users                                 = false
   group_admins_can_manage_group_memberships                  = false
   group_admins_can_delete_users                              = false
@@ -177,6 +174,11 @@ resource "files_site" "example_site" {
   ldap_group_inclusion                                       = "example"
   ldap_base_dn                                               = "example"
   uploads_via_email_authentication                           = false
+  bundle_watermark_value                                     = {
+    gravity             = "SouthWest"
+    max_height_or_width = 20
+    transparency        = 25
+  }
   icon16_delete                                              = false
   icon32_delete                                              = false
   icon48_delete                                              = false

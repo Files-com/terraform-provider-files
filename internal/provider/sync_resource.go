@@ -104,7 +104,7 @@ func (r *syncResource) Metadata(_ context.Context, req resource.MetadataRequest,
 
 func (r *syncResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Sync represents a file synchronization job between two locations (local-remote, remote-remote, local-child_site, etc). \n\nIt can be scheduled, run manually, or triggered by custom logic. \n\nSyncs track their runs, status, and configuration.",
+		Description: "A Sync represents a file synchronization job between two locations (local-remote, remote-remote, local-child_site, etc). \nIt can be scheduled, run manually, or triggered by custom logic. \nSyncs track their runs, status, and configuration.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Name for this sync job",

@@ -1,7 +1,7 @@
 resource "files_siem_http_destination" "example_siem_http_destination" {
   name                                     = "example"
   additional_headers                       = {
-    key = "example value"
+    Authorization = "Bearer YOUR_TOKEN"
   }
   sending_active                           = true
   generic_payload_type                     = "example"

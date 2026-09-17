@@ -3,12 +3,16 @@
 page_title: "files_siem_http_destination Data Source - files"
 subcategory: ""
 description: |-
-  
+  A SIEM HTTP Destination defines where Files.com sends the log types you select.
+  For HTTP destinations, Files.com sends JSON to the configured endpoint.
+  For file destinations, Files.com writes JSON or CSV files to the configured folder.
 ---
 
 # files_siem_http_destination (Data Source)
 
-
+A SIEM HTTP Destination defines where Files.com sends the log types you select.
+For HTTP destinations, Files.com sends JSON to the configured endpoint.
+For file destinations, Files.com writes JSON or CSV files to the configured folder.
 
 ## Example Usage
 
@@ -29,7 +33,7 @@ data "files_siem_http_destination" "example_siem_http_destination" {
 
 - `action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `action_send_enabled` (Boolean) Whether or not sending is enabled for action logs.
-- `additional_headers` (Dynamic) Additional HTTP Headers included in calls to the destination URL
+- `additional_headers` (Dynamic, Sensitive) Additional HTTP Headers included in calls to the destination URL
 - `api_request_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `api_request_send_enabled` (Boolean) Whether or not sending is enabled for api_request logs.
 - `automation_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
@@ -81,3 +85,15 @@ data "files_siem_http_destination" "example_siem_http_destination" {
 - `sync_send_enabled` (Boolean) Whether or not sending is enabled for sync logs.
 - `web_dav_action_entries_sent` (Number) Number of log entries sent for the lifetime of this destination.
 - `web_dav_action_send_enabled` (Boolean) Whether or not sending is enabled for web_dav_action logs.
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027.
+
+#### additional_headers
+
+Additional HTTP Headers included in calls to the destination URL
+
+| Field in `additional_headers` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `[key]` | string | No |  |

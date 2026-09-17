@@ -45,6 +45,7 @@ resource "files_user" "example_user" {
   responsible_group_id                         = 1
   responsible_user_id                          = 1
   restapi_permission                           = true
+  s3_compatible_endpoint_permission            = true
   self_managed                                 = true
   sftp_permission                              = true
   site_admin                                   = true

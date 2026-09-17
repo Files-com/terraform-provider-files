@@ -11,8 +11,6 @@ description: |-
 
 A Request is a file that *should* be uploaded by a specific user or group.
 
-
-
 Requests can either be manually created and managed, or managed automatically by an Automation.
 
 ## Example Usage

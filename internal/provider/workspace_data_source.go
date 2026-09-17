@@ -57,7 +57,7 @@ func (r *workspaceDataSource) Metadata(_ context.Context, req datasource.Metadat
 
 func (r *workspaceDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Workspace is a lightweight way to organize related resources inside a single Files.com Site.\n\n\n\nCustomers commonly group resources by project, department, client, or region. Workspaces provide a built-in structure for that grouping, so the UI can operate within a clear “workspace context” and admins can delegate management for a subset of resources without requiring full site-level isolation.\n\n\n\nEvery Site has an implicit Default workspace (ID 0). Resources that are not explicitly assigned to a named workspace are considered part of the Default workspace.",
+		Description: "A Workspace is a lightweight way to organize related resources inside a single Files.com Site.\n\nCustomers commonly group resources by project, department, client, or region. Workspaces provide a built-in structure for that grouping, so the UI can operate within a clear “workspace context” and admins can delegate management for a subset of resources without requiring full site-level isolation.\n\nEvery Site has an implicit Default workspace (ID 0). Resources that are not explicitly assigned to a named workspace are considered part of the Default workspace.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Workspace ID",

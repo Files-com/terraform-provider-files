@@ -3,20 +3,16 @@
 page_title: "files_group Resource - files"
 subcategory: ""
 description: |-
-  A Group is a powerful tool for permissions and user management on Files.com. Users can belong to multiple groups.
+  A Group is a powerful tool for permissions and user management on Files.com.  Users can belong to multiple groups.
   All permissions can be managed via Groups, and Groups can also be synced to your identity platform via LDAP or SCIM.
   Files.com's Group Admin feature allows you to define Group Admins, who then have access to add and remove users within their groups.
 ---
 
 # files_group (Resource)
 
-A Group is a powerful tool for permissions and user management on Files.com. Users can belong to multiple groups.
-
-
+A Group is a powerful tool for permissions and user management on Files.com.  Users can belong to multiple groups.
 
 All permissions can be managed via Groups, and Groups can also be synced to your identity platform via LDAP or SCIM.
-
-
 
 Files.com's Group Admin feature allows you to define Group Admins, who then have access to add and remove users within their groups.
 
@@ -24,19 +20,20 @@ Files.com's Group Admin feature allows you to define Group Admins, who then have
 
 ```terraform
 resource "files_group" "example_group" {
-  notes                            = "example"
-  user_ids                         = 1
-  admin_ids                        = 1
-  ai_assistant_personality_id      = 1
-  ftp_permission                   = true
-  sftp_permission                  = true
-  dav_permission                   = true
-  restapi_permission               = true
-  desktop_configuration_profile_id = 1
-  integration_centric_profile_id   = 1
-  allowed_ips                      = "10.0.0.0/8\n127.0.0.1"
-  name                             = "name"
-  workspace_id                     = 0
+  notes                             = "example"
+  user_ids                          = 1
+  admin_ids                         = 1
+  ai_assistant_personality_id       = 1
+  ftp_permission                    = true
+  sftp_permission                   = true
+  dav_permission                    = true
+  restapi_permission                = true
+  s3_compatible_endpoint_permission = true
+  desktop_configuration_profile_id  = 1
+  integration_centric_profile_id    = 1
+  allowed_ips                       = "10.0.0.0/8\n127.0.0.1"
+  name                              = "name"
+  workspace_id                      = 0
 }
 ```
 
@@ -58,6 +55,7 @@ resource "files_group" "example_group" {
 - `integration_centric_profile_id` (Number) Integration Centric Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.
 - `notes` (String) Notes about this group
 - `restapi_permission` (Boolean) If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.
+- `s3_compatible_endpoint_permission` (Boolean) If true, users in this group can access the S3-compatible endpoint. This will override a false value of `s3_compatible_endpoint_permission` on the user level. Defaults to false.
 - `sftp_permission` (Boolean) If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level.
 - `user_ids` (String) Comma-delimited list of user IDs who belong to this group (separated by commas)
 - `workspace_id` (Number) Workspace ID

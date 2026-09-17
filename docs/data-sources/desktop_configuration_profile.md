@@ -32,3 +32,15 @@ data "files_desktop_configuration_profile" "example_desktop_configuration_profil
 - `name` (String) Profile name
 - `use_for_all_users` (Boolean) Whether this profile applies to all users in the Workspace by default
 - `workspace_id` (Number) Workspace ID
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027.
+
+#### mount_mappings
+
+Mount point mappings for the desktop app. Keys must be a single uppercase Windows drive letter other than A, B, or C, and values are Files.com paths to mount there. Empty mappings are allowed only when disable_drive_mounting is true.
+
+| Field in `mount_mappings` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `[key]` | string | No |  |

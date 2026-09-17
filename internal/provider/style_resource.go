@@ -67,7 +67,7 @@ func (r *styleResource) Metadata(_ context.Context, req resource.MetadataRequest
 
 func (r *styleResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Style is a custom set of branding that can be applied on a per-folder basis.\n\nCurrently these support a logo per folder and an optional click-through URL for public visitors.\n\nIn the future we may extend these to also support colors.\n\nIf you want to see that, please let us know so we can add your vote to the list.",
+		Description: "A Style is a custom set of branding that can be applied on a per-folder basis.\nCurrently these support a logo per folder and an optional click-through URL for public visitors.\nIn the future we may extend these to also support colors.\nIf you want to see that, please let us know so we can add your vote to the list.",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
 				Description: "Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",

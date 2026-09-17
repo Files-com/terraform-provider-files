@@ -7,7 +7,6 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	siem_http_destination "github.com/Files-com/files-sdk-go/v3/siemhttpdestination"
 	"github.com/Files-com/terraform-provider-files/lib"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -112,7 +111,7 @@ func (r *siemHttpDestinationDataSource) Metadata(_ context.Context, req datasour
 
 func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "",
+		Description: "A SIEM HTTP Destination defines where Files.com sends the log types you select.\nFor HTTP destinations, Files.com sends JSON to the configured endpoint.\nFor file destinations, Files.com writes JSON or CSV files to the configured folder.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "SIEM HTTP Destination ID",
@@ -145,6 +144,7 @@ func (r *siemHttpDestinationDataSource) Schema(_ context.Context, _ datasource.S
 			"additional_headers": schema.DynamicAttribute{
 				Description: "Additional HTTP Headers included in calls to the destination URL",
 				Computed:    true,
+				Sensitive:   true,
 			},
 			"sending_active": schema.BoolAttribute{
 				Description: "Whether this SIEM HTTP Destination is currently being sent to or not",
@@ -378,7 +378,7 @@ func (r *siemHttpDestinationDataSource) populateDataSourceModel(ctx context.Cont
 	state.FileDestinationPath = types.StringValue(siemHttpDestination.FileDestinationPath)
 	state.FileFormat = types.StringValue(siemHttpDestination.FileFormat)
 	state.FileIntervalMinutes = types.Int64Value(siemHttpDestination.FileIntervalMinutes)
-	state.AdditionalHeaders, propDiags = lib.ToDynamic(ctx, path.Root("additional_headers"), siemHttpDestination.AdditionalHeaders, state.AdditionalHeaders.UnderlyingValue())
+	state.AdditionalHeaders, propDiags = lib.ToDynamic(ctx, path.Root("additional_headers"), siemHttpDestination.AdditionalHeaders, nil)
 	diags.Append(propDiags...)
 	state.SendingActive = types.BoolPointerValue(siemHttpDestination.SendingActive)
 	state.GenericPayloadType = types.StringValue(siemHttpDestination.GenericPayloadType)

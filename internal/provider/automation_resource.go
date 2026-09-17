@@ -95,55 +95,6 @@ type automationResourceModel struct {
 	WebhookUrl                       types.String  `tfsdk:"webhook_url"`
 }
 
-type automationResourceModelV0 struct {
-	Automation                       types.String  `tfsdk:"automation"`
-	WorkspaceId                      types.Int64   `tfsdk:"workspace_id"`
-	AlwaysSerializeJobs              types.Bool    `tfsdk:"always_serialize_jobs"`
-	AlwaysOverwriteSizeMatchingFiles types.Bool    `tfsdk:"always_overwrite_size_matching_files"`
-	Description                      types.String  `tfsdk:"description"`
-	Definition                       types.Dynamic `tfsdk:"definition"`
-	DestinationReplaceFrom           types.String  `tfsdk:"destination_replace_from"`
-	DestinationReplaceTo             types.String  `tfsdk:"destination_replace_to"`
-	Destinations                     types.List    `tfsdk:"destinations"`
-	Disabled                         types.Bool    `tfsdk:"disabled"`
-	ExcludePattern                   types.String  `tfsdk:"exclude_pattern"`
-	ImportUrls                       types.Dynamic `tfsdk:"import_urls"`
-	FlattenDestinationStructure      types.Bool    `tfsdk:"flatten_destination_structure"`
-	GroupIds                         types.List    `tfsdk:"group_ids"`
-	IgnoreLockedFolders              types.Bool    `tfsdk:"ignore_locked_folders"`
-	Interval                         types.String  `tfsdk:"interval"`
-	LegacyFolderMatching             types.Bool    `tfsdk:"legacy_folder_matching"`
-	Name                             types.String  `tfsdk:"name"`
-	OverwriteFiles                   types.Bool    `tfsdk:"overwrite_files"`
-	Path                             types.String  `tfsdk:"path"`
-	PathTimeZone                     types.String  `tfsdk:"path_time_zone"`
-	RecurringDay                     types.Int64   `tfsdk:"recurring_day"`
-	RecurringDays                    types.List    `tfsdk:"recurring_days"`
-	ScheduleId                       types.Int64   `tfsdk:"schedule_id"`
-	RetryOnFailureIntervalInMinutes  types.Int64   `tfsdk:"retry_on_failure_interval_in_minutes"`
-	RetryOnFailureNumberOfAttempts   types.Int64   `tfsdk:"retry_on_failure_number_of_attempts"`
-	ScheduleDaysOfWeek               types.List    `tfsdk:"schedule_days_of_week"`
-	ScheduleTimesOfDay               types.List    `tfsdk:"schedule_times_of_day"`
-	ScheduleTimeZone                 types.String  `tfsdk:"schedule_time_zone"`
-	Source                           types.String  `tfsdk:"source"`
-	LegacySyncIds                    types.List    `tfsdk:"legacy_sync_ids"`
-	SyncIds                          types.List    `tfsdk:"sync_ids"`
-	TriggerActions                   types.List    `tfsdk:"trigger_actions"`
-	Trigger                          types.String  `tfsdk:"trigger"`
-	UserIds                          types.List    `tfsdk:"user_ids"`
-	Value                            types.Dynamic `tfsdk:"value"`
-	HolidayRegion                    types.String  `tfsdk:"holiday_region"`
-	Id                               types.Int64   `tfsdk:"id"`
-	Deleted                          types.Bool    `tfsdk:"deleted"`
-	InboundEmailAddress              types.String  `tfsdk:"inbound_email_address"`
-	LastModifiedAt                   types.String  `tfsdk:"last_modified_at"`
-	Version                          types.Int64   `tfsdk:"version"`
-	Schedule                         types.Dynamic `tfsdk:"schedule"`
-	HumanReadableSchedule            types.String  `tfsdk:"human_readable_schedule"`
-	UserId                           types.Int64   `tfsdk:"user_id"`
-	WebhookUrl                       types.String  `tfsdk:"webhook_url"`
-}
-
 func (r *automationResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		return
@@ -173,7 +124,7 @@ func (r *automationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 
 func (r *automationResource) resourceSchema() schema.Schema {
 	return schema.Schema{
-		Description: "An Automation is an automated process of controlling workflows on your Files.com site.\n\n\n\nAutomations are different from Behaviors because Behaviors are associated with a current folder, while Automations apply across your entire site.\n\n\n\nAutomations are never removed when folders are removed, while Behaviors are removed when the associated folder is removed.\n\n\n\n## Path Matching\n\n\n\nThe `path` attribute specifies which folders this automation applies to.\n\nIt gets combined with the `source` attribute to determine which files are actually affected by the automation.\n\nNote that the `path` attribute supports globs, and only refers to _folders_.\n\nIt's the `source` attribute, which also supports globs, combined with the `path` attribute that determines which files are affected, and automations only operate on the files themselves.\n\nAdditionally, paths in Automations can refer to folders which don't yet exist.\n\n\n\n### Path Globs\n\n\n\nAlthough Automations may have a `path` specified, it can be a glob (which includes wildcards), which affects multiple folders.\n\n\n\n`*` matches any folder at that level of the path, but not subfolders. For example, `path/to/*` matches `path/to/folder1` and `path/to/folder2`, but not `path/to/folder1/subfolder`.\n\n\n\n`**` matches subfolders recursively. For example, `path/to/**` matches `path/to/folder1`, `path/to/folder1/subfolder`, `path/to/folder2`, `path/to/folder2/subfolder`, etc.\n\n\n\n`?` matches any one character.\n\n\n\nUse square brackets `[]` to match any character from a set. This works like a regular expression, including negation using `^`.\n\n\n\nCurly brackets `{}` can be used to denote parts of a pattern which will accept a number of alternatives, separated by commas `,`.\n\nThese alternatives can either be literal text or include special characters including nested curly brackets.\n\nFor example `{Mon,Tue,Wed,Thu,Fri}` would match abbreviated weekdays, and `202{3-{0[7-9],1?},4-0[1-6]}-*` would match dates from `2023-07-01` through `2024-06-30`.\n\n\n\nTo match any of the special characters literally, precede it with a backslash and enclose that pair with square brackets. For example to match a literal `?`, use `[\\?]`.\n\n\n\nGlobs are supported on `path`, `source`, and `exclude_pattern` fields. Globs are not supported on remote paths of any kind or for any field.\n\n\n\nBy default, Copy and Move automations that use globs will implicitly replicate matched folder structures at the destination. If you want to flatten the folder structure, set `flatten_destination_structure` to `true`.\n\n\n\n## Automation Triggers\n\n\n\nAutomations can be triggered in the following ways:\n\n\n\n* `custom_schedule` : The automation will run according to either the reusable Site-level Schedule selected by `schedule_id` or its own custom schedule fields for `days_of_week` (0-based) and `times_of_day`. A time zone may be specified via `time_zone` in Rails TimeZone name format.\n\n* `daily` : The automation will run in a picked `interval`. You can specify `recurring_day` or `recurring_days` to select one or more day numbers inside the interval.\n\n* `webhook` : the automation will run when a request is sent to the corresponding webhook URL.\n\n* `action` : The automation will run when a specific action happens, e.g. a file is created or downloaded.\n\n\n\nFuture enhancements will allow Automations to be triggered by an incoming email, or by other services.\n\n\n\nCurrently, all Automation types support all triggers, with the following exceptions: `Create Folder` and `Run Remote Server Sync` are not supported by the `action` trigger.\n\n\n\nAutomations can be triggered manually if trigger is not set to `action`.\n\n\n\n## Destinations\n\n\n\nThe `destinations` parameter is a list of paths where files will be copied, moved, or created. It may include formatting parameters to dynamically determine the destination at runtime.\n\n\n\n### Relative vs. Absolute Paths\n\n\n\nIn order to specify a relative path, it must start with either `./` or `../`. All other paths are considered absolute. In general, leading slashes should never be used on Files.com paths, including here. Paths are interpreted as absolute in all contexts, even without a leading slash.\n\n\n\n### Files vs. Folders\n\n\n\nIf the destination path ends with a `/`, the filename from the source path will be preserved and put into the folder of this name. If the destination path does not end with a `/`, it will be interpreted as a filename and will override the source file's filename entirely.\n\n\n\n### Formatting Parameters\n\n\n\n**Action-Triggered Automations**\n\n\n\n* `%tf` : The name of the file that triggered the automation.\n\n* `%tp` : The path of the file that triggered the automation.\n\n* `%td` : The directory of the file that triggered the automation.\n\n* `%tb` : The name of the file (without extension) that triggered the automation.\n\n* `%te` : The extension of the file that triggered the automation.\n\n\n\nFor example, if the triggering file is at `path/to/file.txt`, then the automation destination `path/to/dest/incoming-%tf` will result in the actual destination being `path/to/dest/incoming-file.txt`.\n\n\n\n**Parent Folders**\n\n\n\nTo reference the parent folder of a source file, use `%p1`, `%p2`, `%p3`, etc. for the first, second, third, etc. parent folder, respectively.\n\n\n\nTo reference path components from the root downward, use `%P1`, `%P2`, `%P3`, etc. for the first, second, third, etc. path component, respectively.\n\n\n\nFor example, if the source file is at `accounts/file.txt`, then the automation destination `path/to/dest/%p1/some_file_name.txt` will result in the actual destination being `path/to/dest/accounts/some_file_name.txt`.\n\n\n\nIf the source file is at `partner/app/team/inbound/file.txt`, then the automation destination `path/to/dest/%P1/%P3/%P4/file.txt` will result in the actual destination being `path/to/dest/partner/team/inbound/file.txt`.\n\n\n\n**Source File Name**\n\n\n\nTo reference the name of the source file being processed, use the following tokens:\n\n\n\n* `%Ff` : The name of the source file, with extension.\n\n* `%Fb` : The name of the source file, without extension.\n\n* `%Fe` : The extension of the source file.\n\n* `%Fl` : The name of the source file, with extension, converted to lowercase.\n\n* `%Fn` : The name of the source file, without non-alphanumeric characters, with extension.\n\n* `%Fp` : The name of the source file, with extension, spaces removed, lowercase, non-ASCII normalized.\n\n\n\nFor example, if the source file is `Daily Report.xlsx` and the destination is `archive/%Y-%m-%d/%Fb.xlsx`, the resolved destination will be `archive/2024-01-15/Daily Report.xlsx`.\n\n\n\n**Dates and Times**\n\n\n\n* `%Y` : The current year (4 digits)\n\n* `%m` : The current month (2 digits)\n\n* `%B` : The current month (full name)\n\n* `%d` : The current day (2 digits)\n\n* `%H` : The current hour (2 digits, 24-hour clock)\n\n* `%M` : The current minute (2 digits)\n\n* `%S` : The current second (2 digits)\n\n* `%z` : UTC Time Zone (e.g. -0900)\n\n\n\nFor example, if the current date is June 23, 2023 and the source file is named `daily_sales.csv`, then the following automation destination `path/to/dest/%Y/%m/%d/` will result in the actual destination being `path/to/dest/2023/06/23/daily_sales.csv`.\n\n\n\n### Replacing Text\n\n\n\nTo replace text in the source filename, use the `destination_replace_from` and `destination_replace_to` parameters. This will perform a simple text replacement on the source filename before inserting it into the destination path.\n\n\n\nFor example, if the `destination_replace_from` is `incoming` and the `destination_replace_to` is `outgoing`, then `path/to/incoming.txt` will translate to `path/to/outgoing.txt`.\n\n\n\n\n\n## Automation Types\n\n\n\nThere are several types of automations: Create Folder, Copy File, Move File, Delete File and, Run Remote Server Sync.\n\n\n\n\n\n### Create Folder\n\n\n\nCreates the folder with named by `destinations` in the path named by `path`.\n\nDestination may include formatting parameters to insert the date/time into the destination name.\n\n\n\nExample Use case: Our business files sales tax for each division in 11 states every quarter.\n\nI want to create the folders where those sales tax forms and data will be collected.\n\n\n\nI could create a Create Folder automation as follows:\n\n\n\n* Trigger: `daily`\n\n* Interval: `quarter_end`\n\n* Path: `AccountingAndTax/SalesTax/State/*/`\n\n* Destinations: `%Y/Quarter-ending-%m-%d`\n\n\n\nNote this assumes you have folders in `AccountingAndTax/SalesTax/State/` already created for each state, e.g. `AccountingAndTax/SalesTax/State/CA/`.\n\n\n\n\n\n### Delete File\n\n\n\nDeletes the file with path matching `source` (wildcards allowed) in the path named by `path`.\n\n\n\n\n\n### Copy File\n\n\n\nCopies files in the folder named by `path` to the path specified in `destinations`.\n\nThe automation will only fire on files matching the `source` (wildcards allowed). In the case of an action-triggered automation, it will only operate on the actual file that triggered the automation.\n\nIf the parameter `limit` exists, the automation will only copy the newest `limit` files in each matching folder.\n\n\n\n\n\n### Move File\n\n\n\nMoves files in the folder named by `path` to the path specified in `destinations`.\n\nThe automation will only fire on files matching the `source` (wildcards allowed). In the case of an action-triggered automation, it will only operate on the actual file that triggered the automation.\n\nIf the parameter `limit` exists, the automation will only move the newest `limit` files in each matching folder.\n\nNote that for a move with multiple destinations, all but one destination is treated as a copy.\n\n\n\n\n\n### Run Remote Server Sync\n\n\n\nThe Run Remote Server Sync automation runs the remote server syncs specified by the `sync_ids`.\n\n\n\nTypically when this automation is used, the remote server syncs in question are set to the manual\n\nscheduling mode (`manual` to `true` via the API) to disable the built in sync scheduler.\n\n\n\n\n\n### Import File\n\n\n\nRetrieves files from one or more URLs and saves the results under the path specified in `destinations`.\n\n\n\nThe URLs to retrieve are specified as a JSON array in the `import_urls` property.\n\n\n\n```json\n\n[\n\n {\n\n \"name\": \"response.json\",\n\n \"url\": \"https://example.com/api\",\n\n \"method\": \"post\",\n\n \"headers\": {\n\n \"Content-Type\": \"application/json\"\n\n },\n\n \"content\": { \"trigger-file\": \"%tp\" }\n\n }\n\n]\n\n```\n\n\n\nThe recognized keys are:\n\n\n\n* `name`: The file name which will be used to save the returned content. Required. `%` tokens will be replaced as described under Formatting Parameters.\n\n* `url`: The URL which will be requested. Required.\n\n* `method`: The HTTP method to be used for the request. May be either `get` or `post` (case insensitive). Defaults to `get`.\n\n* `headers`: Optional headers to be included in the request. `%` tokens in the values will be replaced as described under Formatting Parameters.\n\n* `content`: Optional body to send for POST request. If supplied as a string, `%` tokens will be expanded. If supplied as a JSON Object, `%` tokens will be expanded for top-level values. Other JSON types will be sent as-is.\n\n\n\n\n\n### Help us build the future of Automations\n\n\n\nDo you have an idea for something that would work well as a Files.com Automation? Let us know!\n\nWe are actively improving the types of automations offered on our platform.\n\n\n\n\n\n## Retrying Failures\n\n\n\nAutomations will automatically retry individual action steps up to 3 times, with pauses between retries that increase from 15 seconds to 1 minute. If individual action steps fail after our 3rd attempt, that action will fail. If every action step in an Automation Run fails, that automation run will move to a `failure` status. If at least one step succeeds and one step fails, that automation run will move to a `partial_failure` status.\n\n\n\nAutomation Runs can be retried automatically when they enter a `failure` or `partial_failure` status as described above. A retry will re-run the automation from scratch, including the \"planning\" phase, which expands globs (wildcards) and identifies which files to transfer or skip.\n\n\n\nRetrying of entire Automation Runs must be explicitly enabled by setting the `retry_on_failure_interval_in_minutes` and `retry_on_failure_number_of_attempts` values on the Automation.",
+		Description: "An Automation is an automated process of controlling workflows on your Files.com site.\n\nAutomations are different from Behaviors because Behaviors are associated with a current folder, while Automations apply across your entire site.\n\nAutomations are never removed when folders are removed, while Behaviors are removed when the associated folder is removed.\n\n## Path Matching\n\nThe `path` attribute specifies which folders this automation applies to.\nIt gets combined with the `source` attribute to determine which files are actually affected by the automation.\nNote that the `path` attribute supports globs, and only refers to _folders_.\nIt's the `source` attribute, which also supports globs, combined with the `path` attribute that determines which files are affected, and automations only operate on the files themselves.\nAdditionally, paths in Automations can refer to folders which don't yet exist.\n\n### Path Globs\n\nAlthough Automations may have a `path` specified, it can be a glob (which includes wildcards), which affects multiple folders.\n\n`*` matches any folder at that level of the path, but not subfolders.  For example, `path/to/*` matches `path/to/folder1` and `path/to/folder2`, but not `path/to/folder1/subfolder`.\n\n`**` matches subfolders recursively.  For example, `path/to/**` matches `path/to/folder1`, `path/to/folder1/subfolder`, `path/to/folder2`, `path/to/folder2/subfolder`, etc.\n\n`?` matches any one character.\n\nUse square brackets `[]` to match any character from a set. This works like a regular expression, including negation using `^`.\n\nCurly brackets `{}` can be used to denote parts of a pattern which will accept a number of alternatives, separated by commas `,`.\nThese alternatives can either be literal text or include special characters including nested curly brackets.\nFor example `{Mon,Tue,Wed,Thu,Fri}` would match abbreviated weekdays, and `202{3-{0[7-9],1?},4-0[1-6]}-*` would match dates from `2023-07-01` through `2024-06-30`.\n\nTo match any of the special characters literally, precede it with a backslash and enclose that pair with square brackets. For example to match a literal `?`, use `[\\?]`.\n\nGlobs are supported on `path`, `source`, and `exclude_pattern` fields. Globs are not supported on remote paths of any kind or for any field.\n\nBy default, Copy and Move automations that use globs will implicitly replicate matched folder structures at the destination.  If you want to flatten the folder structure, set `flatten_destination_structure` to `true`.\n\n## Automation Triggers\n\nAutomations can be triggered in the following ways:\n\n* `custom_schedule` : The automation will run according to either the reusable Site-level Schedule selected by `schedule_id` or its own custom schedule fields for `days_of_week` (0-based) and `times_of_day`. A time zone may be specified via `time_zone` in Rails TimeZone name format.\n* `daily` : The automation will run in a picked `interval`. You can specify `recurring_day` or `recurring_days` to select one or more day numbers inside the interval.\n* `webhook` : the automation will run when a request is sent to the corresponding webhook URL.\n* `action` : The automation will run when a specific action happens, e.g. a file is created or downloaded.\n\nFuture enhancements will allow Automations to be triggered by an incoming email, or by other services.\n\nCurrently, all Automation types support all triggers, with the following exceptions: `Create Folder` and  `Run Remote Server Sync` are not supported by the `action` trigger.\n\nAutomations can be triggered manually if trigger is not set to `action`.\n\n## Destinations\n\nThe `destinations` parameter is a list of paths where files will be copied, moved, or created. It may include formatting parameters to dynamically determine the destination at runtime.\n\n### Relative vs. Absolute Paths\n\nIn order to specify a relative path, it must start with either `./` or `../`. All other paths are considered absolute. In general, leading slashes should never be used on Files.com paths, including here. Paths are interpreted as absolute in all contexts, even without a leading slash.\n\n### Files vs. Folders\n\nIf the destination path ends with a `/`, the filename from the source path will be preserved and put into the folder of this name.  If the destination path does not end with a `/`, it will be interpreted as a filename and will override the source file's filename entirely.\n\n### Formatting Parameters\n\n**Action-Triggered Automations**\n\n* `%tf` : The name of the file that triggered the automation.\n* `%tp` : The path of the file that triggered the automation.\n* `%td` : The directory of the file that triggered the automation.\n* `%tb` : The name of the file (without extension) that triggered the automation.\n* `%te` : The extension of the file that triggered the automation.\n\nFor example, if the triggering file is at `path/to/file.txt`, then the automation destination `path/to/dest/incoming-%tf` will result in the actual destination being `path/to/dest/incoming-file.txt`.\n\n**Parent Folders**\n\nTo reference the parent folder of a source file, use `%p1`, `%p2`, `%p3`, etc. for the first, second, third, etc. parent folder, respectively.\n\nTo reference path components from the root downward, use `%P1`, `%P2`, `%P3`, etc. for the first, second, third, etc. path component, respectively.\n\nFor example, if the source file is at `accounts/file.txt`, then the automation destination `path/to/dest/%p1/some_file_name.txt` will result in the actual destination being `path/to/dest/accounts/some_file_name.txt`.\n\nIf the source file is at `partner/app/team/inbound/file.txt`, then the automation destination `path/to/dest/%P1/%P3/%P4/file.txt` will result in the actual destination being `path/to/dest/partner/team/inbound/file.txt`.\n\n**Source File Name**\n\nTo reference the name of the source file being processed, use the following tokens:\n\n* `%Ff` : The name of the source file, with extension.\n* `%Fb` : The name of the source file, without extension.\n* `%Fe` : The extension of the source file.\n* `%Fl` : The name of the source file, with extension, converted to lowercase.\n* `%Fn` : The name of the source file, without non-alphanumeric characters, with extension.\n* `%Fp` : The name of the source file, with extension, spaces removed, lowercase, non-ASCII normalized.\n\nFor example, if the source file is `Daily Report.xlsx` and the destination is `archive/%Y-%m-%d/%Fb.xlsx`, the resolved destination will be `archive/2024-01-15/Daily Report.xlsx`.\n\n**Dates and Times**\n\n* `%Y`  : The current year (4 digits)\n* `%m`  : The current month (2 digits)\n* `%B`  : The current month (full name)\n* `%d`  : The current day (2 digits)\n* `%H`  : The current hour (2 digits, 24-hour clock)\n* `%M`  : The current minute (2 digits)\n* `%S`  : The current second (2 digits)\n* `%z`  : UTC Time Zone (e.g. -0900)\n\nFor example, if the current date is June 23, 2023 and the source file is named `daily_sales.csv`, then the following automation destination `path/to/dest/%Y/%m/%d/` will result in the actual destination being `path/to/dest/2023/06/23/daily_sales.csv`.\n\n### Replacing Text\n\nTo replace text in the source filename, use the `destination_replace_from` and `destination_replace_to` parameters. This will perform a simple text replacement on the source filename before inserting it into the destination path.\n\nFor example, if the `destination_replace_from` is `incoming` and the `destination_replace_to` is `outgoing`, then `path/to/incoming.txt` will translate to `path/to/outgoing.txt`.\n\n\n## Automation Types\n\nThere are several types of automations:  Create Folder, Copy File, Move File, Delete File and, Run Remote Server Sync.\n\n\n### Create Folder\n\nCreates the folder with named by `destinations` in the path named by `path`.\nDestination may include formatting parameters to insert the date/time into the destination name.\n\nExample Use case:  Our business files sales tax for each division in 11 states every quarter.\nI want to create the folders where those sales tax forms and data will be collected.\n\nI could create a Create Folder automation as follows:\n\n* Trigger: `daily`\n* Interval: `quarter_end`\n* Path: `AccountingAndTax/SalesTax/State/*/`\n* Destinations: `%Y/Quarter-ending-%m-%d`\n\nNote this assumes you have folders in `AccountingAndTax/SalesTax/State/` already created for each state, e.g. `AccountingAndTax/SalesTax/State/CA/`.\n\n\n### Delete File\n\nDeletes the file with path matching `source` (wildcards allowed) in the path named by `path`.\n\n\n### Copy File\n\nCopies files in the folder named by `path` to the path specified in `destinations`.\nThe automation will only fire on files matching the `source` (wildcards allowed). In the case of an action-triggered automation, it will only operate on the actual file that triggered the automation.\nIf the parameter `limit` exists, the automation will only copy the newest `limit` files in each matching folder.\n\n\n### Move File\n\nMoves files in the folder named by `path` to the path specified in `destinations`.\nThe automation will only fire on files matching the `source` (wildcards allowed). In the case of an action-triggered automation, it will only operate on the actual file that triggered the automation.\nIf the parameter `limit` exists, the automation will only move the newest `limit` files in each matching folder.\nNote that for a move with multiple destinations, all but one destination is treated as a copy.\n\n\n### Run Remote Server Sync\n\nThe Run Remote Server Sync automation runs the remote server syncs specified by the `sync_ids`.\n\nTypically when this automation is used, the remote server syncs in question are set to the manual\nscheduling mode (`manual` to `true` via the API) to disable the built in sync scheduler.\n\n\n### Import File\n\nRetrieves files from one or more URLs and saves the results under the path specified in `destinations`.\n\nThe URLs to retrieve are specified as a JSON array in the `import_urls` property.\n\n```json\n[\n  {\n    \"name\": \"response.json\",\n    \"url\": \"https://example.com/api\",\n    \"method\": \"post\",\n    \"headers\": {\n      \"Content-Type\": \"application/json\"\n    },\n    \"content\": { \"trigger-file\": \"%tp\" }\n  }\n]\n```\n\nThe recognized keys are:\n\n* `name`: The file name which will be used to save the returned content. Required. `%` tokens will be replaced as described under Formatting Parameters.\n* `url`: The URL which will be requested. Required.\n* `method`: The HTTP method to be used for the request. May be either `get` or `post` (case insensitive). Defaults to `get`.\n* `headers`: Optional headers to be included in the request. `%` tokens in the values will be replaced as described under Formatting Parameters.\n* `content`: Optional body to send for POST request. If supplied as a string, `%` tokens will be expanded. If supplied as a JSON Object, `%` tokens will be expanded for top-level values. Other JSON types will be sent as-is.\n\n\n### Help us build the future of Automations\n\nDo you have an idea for something that would work well as a Files.com Automation?  Let us know!\nWe are actively improving the types of automations offered on our platform.\n\n\n## Retrying Failures\n\nAutomations will automatically retry individual action steps up to 3 times, with pauses between retries that increase from 15 seconds to 1 minute.  If individual action steps fail after our 3rd attempt, that action will fail.  If every action step in an Automation Run fails, that automation run will move to a `failure` status.  If at least one step succeeds and one step fails, that automation run will move to a `partial_failure` status.\n\nAutomation Runs can be retried automatically when they enter a `failure` or `partial_failure` status as described above.  A retry will re-run the automation from scratch, including the \"planning\" phase, which expands globs (wildcards) and identifies which files to transfer or skip.\n\nRetrying of entire Automation Runs must be explicitly enabled by setting the `retry_on_failure_interval_in_minutes` and `retry_on_failure_number_of_attempts` values on the Automation.",
 		Attributes: map[string]schema.Attribute{
 			"automation": schema.StringAttribute{
 				Description: "Automation type",
@@ -1857,6 +1808,9 @@ func (r *automationResource) resourceSchema() schema.Schema {
 				Description: "A Hash of attributes specific to the automation type.",
 				Computed:    true,
 				Optional:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_automation.value", "value = {\n  limit = \"1\"\n}", "March 1, 2027"),
+				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
 				},
@@ -1910,430 +1864,6 @@ func (r *automationResource) resourceSchema() schema.Schema {
 			},
 		},
 		Version: 1,
-	}
-}
-
-func (r *automationResource) UpgradeState(ctx context.Context) map[int64]resource.StateUpgrader {
-	return map[int64]resource.StateUpgrader{
-		0: {
-			PriorSchema: &schema.Schema{
-				Description: "An Automation is an automated process of controlling workflows on your Files.com site.\n\n\n\nAutomations are different from Behaviors because Behaviors are associated with a current folder, while Automations apply across your entire site.\n\n\n\nAutomations are never removed when folders are removed, while Behaviors are removed when the associated folder is removed.\n\n\n\n## Path Matching\n\n\n\nThe `path` attribute specifies which folders this automation applies to.\n\nIt gets combined with the `source` attribute to determine which files are actually affected by the automation.\n\nNote that the `path` attribute supports globs, and only refers to _folders_.\n\nIt's the `source` attribute, which also supports globs, combined with the `path` attribute that determines which files are affected, and automations only operate on the files themselves.\n\nAdditionally, paths in Automations can refer to folders which don't yet exist.\n\n\n\n### Path Globs\n\n\n\nAlthough Automations may have a `path` specified, it can be a glob (which includes wildcards), which affects multiple folders.\n\n\n\n`*` matches any folder at that level of the path, but not subfolders. For example, `path/to/*` matches `path/to/folder1` and `path/to/folder2`, but not `path/to/folder1/subfolder`.\n\n\n\n`**` matches subfolders recursively. For example, `path/to/**` matches `path/to/folder1`, `path/to/folder1/subfolder`, `path/to/folder2`, `path/to/folder2/subfolder`, etc.\n\n\n\n`?` matches any one character.\n\n\n\nUse square brackets `[]` to match any character from a set. This works like a regular expression, including negation using `^`.\n\n\n\nCurly brackets `{}` can be used to denote parts of a pattern which will accept a number of alternatives, separated by commas `,`.\n\nThese alternatives can either be literal text or include special characters including nested curly brackets.\n\nFor example `{Mon,Tue,Wed,Thu,Fri}` would match abbreviated weekdays, and `202{3-{0[7-9],1?},4-0[1-6]}-*` would match dates from `2023-07-01` through `2024-06-30`.\n\n\n\nTo match any of the special characters literally, precede it with a backslash and enclose that pair with square brackets. For example to match a literal `?`, use `[\\?]`.\n\n\n\nGlobs are supported on `path`, `source`, and `exclude_pattern` fields. Globs are not supported on remote paths of any kind or for any field.\n\n\n\nBy default, Copy and Move automations that use globs will implicitly replicate matched folder structures at the destination. If you want to flatten the folder structure, set `flatten_destination_structure` to `true`.\n\n\n\n## Automation Triggers\n\n\n\nAutomations can be triggered in the following ways:\n\n\n\n* `custom_schedule` : The automation will run according to either the reusable Site-level Schedule selected by `schedule_id` or its own custom schedule fields for `days_of_week` (0-based) and `times_of_day`. A time zone may be specified via `time_zone` in Rails TimeZone name format.\n\n* `daily` : The automation will run in a picked `interval`. You can specify `recurring_day` or `recurring_days` to select one or more day numbers inside the interval.\n\n* `webhook` : the automation will run when a request is sent to the corresponding webhook URL.\n\n* `action` : The automation will run when a specific action happens, e.g. a file is created or downloaded.\n\n\n\nFuture enhancements will allow Automations to be triggered by an incoming email, or by other services.\n\n\n\nCurrently, all Automation types support all triggers, with the following exceptions: `Create Folder` and `Run Remote Server Sync` are not supported by the `action` trigger.\n\n\n\nAutomations can be triggered manually if trigger is not set to `action`.\n\n\n\n## Destinations\n\n\n\nThe `destinations` parameter is a list of paths where files will be copied, moved, or created. It may include formatting parameters to dynamically determine the destination at runtime.\n\n\n\n### Relative vs. Absolute Paths\n\n\n\nIn order to specify a relative path, it must start with either `./` or `../`. All other paths are considered absolute. In general, leading slashes should never be used on Files.com paths, including here. Paths are interpreted as absolute in all contexts, even without a leading slash.\n\n\n\n### Files vs. Folders\n\n\n\nIf the destination path ends with a `/`, the filename from the source path will be preserved and put into the folder of this name. If the destination path does not end with a `/`, it will be interpreted as a filename and will override the source file's filename entirely.\n\n\n\n### Formatting Parameters\n\n\n\n**Action-Triggered Automations**\n\n\n\n* `%tf` : The name of the file that triggered the automation.\n\n* `%tp` : The path of the file that triggered the automation.\n\n* `%td` : The directory of the file that triggered the automation.\n\n* `%tb` : The name of the file (without extension) that triggered the automation.\n\n* `%te` : The extension of the file that triggered the automation.\n\n\n\nFor example, if the triggering file is at `path/to/file.txt`, then the automation destination `path/to/dest/incoming-%tf` will result in the actual destination being `path/to/dest/incoming-file.txt`.\n\n\n\n**Parent Folders**\n\n\n\nTo reference the parent folder of a source file, use `%p1`, `%p2`, `%p3`, etc. for the first, second, third, etc. parent folder, respectively.\n\n\n\nTo reference path components from the root downward, use `%P1`, `%P2`, `%P3`, etc. for the first, second, third, etc. path component, respectively.\n\n\n\nFor example, if the source file is at `accounts/file.txt`, then the automation destination `path/to/dest/%p1/some_file_name.txt` will result in the actual destination being `path/to/dest/accounts/some_file_name.txt`.\n\n\n\nIf the source file is at `partner/app/team/inbound/file.txt`, then the automation destination `path/to/dest/%P1/%P3/%P4/file.txt` will result in the actual destination being `path/to/dest/partner/team/inbound/file.txt`.\n\n\n\n**Source File Name**\n\n\n\nTo reference the name of the source file being processed, use the following tokens:\n\n\n\n* `%Ff` : The name of the source file, with extension.\n\n* `%Fb` : The name of the source file, without extension.\n\n* `%Fe` : The extension of the source file.\n\n* `%Fl` : The name of the source file, with extension, converted to lowercase.\n\n* `%Fn` : The name of the source file, without non-alphanumeric characters, with extension.\n\n* `%Fp` : The name of the source file, with extension, spaces removed, lowercase, non-ASCII normalized.\n\n\n\nFor example, if the source file is `Daily Report.xlsx` and the destination is `archive/%Y-%m-%d/%Fb.xlsx`, the resolved destination will be `archive/2024-01-15/Daily Report.xlsx`.\n\n\n\n**Dates and Times**\n\n\n\n* `%Y` : The current year (4 digits)\n\n* `%m` : The current month (2 digits)\n\n* `%B` : The current month (full name)\n\n* `%d` : The current day (2 digits)\n\n* `%H` : The current hour (2 digits, 24-hour clock)\n\n* `%M` : The current minute (2 digits)\n\n* `%S` : The current second (2 digits)\n\n* `%z` : UTC Time Zone (e.g. -0900)\n\n\n\nFor example, if the current date is June 23, 2023 and the source file is named `daily_sales.csv`, then the following automation destination `path/to/dest/%Y/%m/%d/` will result in the actual destination being `path/to/dest/2023/06/23/daily_sales.csv`.\n\n\n\n### Replacing Text\n\n\n\nTo replace text in the source filename, use the `destination_replace_from` and `destination_replace_to` parameters. This will perform a simple text replacement on the source filename before inserting it into the destination path.\n\n\n\nFor example, if the `destination_replace_from` is `incoming` and the `destination_replace_to` is `outgoing`, then `path/to/incoming.txt` will translate to `path/to/outgoing.txt`.\n\n\n\n\n\n## Automation Types\n\n\n\nThere are several types of automations: Create Folder, Copy File, Move File, Delete File and, Run Remote Server Sync.\n\n\n\n\n\n### Create Folder\n\n\n\nCreates the folder with named by `destinations` in the path named by `path`.\n\nDestination may include formatting parameters to insert the date/time into the destination name.\n\n\n\nExample Use case: Our business files sales tax for each division in 11 states every quarter.\n\nI want to create the folders where those sales tax forms and data will be collected.\n\n\n\nI could create a Create Folder automation as follows:\n\n\n\n* Trigger: `daily`\n\n* Interval: `quarter_end`\n\n* Path: `AccountingAndTax/SalesTax/State/*/`\n\n* Destinations: `%Y/Quarter-ending-%m-%d`\n\n\n\nNote this assumes you have folders in `AccountingAndTax/SalesTax/State/` already created for each state, e.g. `AccountingAndTax/SalesTax/State/CA/`.\n\n\n\n\n\n### Delete File\n\n\n\nDeletes the file with path matching `source` (wildcards allowed) in the path named by `path`.\n\n\n\n\n\n### Copy File\n\n\n\nCopies files in the folder named by `path` to the path specified in `destinations`.\n\nThe automation will only fire on files matching the `source` (wildcards allowed). In the case of an action-triggered automation, it will only operate on the actual file that triggered the automation.\n\nIf the parameter `limit` exists, the automation will only copy the newest `limit` files in each matching folder.\n\n\n\n\n\n### Move File\n\n\n\nMoves files in the folder named by `path` to the path specified in `destinations`.\n\nThe automation will only fire on files matching the `source` (wildcards allowed). In the case of an action-triggered automation, it will only operate on the actual file that triggered the automation.\n\nIf the parameter `limit` exists, the automation will only move the newest `limit` files in each matching folder.\n\nNote that for a move with multiple destinations, all but one destination is treated as a copy.\n\n\n\n\n\n### Run Remote Server Sync\n\n\n\nThe Run Remote Server Sync automation runs the remote server syncs specified by the `sync_ids`.\n\n\n\nTypically when this automation is used, the remote server syncs in question are set to the manual\n\nscheduling mode (`manual` to `true` via the API) to disable the built in sync scheduler.\n\n\n\n\n\n### Import File\n\n\n\nRetrieves files from one or more URLs and saves the results under the path specified in `destinations`.\n\n\n\nThe URLs to retrieve are specified as a JSON array in the `import_urls` property.\n\n\n\n```json\n\n[\n\n {\n\n \"name\": \"response.json\",\n\n \"url\": \"https://example.com/api\",\n\n \"method\": \"post\",\n\n \"headers\": {\n\n \"Content-Type\": \"application/json\"\n\n },\n\n \"content\": { \"trigger-file\": \"%tp\" }\n\n }\n\n]\n\n```\n\n\n\nThe recognized keys are:\n\n\n\n* `name`: The file name which will be used to save the returned content. Required. `%` tokens will be replaced as described under Formatting Parameters.\n\n* `url`: The URL which will be requested. Required.\n\n* `method`: The HTTP method to be used for the request. May be either `get` or `post` (case insensitive). Defaults to `get`.\n\n* `headers`: Optional headers to be included in the request. `%` tokens in the values will be replaced as described under Formatting Parameters.\n\n* `content`: Optional body to send for POST request. If supplied as a string, `%` tokens will be expanded. If supplied as a JSON Object, `%` tokens will be expanded for top-level values. Other JSON types will be sent as-is.\n\n\n\n\n\n### Help us build the future of Automations\n\n\n\nDo you have an idea for something that would work well as a Files.com Automation? Let us know!\n\nWe are actively improving the types of automations offered on our platform.\n\n\n\n\n\n## Retrying Failures\n\n\n\nAutomations will automatically retry individual action steps up to 3 times, with pauses between retries that increase from 15 seconds to 1 minute. If individual action steps fail after our 3rd attempt, that action will fail. If every action step in an Automation Run fails, that automation run will move to a `failure` status. If at least one step succeeds and one step fails, that automation run will move to a `partial_failure` status.\n\n\n\nAutomation Runs can be retried automatically when they enter a `failure` or `partial_failure` status as described above. A retry will re-run the automation from scratch, including the \"planning\" phase, which expands globs (wildcards) and identifies which files to transfer or skip.\n\n\n\nRetrying of entire Automation Runs must be explicitly enabled by setting the `retry_on_failure_interval_in_minutes` and `retry_on_failure_number_of_attempts` values on the Automation.",
-				Attributes: map[string]schema.Attribute{
-					"automation": schema.StringAttribute{
-						Description: "Automation type",
-						Required:    true,
-						Validators: []validator.String{
-							stringvalidator.OneOf("create_folder", "delete_file", "copy_file", "move_file", "as2_send", "run_sync", "import_file", "v2"),
-						},
-					},
-					"workspace_id": schema.Int64Attribute{
-						Description: "Workspace ID",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.Int64{
-							int64planmodifier.UseStateForUnknown(),
-							int64planmodifier.RequiresReplace(),
-						},
-					},
-					"always_serialize_jobs": schema.BoolAttribute{
-						Description: "Ordinarily, we will allow automation runs to run in parallel for non-scheduled automations. If this flag is `true` we will force automation runs to be serialized (run one at a time, one after another). This can resolve some issues with race conditions on remote systems at the cost of some performance.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.Bool{
-							boolplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"always_overwrite_size_matching_files": schema.BoolAttribute{
-						Description: "Ordinarily, files with identical size in the source and destination will be skipped from copy operations to prevent wasted transfer.  If this flag is `true` we will overwrite the destination file always.  Note that this may cause large amounts of wasted transfer usage.  This setting has no effect unless `overwrite_files` is also set to `true`.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.Bool{
-							boolplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"description": schema.StringAttribute{
-						Description: "Description for the this Automation.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"definition": schema.DynamicAttribute{
-						Description: "Automation v2 graph definition.",
-						Computed:    true,
-					},
-					"destination_replace_from": schema.StringAttribute{
-						Description: "If set, this string in the destination path will be replaced with the value in `destination_replace_to`.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"destination_replace_to": schema.StringAttribute{
-						Description: "If set, this string will replace the value `destination_replace_from` in the destination filename. You can use special patterns here.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"destinations": schema.ListAttribute{
-						Description: "Destination Paths",
-						Computed:    true,
-						Optional:    true,
-						ElementType: types.StringType,
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"disabled": schema.BoolAttribute{
-						Description: "If true, this automation will not run.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.Bool{
-							boolplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"exclude_pattern": schema.StringAttribute{
-						Description: "If set, this glob pattern will exclude files from the automation. Supports globs, except on remote mounts.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"import_urls": schema.DynamicAttribute{
-						Description: "List of URLs to be imported and names to be used.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.Dynamic{
-							dynamicplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"flatten_destination_structure": schema.BoolAttribute{
-						Description: "Normally copy and move automations that use globs will implicitly preserve the source folder structure in the destination.  If this flag is `true`, the source folder structure will be flattened in the destination.  This is useful for copying or moving files from multiple folders into a single destination folder.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.Bool{
-							boolplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"group_ids": schema.ListAttribute{
-						Description: "IDs of Groups for the Automation (i.e. who to Request File from)",
-						Computed:    true,
-						Optional:    true,
-						ElementType: types.Int64Type,
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"ignore_locked_folders": schema.BoolAttribute{
-						Description: "If true, the Lock Folders behavior will be disregarded for automated actions.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.Bool{
-							boolplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"interval": schema.StringAttribute{
-						Description: "If trigger is `daily`, this specifies how often to run this automation.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"legacy_folder_matching": schema.BoolAttribute{
-						Description: "If `true`, use the legacy behavior for this automation, where it can operate on folders in addition to just files.  This behavior no longer works and should not be used.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.Bool{
-							boolplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"name": schema.StringAttribute{
-						Description: "Name for this automation.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"overwrite_files": schema.BoolAttribute{
-						Description: "If true, existing files will be overwritten with new files on Move/Copy automations.  Note: by default files will not be overwritten on Copy automations if they appear to be the same file size as the newly incoming file.  Use the `always_overwrite_size_matching_files` option in conjunction with `overwrite_files` to override this behavior and overwrite files no matter what.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.Bool{
-							boolplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"path": schema.StringAttribute{
-						Description: "Path on which this Automation runs.  Supports globs, except on remote mounts. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"path_time_zone": schema.StringAttribute{
-						Description: "Timezone to use when rendering timestamps in paths.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"recurring_day": schema.Int64Attribute{
-						Description: "If trigger type is `daily`, this specifies a day number to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.Int64{
-							int64planmodifier.UseStateForUnknown(),
-						},
-					},
-					"recurring_days": schema.ListAttribute{
-						Description: "If trigger type is `daily`, this specifies one or more day numbers to run in one of the supported intervals: `week`, `month`, `quarter`, `year`.",
-						Computed:    true,
-						Optional:    true,
-						ElementType: types.Int64Type,
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"schedule_id": schema.Int64Attribute{
-						Description: "If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.Int64{
-							int64planmodifier.UseStateForUnknown(),
-						},
-					},
-					"retry_on_failure_interval_in_minutes": schema.Int64Attribute{
-						Description: "If the Automation fails, retry at this interval (in minutes).  Acceptable values are 5 through 1440 (one day).  Set to null to disable.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.Int64{
-							int64planmodifier.UseStateForUnknown(),
-						},
-					},
-					"retry_on_failure_number_of_attempts": schema.Int64Attribute{
-						Description: "If the Automation fails, retry at most this many times.  Maximum allowed value: 10.  Set to null to disable.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.Int64{
-							int64planmodifier.UseStateForUnknown(),
-						},
-					},
-					"schedule_days_of_week": schema.ListAttribute{
-						Description: "If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. 0 is Sunday, 1 is Monday, etc.",
-						Computed:    true,
-						Optional:    true,
-						ElementType: types.Int64Type,
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"schedule_times_of_day": schema.ListAttribute{
-						Description: "Times of day to run in HH:MM format (24-hour). For `custom_schedule`, run at these times on specified days of week. For `daily`, run at these times on the scheduled interval date.",
-						Computed:    true,
-						Optional:    true,
-						ElementType: types.StringType,
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"schedule_time_zone": schema.StringAttribute{
-						Description: "Time zone for the schedule. If not set, times are interpreted as UTC.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"source": schema.StringAttribute{
-						Description: "Source path/glob.  See Automation docs for exact description, but this is used to filter for files in the `path` to find files to operate on. Supports globs, except on remote mounts.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"legacy_sync_ids": schema.ListAttribute{
-						Description: "IDs of remote sync folder behaviors to run by this Automation",
-						Computed:    true,
-						Optional:    true,
-						ElementType: types.Int64Type,
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"sync_ids": schema.ListAttribute{
-						Description: "IDs of syncs to run by this Automation. This is the new way to specify syncs, and it is recommended to use this instead of `legacy_sync_ids`.",
-						Computed:    true,
-						Optional:    true,
-						ElementType: types.Int64Type,
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"trigger_actions": schema.ListAttribute{
-						Description: "If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, copy, move, archived_delete, update, read, destroy",
-						Computed:    true,
-						Optional:    true,
-						ElementType: types.StringType,
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"trigger": schema.StringAttribute{
-						Description: "How this automation is triggered to run.",
-						Computed:    true,
-						Optional:    true,
-						Validators: []validator.String{
-							stringvalidator.OneOf("manual", "daily", "custom_schedule", "webhook", "email", "action"),
-						},
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"user_ids": schema.ListAttribute{
-						Description: "IDs of Users for the Automation (i.e. who to Request File from)",
-						Computed:    true,
-						Optional:    true,
-						ElementType: types.Int64Type,
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"value": schema.DynamicAttribute{
-						Description: "A Hash of attributes specific to the automation type.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.Dynamic{
-							dynamicplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"holiday_region": schema.StringAttribute{
-						Description: "Skip the automation if there is a formal, observed holiday for this region.",
-						Computed:    true,
-						Optional:    true,
-						PlanModifiers: []planmodifier.String{
-							stringplanmodifier.UseStateForUnknown(),
-						},
-					},
-					"id": schema.Int64Attribute{
-						Description: "Automation ID",
-						Computed:    true,
-						PlanModifiers: []planmodifier.Int64{
-							int64planmodifier.UseStateForUnknown(),
-						},
-					},
-					"deleted": schema.BoolAttribute{
-						Description: "Indicates if the automation has been deleted.",
-						Computed:    true,
-					},
-					"inbound_email_address": schema.StringAttribute{
-						Description: "If trigger is `email`, this is the address that triggers the Automation.",
-						Computed:    true,
-					},
-					"last_modified_at": schema.StringAttribute{
-						Description: "Time when automation was last modified. Does not change for name or description updates.",
-						Computed:    true,
-					},
-					"version": schema.Int64Attribute{
-						Description: "Current Automation v2 definition version.",
-						Computed:    true,
-					},
-					"schedule": schema.DynamicAttribute{
-						Description: "If trigger is `custom_schedule`, Custom schedule description for when the automation should be run in json format.",
-						Computed:    true,
-					},
-					"human_readable_schedule": schema.StringAttribute{
-						Description: "If trigger is `custom_schedule` or `daily` with times, Human readable schedule description for when the automation should be run.",
-						Computed:    true,
-					},
-					"user_id": schema.Int64Attribute{
-						Description: "User ID of the Automation's creator.",
-						Computed:    true,
-					},
-					"webhook_url": schema.StringAttribute{
-						Description: "If trigger is `webhook`, this is the URL of the webhook to trigger the Automation.",
-						Computed:    true,
-					},
-				},
-				Version: 0,
-			},
-			StateUpgrader: func(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
-				var priorState automationResourceModelV0
-				resp.Diagnostics.Append(req.State.Get(ctx, &priorState)...)
-				if resp.Diagnostics.HasError() {
-					return
-				}
-
-				upgradedState := automationResourceModel{
-					Automation:                       priorState.Automation,
-					WorkspaceId:                      priorState.WorkspaceId,
-					AlwaysSerializeJobs:              priorState.AlwaysSerializeJobs,
-					AlwaysOverwriteSizeMatchingFiles: priorState.AlwaysOverwriteSizeMatchingFiles,
-					Description:                      priorState.Description,
-					DestinationReplaceFrom:           priorState.DestinationReplaceFrom,
-					DestinationReplaceTo:             priorState.DestinationReplaceTo,
-					Destinations:                     priorState.Destinations,
-					Disabled:                         priorState.Disabled,
-					ExcludePattern:                   priorState.ExcludePattern,
-					ImportUrls:                       priorState.ImportUrls,
-					FlattenDestinationStructure:      priorState.FlattenDestinationStructure,
-					GroupIds:                         priorState.GroupIds,
-					IgnoreLockedFolders:              priorState.IgnoreLockedFolders,
-					Interval:                         priorState.Interval,
-					LegacyFolderMatching:             priorState.LegacyFolderMatching,
-					Name:                             priorState.Name,
-					OverwriteFiles:                   priorState.OverwriteFiles,
-					Path:                             priorState.Path,
-					PathTimeZone:                     priorState.PathTimeZone,
-					RecurringDay:                     priorState.RecurringDay,
-					RecurringDays:                    priorState.RecurringDays,
-					ScheduleId:                       priorState.ScheduleId,
-					RetryOnFailureIntervalInMinutes:  priorState.RetryOnFailureIntervalInMinutes,
-					RetryOnFailureNumberOfAttempts:   priorState.RetryOnFailureNumberOfAttempts,
-					ScheduleDaysOfWeek:               priorState.ScheduleDaysOfWeek,
-					ScheduleTimesOfDay:               priorState.ScheduleTimesOfDay,
-					ScheduleTimeZone:                 priorState.ScheduleTimeZone,
-					Source:                           priorState.Source,
-					LegacySyncIds:                    priorState.LegacySyncIds,
-					SyncIds:                          priorState.SyncIds,
-					TriggerActions:                   priorState.TriggerActions,
-					Trigger:                          priorState.Trigger,
-					UserIds:                          priorState.UserIds,
-					Value:                            priorState.Value,
-					HolidayRegion:                    priorState.HolidayRegion,
-					Id:                               priorState.Id,
-					Deleted:                          priorState.Deleted,
-					InboundEmailAddress:              priorState.InboundEmailAddress,
-					LastModifiedAt:                   priorState.LastModifiedAt,
-					Version:                          priorState.Version,
-					Schedule:                         priorState.Schedule,
-					HumanReadableSchedule:            priorState.HumanReadableSchedule,
-					UserId:                           priorState.UserId,
-					WebhookUrl:                       priorState.WebhookUrl,
-				}
-				currentSchema := r.resourceSchema()
-				definitionValue, conversionDiags := lib.DynamicToInterface(ctx, path.Root("definition"), priorState.Definition)
-				resp.Diagnostics.Append(conversionDiags...)
-				definitionValue, transformDiags0 := lib.WrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
-				resp.Diagnostics.Append(transformDiags0...)
-				definitionType := currentSchema.Attributes["definition"].GetType().(types.ObjectType)
-				upgradedState.Definition, conversionDiags = lib.ToObject(ctx, path.Root("definition"), definitionValue, types.ObjectNull(definitionType.AttrTypes))
-				resp.Diagnostics.Append(conversionDiags...)
-				if resp.Diagnostics.HasError() {
-					return
-				}
-
-				resp.Diagnostics.Append(resp.State.Set(ctx, upgradedState)...)
-			},
-		},
 	}
 }
 
@@ -2419,7 +1949,7 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 		diags = plan.TriggerActions.ElementsAs(ctx, &paramsAutomationCreate.TriggerActions, false)
 		resp.Diagnostics.Append(diags...)
 	}
-	createValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), plan.Value)
+	createValue, diags := lib.JSONValueToAPI(ctx, path.Root("value"), config.Value)
 	resp.Diagnostics.Append(diags...)
 	paramsAutomationCreate.Value = createValue
 	paramsAutomationCreate.RecurringDay = plan.RecurringDay.ValueInt64()
@@ -2497,6 +2027,12 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 	}
 	var config automationResourceModel
 	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var state automationResourceModel
+	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -2628,9 +2164,11 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 		resp.Diagnostics.Append(diags...)
 		paramsAutomationUpdate["trigger_actions"] = updateTriggerActions
 	}
-	updateValue, diags := lib.DynamicToInterface(ctx, path.Root("value"), config.Value)
-	resp.Diagnostics.Append(diags...)
-	paramsAutomationUpdate["value"] = updateValue
+	if !config.Value.IsNull() && !config.Value.IsUnknown() {
+		updateValue, diags := lib.JSONValueToAPI(ctx, path.Root("value"), config.Value)
+		resp.Diagnostics.Append(diags...)
+		paramsAutomationUpdate["value"] = updateValue
+	}
 	if !config.RecurringDay.IsNull() && !config.RecurringDay.IsUnknown() {
 		paramsAutomationUpdate["recurring_day"] = config.RecurringDay.ValueInt64()
 	}
@@ -2776,7 +2314,7 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	state.UserId = types.Int64Value(automation.UserId)
 	state.UserIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, automation.UserIds)
 	diags.Append(propDiags...)
-	state.Value, propDiags = lib.ToDynamic(ctx, path.Root("value"), automation.Value, state.Value.UnderlyingValue())
+	state.Value, propDiags = lib.APIToDynamicJSON(ctx, path.Root("value"), automation.Value, state.Value, []string{""}, []string{}, "")
 	diags.Append(propDiags...)
 	state.WebhookUrl = types.StringValue(automation.WebhookUrl)
 	state.HolidayRegion = types.StringValue(automation.HolidayRegion)

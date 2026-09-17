@@ -19,7 +19,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/dynamicplanmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -78,7 +77,7 @@ func (r *secretResource) Metadata(_ context.Context, req resource.MetadataReques
 
 func (r *secretResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Secret stores named, typed secret material for later use by features that reference the Secret by ID.\n\n\n\nSecret values are encrypted at rest and are write-only. API responses include metadata and configured value field names, but never include the stored secret values.",
+		Description: "A Secret stores named, typed secret material for later use by features that reference the Secret by ID.\n\nSecret values are encrypted at rest and are write-only. API responses include metadata and configured value field names, but never include the stored secret values.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Secret name.",
@@ -112,6 +111,9 @@ func (r *secretResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Description: "Non-secret metadata for the Secret type.",
 				Computed:    true,
 				Optional:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_secret.metadata", "metadata = {\n  header_name = \"Authorization\"\n}", "March 1, 2027"),
+				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
 				},
@@ -158,7 +160,7 @@ func (r *secretResource) Create(ctx context.Context, req resource.CreateRequest,
 	paramsSecretCreate.Name = plan.Name.ValueString()
 	paramsSecretCreate.Description = plan.Description.ValueString()
 	paramsSecretCreate.SecretType = paramsSecretCreate.SecretType.Enum()[plan.SecretType.ValueString()]
-	createMetadata, diags := lib.DynamicToInterface(ctx, path.Root("metadata"), plan.Metadata)
+	createMetadata, diags := lib.JSONValueToAPI(ctx, path.Root("metadata"), config.Metadata)
 	resp.Diagnostics.Append(diags...)
 	paramsSecretCreate.Metadata = createMetadata
 	paramsSecretCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
@@ -234,6 +236,12 @@ func (r *secretResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var state secretResourceModel
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsSecretUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
@@ -248,9 +256,11 @@ func (r *secretResource) Update(ctx context.Context, req resource.UpdateRequest,
 	if !config.SecretType.IsNull() && !config.SecretType.IsUnknown() {
 		paramsSecretUpdate["secret_type"] = config.SecretType.ValueString()
 	}
-	updateMetadata, diags := lib.DynamicToInterface(ctx, path.Root("metadata"), config.Metadata)
-	resp.Diagnostics.Append(diags...)
-	paramsSecretUpdate["metadata"] = updateMetadata
+	if !config.Metadata.IsNull() && !config.Metadata.IsUnknown() {
+		updateMetadata, diags := lib.JSONValueToAPI(ctx, path.Root("metadata"), config.Metadata)
+		resp.Diagnostics.Append(diags...)
+		paramsSecretUpdate["metadata"] = updateMetadata
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -326,7 +336,7 @@ func (r *secretResource) populateResourceModel(ctx context.Context, secret files
 	state.Name = types.StringValue(secret.Name)
 	state.Description = types.StringValue(secret.Description)
 	state.SecretType = types.StringValue(secret.SecretType)
-	state.Metadata, propDiags = lib.ToDynamic(ctx, path.Root("metadata"), secret.Metadata, state.Metadata.UnderlyingValue())
+	state.Metadata, propDiags = lib.APIToDynamicJSON(ctx, path.Root("metadata"), secret.Metadata, state.Metadata, []string{}, []string{}, "empty_object")
 	diags.Append(propDiags...)
 	state.ValueFieldNames, propDiags = types.ListValueFrom(ctx, types.StringType, secret.ValueFieldNames)
 	diags.Append(propDiags...)

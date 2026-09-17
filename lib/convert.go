@@ -2,10 +2,12 @@ package lib
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"maps"
 	"math"
 	"math/big"
+	"reflect"
 	"slices"
 	"strconv"
 	"strings"
@@ -130,16 +132,16 @@ func DynamicToInterface(ctx context.Context, path path.Path, source types.Dynami
 }
 
 func ElementsToStringMap(ctx context.Context, path path.Path, attrs map[string]attr.Value) (dest map[string]interface{}, diags diag.Diagnostics) {
-	return attributesToMap(ctx, path, attrs, false)
+	return attributesToMap(ctx, path, attrs, false, false)
 }
 
-func attributesToMap(ctx context.Context, path path.Path, attrs map[string]attr.Value, omitNulls bool) (dest map[string]interface{}, diags diag.Diagnostics) {
+func attributesToMap(ctx context.Context, path path.Path, attrs map[string]attr.Value, omitNulls, preserveNulls bool) (dest map[string]interface{}, diags diag.Diagnostics) {
 	dest = make(map[string]interface{})
 	for key, value := range attrs {
 		if omitNulls && (value.IsNull() || value.IsUnknown()) {
 			continue
 		}
-		attrValue, attrDiags := attributeToInterface(ctx, path.AtMapKey(key), value, omitNulls)
+		attrValue, attrDiags := attributeToInterface(ctx, path.AtMapKey(key), value, omitNulls, preserveNulls)
 		if attrDiags.HasError() {
 			diags.Append(attrDiags...)
 		} else {
@@ -151,15 +153,15 @@ func attributesToMap(ctx context.Context, path path.Path, attrs map[string]attr.
 }
 
 func AttributeToInterface(ctx context.Context, path path.Path, source attr.Value) (dest interface{}, diags diag.Diagnostics) {
-	return attributeToInterface(ctx, path, source, false)
+	return attributeToInterface(ctx, path, source, false, false)
 }
 
 func SchemaAttributeToInterface(ctx context.Context, path path.Path, source attr.Value) (dest interface{}, diags diag.Diagnostics) {
-	return attributeToInterface(ctx, path, source, true)
+	return attributeToInterface(ctx, path, source, true, false)
 }
 
-func attributeToInterface(ctx context.Context, path path.Path, source attr.Value, omitNulls bool) (dest interface{}, diags diag.Diagnostics) {
-	if omitNulls && (source.IsNull() || source.IsUnknown()) {
+func attributeToInterface(ctx context.Context, path path.Path, source attr.Value, omitNulls, preserveNulls bool) (dest interface{}, diags diag.Diagnostics) {
+	if (omitNulls || preserveNulls) && (source.IsNull() || source.IsUnknown()) {
 		return nil, nil
 	}
 	ctx = setAttributePath(ctx, path)
@@ -182,18 +184,21 @@ func attributeToInterface(ctx context.Context, path path.Path, source attr.Value
 		dest = actualValue.ValueFloat64()
 	case types.Object:
 		tflog.Info(ctx, "Converting ObjectValue to map")
-		dest, diags = attributesToMap(ctx, path, actualValue.Attributes(), omitNulls)
+		dest, diags = attributesToMap(ctx, path, actualValue.Attributes(), omitNulls, preserveNulls)
 	case types.Map:
 		tflog.Info(ctx, "Converting MapValue to map")
-		dest, diags = attributesToMap(ctx, path, actualValue.Elements(), omitNulls)
+		dest, diags = attributesToMap(ctx, path, actualValue.Elements(), omitNulls, preserveNulls)
 	case types.List:
 		tflog.Info(ctx, "Converting ListValue to interface slice")
-		dest, diags = elementsToInterfaces(ctx, path, actualValue.Elements(), omitNulls)
+		dest, diags = elementsToInterfaces(ctx, path, actualValue.Elements(), omitNulls, preserveNulls)
+	case types.Set:
+		tflog.Info(ctx, "Converting SetValue to interface slice")
+		dest, diags = elementsToInterfaces(ctx, path, actualValue.Elements(), omitNulls, preserveNulls)
 	case types.Tuple:
 		tflog.Info(ctx, "Converting TupleValue to interface slice")
-		dest, diags = elementsToInterfaces(ctx, path, actualValue.Elements(), false)
+		dest, diags = elementsToInterfaces(ctx, path, actualValue.Elements(), false, preserveNulls)
 	case types.Dynamic:
-		dest, diags = attributeToInterface(ctx, path, actualValue.UnderlyingValue(), false)
+		dest, diags = attributeToInterface(ctx, path, actualValue.UnderlyingValue(), false, preserveNulls)
 	default:
 		diags.AddAttributeError(
 			path,
@@ -206,13 +211,13 @@ func attributeToInterface(ctx context.Context, path path.Path, source attr.Value
 }
 
 func ElementsToInterfaces(ctx context.Context, path path.Path, elements []attr.Value) (dest []interface{}, diags diag.Diagnostics) {
-	return elementsToInterfaces(ctx, path, elements, false)
+	return elementsToInterfaces(ctx, path, elements, false, false)
 }
 
-func elementsToInterfaces(ctx context.Context, path path.Path, elements []attr.Value, omitNulls bool) (dest []interface{}, diags diag.Diagnostics) {
+func elementsToInterfaces(ctx context.Context, path path.Path, elements []attr.Value, omitNulls, preserveNulls bool) (dest []interface{}, diags diag.Diagnostics) {
 	dest = make([]interface{}, 0, len(elements))
 	for i, element := range elements {
-		value, valueDiags := attributeToInterface(ctx, path.AtListIndex(i), element, omitNulls)
+		value, valueDiags := attributeToInterface(ctx, path.AtListIndex(i), element, omitNulls, preserveNulls)
 		if valueDiags.HasError() {
 			diags.Append(valueDiags...)
 		} else {
@@ -522,6 +527,13 @@ func schemaValue(ctx context.Context, path path.Path, source any, target attr.Ty
 		return value, valueDiags
 	case basetypes.ListType:
 		sourceList, ok := source.([]any)
+		if objects, objectsOK := source.([]map[string]any); objectsOK {
+			sourceList = make([]any, len(objects))
+			for index, object := range objects {
+				sourceList[index] = object
+			}
+			ok = true
+		}
 		if !ok {
 			return schemaConversionError(path, target, source)
 		}
@@ -722,10 +734,33 @@ func ToDynamic(ctx context.Context, path path.Path, source any, plan attr.Value)
 	case nil:
 		tflog.Info(ctx, "Skipping nil value")
 	default:
-		diags.AddError(
-			"Failed to convert Element",
-			"Unhandled type for "+path.String()+": "+fmt.Sprintf("%T", source),
-		)
+		kind := reflect.TypeOf(source).Kind()
+		if kind != reflect.Struct && kind != reflect.Slice {
+			diags.AddError("Failed to convert Element", "Unhandled type for "+path.String()+": "+fmt.Sprintf("%T", source))
+			return
+		}
+		// SDK structs and typed slices such as []files_sdk.BundlePath hold the JSON the API returned. Decode them into generic values first.
+		encoded, err := json.Marshal(source)
+		if err != nil {
+			diags.AddError(
+				"Failed to convert Element",
+				"Unhandled type for "+path.String()+": "+fmt.Sprintf("%T", source),
+			)
+			return
+		}
+		var generic any
+		if err := json.Unmarshal(encoded, &generic); err != nil {
+			diags.AddError("Failed to convert Element", "Could not decode "+path.String()+" as JSON: "+err.Error())
+			return
+		}
+		switch generic.(type) {
+		case nil:
+			return
+		case map[string]any, []any:
+			return ToDynamic(ctx, path, generic, plan)
+		default:
+			diags.AddError("Failed to convert Element", "Expected JSON object or array for "+path.String()+", got "+fmt.Sprintf("%T", source))
+		}
 	}
 
 	return

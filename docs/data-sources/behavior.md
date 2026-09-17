@@ -3,35 +3,25 @@
 page_title: "files_behavior Data Source - files"
 subcategory: ""
 description: |-
-  A Behavior is an API resource for what are also known as Folder Settings. Every behavior is associated with a folder.
-  Depending on the behavior, it may also operate on child folders. It may be overridable at the child folder level or maybe can be added to at the child folder level. The exact options for each behavior type are explained in the table below.
+  A Behavior is an API resource for what are also known as Folder Settings.  Every behavior is associated with a folder.
+  Depending on the behavior, it may also operate on child folders.  It may be overridable at the child folder level or maybe can be added to at the child folder level.  The exact options for each behavior type are explained in the table below.
   Each behavior type also has a recursion mode in the behavior type documentation. always means the behavior is always recursive, never means it is never recursive, and sometimes means callers may choose the value of the recursive field.
-  Additionally, some behaviors are visible to non-admins, and others are even settable by non-admins. All the details are below.
+  Additionally, some behaviors are visible to non-admins, and others are even settable by non-admins.  All the details are below.
   Each behavior uses a different format for its settings value. The accepted fields and an example are shown with each behavior type. In the REST API, send these settings as JSON within the value field.
   Note: Append Timestamp behavior removed. Check Override Upload Filename behavior which have even more functionality to modify name on upload.
 ---
 
 # files_behavior (Data Source)
 
-A Behavior is an API resource for what are also known as Folder Settings. Every behavior is associated with a folder.
+A Behavior is an API resource for what are also known as Folder Settings.  Every behavior is associated with a folder.
 
-
-
-Depending on the behavior, it may also operate on child folders. It may be overridable at the child folder level or maybe can be added to at the child folder level. The exact options for each behavior type are explained in the table below.
-
-
+Depending on the behavior, it may also operate on child folders.  It may be overridable at the child folder level or maybe can be added to at the child folder level.  The exact options for each behavior type are explained in the table below.
 
 Each behavior type also has a recursion mode in the behavior type documentation. `always` means the behavior is always recursive, `never` means it is never recursive, and `sometimes` means callers may choose the value of the `recursive` field.
 
-
-
-Additionally, some behaviors are visible to non-admins, and others are even settable by non-admins. All the details are below.
-
-
+Additionally, some behaviors are visible to non-admins, and others are even settable by non-admins.  All the details are below.
 
 Each behavior uses a different format for its settings value. The accepted fields and an example are shown with each behavior type. In the REST API, send these settings as JSON within the `value` field.
-
-
 
 Note: Append Timestamp behavior removed. Check [Override Upload Filename](#override-upload-filename-behaviors) behavior which have even more functionality to modify name on upload.
 

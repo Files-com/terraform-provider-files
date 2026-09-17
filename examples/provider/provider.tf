@@ -16,7 +16,7 @@ resource "files_folder" "example_folder" {
   mkdir_parents   = false
   provided_mtime  = "2000-01-01T01:00:00Z"
   custom_metadata = {
-    key = "value"
+    department = "finance"
   }
   priority_color  = "red"
 }

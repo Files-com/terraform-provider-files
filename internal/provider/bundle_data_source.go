@@ -8,7 +8,6 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	bundle "github.com/Files-com/files-sdk-go/v3/bundle"
 	"github.com/Files-com/terraform-provider-files/lib"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -106,7 +105,7 @@ func (r *bundleDataSource) Metadata(_ context.Context, req datasource.MetadataRe
 
 func (r *bundleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Bundle is the API/SDK term for the feature called Share Links in the web interface.\n\nThe API provides the full set of actions related to Share Links, including sending them via E-Mail.\n\n\n\nPlease note that we very closely monitor the E-Mailing feature and any abuse will result in disabling of your site.",
+		Description: "A Bundle is the API/SDK term for the feature called Share Links in the web interface.\nThe API provides the full set of actions related to Share Links, including sending them via E-Mail.\n\nPlease note that we very closely monitor the E-Mailing feature and any abuse will result in disabling of your site.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Bundle ID",
@@ -411,13 +410,13 @@ func (r *bundleDataSource) populateDataSourceModel(ctx context.Context, bundle f
 		)
 	}
 	state.WatermarkAttachment = types.StringValue(string(respWatermarkAttachment))
-	state.WatermarkValue, propDiags = lib.ToDynamic(ctx, path.Root("watermark_value"), bundle.WatermarkValue, state.WatermarkValue.UnderlyingValue())
+	state.WatermarkValue, propDiags = lib.ToDynamic(ctx, path.Root("watermark_value"), bundle.WatermarkValue, nil)
 	diags.Append(propDiags...)
 	state.SendOneTimePasswordToRecipientAtRegistration = types.BoolPointerValue(bundle.SendOneTimePasswordToRecipientAtRegistration)
 	state.WorkspaceId = types.Int64Value(bundle.WorkspaceId)
 	state.HasInbox = types.BoolPointerValue(bundle.HasInbox)
 	state.DontAllowFoldersInUploads = types.BoolPointerValue(bundle.DontAllowFoldersInUploads)
-	state.RequestedUploadSlots, propDiags = lib.ToDynamic(ctx, path.Root("requested_upload_slots"), bundle.RequestedUploadSlots, state.RequestedUploadSlots.UnderlyingValue())
+	state.RequestedUploadSlots, propDiags = lib.ToDynamic(ctx, path.Root("requested_upload_slots"), bundle.RequestedUploadSlots, nil)
 	diags.Append(propDiags...)
 	state.Paths, propDiags = types.ListValueFrom(ctx, types.StringType, bundle.Paths)
 	diags.Append(propDiags...)

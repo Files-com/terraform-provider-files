@@ -5,18 +5,10 @@ subcategory: ""
 description: |-
   Expectations let your Files.com site define what “correct” file delivery looks like, continuously evaluate whether it happened, and keep history when it did not.
   Expectations are meant to answer operational questions like:
-  
-  Did the expected file arrive?
-  Was it on time?
-  Did it meet the required shape and count rules?
-  Is there an active issue someone needs to acknowledge?
+  Did the expected file arrive?Was it on time?Did it meet the required shape and count rules?Is there an active issue someone needs to acknowledge?
   Expectations are different from Automations and Syncs. Automations and Syncs act on files; Expectations monitor whether expected files arrived on time, in the right place, and in the right shape. In practice, Expectations are the sensor and Automations are the actuator.
   An Expectation combines four concepts:
-  
-  Scope: where to look for candidate files, using path, source, and optional exclude_pattern.
-  Trigger / timing: when a window opens and how long it stays eligible, using trigger, schedule fields, lookback_interval, late_acceptance_interval, inactivity_interval, and max_open_interval.
-  Criteria: what must be true for the window to succeed, using the structured criteria JSON document.
-  Outcome history: what happened over time, exposed through ExpectationEvaluation history and ExpectationIncident lifecycle records.
+  Scope: where to look for candidate files, using path, source, and optional exclude_pattern.Trigger / timing: when a window opens and how long it stays eligible, using trigger, schedule fields, lookback_interval, late_acceptance_interval, inactivity_interval, and max_open_interval.Criteria: what must be true for the window to succeed, using the structured criteria JSON document.Outcome history: what happened over time, exposed through ExpectationEvaluation history and ExpectationIncident lifecycle records.
   Scope and matching
   Expectations reuse the familiar Files.com path-plus-glob model.
   The path field identifies the folder scope, while source identifies which files within that scope are candidates. exclude_pattern removes files from consideration.
@@ -27,31 +19,20 @@ description: |-
   An Expectation has only one open window at a time.
   Trigger modes
   Expectations can open windows in three ways:
-  
-  daily: run on a recurring daily/weekly/monthly/quarterly/yearly cadence using interval and either recurring_day or recurring_days.
-  custom_schedule: run using either the reusable Site-level Schedule selected by schedule_id or specific weekdays and times stored on the Expectation.
-  manual: an operator explicitly opens the window.
+  daily: run on a recurring daily/weekly/monthly/quarterly/yearly cadence using interval and either recurring_day or recurring_days.custom_schedule: run using either the reusable Site-level Schedule selected by schedule_id or specific weekdays and times stored on the Expectation.manual: an operator explicitly opens the window.
   Schedule-driven expectations define an on-time deadline and may optionally remain eligible to close as late during late_acceptance_interval.
   Manual expectations have no concept of late; they open when triggered and close based on inactivity or hard-stop timing.
   Success criteria
   The criteria field is a structured JSON object describing what counts as success for the window.
   Criteria v1 can express things like:
-  
-  file count constraints
-  total byte constraints
-  allowed extensions
-  filename regex validation
-  forbidden files
-  required named or globbed files with their own per-file constraints
+  file count constraintstotal byte constraintsallowed extensionsfilename regex validationforbidden filesrequired named or globbed files with their own per-file constraints
   Criteria v2 adds content_validation, which runs a customer-authored Files Transform Script in either per_file or whole_batch mode. Per-file scripts receive the file contents parsed by FTS as payload. Whole-batch scripts receive an array of file objects containing path, name, size, last_modified_at, and each file's parsed payload.
   A content-validation script returns true or { success: true } to pass. It returns false or { success: false, errors: [...] } to fail. Error entries may be strings or structured objects with values such as message, field, row, expected, and actual; these details are preserved in readable form in the Evaluation's criteria_errors. Script, parsing, download, and size-limit errors also fail the criterion. Each file is limited to 100 MB, and whole-batch mode additionally limits the combined raw input to 100 MB.
   Required file rule keys may also include standard strftime-style date/time tokens like %Y, %m, and %d. Those tokens are resolved at evaluation time using a stable window anchor: schedule-driven expectations use the window's deadline_at, while manual and upload expectations use the window's opened_at.
   History and incidents
   The Expectation itself stores summary state like last_evaluated_at, last_success_at, last_failure_at, and last_result.
   For deeper inspection:
-  
-  ExpectationEvaluation history shows each open or closed window and the evidence captured for it.
-  ExpectationIncident records track ongoing failure situations over time, including acknowledge, snooze, and resolve actions.
+  ExpectationEvaluation history shows each open or closed window and the evidence captured for it.ExpectationIncident records track ongoing failure situations over time, including acknowledge, snooze, and resolve actions.
   Manual windows do not open incidents in v1. Schedule-driven failures can open incidents, and later qualifying success can resolve them.
 ---
 
@@ -59,151 +40,77 @@ description: |-
 
 Expectations let your Files.com site define what “correct” file delivery looks like, continuously evaluate whether it happened, and keep history when it did not.
 
-
-
 Expectations are meant to answer operational questions like:
 
-
-
 * Did the expected file arrive?
-
 * Was it on time?
-
 * Did it meet the required shape and count rules?
-
 * Is there an active issue someone needs to acknowledge?
-
-
 
 Expectations are different from Automations and Syncs. Automations and Syncs act on files; Expectations monitor whether expected files arrived on time, in the right place, and in the right shape. In practice, Expectations are the sensor and Automations are the actuator.
 
-
-
 An Expectation combines four concepts:
 
-
-
 1. **Scope**: where to look for candidate files, using `path`, `source`, and optional `exclude_pattern`.
-
 2. **Trigger / timing**: when a window opens and how long it stays eligible, using `trigger`, schedule fields, `lookback_interval`, `late_acceptance_interval`, `inactivity_interval`, and `max_open_interval`.
-
 3. **Criteria**: what must be true for the window to succeed, using the structured `criteria` JSON document.
-
 4. **Outcome history**: what happened over time, exposed through `ExpectationEvaluation` history and `ExpectationIncident` lifecycle records.
-
-
 
 ## Scope and matching
 
-
-
 Expectations reuse the familiar Files.com path-plus-glob model.
-
-
 
 The `path` field identifies the folder scope, while `source` identifies which files within that scope are candidates. `exclude_pattern` removes files from consideration.
 
-
-
 Like Automations, these fields support glob-style matching. Expectations treat those matches as one logical candidate set for each window. A single Expectation does not implicitly fan out into separate per-customer or per-folder evaluations just because the path contains wildcards.
-
-
 
 ## Expectation windows
 
-
-
 Expectations are evaluated in windows.
-
-
 
 Each window is persisted as an `ExpectationEvaluation` record. A window opens, remains `open` while evidence can still arrive, and then closes into a terminal result such as `success`, `late`, `missing`, or `invalid`.
 
-
-
 An Expectation has only one open window at a time.
-
-
 
 ## Trigger modes
 
-
-
 Expectations can open windows in three ways:
 
-
-
 * `daily`: run on a recurring daily/weekly/monthly/quarterly/yearly cadence using `interval` and either `recurring_day` or `recurring_days`.
-
 * `custom_schedule`: run using either the reusable Site-level Schedule selected by `schedule_id` or specific weekdays and times stored on the Expectation.
-
 * `manual`: an operator explicitly opens the window.
-
-
 
 Schedule-driven expectations define an on-time deadline and may optionally remain eligible to close as `late` during `late_acceptance_interval`.
 
-
-
 Manual expectations have no concept of `late`; they open when triggered and close based on inactivity or hard-stop timing.
-
-
 
 ## Success criteria
 
-
-
 The `criteria` field is a structured JSON object describing what counts as success for the window.
-
-
 
 Criteria v1 can express things like:
 
-
-
 * file count constraints
-
 * total byte constraints
-
 * allowed extensions
-
 * filename regex validation
-
 * forbidden files
-
 * required named or globbed files with their own per-file constraints
-
-
 
 Criteria v2 adds `content_validation`, which runs a customer-authored Files Transform Script in either `per_file` or `whole_batch` mode. Per-file scripts receive the file contents parsed by FTS as `payload`. Whole-batch scripts receive an array of file objects containing `path`, `name`, `size`, `last_modified_at`, and each file's parsed `payload`.
 
-
-
 A content-validation script returns `true` or `{ success: true }` to pass. It returns `false` or `{ success: false, errors: [...] }` to fail. Error entries may be strings or structured objects with values such as `message`, `field`, `row`, `expected`, and `actual`; these details are preserved in readable form in the Evaluation's `criteria_errors`. Script, parsing, download, and size-limit errors also fail the criterion. Each file is limited to 100 MB, and whole-batch mode additionally limits the combined raw input to 100 MB.
-
-
 
 Required file rule keys may also include standard strftime-style date/time tokens like `%Y`, `%m`, and `%d`. Those tokens are resolved at evaluation time using a stable window anchor: schedule-driven expectations use the window's `deadline_at`, while manual and upload expectations use the window's `opened_at`.
 
-
-
 ## History and incidents
-
-
 
 The Expectation itself stores summary state like `last_evaluated_at`, `last_success_at`, `last_failure_at`, and `last_result`.
 
-
-
 For deeper inspection:
 
-
-
 * `ExpectationEvaluation` history shows each open or closed window and the evidence captured for it.
-
 * `ExpectationIncident` records track ongoing failure situations over time, including acknowledge, snooze, and resolve actions.
-
-
 
 Manual windows do not open incidents in v1. Schedule-driven failures can open incidents, and later qualifying success can resolve them.
 
@@ -277,6 +184,64 @@ resource "files_expectation" "example_expectation" {
 - `last_result` (String) Most recent terminal result for this expectation.
 - `last_success_at` (String) Last time this expectation closed successfully.
 - `updated_at` (String) Last update time.
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027. Until then, JSON-encoded configuration remains supported with a deprecation warning.
+
+#### criteria
+
+Versioned success criteria definition for the expectation. Criteria v2 supports optional FTS content validation.
+
+| Field in `criteria` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `count` | object | No | Number of matched files. exact cannot be combined with min or max. min must not exceed max. |
+| `count.exact` | integer | No | Exact value. |
+| `count.max` | integer | No | Maximum value. |
+| `count.min` | integer | No | Minimum value. |
+| `extensions` | list of strings | No | Allowed file extensions. |
+| `filename_regex` | string | No | Regular expression matched against each file's basename. Uses Ruby regular expression syntax. |
+| `total_bytes` | object | No | Combined size of matched files, in bytes. exact cannot be combined with min or max. min must not exceed max. |
+| `total_bytes.exact` | integer | No | Exact value. |
+| `total_bytes.max` | integer | No | Maximum value. |
+| `total_bytes.min` | integer | No | Minimum value. |
+| `forbidden_files` | list of strings | No | Basename glob patterns for files that must not be present. |
+| `required_files` | map of objects | No | Rules for specific file names or basename glob patterns. Literal names default to count.exact = 1 when count is omitted. Glob patterns have no default count. Overlapping globs are rejected. |
+| `required_files[key].count` | object | No | Number of files matching this entry. exact cannot be combined with min or max. min must not exceed max. |
+| `required_files[key].count.exact` | integer | No | Exact value. |
+| `required_files[key].count.max` | integer | No | Maximum value. |
+| `required_files[key].count.min` | integer | No | Minimum value. |
+| `required_files[key].extensions` | list of strings | No | Allowed extensions for files matching this entry. |
+| `required_files[key].filename_regex` | string | No | Regular expression matched against each matching file's basename. Uses Ruby regular expression syntax. |
+| `required_files[key].size_bytes` | object | No | Size of each matching file, in bytes. exact cannot be combined with min or max. min must not exceed max. |
+| `required_files[key].size_bytes.exact` | integer | No | Exact value. |
+| `required_files[key].size_bytes.max` | integer | No | Maximum value. |
+| `required_files[key].size_bytes.min` | integer | No | Minimum value. |
+| `content_validation` | object | No | File content validation using Files Transform Script. Requires expectations_version = 2. |
+| `content_validation.mode` | string | Yes | Whether to validate each file separately or the whole batch. |
+| `content_validation.fts` | string | Yes | Files Transform Script used to validate file contents. |
+
+#### Migrating JSON-encoded configuration
+
+Replace `jsonencode(...)` with native HCL, keeping the same keys and nesting.
+
+```hcl
+# Legacy JSON encoding
+criteria = jsonencode({
+  count      = {
+    exact = 1
+  }
+  extensions = ["csv"]
+})
+
+# Native HCL, same keys and nesting
+criteria = {
+  count      = {
+    exact = 1
+  }
+  extensions = ["csv"]
+}
+```
 
 ## Import
 

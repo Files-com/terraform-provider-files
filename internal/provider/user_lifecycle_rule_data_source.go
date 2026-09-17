@@ -70,7 +70,7 @@ func (r *userLifecycleRuleDataSource) Metadata(_ context.Context, req datasource
 
 func (r *userLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A UserLifecycleRule represents a rule that applies to users based on their inactivity, state and authentication method.\n\n\n\nThe rule either disable or delete users who have been inactive or disabled for a specified number of days.\n\n\n\nThe authentication_method property specifies the authentication method for the rule, which can be set to \"all\", \"all_non_sso\", or a specific authentication method.\n\n\n\nThe rule can also include or exclude site and folder admins from the action.",
+		Description: "A UserLifecycleRule represents a rule that applies to users based on their inactivity, state and authentication method.\n\nThe rule either disable or delete users who have been inactive or disabled for a specified number of days.\n\nThe authentication_method property specifies the authentication method for the rule, which can be set to \"all\", \"all_non_sso\", or a specific authentication method.\n\nThe rule can also include or exclude site and folder admins from the action.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "User Lifecycle Rule ID",

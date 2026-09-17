@@ -3,20 +3,16 @@
 page_title: "files_group Data Source - files"
 subcategory: ""
 description: |-
-  A Group is a powerful tool for permissions and user management on Files.com. Users can belong to multiple groups.
+  A Group is a powerful tool for permissions and user management on Files.com.  Users can belong to multiple groups.
   All permissions can be managed via Groups, and Groups can also be synced to your identity platform via LDAP or SCIM.
   Files.com's Group Admin feature allows you to define Group Admins, who then have access to add and remove users within their groups.
 ---
 
 # files_group (Data Source)
 
-A Group is a powerful tool for permissions and user management on Files.com. Users can belong to multiple groups.
-
-
+A Group is a powerful tool for permissions and user management on Files.com.  Users can belong to multiple groups.
 
 All permissions can be managed via Groups, and Groups can also be synced to your identity platform via LDAP or SCIM.
-
-
 
 Files.com's Group Admin feature allows you to define Group Admins, who then have access to add and remove users within their groups.
 
@@ -47,6 +43,7 @@ data "files_group" "example_group" {
 - `name` (String) Group name
 - `notes` (String) Notes about this group
 - `restapi_permission` (Boolean) If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.
+- `s3_compatible_endpoint_permission` (Boolean) If true, users in this group can access the S3-compatible endpoint. This will override a false value of `s3_compatible_endpoint_permission` on the user level. Defaults to false.
 - `sftp_permission` (Boolean) If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level.
 - `site_id` (Number) Site ID
 - `user_ids` (String) Comma-delimited list of user IDs who belong to this group (separated by commas)

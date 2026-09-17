@@ -29,5 +29,10 @@ resource "files_bundle" "example_bundle" {
   start_access_on_date                                = "2000-01-01T01:00:00Z"
   snapshot_id                                         = 1
   workspace_id                                        = 1
+  watermark_value                                     = {
+    gravity             = "SouthWest"
+    max_height_or_width = 20
+    transparency        = 25
+  }
 }
 

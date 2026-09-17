@@ -3,12 +3,12 @@
 page_title: "files_file Data Source - files"
 subcategory: ""
 description: |-
-  
+  A File object represents a file or folder on your Files.com site. The type field is file for files and directory for folders.
 ---
 
 # files_file (Data Source)
 
-
+A File object represents a file or folder on your Files.com site. The `type` field is `file` for files and `directory` for folders.
 
 ## Example Usage
 
@@ -62,3 +62,15 @@ data "files_file" "example_file" {
 - `size` (Number) File/Folder size
 - `subfolders_locked` (Boolean) Are subfolders locked and unable to be modified?
 - `type` (String) Type: `directory` or `file`.
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027.
+
+#### custom_metadata
+
+Custom metadata map of keys and values. Limited to 32 keys, 256 characters per key and 1024 characters per value.
+
+| Field in `custom_metadata` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `[key]` | string | No |  |

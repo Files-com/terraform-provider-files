@@ -11,8 +11,6 @@ description: |-
 
 An Integration Centric Profile defines the Remote Server integrations a user is expected to add and connect during integration-centric onboarding.
 
-
-
 Use this to automate setup guidance for users who need access to multiple business systems without sending long manual instructions. Common scenarios include ongoing access to systems such as SharePoint, bridging Google, Microsoft, and Box environments after M&A activity, and migrations where users connect legacy EFSS accounts during transition work.
 
 ## Example Usage
@@ -20,7 +18,12 @@ Use this to automate setup guidance for users who need access to multiple busine
 ```terraform
 resource "files_integration_centric_profile" "example_integration_centric_profile" {
   name                    = "Business Systems Onboarding"
-  expected_remote_servers = ["example"]
+  expected_remote_servers = [
+    {
+      server_type = "dropbox"
+      name        = "Dropbox"
+    }
+  ]
   workspace_id            = 1
   use_for_all_users       = false
 }
@@ -42,6 +45,43 @@ resource "files_integration_centric_profile" "example_integration_centric_profil
 ### Read-Only
 
 - `id` (Number) Integration Centric Profile ID
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027. Until then, JSON-encoded configuration remains supported with a deprecation warning.
+
+#### expected_remote_servers
+
+Remote Server integrations the user is expected to add and connect. Each entry requires `server_type` and may include a display `name`. Names are trimmed. Blank names are omitted. Each server_type/name pair must be unique. Name comparisons ignore letter case.
+
+List of objects.
+
+| Field in `expected_remote_servers` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `server_type` | string | Yes | Remote Server type. |
+| `name` | string | No | Display name for the Remote Server. |
+
+#### Migrating JSON-encoded configuration
+
+Replace `jsonencode(...)` with native HCL, keeping the same keys and nesting.
+
+```hcl
+# Legacy JSON encoding
+expected_remote_servers = jsonencode([
+  {
+    server_type = "dropbox"
+    name        = "Dropbox"
+  }
+])
+
+# Native HCL, same keys and nesting
+expected_remote_servers = [
+  {
+    server_type = "dropbox"
+    name        = "Dropbox"
+  }
+]
+```
 
 ## Import
 

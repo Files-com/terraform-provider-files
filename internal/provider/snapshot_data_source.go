@@ -64,7 +64,7 @@ func (r *snapshotDataSource) Metadata(_ context.Context, req datasource.Metadata
 
 func (r *snapshotDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Snapshots allow you to create a read-only archive of files at a specific point in time. You can define a snapshot, add files to it, and then finalize it. Once finalized, the snapshot’s contents are immutable.\n\n\n\nEach snapshot may have an expiration date. When the expiration date is reached, the snapshot is automatically deleted from the Files.com platform.",
+		Description: "Snapshots allow you to create a read-only archive of files at a specific point in time. You can define a snapshot, add files to it, and then finalize it. Once finalized, the snapshot’s contents are immutable.\n\nEach snapshot may have an expiration date. When the expiration date is reached, the snapshot is automatically deleted from the Files.com platform.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "The snapshot's unique ID.",

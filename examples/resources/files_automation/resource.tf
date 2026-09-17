@@ -67,7 +67,7 @@ resource "files_automation" "example_automation" {
   trigger                              = "daily"
   trigger_actions                      = ["create"]
   value                                = {
-    limit = 1
+    limit = "1"
   }
   recurring_day                        = 25
   recurring_days                       = [1, 15]

@@ -20,7 +20,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -265,7 +264,7 @@ func (r *siteResource) Metadata(_ context.Context, req resource.MetadataRequest,
 
 func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Site is the place you'll come to update site settings, as well as manage site-wide API keys.\n\n\n\nMost site settings can be set via the API.",
+		Description: "A Site is the place you'll come to update site settings, as well as manage site-wide API keys.\n\nMost site settings can be set via the API.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Site name",
@@ -554,6 +553,9 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value",
 				Computed:    true,
 				Optional:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_site.bundle_watermark_value", "bundle_watermark_value = {\n  gravity             = \"SouthWest\"\n  max_height_or_width = 20\n  transparency        = 25\n}", "March 1, 2027"),
+				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
 				},
@@ -1808,6 +1810,12 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var state siteResourceModel
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsSiteUpdate := map[string]interface{}{}
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
@@ -2152,9 +2160,6 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.RevokeBundleAccessOnDisableOrDelete.IsNull() && !config.RevokeBundleAccessOnDisableOrDelete.IsUnknown() {
 		paramsSiteUpdate["revoke_bundle_access_on_disable_or_delete"] = config.RevokeBundleAccessOnDisableOrDelete.ValueBool()
 	}
-	updateBundleWatermarkValue, diags := lib.DynamicToInterface(ctx, path.Root("bundle_watermark_value"), config.BundleWatermarkValue)
-	resp.Diagnostics.Append(diags...)
-	paramsSiteUpdate["bundle_watermark_value"] = updateBundleWatermarkValue
 	if !config.GroupAdminsCanAddUsers.IsNull() && !config.GroupAdminsCanAddUsers.IsUnknown() {
 		paramsSiteUpdate["group_admins_can_add_users"] = config.GroupAdminsCanAddUsers.ValueBool()
 	}
@@ -2323,6 +2328,11 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.UploadsViaEmailAuthentication.IsNull() && !config.UploadsViaEmailAuthentication.IsUnknown() {
 		paramsSiteUpdate["uploads_via_email_authentication"] = config.UploadsViaEmailAuthentication.ValueBool()
 	}
+	if !config.BundleWatermarkValue.IsNull() && !config.BundleWatermarkValue.IsUnknown() {
+		updateBundleWatermarkValue, diags := lib.JSONValueToAPI(ctx, path.Root("bundle_watermark_value"), config.BundleWatermarkValue)
+		resp.Diagnostics.Append(diags...)
+		paramsSiteUpdate["bundle_watermark_value"] = updateBundleWatermarkValue
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -2408,7 +2418,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 		)
 	}
 	state.BundleWatermarkAttachment = types.StringValue(string(respBundleWatermarkAttachment))
-	state.BundleWatermarkValue, propDiags = lib.ToDynamic(ctx, path.Root("bundle_watermark_value"), site.BundleWatermarkValue, state.BundleWatermarkValue.UnderlyingValue())
+	state.BundleWatermarkValue, propDiags = lib.APIToDynamicJSON(ctx, path.Root("bundle_watermark_value"), site.BundleWatermarkValue, state.BundleWatermarkValue, []string{}, []string{}, "watermark")
 	diags.Append(propDiags...)
 	state.CalculateFileChecksumsCrc32 = types.BoolPointerValue(site.CalculateFileChecksumsCrc32)
 	state.CalculateFileChecksumsMd5 = types.BoolPointerValue(site.CalculateFileChecksumsMd5)

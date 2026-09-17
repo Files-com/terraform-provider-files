@@ -6,7 +6,7 @@ resource "files_as2_partner" "example_as2_partner" {
   server_certificate         = "require_match"
   default_mime_type          = "application/octet-stream"
   additional_http_headers    = {
-    key = "example value"
+    X-Partner = "acme"
   }
   as2_station_id             = 1
   name                       = "AS2 Partner Name"

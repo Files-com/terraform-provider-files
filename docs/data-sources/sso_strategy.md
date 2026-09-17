@@ -12,10 +12,7 @@ description: |-
 
 An SSOStrategy is a way for users to sign in via another identity provider, such as Okta or Auth0.
 
-
-
 It is rare that you will need to use API endpoints for managing these, and we recommend instead managing these via the web interface.
-
 Nevertheless, we share the API documentation here.
 
 ## Example Usage

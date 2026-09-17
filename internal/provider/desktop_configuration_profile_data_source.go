@@ -7,7 +7,6 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	desktop_configuration_profile "github.com/Files-com/files-sdk-go/v3/desktopconfigurationprofile"
 	"github.com/Files-com/terraform-provider-files/lib"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -131,7 +130,7 @@ func (r *desktopConfigurationProfileDataSource) populateDataSourceModel(ctx cont
 	state.WorkspaceId = types.Int64Value(desktopConfigurationProfile.WorkspaceId)
 	state.UseForAllUsers = types.BoolPointerValue(desktopConfigurationProfile.UseForAllUsers)
 	state.DisableDriveMounting = types.BoolPointerValue(desktopConfigurationProfile.DisableDriveMounting)
-	state.MountMappings, propDiags = lib.ToDynamic(ctx, path.Root("mount_mappings"), desktopConfigurationProfile.MountMappings, state.MountMappings.UnderlyingValue())
+	state.MountMappings, propDiags = lib.ToDynamic(ctx, path.Root("mount_mappings"), desktopConfigurationProfile.MountMappings, nil)
 	diags.Append(propDiags...)
 
 	return

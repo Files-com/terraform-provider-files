@@ -11,10 +11,7 @@ description: |-
 # files_bundle (Resource)
 
 A Bundle is the API/SDK term for the feature called Share Links in the web interface.
-
 The API provides the full set of actions related to Share Links, including sending them via E-Mail.
-
-
 
 Please note that we very closely monitor the E-Mailing feature and any abuse will result in disabling of your site.
 
@@ -52,6 +49,11 @@ resource "files_bundle" "example_bundle" {
   start_access_on_date                                = "2000-01-01T01:00:00Z"
   snapshot_id                                         = 1
   workspace_id                                        = 1
+  watermark_value                                     = {
+    gravity             = "SouthWest"
+    max_height_or_width = 20
+    transparency        = 25
+  }
 }
 ```
 
@@ -94,6 +96,7 @@ resource "files_bundle" "example_bundle" {
 - `snapshot_id` (Number) ID of the snapshot containing this bundle's contents.
 - `start_access_on_date` (String) Date when share will start to be accessible. If `nil` access granted right after create.
 - `user_id` (Number) Bundle creator user ID
+- `watermark_value` (Dynamic) Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value
 - `workspace_id` (Number) Workspace ID. `0` means the default workspace.
 
 ### Read-Only
@@ -119,7 +122,51 @@ resource "files_bundle" "example_bundle" {
 - `url` (String) Public URL of Share Link
 - `username` (String) Bundle creator username
 - `watermark_attachment` (String) Preview watermark image applied to all bundle items.
-- `watermark_value` (Dynamic) Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027. Until then, JSON-encoded configuration remains supported with a deprecation warning.
+
+#### watermark_value
+
+Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value
+
+| Field in `watermark_value` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `gravity` | string | No | Where to locate the watermark?  Valid values: `Center`, `East`, `NorthEast`, `North`, `NorthWest`, `SouthEast`, `South`, `SouthWest`, `West`. |
+| `max_height_or_width` | integer | No | Max width/height as percent of image preview. |
+| `transparency` | integer | No | Percentage applied to the watermark. |
+| `dynamic_text` | string | No | Watermark text. Use {{user}} to embed a username into the string. |
+
+#### requested_upload_slots
+
+Upload slots requested by the associated Inbox. Each slot contains a name used as its label and destination subfolder name.
+
+List of objects.
+
+| Field in `requested_upload_slots` | Type | Required | Description |
+| --- | --- | --- | --- |
+| `name` | string | Yes | Upload slot label and destination subfolder name. |
+
+#### Migrating JSON-encoded configuration
+
+Replace `jsonencode(...)` with native HCL, keeping the same keys and nesting.
+
+```hcl
+# Legacy JSON encoding
+watermark_value = jsonencode({
+  gravity             = "SouthWest"
+  max_height_or_width = 20
+  transparency        = 25
+})
+
+# Native HCL, same keys and nesting
+watermark_value = {
+  gravity             = "SouthWest"
+  max_height_or_width = 20
+  transparency        = 25
+}
+```
 
 ## Import
 

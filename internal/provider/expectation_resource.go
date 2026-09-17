@@ -21,7 +21,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -100,7 +99,7 @@ func (r *expectationResource) Metadata(_ context.Context, req resource.MetadataR
 
 func (r *expectationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "Expectations let your Files.com site define what “correct” file delivery looks like, continuously evaluate whether it happened, and keep history when it did not.\n\n\n\nExpectations are meant to answer operational questions like:\n\n\n\n* Did the expected file arrive?\n\n* Was it on time?\n\n* Did it meet the required shape and count rules?\n\n* Is there an active issue someone needs to acknowledge?\n\n\n\nExpectations are different from Automations and Syncs. Automations and Syncs act on files; Expectations monitor whether expected files arrived on time, in the right place, and in the right shape. In practice, Expectations are the sensor and Automations are the actuator.\n\n\n\nAn Expectation combines four concepts:\n\n\n\n1. **Scope**: where to look for candidate files, using `path`, `source`, and optional `exclude_pattern`.\n\n2. **Trigger / timing**: when a window opens and how long it stays eligible, using `trigger`, schedule fields, `lookback_interval`, `late_acceptance_interval`, `inactivity_interval`, and `max_open_interval`.\n\n3. **Criteria**: what must be true for the window to succeed, using the structured `criteria` JSON document.\n\n4. **Outcome history**: what happened over time, exposed through `ExpectationEvaluation` history and `ExpectationIncident` lifecycle records.\n\n\n\n## Scope and matching\n\n\n\nExpectations reuse the familiar Files.com path-plus-glob model.\n\n\n\nThe `path` field identifies the folder scope, while `source` identifies which files within that scope are candidates. `exclude_pattern` removes files from consideration.\n\n\n\nLike Automations, these fields support glob-style matching. Expectations treat those matches as one logical candidate set for each window. A single Expectation does not implicitly fan out into separate per-customer or per-folder evaluations just because the path contains wildcards.\n\n\n\n## Expectation windows\n\n\n\nExpectations are evaluated in windows.\n\n\n\nEach window is persisted as an `ExpectationEvaluation` record. A window opens, remains `open` while evidence can still arrive, and then closes into a terminal result such as `success`, `late`, `missing`, or `invalid`.\n\n\n\nAn Expectation has only one open window at a time.\n\n\n\n## Trigger modes\n\n\n\nExpectations can open windows in three ways:\n\n\n\n* `daily`: run on a recurring daily/weekly/monthly/quarterly/yearly cadence using `interval` and either `recurring_day` or `recurring_days`.\n\n* `custom_schedule`: run using either the reusable Site-level Schedule selected by `schedule_id` or specific weekdays and times stored on the Expectation.\n\n* `manual`: an operator explicitly opens the window.\n\n\n\nSchedule-driven expectations define an on-time deadline and may optionally remain eligible to close as `late` during `late_acceptance_interval`.\n\n\n\nManual expectations have no concept of `late`; they open when triggered and close based on inactivity or hard-stop timing.\n\n\n\n## Success criteria\n\n\n\nThe `criteria` field is a structured JSON object describing what counts as success for the window.\n\n\n\nCriteria v1 can express things like:\n\n\n\n* file count constraints\n\n* total byte constraints\n\n* allowed extensions\n\n* filename regex validation\n\n* forbidden files\n\n* required named or globbed files with their own per-file constraints\n\n\n\nCriteria v2 adds `content_validation`, which runs a customer-authored Files Transform Script in either `per_file` or `whole_batch` mode. Per-file scripts receive the file contents parsed by FTS as `payload`. Whole-batch scripts receive an array of file objects containing `path`, `name`, `size`, `last_modified_at`, and each file's parsed `payload`.\n\n\n\nA content-validation script returns `true` or `{ success: true }` to pass. It returns `false` or `{ success: false, errors: [...] }` to fail. Error entries may be strings or structured objects with values such as `message`, `field`, `row`, `expected`, and `actual`; these details are preserved in readable form in the Evaluation's `criteria_errors`. Script, parsing, download, and size-limit errors also fail the criterion. Each file is limited to 100 MB, and whole-batch mode additionally limits the combined raw input to 100 MB.\n\n\n\nRequired file rule keys may also include standard strftime-style date/time tokens like `%Y`, `%m`, and `%d`. Those tokens are resolved at evaluation time using a stable window anchor: schedule-driven expectations use the window's `deadline_at`, while manual and upload expectations use the window's `opened_at`.\n\n\n\n## History and incidents\n\n\n\nThe Expectation itself stores summary state like `last_evaluated_at`, `last_success_at`, `last_failure_at`, and `last_result`.\n\n\n\nFor deeper inspection:\n\n\n\n* `ExpectationEvaluation` history shows each open or closed window and the evidence captured for it.\n\n* `ExpectationIncident` records track ongoing failure situations over time, including acknowledge, snooze, and resolve actions.\n\n\n\nManual windows do not open incidents in v1. Schedule-driven failures can open incidents, and later qualifying success can resolve them.",
+		Description: "Expectations let your Files.com site define what “correct” file delivery looks like, continuously evaluate whether it happened, and keep history when it did not.\n\nExpectations are meant to answer operational questions like:\n\n* Did the expected file arrive?\n* Was it on time?\n* Did it meet the required shape and count rules?\n* Is there an active issue someone needs to acknowledge?\n\nExpectations are different from Automations and Syncs. Automations and Syncs act on files; Expectations monitor whether expected files arrived on time, in the right place, and in the right shape. In practice, Expectations are the sensor and Automations are the actuator.\n\nAn Expectation combines four concepts:\n\n1. **Scope**: where to look for candidate files, using `path`, `source`, and optional `exclude_pattern`.\n2. **Trigger / timing**: when a window opens and how long it stays eligible, using `trigger`, schedule fields, `lookback_interval`, `late_acceptance_interval`, `inactivity_interval`, and `max_open_interval`.\n3. **Criteria**: what must be true for the window to succeed, using the structured `criteria` JSON document.\n4. **Outcome history**: what happened over time, exposed through `ExpectationEvaluation` history and `ExpectationIncident` lifecycle records.\n\n## Scope and matching\n\nExpectations reuse the familiar Files.com path-plus-glob model.\n\nThe `path` field identifies the folder scope, while `source` identifies which files within that scope are candidates. `exclude_pattern` removes files from consideration.\n\nLike Automations, these fields support glob-style matching. Expectations treat those matches as one logical candidate set for each window. A single Expectation does not implicitly fan out into separate per-customer or per-folder evaluations just because the path contains wildcards.\n\n## Expectation windows\n\nExpectations are evaluated in windows.\n\nEach window is persisted as an `ExpectationEvaluation` record. A window opens, remains `open` while evidence can still arrive, and then closes into a terminal result such as `success`, `late`, `missing`, or `invalid`.\n\nAn Expectation has only one open window at a time.\n\n## Trigger modes\n\nExpectations can open windows in three ways:\n\n* `daily`: run on a recurring daily/weekly/monthly/quarterly/yearly cadence using `interval` and either `recurring_day` or `recurring_days`.\n* `custom_schedule`: run using either the reusable Site-level Schedule selected by `schedule_id` or specific weekdays and times stored on the Expectation.\n* `manual`: an operator explicitly opens the window.\n\nSchedule-driven expectations define an on-time deadline and may optionally remain eligible to close as `late` during `late_acceptance_interval`.\n\nManual expectations have no concept of `late`; they open when triggered and close based on inactivity or hard-stop timing.\n\n## Success criteria\n\nThe `criteria` field is a structured JSON object describing what counts as success for the window.\n\nCriteria v1 can express things like:\n\n* file count constraints\n* total byte constraints\n* allowed extensions\n* filename regex validation\n* forbidden files\n* required named or globbed files with their own per-file constraints\n\nCriteria v2 adds `content_validation`, which runs a customer-authored Files Transform Script in either `per_file` or `whole_batch` mode. Per-file scripts receive the file contents parsed by FTS as `payload`. Whole-batch scripts receive an array of file objects containing `path`, `name`, `size`, `last_modified_at`, and each file's parsed `payload`.\n\nA content-validation script returns `true` or `{ success: true }` to pass. It returns `false` or `{ success: false, errors: [...] }` to fail. Error entries may be strings or structured objects with values such as `message`, `field`, `row`, `expected`, and `actual`; these details are preserved in readable form in the Evaluation's `criteria_errors`. Script, parsing, download, and size-limit errors also fail the criterion. Each file is limited to 100 MB, and whole-batch mode additionally limits the combined raw input to 100 MB.\n\nRequired file rule keys may also include standard strftime-style date/time tokens like `%Y`, `%m`, and `%d`. Those tokens are resolved at evaluation time using a stable window anchor: schedule-driven expectations use the window's `deadline_at`, while manual and upload expectations use the window's `opened_at`.\n\n## History and incidents\n\nThe Expectation itself stores summary state like `last_evaluated_at`, `last_success_at`, `last_failure_at`, and `last_result`.\n\nFor deeper inspection:\n\n* `ExpectationEvaluation` history shows each open or closed window and the evidence captured for it.\n* `ExpectationIncident` records track ongoing failure situations over time, including acknowledge, snooze, and resolve actions.\n\nManual windows do not open incidents in v1. Schedule-driven failures can open incidents, and later qualifying success can resolve them.",
 		Attributes: map[string]schema.Attribute{
 			"workspace_id": schema.Int64Attribute{
 				Description: "Workspace ID. `0` means the default workspace.",
@@ -272,6 +271,9 @@ func (r *expectationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "Versioned success criteria definition for the expectation. Criteria v2 supports optional FTS content validation.",
 				Computed:    true,
 				Optional:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_expectation.criteria", "criteria = {\n  count      = {\n    exact = 1\n  }\n  extensions = [\"csv\"]\n}", "March 1, 2027"),
+				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
 				},
@@ -363,7 +365,7 @@ func (r *expectationResource) Create(ctx context.Context, req resource.CreateReq
 	paramsExpectationCreate.LateAcceptanceInterval = plan.LateAcceptanceInterval.ValueInt64()
 	paramsExpectationCreate.InactivityInterval = plan.InactivityInterval.ValueInt64()
 	paramsExpectationCreate.MaxOpenInterval = plan.MaxOpenInterval.ValueInt64()
-	createCriteria, diags := lib.DynamicToInterface(ctx, path.Root("criteria"), plan.Criteria)
+	createCriteria, diags := lib.JSONValueToAPI(ctx, path.Root("criteria"), config.Criteria)
 	resp.Diagnostics.Append(diags...)
 	paramsExpectationCreate.Criteria = createCriteria
 	paramsExpectationCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
@@ -439,6 +441,12 @@ func (r *expectationResource) Update(ctx context.Context, req resource.UpdateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var state expectationResourceModel
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsExpectationUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
@@ -510,9 +518,11 @@ func (r *expectationResource) Update(ctx context.Context, req resource.UpdateReq
 	if !config.MaxOpenInterval.IsNull() && !config.MaxOpenInterval.IsUnknown() {
 		paramsExpectationUpdate["max_open_interval"] = config.MaxOpenInterval.ValueInt64()
 	}
-	updateCriteria, diags := lib.DynamicToInterface(ctx, path.Root("criteria"), config.Criteria)
-	resp.Diagnostics.Append(diags...)
-	paramsExpectationUpdate["criteria"] = updateCriteria
+	if !config.Criteria.IsNull() && !config.Criteria.IsUnknown() {
+		updateCriteria, diags := lib.JSONValueToAPI(ctx, path.Root("criteria"), config.Criteria)
+		resp.Diagnostics.Append(diags...)
+		paramsExpectationUpdate["criteria"] = updateCriteria
+	}
 	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
 		paramsExpectationUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
@@ -611,7 +621,7 @@ func (r *expectationResource) populateResourceModel(ctx context.Context, expecta
 	state.LateAcceptanceInterval = types.Int64Value(expectation.LateAcceptanceInterval)
 	state.InactivityInterval = types.Int64Value(expectation.InactivityInterval)
 	state.MaxOpenInterval = types.Int64Value(expectation.MaxOpenInterval)
-	state.Criteria, propDiags = lib.ToDynamic(ctx, path.Root("criteria"), expectation.Criteria, state.Criteria.UnderlyingValue())
+	state.Criteria, propDiags = lib.APIToDynamicJSON(ctx, path.Root("criteria"), expectation.Criteria, state.Criteria, []string{"required_files"}, []string{}, "empty_object")
 	diags.Append(propDiags...)
 	if err := lib.TimeToStringType(ctx, path.Root("last_evaluated_at"), expectation.LastEvaluatedAt, &state.LastEvaluatedAt); err != nil {
 		diags.AddError(

@@ -95,7 +95,7 @@ func (r *folderDataSource) Metadata(_ context.Context, req datasource.MetadataRe
 
 func (r *folderDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "",
+		Description: "A File object represents a file or folder on your Files.com site. The `type` field is `file` for files and `directory` for folders.",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
 				Description: "File/Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
@@ -290,7 +290,7 @@ func (r *folderDataSource) populateDataSourceModel(ctx context.Context, folder f
 	state.CreatedByInboxId = types.Int64Value(folder.CreatedByInboxId)
 	state.CreatedByRemoteServerId = types.Int64Value(folder.CreatedByRemoteServerId)
 	state.CreatedBySyncId = types.Int64Value(folder.CreatedBySyncId)
-	state.CustomMetadata, propDiags = lib.ToDynamic(ctx, path.Root("custom_metadata"), folder.CustomMetadata, state.CustomMetadata.UnderlyingValue())
+	state.CustomMetadata, propDiags = lib.ToDynamic(ctx, path.Root("custom_metadata"), folder.CustomMetadata, nil)
 	diags.Append(propDiags...)
 	state.DisplayName = types.StringValue(folder.DisplayName)
 	state.Type = types.StringValue(folder.Type)
