@@ -27,9 +27,10 @@ import (
 )
 
 var (
-	_ resource.Resource                = &formFieldSetResource{}
-	_ resource.ResourceWithConfigure   = &formFieldSetResource{}
-	_ resource.ResourceWithImportState = &formFieldSetResource{}
+	_ resource.Resource                 = &formFieldSetResource{}
+	_ resource.ResourceWithConfigure    = &formFieldSetResource{}
+	_ resource.ResourceWithImportState  = &formFieldSetResource{}
+	_ resource.ResourceWithUpgradeState = &formFieldSetResource{}
 )
 
 func NewFormFieldSetResource() resource.Resource {
@@ -77,7 +78,11 @@ func (r *formFieldSetResource) Metadata(_ context.Context, req resource.Metadata
 }
 
 func (r *formFieldSetResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = schema.Schema{
+	resp.Schema = r.resourceSchema()
+}
+
+func (r *formFieldSetResource) resourceSchema() schema.Schema {
+	return schema.Schema{
 		Description: "A Form Field Set is a custom form to be used for bundle and inbox registrations.\n\nEach Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.\n\nOnce created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.",
 		Attributes: map[string]schema.Attribute{
 			"title": schema.StringAttribute{
@@ -150,6 +155,7 @@ func (r *formFieldSetResource) Schema(_ context.Context, _ resource.SchemaReques
 				Computed:    true,
 			},
 		},
+		Version: 1,
 	}
 }
 

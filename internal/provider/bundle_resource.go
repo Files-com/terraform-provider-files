@@ -30,9 +30,10 @@ import (
 )
 
 var (
-	_ resource.Resource                = &bundleResource{}
-	_ resource.ResourceWithConfigure   = &bundleResource{}
-	_ resource.ResourceWithImportState = &bundleResource{}
+	_ resource.Resource                 = &bundleResource{}
+	_ resource.ResourceWithConfigure    = &bundleResource{}
+	_ resource.ResourceWithImportState  = &bundleResource{}
+	_ resource.ResourceWithUpgradeState = &bundleResource{}
 )
 
 func NewBundleResource() resource.Resource {
@@ -122,7 +123,11 @@ func (r *bundleResource) Metadata(_ context.Context, req resource.MetadataReques
 }
 
 func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = schema.Schema{
+	resp.Schema = r.resourceSchema()
+}
+
+func (r *bundleResource) resourceSchema() schema.Schema {
+	return schema.Schema{
 		Description: "A Bundle is the API/SDK term for the feature called Share Links in the web interface.\nThe API provides the full set of actions related to Share Links, including sending them via E-Mail.\n\nPlease note that we very closely monitor the E-Mailing feature and any abuse will result in disabling of your site.",
 		Attributes: map[string]schema.Attribute{
 			"paths": schema.ListAttribute{
@@ -452,6 +457,7 @@ func (r *bundleResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Computed:    true,
 			},
 		},
+		Version: 1,
 	}
 }
 

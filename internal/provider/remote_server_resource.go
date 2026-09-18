@@ -27,9 +27,10 @@ import (
 )
 
 var (
-	_ resource.Resource                = &remoteServerResource{}
-	_ resource.ResourceWithConfigure   = &remoteServerResource{}
-	_ resource.ResourceWithImportState = &remoteServerResource{}
+	_ resource.Resource                 = &remoteServerResource{}
+	_ resource.ResourceWithConfigure    = &remoteServerResource{}
+	_ resource.ResourceWithImportState  = &remoteServerResource{}
+	_ resource.ResourceWithUpgradeState = &remoteServerResource{}
 )
 
 func NewRemoteServerResource() resource.Resource {
@@ -167,7 +168,11 @@ func (r *remoteServerResource) Metadata(_ context.Context, req resource.Metadata
 }
 
 func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = schema.Schema{
+	resp.Schema = r.resourceSchema()
+}
+
+func (r *remoteServerResource) resourceSchema() schema.Schema {
+	return schema.Schema{
 		Description: "A RemoteServer is a specific type of Behavior called `remote_server_sync`.\n\nRemote Servers can be either an FTP server, SFTP server, S3 bucket, Google Cloud Storage, Wasabi, Backblaze B2 Cloud Storage, Rackspace Cloud Files container, WebDAV, Box, Dropbox, OneDrive, SharePoint, Google Drive, Azure Blob Storage, or Files.com direct link.\n\nNot every attribute will apply to every remote server.\n\nFTP Servers require that you specify their `hostname`, `port`, `username`, `password`, and a value for `ssl`.  Optionally, provide `server_certificate`.\n\nSFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`.  Optionally, provide `server_certificate`, `private_key_passphrase`.\n\nS3 Buckets require that you specify their `s3_bucket` name, and `s3_region`.  Optionally provide a `aws_access_key`, and `aws_secret_key`.  If you don't provide credentials, you will need to use AWS to grant us access to your bucket.\n\nS3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`. Optionally provide `s3_compatible_virtual_hosted_style` to use virtual-hosted-style URLs instead of path-style URLs.\n\nGoogle Cloud Storage requires that you specify `google_cloud_storage_bucket`, and then one of the following sets of authentication credentials, selected by `google_cloud_storage_authentication_method` (defaults to `json`):\n  - for JSON authentication: `google_cloud_storage_project_id`, and `google_cloud_storage_credentials_json`\n  - for HMAC (S3-Compatible) authentication: `google_cloud_storage_s3_compatible_access_key`, and `google_cloud_storage_s3_compatible_secret_key`\n  - for OAuth authentication: `google_cloud_storage_oauth_scope`, then follow the `auth_setup_link` and login with Google\n\nWasabi requires `wasabi_bucket`, `wasabi_region`, `wasabi_access_key`, and `wasabi_secret_key`.\n\nBackblaze B2 Cloud Storage `backblaze_b2_bucket`, `backblaze_b2_s3_endpoint`, `backblaze_b2_application_key`, and `backblaze_b2_key_id`. (Requires S3 Compatible API) See https://help.backblaze.com/hc/en-us/articles/360047425453\n\nWebDAV Servers require that you specify their `hostname`, `username`, and `password`.\n\nOneDrive follow the `auth_setup_link` and login with Microsoft.\n\nSharePoint supports delegated authentication through `auth_setup_link`, or app-only authentication with `sharepoint_tenant_id`, `sharepoint_client_id`, and either `sharepoint_client_secret` or `sharepoint_client_certificate`. Set `sharepoint_site_url` to scope the remote server to a site granted through Microsoft Graph `Sites.Selected`; leave it blank to browse all sites.\n\nBox follow the `auth_setup_link` and login with Box.\n\nDropbox specify if `dropbox_teams` then follow the `auth_setup_link` and login with Dropbox.\n\nGoogle Drive follow the `auth_setup_link` and login with Google.\n\nAzure Blob Storage `azure_blob_storage_account`, `azure_blob_storage_container`, `azure_blob_storage_access_key`, `azure_blob_storage_sas_token`, `azure_blob_storage_dns_suffix`\n\nAzure File Storage `azure_files_storage_account`, `azure_files_storage_access_key`, `azure_files_storage_share_name`, `azure_files_storage_dns_suffix`\n\nFilebase requires `filebase_bucket`, `filebase_access_key`, and `filebase_secret_key`.\n\nCloudflare requires `cloudflare_bucket`, `cloudflare_access_key`, `cloudflare_secret_key` and `cloudflare_endpoint`.\n\nLinode requires `linode_bucket`, `linode_access_key`, `linode_secret_key` and `linode_region`.",
 		Attributes: map[string]schema.Attribute{
 			"hostname": schema.StringAttribute{
@@ -869,6 +874,7 @@ func (r *remoteServerResource) Schema(_ context.Context, _ resource.SchemaReques
 				Computed:    true,
 			},
 		},
+		Version: 1,
 	}
 }
 

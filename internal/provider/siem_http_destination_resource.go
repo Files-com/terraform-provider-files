@@ -29,9 +29,10 @@ import (
 )
 
 var (
-	_ resource.Resource                = &siemHttpDestinationResource{}
-	_ resource.ResourceWithConfigure   = &siemHttpDestinationResource{}
-	_ resource.ResourceWithImportState = &siemHttpDestinationResource{}
+	_ resource.Resource                 = &siemHttpDestinationResource{}
+	_ resource.ResourceWithConfigure    = &siemHttpDestinationResource{}
+	_ resource.ResourceWithImportState  = &siemHttpDestinationResource{}
+	_ resource.ResourceWithUpgradeState = &siemHttpDestinationResource{}
 )
 
 func NewSiemHttpDestinationResource() resource.Resource {
@@ -131,7 +132,11 @@ func (r *siemHttpDestinationResource) Metadata(_ context.Context, req resource.M
 }
 
 func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = schema.Schema{
+	resp.Schema = r.resourceSchema()
+}
+
+func (r *siemHttpDestinationResource) resourceSchema() schema.Schema {
+	return schema.Schema{
 		Description: "A SIEM HTTP Destination defines where Files.com sends the log types you select.\nFor HTTP destinations, Files.com sends JSON to the configured endpoint.\nFor file destinations, Files.com writes JSON or CSV files to the configured folder.",
 		Attributes: map[string]schema.Attribute{
 			"destination_type": schema.StringAttribute{
@@ -509,6 +514,7 @@ func (r *siemHttpDestinationResource) Schema(_ context.Context, _ resource.Schem
 				Computed:    true,
 			},
 		},
+		Version: 1,
 	}
 }
 

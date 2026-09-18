@@ -25,9 +25,10 @@ import (
 )
 
 var (
-	_ resource.Resource                = &remoteServerCredentialResource{}
-	_ resource.ResourceWithConfigure   = &remoteServerCredentialResource{}
-	_ resource.ResourceWithImportState = &remoteServerCredentialResource{}
+	_ resource.Resource                 = &remoteServerCredentialResource{}
+	_ resource.ResourceWithConfigure    = &remoteServerCredentialResource{}
+	_ resource.ResourceWithImportState  = &remoteServerCredentialResource{}
+	_ resource.ResourceWithUpgradeState = &remoteServerCredentialResource{}
 )
 
 func NewRemoteServerCredentialResource() resource.Resource {
@@ -104,7 +105,11 @@ func (r *remoteServerCredentialResource) Metadata(_ context.Context, req resourc
 }
 
 func (r *remoteServerCredentialResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = schema.Schema{
+	resp.Schema = r.resourceSchema()
+}
+
+func (r *remoteServerCredentialResource) resourceSchema() schema.Schema {
+	return schema.Schema{
 		Description: "A RemoteServerCredential is a way to store a credential for Remote Servers in a centralized vault and then reference it from Remote Server definitions.\n\nThis allows you to manage your credentials in one place and avoid duplicating them across multiple Remote Server configurations. It also enhances security by allowing you to use Terraform or APIs for Remote Server management without having to worry about credential exposure.",
 		Attributes: map[string]schema.Attribute{
 			"workspace_id": schema.Int64Attribute{
@@ -358,6 +363,7 @@ func (r *remoteServerCredentialResource) Schema(_ context.Context, _ resource.Sc
 				Computed:    true,
 			},
 		},
+		Version: 1,
 	}
 }
 

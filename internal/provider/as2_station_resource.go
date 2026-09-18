@@ -22,9 +22,10 @@ import (
 )
 
 var (
-	_ resource.Resource                = &as2StationResource{}
-	_ resource.ResourceWithConfigure   = &as2StationResource{}
-	_ resource.ResourceWithImportState = &as2StationResource{}
+	_ resource.Resource                 = &as2StationResource{}
+	_ resource.ResourceWithConfigure    = &as2StationResource{}
+	_ resource.ResourceWithImportState  = &as2StationResource{}
+	_ resource.ResourceWithUpgradeState = &as2StationResource{}
 )
 
 func NewAs2StationResource() resource.Resource {
@@ -79,7 +80,11 @@ func (r *as2StationResource) Metadata(_ context.Context, req resource.MetadataRe
 }
 
 func (r *as2StationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = schema.Schema{
+	resp.Schema = r.resourceSchema()
+}
+
+func (r *as2StationResource) resourceSchema() schema.Schema {
+	return schema.Schema{
 		Description: "An AS2Station is a remote AS2 server that can send data into Files.com and receive data from Files.com.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
@@ -159,6 +164,7 @@ func (r *as2StationResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Computed:    true,
 			},
 		},
+		Version: 1,
 	}
 }
 

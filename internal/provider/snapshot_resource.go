@@ -25,9 +25,10 @@ import (
 )
 
 var (
-	_ resource.Resource                = &snapshotResource{}
-	_ resource.ResourceWithConfigure   = &snapshotResource{}
-	_ resource.ResourceWithImportState = &snapshotResource{}
+	_ resource.Resource                 = &snapshotResource{}
+	_ resource.ResourceWithConfigure    = &snapshotResource{}
+	_ resource.ResourceWithImportState  = &snapshotResource{}
+	_ resource.ResourceWithUpgradeState = &snapshotResource{}
 )
 
 func NewSnapshotResource() resource.Resource {
@@ -73,7 +74,11 @@ func (r *snapshotResource) Metadata(_ context.Context, req resource.MetadataRequ
 }
 
 func (r *snapshotResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = schema.Schema{
+	resp.Schema = r.resourceSchema()
+}
+
+func (r *snapshotResource) resourceSchema() schema.Schema {
+	return schema.Schema{
 		Description: "Snapshots allow you to create a read-only archive of files at a specific point in time. You can define a snapshot, add files to it, and then finalize it. Once finalized, the snapshot’s contents are immutable.\n\nEach snapshot may have an expiration date. When the expiration date is reached, the snapshot is automatically deleted from the Files.com platform.",
 		Attributes: map[string]schema.Attribute{
 			"expires_at": schema.StringAttribute{
@@ -127,6 +132,7 @@ func (r *snapshotResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 				Computed:    true,
 			},
 		},
+		Version: 1,
 	}
 }
 

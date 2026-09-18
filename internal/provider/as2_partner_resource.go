@@ -29,9 +29,10 @@ import (
 )
 
 var (
-	_ resource.Resource                = &as2PartnerResource{}
-	_ resource.ResourceWithConfigure   = &as2PartnerResource{}
-	_ resource.ResourceWithImportState = &as2PartnerResource{}
+	_ resource.Resource                 = &as2PartnerResource{}
+	_ resource.ResourceWithConfigure    = &as2PartnerResource{}
+	_ resource.ResourceWithImportState  = &as2PartnerResource{}
+	_ resource.ResourceWithUpgradeState = &as2PartnerResource{}
 )
 
 func NewAs2PartnerResource() resource.Resource {
@@ -90,7 +91,11 @@ func (r *as2PartnerResource) Metadata(_ context.Context, req resource.MetadataRe
 }
 
 func (r *as2PartnerResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = schema.Schema{
+	resp.Schema = r.resourceSchema()
+}
+
+func (r *as2PartnerResource) resourceSchema() schema.Schema {
+	return schema.Schema{
 		Description: "An AS2Partner is a counterparty of the Files.com site's AS2 connectivity.  Generally you will have one AS2 Partner created for each counterparty with whom you send and/or receive files via AS2.",
 		Attributes: map[string]schema.Attribute{
 			"as2_station_id": schema.Int64Attribute{
@@ -225,6 +230,7 @@ func (r *as2PartnerResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				Computed:    true,
 			},
 		},
+		Version: 1,
 	}
 }
 

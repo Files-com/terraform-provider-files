@@ -24,9 +24,10 @@ import (
 )
 
 var (
-	_ resource.Resource                = &bundleNotificationResource{}
-	_ resource.ResourceWithConfigure   = &bundleNotificationResource{}
-	_ resource.ResourceWithImportState = &bundleNotificationResource{}
+	_ resource.Resource                 = &bundleNotificationResource{}
+	_ resource.ResourceWithConfigure    = &bundleNotificationResource{}
+	_ resource.ResourceWithImportState  = &bundleNotificationResource{}
+	_ resource.ResourceWithUpgradeState = &bundleNotificationResource{}
 )
 
 func NewBundleNotificationResource() resource.Resource {
@@ -72,7 +73,11 @@ func (r *bundleNotificationResource) Metadata(_ context.Context, req resource.Me
 }
 
 func (r *bundleNotificationResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = schema.Schema{
+	resp.Schema = r.resourceSchema()
+}
+
+func (r *bundleNotificationResource) resourceSchema() schema.Schema {
+	return schema.Schema{
 		Description: "A BundleNotification is an E-Mail sent out to users when certain actions are performed on or within a shared set of files and folders.",
 		Attributes: map[string]schema.Attribute{
 			"bundle_id": schema.Int64Attribute{
@@ -131,6 +136,7 @@ func (r *bundleNotificationResource) Schema(_ context.Context, _ resource.Schema
 				Computed:    true,
 			},
 		},
+		Version: 1,
 	}
 }
 

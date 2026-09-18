@@ -24,9 +24,10 @@ import (
 )
 
 var (
-	_ resource.Resource                = &folderResource{}
-	_ resource.ResourceWithConfigure   = &folderResource{}
-	_ resource.ResourceWithImportState = &folderResource{}
+	_ resource.Resource                 = &folderResource{}
+	_ resource.ResourceWithConfigure    = &folderResource{}
+	_ resource.ResourceWithImportState  = &folderResource{}
+	_ resource.ResourceWithUpgradeState = &folderResource{}
 )
 
 func NewFolderResource() resource.Resource {
@@ -108,7 +109,7 @@ func (r *folderResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 
 func (r *folderResource) resourceSchema() schema.Schema {
 	return schema.Schema{
-
+		Version:     1,
 		Description: "A File object represents a file or folder on your Files.com site. The `type` field is `file` for files and `directory` for folders.",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{

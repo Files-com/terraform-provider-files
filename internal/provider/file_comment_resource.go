@@ -24,9 +24,10 @@ import (
 )
 
 var (
-	_ resource.Resource                = &fileCommentResource{}
-	_ resource.ResourceWithConfigure   = &fileCommentResource{}
-	_ resource.ResourceWithImportState = &fileCommentResource{}
+	_ resource.Resource                 = &fileCommentResource{}
+	_ resource.ResourceWithConfigure    = &fileCommentResource{}
+	_ resource.ResourceWithImportState  = &fileCommentResource{}
+	_ resource.ResourceWithUpgradeState = &fileCommentResource{}
 )
 
 func NewFileCommentResource() resource.Resource {
@@ -68,7 +69,11 @@ func (r *fileCommentResource) Metadata(_ context.Context, req resource.MetadataR
 }
 
 func (r *fileCommentResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = schema.Schema{
+	resp.Schema = r.resourceSchema()
+}
+
+func (r *fileCommentResource) resourceSchema() schema.Schema {
+	return schema.Schema{
 		Description: "A FileComment is a comment attached to a file by a user.",
 		Attributes: map[string]schema.Attribute{
 			"body": schema.StringAttribute{
@@ -95,6 +100,7 @@ func (r *fileCommentResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Computed:    true,
 			},
 		},
+		Version: 1,
 	}
 }
 
