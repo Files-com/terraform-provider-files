@@ -94,7 +94,7 @@ func (r *apiKeyResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 
 func (r *apiKeyResource) resourceSchema() schema.Schema {
 	return schema.Schema{
-		Description: "An APIKey is a key that allows programmatic access to your Site.\n\nAPI keys confer all the permissions of the user who owns them unless the key uses a restricted permission set.\nIf an API key is created without a user owner, it is considered a site-wide API key. Site-wide API keys with the `files_only` permission set are restricted to file-user permissions and workspace scoping.\n\nWe recommend registering API keys to service users wherever possible and then using User or Group Permissions to restrict that API Key appropriately.",
+		Description: "An APIKey is a key that allows programmatic access to your Site.\n\nAPI keys use the owning user's permissions, narrowed by the key's permission set, workspace scope, and any folder path restriction.\nIf an API key is created without a user owner, it is considered a site-wide API key. Site-wide API keys with the `files_only` permission set are restricted to file-user permissions and workspace scoping.\n\nSet `path` when creating a key to limit file and folder access to that folder and its descendants. This restriction applies to every permission set and to every path an API request accesses, including both source and destination paths for copy and move operations. It never grants additional access to the owning user. Requests outside the restriction are denied with `not-authorized/api-key-is-path-restricted`.\n\nWe recommend registering API keys to service users wherever possible and then using User or Group Permissions to restrict that API Key appropriately.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
 				Description: "Internal name for the API Key.  For your use.",
@@ -156,7 +156,7 @@ func (r *apiKeyResource) resourceSchema() schema.Schema {
 				},
 			},
 			"path": schema.StringAttribute{
-				Description: "Folder path restriction for `office_integration` permission set API keys.",
+				Description: "Restricts this API key to the specified folder and its descendants. Applies to every permission set and all paths accessed by a request, including copy and move destinations. Does not grant access beyond the owning user's permissions. Optional except for `office_integration` keys, which require a path the owning user can read.",
 				Optional:    true,
 				WriteOnly:   true,
 				PlanModifiers: []planmodifier.String{
