@@ -50,7 +50,7 @@ data "files_behavior" "example_behavior" {
 - `attachment_url` (String) URL for attached file
 - `behavior` (String) Behavior type.
 - `description` (String) Description for this behavior.
-- `disable_parent_folder_behavior` (Boolean) If true, the parent folder's behavior will be disabled for this folder and its children.
+- `disable_parent_folder_behavior` (Boolean) If true, disables the inherited behavior for this folder and its children. Valid only for behavior types that child folders may override, and requires recursive to be true. Rejected for all other behavior types.
 - `inherited` (Boolean) If true, this behavior is inherited from a higher scope rather than owned by the requested workspace.
 - `managed` (Boolean) If true, this behavior is controlled by a parent-site policy and cannot be modified locally.
 - `name` (String) Name for this behavior.

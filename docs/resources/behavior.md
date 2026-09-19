@@ -36,7 +36,7 @@ resource "files_behavior" "example_behavior" {
       encoding = "JSON"
     }
   }
-  disable_parent_folder_behavior = false
+  disable_parent_folder_behavior = true
   recursive                      = false
   name                           = "example"
   description                    = "example"
@@ -376,7 +376,7 @@ resource "files_behavior" "example_malware_scanning_behavior" {
 ### Optional
 
 - `description` (String) Description for this behavior.
-- `disable_parent_folder_behavior` (Boolean) If true, the parent folder's behavior will be disabled for this folder and its children.
+- `disable_parent_folder_behavior` (Boolean) If true, disables the inherited behavior for this folder and its children. Valid only for behavior types that child folders may override, and requires recursive to be true. Rejected for all other behavior types.
 - `name` (String) Name for this behavior.
 - `recursive` (Boolean) Whether this behavior is recursive for this record. `always` behaviors are always `true`, `never` behaviors are always `false`, and `sometimes` behaviors may be either value.
 - `value` (Dynamic) Settings for this behavior. Wrap the value under the selected behavior name. See the Behavior sections above for fields and examples.

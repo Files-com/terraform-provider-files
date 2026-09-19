@@ -129,7 +129,7 @@ func (r *behaviorResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 				},
 			},
 			"disable_parent_folder_behavior": schema.BoolAttribute{
-				Description: "If true, the parent folder's behavior will be disabled for this folder and its children.",
+				Description: "If true, disables the inherited behavior for this folder and its children. Valid only for behavior types that child folders may override, and requires recursive to be true. Rejected for all other behavior types.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{

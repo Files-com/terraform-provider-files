@@ -6,7 +6,7 @@ resource "files_behavior" "example_behavior" {
       encoding = "JSON"
     }
   }
-  disable_parent_folder_behavior = false
+  disable_parent_folder_behavior = true
   recursive                      = false
   name                           = "example"
   description                    = "example"
