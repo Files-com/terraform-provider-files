@@ -131,7 +131,7 @@ func (r *partnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 				Computed:    true,
 			},
 			"partnership_role": schema.StringAttribute{
-				Description: "This site's role in Partner Site relationships for this Partner. Can be `host`, `guest`, `host_and_guest`, or null.",
+				Description: "This site's role for this Partner in Connected Sites relationships. `host` is a Partner this site configured. `guest` is a Partner created by approving another site's connection request; it has no root folder and cannot hold users, permissions, or Partner Channels, or host a connection. `host_and_guest` is a configured Partner that is also the guest side of a connection. Promote a `guest` Partner by setting this to `host_and_guest` together with a `root_folder`.",
 				Computed:    true,
 			},
 			"responsible_group_id": schema.Int64Attribute{

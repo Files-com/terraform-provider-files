@@ -53,13 +53,13 @@ type partnerResourceModel struct {
 	WorkspaceId                types.Int64  `tfsdk:"workspace_id"`
 	Notes                      types.String `tfsdk:"notes"`
 	PartnerChannelTemplateId   types.Int64  `tfsdk:"partner_channel_template_id"`
+	PartnershipRole            types.String `tfsdk:"partnership_role"`
 	ResponsibleGroupId         types.Int64  `tfsdk:"responsible_group_id"`
 	ResponsibleUserId          types.Int64  `tfsdk:"responsible_user_id"`
 	ShowPartnerChannelHomePage types.Bool   `tfsdk:"show_partner_channel_home_page"`
 	Tags                       types.String `tfsdk:"tags"`
 	Id                         types.Int64  `tfsdk:"id"`
 	PartnerAdminIds            types.List   `tfsdk:"partner_admin_ids"`
-	PartnershipRole            types.String `tfsdk:"partnership_role"`
 	UserIds                    types.List   `tfsdk:"user_ids"`
 }
 
@@ -179,6 +179,17 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"partnership_role": schema.StringAttribute{
+				Description: "This site's role for this Partner in Connected Sites relationships. `host` is a Partner this site configured. `guest` is a Partner created by approving another site's connection request; it has no root folder and cannot hold users, permissions, or Partner Channels, or host a connection. `host_and_guest` is a configured Partner that is also the guest side of a connection. Promote a `guest` Partner by setting this to `host_and_guest` together with a `root_folder`.",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("host", "guest", "host_and_guest"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"responsible_group_id": schema.Int64Attribute{
 				Description: "ID of the Group responsible for this Partner.",
 				Computed:    true,
@@ -222,13 +233,6 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				Description: "Array of User IDs that are Partner Admins for this Partner.",
 				Computed:    true,
 				ElementType: types.Int64Type,
-			},
-			"partnership_role": schema.StringAttribute{
-				Description: "This site's role in Partner Site relationships for this Partner. Can be `host`, `guest`, `host_and_guest`, or null.",
-				Computed:    true,
-				Validators: []validator.String{
-					stringvalidator.OneOf("host", "guest", "host_and_guest"),
-				},
 			},
 			"user_ids": schema.ListAttribute{
 				Description: "Array of User IDs that belong to this Partner.",
@@ -400,6 +404,9 @@ func (r *partnerResource) Update(ctx context.Context, req resource.UpdateRequest
 	}
 	if !config.Name.IsNull() && !config.Name.IsUnknown() {
 		paramsPartnerUpdate["name"] = config.Name.ValueString()
+	}
+	if !config.PartnershipRole.IsNull() && !config.PartnershipRole.IsUnknown() {
+		paramsPartnerUpdate["partnership_role"] = config.PartnershipRole.ValueString()
 	}
 	if !config.RootFolder.IsNull() && !config.RootFolder.IsUnknown() {
 		paramsPartnerUpdate["root_folder"] = config.RootFolder.ValueString()

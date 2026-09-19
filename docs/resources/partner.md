@@ -52,6 +52,7 @@ resource "files_partner" "example_partner" {
 - `cc_emails_to_responsible_party` (Boolean) When `true`, emails sent to Partner users are copied to the responsible User or Group.
 - `notes` (String) Notes about this Partner.
 - `partner_channel_template_id` (Number) ID of the Partner Channel Template assigned to this Partner.
+- `partnership_role` (String) This site's role for this Partner in Connected Sites relationships. `host` is a Partner this site configured. `guest` is a Partner created by approving another site's connection request; it has no root folder and cannot hold users, permissions, or Partner Channels, or host a connection. `host_and_guest` is a configured Partner that is also the guest side of a connection. Promote a `guest` Partner by setting this to `host_and_guest` together with a `root_folder`.
 - `responsible_group_id` (Number) ID of the Group responsible for this Partner.
 - `responsible_user_id` (Number) ID of the User responsible for this Partner.
 - `show_partner_channel_home_page` (Boolean) Show Partner users a simplified home page built from this Partner's Channels.
@@ -62,7 +63,6 @@ resource "files_partner" "example_partner" {
 
 - `id` (Number) The unique ID of the Partner.
 - `partner_admin_ids` (List of Number) Array of User IDs that are Partner Admins for this Partner.
-- `partnership_role` (String) This site's role in Partner Site relationships for this Partner. Can be `host`, `guest`, `host_and_guest`, or null.
 - `user_ids` (List of Number) Array of User IDs that belong to this Partner.
 
 ## Import
