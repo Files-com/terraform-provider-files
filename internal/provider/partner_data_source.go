@@ -6,10 +6,12 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	partner "github.com/Files-com/files-sdk-go/v3/partner"
+	"github.com/Files-com/terraform-provider-files/lib"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -28,26 +30,27 @@ type partnerDataSource struct {
 }
 
 type partnerDataSourceModel struct {
-	Id                         types.Int64  `tfsdk:"id"`
-	AllowBypassing2faPolicies  types.Bool   `tfsdk:"allow_bypassing_2fa_policies"`
-	AllowedIps                 types.String `tfsdk:"allowed_ips"`
-	AllowCredentialChanges     types.Bool   `tfsdk:"allow_credential_changes"`
-	AllowProvidingGpgKeys      types.Bool   `tfsdk:"allow_providing_gpg_keys"`
-	AllowUserCreation          types.Bool   `tfsdk:"allow_user_creation"`
-	CcEmailsToResponsibleParty types.Bool   `tfsdk:"cc_emails_to_responsible_party"`
-	AiAssistantPersonalityId   types.Int64  `tfsdk:"ai_assistant_personality_id"`
-	WorkspaceId                types.Int64  `tfsdk:"workspace_id"`
-	Name                       types.String `tfsdk:"name"`
-	Notes                      types.String `tfsdk:"notes"`
-	PartnerAdminIds            types.List   `tfsdk:"partner_admin_ids"`
-	PartnerChannelTemplateId   types.Int64  `tfsdk:"partner_channel_template_id"`
-	PartnershipRole            types.String `tfsdk:"partnership_role"`
-	ResponsibleGroupId         types.Int64  `tfsdk:"responsible_group_id"`
-	ResponsibleUserId          types.Int64  `tfsdk:"responsible_user_id"`
-	RootFolder                 types.String `tfsdk:"root_folder"`
-	ShowPartnerChannelHomePage types.Bool   `tfsdk:"show_partner_channel_home_page"`
-	Tags                       types.String `tfsdk:"tags"`
-	UserIds                    types.List   `tfsdk:"user_ids"`
+	Id                         types.Int64   `tfsdk:"id"`
+	AllowBypassing2faPolicies  types.Bool    `tfsdk:"allow_bypassing_2fa_policies"`
+	AllowedIps                 types.String  `tfsdk:"allowed_ips"`
+	AllowCredentialChanges     types.Bool    `tfsdk:"allow_credential_changes"`
+	AllowProvidingGpgKeys      types.Bool    `tfsdk:"allow_providing_gpg_keys"`
+	AllowUserCreation          types.Bool    `tfsdk:"allow_user_creation"`
+	CcEmailsToResponsibleParty types.Bool    `tfsdk:"cc_emails_to_responsible_party"`
+	Connections                types.Dynamic `tfsdk:"connections"`
+	AiAssistantPersonalityId   types.Int64   `tfsdk:"ai_assistant_personality_id"`
+	WorkspaceId                types.Int64   `tfsdk:"workspace_id"`
+	Name                       types.String  `tfsdk:"name"`
+	Notes                      types.String  `tfsdk:"notes"`
+	PartnerAdminIds            types.List    `tfsdk:"partner_admin_ids"`
+	PartnerChannelTemplateId   types.Int64   `tfsdk:"partner_channel_template_id"`
+	PartnershipRole            types.String  `tfsdk:"partnership_role"`
+	ResponsibleGroupId         types.Int64   `tfsdk:"responsible_group_id"`
+	ResponsibleUserId          types.Int64   `tfsdk:"responsible_user_id"`
+	RootFolder                 types.String  `tfsdk:"root_folder"`
+	ShowPartnerChannelHomePage types.Bool    `tfsdk:"show_partner_channel_home_page"`
+	Tags                       types.String  `tfsdk:"tags"`
+	UserIds                    types.List    `tfsdk:"user_ids"`
 }
 
 func (r *partnerDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -103,6 +106,10 @@ func (r *partnerDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 			},
 			"cc_emails_to_responsible_party": schema.BoolAttribute{
 				Description: "When `true`, emails sent to Partner users are copied to the responsible User or Group.",
+				Computed:    true,
+			},
+			"connections": schema.DynamicAttribute{
+				Description: "Approved Connected Sites relationships for this Partner, in both directions. Empty when this Partner has no connections. Read-only.",
 				Computed:    true,
 			},
 			"ai_assistant_personality_id": schema.Int64Attribute{
@@ -202,6 +209,8 @@ func (r *partnerDataSource) populateDataSourceModel(ctx context.Context, partner
 	state.AllowProvidingGpgKeys = types.BoolPointerValue(partner.AllowProvidingGpgKeys)
 	state.AllowUserCreation = types.BoolPointerValue(partner.AllowUserCreation)
 	state.CcEmailsToResponsibleParty = types.BoolPointerValue(partner.CcEmailsToResponsibleParty)
+	state.Connections, propDiags = lib.ToDynamic(ctx, path.Root("connections"), partner.Connections, state.Connections.UnderlyingValue())
+	diags.Append(propDiags...)
 	state.Id = types.Int64Value(partner.Id)
 	state.AiAssistantPersonalityId = types.Int64Value(partner.AiAssistantPersonalityId)
 	state.WorkspaceId = types.Int64Value(partner.WorkspaceId)

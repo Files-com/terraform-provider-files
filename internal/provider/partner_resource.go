@@ -8,6 +8,7 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	partner "github.com/Files-com/files-sdk-go/v3/partner"
+	"github.com/Files-com/terraform-provider-files/lib"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -41,26 +42,27 @@ type partnerResource struct {
 }
 
 type partnerResourceModel struct {
-	Name                       types.String `tfsdk:"name"`
-	RootFolder                 types.String `tfsdk:"root_folder"`
-	AllowBypassing2faPolicies  types.Bool   `tfsdk:"allow_bypassing_2fa_policies"`
-	AllowedIps                 types.String `tfsdk:"allowed_ips"`
-	AllowCredentialChanges     types.Bool   `tfsdk:"allow_credential_changes"`
-	AllowProvidingGpgKeys      types.Bool   `tfsdk:"allow_providing_gpg_keys"`
-	AllowUserCreation          types.Bool   `tfsdk:"allow_user_creation"`
-	CcEmailsToResponsibleParty types.Bool   `tfsdk:"cc_emails_to_responsible_party"`
-	AiAssistantPersonalityId   types.Int64  `tfsdk:"ai_assistant_personality_id"`
-	WorkspaceId                types.Int64  `tfsdk:"workspace_id"`
-	Notes                      types.String `tfsdk:"notes"`
-	PartnerChannelTemplateId   types.Int64  `tfsdk:"partner_channel_template_id"`
-	PartnershipRole            types.String `tfsdk:"partnership_role"`
-	ResponsibleGroupId         types.Int64  `tfsdk:"responsible_group_id"`
-	ResponsibleUserId          types.Int64  `tfsdk:"responsible_user_id"`
-	ShowPartnerChannelHomePage types.Bool   `tfsdk:"show_partner_channel_home_page"`
-	Tags                       types.String `tfsdk:"tags"`
-	Id                         types.Int64  `tfsdk:"id"`
-	PartnerAdminIds            types.List   `tfsdk:"partner_admin_ids"`
-	UserIds                    types.List   `tfsdk:"user_ids"`
+	Name                       types.String  `tfsdk:"name"`
+	RootFolder                 types.String  `tfsdk:"root_folder"`
+	AllowBypassing2faPolicies  types.Bool    `tfsdk:"allow_bypassing_2fa_policies"`
+	AllowedIps                 types.String  `tfsdk:"allowed_ips"`
+	AllowCredentialChanges     types.Bool    `tfsdk:"allow_credential_changes"`
+	AllowProvidingGpgKeys      types.Bool    `tfsdk:"allow_providing_gpg_keys"`
+	AllowUserCreation          types.Bool    `tfsdk:"allow_user_creation"`
+	CcEmailsToResponsibleParty types.Bool    `tfsdk:"cc_emails_to_responsible_party"`
+	AiAssistantPersonalityId   types.Int64   `tfsdk:"ai_assistant_personality_id"`
+	WorkspaceId                types.Int64   `tfsdk:"workspace_id"`
+	Notes                      types.String  `tfsdk:"notes"`
+	PartnerChannelTemplateId   types.Int64   `tfsdk:"partner_channel_template_id"`
+	PartnershipRole            types.String  `tfsdk:"partnership_role"`
+	ResponsibleGroupId         types.Int64   `tfsdk:"responsible_group_id"`
+	ResponsibleUserId          types.Int64   `tfsdk:"responsible_user_id"`
+	ShowPartnerChannelHomePage types.Bool    `tfsdk:"show_partner_channel_home_page"`
+	Tags                       types.String  `tfsdk:"tags"`
+	Connections                types.Dynamic `tfsdk:"connections"`
+	Id                         types.Int64   `tfsdk:"id"`
+	PartnerAdminIds            types.List    `tfsdk:"partner_admin_ids"`
+	UserIds                    types.List    `tfsdk:"user_ids"`
 }
 
 func (r *partnerResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -221,6 +223,10 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
+			},
+			"connections": schema.DynamicAttribute{
+				Description: "Approved Connected Sites relationships for this Partner, in both directions. Empty when this Partner has no connections. Read-only.",
+				Computed:    true,
 			},
 			"id": schema.Int64Attribute{
 				Description: "The unique ID of the Partner.",
@@ -487,6 +493,8 @@ func (r *partnerResource) populateResourceModel(ctx context.Context, partner fil
 	state.AllowProvidingGpgKeys = types.BoolPointerValue(partner.AllowProvidingGpgKeys)
 	state.AllowUserCreation = types.BoolPointerValue(partner.AllowUserCreation)
 	state.CcEmailsToResponsibleParty = types.BoolPointerValue(partner.CcEmailsToResponsibleParty)
+	state.Connections, propDiags = lib.ToDynamic(ctx, path.Root("connections"), partner.Connections, state.Connections.UnderlyingValue())
+	diags.Append(propDiags...)
 	state.Id = types.Int64Value(partner.Id)
 	state.AiAssistantPersonalityId = types.Int64Value(partner.AiAssistantPersonalityId)
 	state.WorkspaceId = types.Int64Value(partner.WorkspaceId)

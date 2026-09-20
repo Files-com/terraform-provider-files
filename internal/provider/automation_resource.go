@@ -77,7 +77,6 @@ type automationResourceModel struct {
 	ScheduleTimesOfDay               types.List    `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone                 types.String  `tfsdk:"schedule_time_zone"`
 	Source                           types.String  `tfsdk:"source"`
-	LegacySyncIds                    types.List    `tfsdk:"legacy_sync_ids"`
 	SyncIds                          types.List    `tfsdk:"sync_ids"`
 	TriggerActions                   types.List    `tfsdk:"trigger_actions"`
 	Trigger                          types.String  `tfsdk:"trigger"`
@@ -634,15 +633,10 @@ func (r *automationResource) resourceSchema() schema.Schema {
 									},
 									"config": schema.SingleNestedAttribute{
 										Description: "Configuration fields for this node type.",
-										Optional:    true,
+										Required:    true,
 										Attributes: map[string]schema.Attribute{
-											"legacy_sync_ids": schema.ListAttribute{
-												Optional:    true,
-												ElementType: types.Int64Type,
-												Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
-											},
 											"sync_ids": schema.ListAttribute{
-												Optional:    true,
+												Required:    true,
 												ElementType: types.Int64Type,
 												Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
 											},
@@ -1757,17 +1751,8 @@ func (r *automationResource) resourceSchema() schema.Schema {
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"legacy_sync_ids": schema.ListAttribute{
-				Description: "IDs of remote sync folder behaviors to run by this Automation",
-				Computed:    true,
-				Optional:    true,
-				ElementType: types.Int64Type,
-				PlanModifiers: []planmodifier.List{
-					listplanmodifier.UseStateForUnknown(),
-				},
-			},
 			"sync_ids": schema.ListAttribute{
-				Description: "IDs of syncs to run by this Automation. This is the new way to specify syncs, and it is recommended to use this instead of `legacy_sync_ids`.",
+				Description: "IDs of Syncs to run by this Automation.",
 				Computed:    true,
 				Optional:    true,
 				ElementType: types.Int64Type,
@@ -1891,8 +1876,6 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsAutomationCreate.DestinationReplaceTo = plan.DestinationReplaceTo.ValueString()
 	paramsAutomationCreate.Interval = plan.Interval.ValueString()
 	paramsAutomationCreate.Path = plan.Path.ValueString()
-	paramsAutomationCreate.LegacySyncIds, diags = lib.ListValueToString(ctx, path.Root("legacy_sync_ids"), plan.LegacySyncIds, ",")
-	resp.Diagnostics.Append(diags...)
 	paramsAutomationCreate.SyncIds, diags = lib.ListValueToString(ctx, path.Root("sync_ids"), plan.SyncIds, ",")
 	resp.Diagnostics.Append(diags...)
 	paramsAutomationCreate.UserIds, diags = lib.ListValueToString(ctx, path.Root("user_ids"), plan.UserIds, ",")
@@ -2062,11 +2045,6 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 	}
 	if !config.Path.IsNull() && !config.Path.IsUnknown() {
 		paramsAutomationUpdate["path"] = config.Path.ValueString()
-	}
-	if !config.LegacySyncIds.IsNull() && !config.LegacySyncIds.IsUnknown() {
-		updateLegacySyncIds, diags := lib.ListValueToString(ctx, path.Root("legacy_sync_ids"), config.LegacySyncIds, ",")
-		resp.Diagnostics.Append(diags...)
-		paramsAutomationUpdate["legacy_sync_ids"] = updateLegacySyncIds
 	}
 	if !config.SyncIds.IsNull() && !config.SyncIds.IsUnknown() {
 		updateSyncIds, diags := lib.ListValueToString(ctx, path.Root("sync_ids"), config.SyncIds, ",")
@@ -2304,8 +2282,6 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	diags.Append(propDiags...)
 	state.ScheduleTimeZone = types.StringValue(automation.ScheduleTimeZone)
 	state.Source = types.StringValue(automation.Source)
-	state.LegacySyncIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, automation.LegacySyncIds)
-	diags.Append(propDiags...)
 	state.SyncIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, automation.SyncIds)
 	diags.Append(propDiags...)
 	state.TriggerActions, propDiags = types.ListValueFrom(ctx, types.StringType, automation.TriggerActions)

@@ -331,7 +331,6 @@ resource "files_automation" "example_automation" {
   destination_replace_to               = "example"
   interval                             = "year"
   path                                 = "example"
-  legacy_sync_ids                      = [1, 2]
   sync_ids                             = [1, 2]
   user_ids                             = [1, 2]
   group_ids                            = [1, 2]
@@ -427,7 +426,6 @@ resource "files_automation" "example_automation" {
 - `import_urls` (Dynamic) List of URLs to be imported and names to be used.
 - `interval` (String) If trigger is `daily`, this specifies how often to run this automation.  One of: `day`, `week`, `week_end`, `month`, `month_end`, `quarter`, `quarter_end`, `year`, `year_end`
 - `legacy_folder_matching` (Boolean) If `true`, use the legacy behavior for this automation, where it can operate on folders in addition to just files.  This behavior no longer works and should not be used.
-- `legacy_sync_ids` (List of Number) IDs of remote sync folder behaviors to run by this Automation
 - `name` (String) Name for this automation.
 - `overwrite_files` (Boolean) If true, existing files will be overwritten with new files on Move/Copy automations.  Note: by default files will not be overwritten on Copy automations if they appear to be the same file size as the newly incoming file.  Use the `always_overwrite_size_matching_files` option in conjunction with `overwrite_files` to override this behavior and overwrite files no matter what.
 - `path` (String) Path on which this Automation runs.  Supports globs, except on remote mounts. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
@@ -441,7 +439,7 @@ resource "files_automation" "example_automation" {
 - `schedule_time_zone` (String) Time zone for the schedule. If not set, times are interpreted as UTC.
 - `schedule_times_of_day` (List of String) Times of day to run in HH:MM format (24-hour). For `custom_schedule`, run at these times on specified days of week. For `daily`, run at these times on the scheduled interval date.
 - `source` (String) Source path/glob.  See Automation docs for exact description, but this is used to filter for files in the `path` to find files to operate on. Supports globs, except on remote mounts.
-- `sync_ids` (List of Number) IDs of syncs to run by this Automation. This is the new way to specify syncs, and it is recommended to use this instead of `legacy_sync_ids`.
+- `sync_ids` (List of Number) IDs of Syncs to run by this Automation.
 - `trigger` (String) How this automation is triggered to run.
 - `trigger_actions` (List of String) If trigger is `action`, this is the list of action types on which to trigger the automation. Valid actions are create, copy, move, archived_delete, update, read, destroy
 - `user_ids` (List of Number) IDs of Users for the Automation (i.e. who to Request File from)
@@ -1124,21 +1122,23 @@ Required:
 
 Required:
 
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--run_sync--config))
 - `id` (String) Unique node ID within the graph.
 
 Optional:
 
-- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--run_sync--config))
 - `return` (Boolean) Whether this node's output is included in the Automation result.
 
 <a id="nestedatt--definition--nodes--run_sync--config"></a>
 ### Nested Schema for `definition.nodes.run_sync.config`
 
+Required:
+
+- `sync_ids` (List of Number)
+
 Optional:
 
-- `legacy_sync_ids` (List of Number)
 - `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--run_sync--config--on_error))
-- `sync_ids` (List of Number)
 
 <a id="nestedatt--definition--nodes--run_sync--config--on_error"></a>
 ### Nested Schema for `definition.nodes.run_sync.config.on_error`

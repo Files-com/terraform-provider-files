@@ -49,7 +49,6 @@ type automationResourceModelV0 struct {
 	ScheduleTimesOfDay               types.List    `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone                 types.String  `tfsdk:"schedule_time_zone"`
 	Source                           types.String  `tfsdk:"source"`
-	LegacySyncIds                    types.List    `tfsdk:"legacy_sync_ids"`
 	SyncIds                          types.List    `tfsdk:"sync_ids"`
 	TriggerActions                   types.List    `tfsdk:"trigger_actions"`
 	Trigger                          types.String  `tfsdk:"trigger"`
@@ -314,17 +313,8 @@ func (r *automationResource) UpgradeState(ctx context.Context) map[int64]resourc
 							stringplanmodifier.UseStateForUnknown(),
 						},
 					},
-					"legacy_sync_ids": schema.ListAttribute{
-						Description: "IDs of remote sync folder behaviors to run by this Automation",
-						Computed:    true,
-						Optional:    true,
-						ElementType: types.Int64Type,
-						PlanModifiers: []planmodifier.List{
-							listplanmodifier.UseStateForUnknown(),
-						},
-					},
 					"sync_ids": schema.ListAttribute{
-						Description: "IDs of syncs to run by this Automation. This is the new way to specify syncs, and it is recommended to use this instead of `legacy_sync_ids`.",
+						Description: "IDs of Syncs to run by this Automation.",
 						Computed:    true,
 						Optional:    true,
 						ElementType: types.Int64Type,
@@ -459,7 +449,6 @@ func (r *automationResource) UpgradeState(ctx context.Context) map[int64]resourc
 					ScheduleTimesOfDay:               priorState.ScheduleTimesOfDay,
 					ScheduleTimeZone:                 priorState.ScheduleTimeZone,
 					Source:                           priorState.Source,
-					LegacySyncIds:                    priorState.LegacySyncIds,
 					SyncIds:                          priorState.SyncIds,
 					TriggerActions:                   priorState.TriggerActions,
 					Trigger:                          priorState.Trigger,

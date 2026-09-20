@@ -61,6 +61,7 @@ resource "files_partner" "example_partner" {
 
 ### Read-Only
 
+- `connections` (Dynamic) Approved Connected Sites relationships for this Partner, in both directions. Empty when this Partner has no connections. Read-only.
 - `id` (Number) The unique ID of the Partner.
 - `partner_admin_ids` (List of Number) Array of User IDs that are Partner Admins for this Partner.
 - `user_ids` (List of Number) Array of User IDs that belong to this Partner.
