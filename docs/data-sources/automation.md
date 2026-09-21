@@ -631,7 +631,7 @@ Read-Only:
 
 Read-Only:
 
-- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 - `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--document_convert--config--on_error))
 - `overwrite_files` (Boolean)
 - `target_format` (String)
@@ -721,7 +721,7 @@ Read-Only:
 
 Read-Only:
 
-- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 - `gpg_key_id` (Number)
 - `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--gpg_decrypt--config--on_error))
 - `overwrite_files` (Boolean)
@@ -751,7 +751,7 @@ Read-Only:
 
 Read-Only:
 
-- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 - `gpg_key_id` (Number)
 - `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--gpg_encrypt--config--on_error))
 - `overwrite_files` (Boolean)
@@ -809,7 +809,7 @@ Read-Only:
 
 Read-Only:
 
-- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 - `height` (Number)
 - `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--image_convert--config--on_error))
 - `overwrite_files` (Boolean)
@@ -841,12 +841,12 @@ Read-Only:
 
 Read-Only:
 
-- `content` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
-- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `content` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 - `headers` (Map of String)
 - `method` (String)
 - `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--import_file--config--on_error))
-- `url` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `url` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 
 <a id="nestedatt--definition--nodes--import_file--config--on_error"></a>
 ### Nested Schema for `definition.nodes.import_file.config.on_error`
@@ -996,11 +996,11 @@ Read-Only:
 
 - `attachments` (List of String)
 - `bcc` (List of String)
-- `body` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `body` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 - `cc` (List of String)
-- `from` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `from` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 - `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--send_email--config--on_error))
-- `subject` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `subject` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 - `to` (List of String)
 
 <a id="nestedatt--definition--nodes--send_email--config--on_error"></a>
@@ -1093,7 +1093,7 @@ Read-Only:
 
 Read-Only:
 
-- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 - `fts` (String)
 - `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--transform--config--on_error))
 
@@ -1236,7 +1236,7 @@ Read-Only:
 
 Read-Only:
 
-- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 - `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--unzip--config--on_error))
 - `overwrite_files` (Boolean)
 
@@ -1293,7 +1293,7 @@ Read-Only:
 
 Read-Only:
 
-- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.
+- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 - `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--zip--config--on_error))
 - `overwrite_files` (Boolean)
 

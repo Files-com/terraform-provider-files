@@ -581,11 +581,11 @@ func (r *automationResource) resourceSchema() schema.Schema {
 										Required:    true,
 										Attributes: map[string]schema.Attribute{
 											"url": schema.StringAttribute{
-												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Required:    true,
 											},
 											"destination": schema.StringAttribute{
-												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Optional:    true,
 											},
 											"method": schema.StringAttribute{
@@ -597,7 +597,7 @@ func (r *automationResource) resourceSchema() schema.Schema {
 												ElementType: types.StringType,
 											},
 											"content": schema.StringAttribute{
-												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Optional:    true,
 											},
 											"on_error": schema.ListNestedAttribute{
@@ -722,7 +722,7 @@ func (r *automationResource) resourceSchema() schema.Schema {
 										Required:    true,
 										Attributes: map[string]schema.Attribute{
 											"from": schema.StringAttribute{
-												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Optional:    true,
 											},
 											"to": schema.ListAttribute{
@@ -739,11 +739,11 @@ func (r *automationResource) resourceSchema() schema.Schema {
 												ElementType: types.StringType,
 											},
 											"subject": schema.StringAttribute{
-												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Optional:    true,
 											},
 											"body": schema.StringAttribute{
-												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Optional:    true,
 											},
 											"attachments": schema.ListAttribute{
@@ -928,7 +928,7 @@ func (r *automationResource) resourceSchema() schema.Schema {
 												Validators: []validator.String{stringvalidator.OneOf("docx", "pdf", "rtf", "txt", "csv", "xlsx", "pptx")},
 											},
 											"destination": schema.StringAttribute{
-												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Optional:    true,
 											},
 											"overwrite_files": schema.BoolAttribute{
@@ -982,7 +982,7 @@ func (r *automationResource) resourceSchema() schema.Schema {
 												Validators: []validator.Int64{int64validator.AtLeast(1)},
 											},
 											"destination": schema.StringAttribute{
-												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Optional:    true,
 											},
 											"overwrite_files": schema.BoolAttribute{
@@ -1024,7 +1024,7 @@ func (r *automationResource) resourceSchema() schema.Schema {
 										Required:    true,
 										Attributes: map[string]schema.Attribute{
 											"destination": schema.StringAttribute{
-												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Required:    true,
 											},
 											"overwrite_files": schema.BoolAttribute{
@@ -1066,7 +1066,7 @@ func (r *automationResource) resourceSchema() schema.Schema {
 										Optional:    true,
 										Attributes: map[string]schema.Attribute{
 											"destination": schema.StringAttribute{
-												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Optional:    true,
 											},
 											"overwrite_files": schema.BoolAttribute{
@@ -1112,7 +1112,7 @@ func (r *automationResource) resourceSchema() schema.Schema {
 												Validators: []validator.Int64{int64validator.AtLeast(1)},
 											},
 											"destination": schema.StringAttribute{
-												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Optional:    true,
 											},
 											"overwrite_files": schema.BoolAttribute{
@@ -1158,7 +1158,7 @@ func (r *automationResource) resourceSchema() schema.Schema {
 												Validators: []validator.Int64{int64validator.AtLeast(1)},
 											},
 											"destination": schema.StringAttribute{
-												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Optional:    true,
 											},
 											"overwrite_files": schema.BoolAttribute{
@@ -1453,7 +1453,7 @@ func (r *automationResource) resourceSchema() schema.Schema {
 												Required: true,
 											},
 											"destination": schema.StringAttribute{
-												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time.",
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Optional:    true,
 											},
 											"on_error": schema.ListNestedAttribute{
