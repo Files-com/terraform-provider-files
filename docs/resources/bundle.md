@@ -74,7 +74,7 @@ resource "files_bundle" "example_bundle" {
 - `create_snapshot` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) If true, create a snapshot of this bundle's contents.
 - `description` (String) Public description
 - `dont_separate_submissions_by_folder` (Boolean) Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.
-- `expires_at` (String) Bundle expiration date/time
+- `expires_at` (String) Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply.
 - `finalize_snapshot` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.
 - `form_field_set_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Id of Form Field Set to use with this bundle
 - `group_id` (Number) Owning group ID. If set, members of this group can view, edit, and share this Share Link.
@@ -112,6 +112,7 @@ resource "files_bundle" "example_bundle" {
 - `deleted` (Boolean) Indicates if the bundle has been deleted.
 - `deleted_at` (String) Bundle deleted at date/time
 - `dont_allow_folders_in_uploads` (Boolean) Should folder uploads be prevented?
+- `effective_expires_at` (String) Read-only expiration date/time, using the explicit expiration or the site-wide setting when applicable. Null when the Share Link does not expire.
 - `form_field_set` (String) Custom Form to use
 - `has_inbox` (Boolean) Does this bundle have an associated inbox?
 - `id` (Number) Bundle ID

@@ -48,7 +48,8 @@ data "files_bundle" "example_bundle" {
 - `description` (String) Public description
 - `dont_allow_folders_in_uploads` (Boolean) Should folder uploads be prevented?
 - `dont_separate_submissions_by_folder` (Boolean) Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.
-- `expires_at` (String) Bundle expiration date/time
+- `effective_expires_at` (String) Read-only expiration date/time, using the explicit expiration or the site-wide setting when applicable. Null when the Share Link does not expire.
+- `expires_at` (String) Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply.
 - `form_field_set` (String) Custom Form to use
 - `group_id` (Number) Owning group ID. If set, members of this group can view, edit, and share this Share Link.
 - `has_inbox` (Boolean) Does this bundle have an associated inbox?

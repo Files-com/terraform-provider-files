@@ -91,6 +91,7 @@ type bundleResourceModel struct {
 	CreatedAt                                    types.String  `tfsdk:"created_at"`
 	Deleted                                      types.Bool    `tfsdk:"deleted"`
 	DeletedAt                                    types.String  `tfsdk:"deleted_at"`
+	EffectiveExpiresAt                           types.String  `tfsdk:"effective_expires_at"`
 	Username                                     types.String  `tfsdk:"username"`
 	WatermarkAttachment                          types.String  `tfsdk:"watermark_attachment"`
 	HasInbox                                     types.Bool    `tfsdk:"has_inbox"`
@@ -152,7 +153,7 @@ func (r *bundleResource) resourceSchema() schema.Schema {
 				},
 			},
 			"expires_at": schema.StringAttribute{
-				Description: "Bundle expiration date/time",
+				Description: "Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -430,6 +431,10 @@ func (r *bundleResource) resourceSchema() schema.Schema {
 			},
 			"deleted_at": schema.StringAttribute{
 				Description: "Bundle deleted at date/time",
+				Computed:    true,
+			},
+			"effective_expires_at": schema.StringAttribute{
+				Description: "Read-only expiration date/time, using the explicit expiration or the site-wide setting when applicable. Null when the Share Link does not expire.",
 				Computed:    true,
 			},
 			"username": schema.StringAttribute{
@@ -892,6 +897,12 @@ func (r *bundleResource) populateResourceModel(ctx context.Context, bundle files
 		)
 	}
 	state.DontSeparateSubmissionsByFolder = types.BoolPointerValue(bundle.DontSeparateSubmissionsByFolder)
+	if err := lib.TimeToStringType(ctx, path.Root("effective_expires_at"), bundle.EffectiveExpiresAt, &state.EffectiveExpiresAt); err != nil {
+		diags.AddError(
+			"Error Creating Files Bundle",
+			"Could not convert state effective_expires_at to string: "+err.Error(),
+		)
+	}
 	state.MaxUses = types.Int64Value(bundle.MaxUses)
 	state.InternalName = types.StringValue(bundle.InternalName)
 	state.Note = types.StringValue(bundle.Note)

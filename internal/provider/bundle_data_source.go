@@ -57,6 +57,7 @@ type bundleDataSourceModel struct {
 	Deleted                                      types.Bool    `tfsdk:"deleted"`
 	DeletedAt                                    types.String  `tfsdk:"deleted_at"`
 	DontSeparateSubmissionsByFolder              types.Bool    `tfsdk:"dont_separate_submissions_by_folder"`
+	EffectiveExpiresAt                           types.String  `tfsdk:"effective_expires_at"`
 	MaxUses                                      types.Int64   `tfsdk:"max_uses"`
 	InternalName                                 types.String  `tfsdk:"internal_name"`
 	Note                                         types.String  `tfsdk:"note"`
@@ -144,7 +145,7 @@ func (r *bundleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Computed:    true,
 			},
 			"expires_at": schema.StringAttribute{
-				Description: "Bundle expiration date/time",
+				Description: "Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply.",
 				Computed:    true,
 			},
 			"password_protected": schema.BoolAttribute{
@@ -212,6 +213,10 @@ func (r *bundleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 			},
 			"dont_separate_submissions_by_folder": schema.BoolAttribute{
 				Description: "Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.",
+				Computed:    true,
+			},
+			"effective_expires_at": schema.StringAttribute{
+				Description: "Read-only expiration date/time, using the explicit expiration or the site-wide setting when applicable. Null when the Share Link does not expire.",
 				Computed:    true,
 			},
 			"max_uses": schema.Int64Attribute{
@@ -390,6 +395,12 @@ func (r *bundleDataSource) populateDataSourceModel(ctx context.Context, bundle f
 		)
 	}
 	state.DontSeparateSubmissionsByFolder = types.BoolPointerValue(bundle.DontSeparateSubmissionsByFolder)
+	if err := lib.TimeToStringType(ctx, path.Root("effective_expires_at"), bundle.EffectiveExpiresAt, &state.EffectiveExpiresAt); err != nil {
+		diags.AddError(
+			"Error Creating Files Bundle",
+			"Could not convert state effective_expires_at to string: "+err.Error(),
+		)
+	}
 	state.MaxUses = types.Int64Value(bundle.MaxUses)
 	state.InternalName = types.StringValue(bundle.InternalName)
 	state.Note = types.StringValue(bundle.Note)
