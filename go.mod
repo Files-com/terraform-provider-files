@@ -12,7 +12,7 @@ require (
 
 require (
 	github.com/quic-go/qpack v0.6.0 // indirect
-	github.com/quic-go/quic-go v0.62.0 // indirect
+	github.com/quic-go/quic-go v0.63.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 )
 
