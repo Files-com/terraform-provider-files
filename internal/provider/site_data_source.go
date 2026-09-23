@@ -1014,7 +1014,7 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed:    true,
 			},
 			"email_footer_custom_text": schema.StringAttribute{
-				Description: "Custom footer text for system-generated emails. Supports standard strftime date/time patterns like %Y (4-digit year), %m (month), %d (day).",
+				Description: "Custom footer text for system-generated emails (as Markdown). Supports standard strftime date/time patterns like %Y (4-digit year), %m (month), %d (day).",
 				Computed:    true,
 			},
 			"welcome_email_cc": schema.StringAttribute{
