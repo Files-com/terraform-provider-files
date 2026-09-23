@@ -31,6 +31,7 @@ type actionNotificationExportDataSource struct {
 
 type actionNotificationExportDataSourceModel struct {
 	Id                 types.Int64  `tfsdk:"id"`
+	WorkspaceId        types.Int64  `tfsdk:"workspace_id"`
 	ExportVersion      types.String `tfsdk:"export_version"`
 	StartAt            types.String `tfsdk:"start_at"`
 	EndAt              types.String `tfsdk:"end_at"`
@@ -70,11 +71,15 @@ func (r *actionNotificationExportDataSource) Metadata(_ context.Context, req dat
 
 func (r *actionNotificationExportDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "An ActionNotificationExport is an operation that provides access to outgoing webhook logs. Querying webhook logs is a little different than other APIs.\n\nAll queries against the archive must be submitted as Exports.  (Even our Web UI creates an Export behind the scenes.)\n\nIn any query field in this API, you may specify multiple values separated by commas.  That means that commas\ncannot be searched for themselves, and neither can single quotation marks.\n\nUse the following steps to complete an export:\n\n1. Initiate the export by using the Create Action Notification Export endpoint. Non Site Admins must query by folder or path.\n2. Using the `id` from the response to step 1, poll the Show Action Notification Export endpoint. Check the `status` field until it is `ready`.\n3. You can download the results of the export as a CSV file using the `results_url` field in the response from step 2. If you want to page through the records in JSON format, use the List Action Notification Export Results endpoint, passing the `id` that you got in step 1 as the `action_notification_export_id` parameter. Check the `X-Files-Cursor-Next` header to see if there are more records available, and resubmit the same request with a `cursor` parameter to fetch the next page of results.  Unlike most API Endpoints, this endpoint does not provide `X-Files-Cursor-Prev` cursors allowing reverse pagination through the results.  This is due to limitations in Amazon Athena, the underlying data lake for these records.\n\nIf you intend to use this API for high volume or automated use, please contact us with more information\nabout your use case.\n\n## Example Queries\n\n* History for a folder: `{ \"query_folder\": \"path/to/folder\" }`\n* History for a range of time: `{ \"start_at\": \"2021-03-18 12:00:00\", \"end_at\": \"2021-03-19 12:00:00\" }`\n* History of all notifications that used GET or POST: `{ \"query_request_method\": \"GET,POST\" }`",
+		Description: "An ActionNotificationExport is an operation that provides access to outgoing webhook logs. Querying webhook logs is a little different than other APIs.\n\nAll queries against the archive must be submitted as Exports.  (Even our Web UI creates an Export behind the scenes.)\n\nOnly Site Administrators, including Read-only Administrators, and Workspace Administrators can create exports and access their results.\nWorkspace Administrators are limited to the workspace selected for the request. Site Administrators can select a workspace using `workspace_id` when creating an export, or use `X-Files-Workspace-Id` to scope requests to a workspace. Without a workspace selection, Site Administrators can export logs across the site.\n\nIn any query field in this API, you may specify multiple values separated by commas.  That means that commas\ncannot be searched for themselves, and neither can single quotation marks.\n\nUse the following steps to complete an export:\n\n1. Initiate the export by using the Create Action Notification Export endpoint.\n2. Using the `id` from the response to step 1, poll the Show Action Notification Export endpoint. Check the `status` field until it is `ready`.\n3. You can download the results of the export as a CSV file using the `results_url` field in the response from step 2. If you want to page through the records in JSON format, use the List Action Notification Export Results endpoint, passing the `id` that you got in step 1 as the `action_notification_export_id` parameter. Check the `X-Files-Cursor-Next` header to see if there are more records available, and resubmit the same request with a `cursor` parameter to fetch the next page of results.  Unlike most API Endpoints, this endpoint does not provide `X-Files-Cursor-Prev` cursors allowing reverse pagination through the results.  This is due to limitations in Amazon Athena, the underlying data lake for these records.\n\nIf you intend to use this API for high volume or automated use, please contact us with more information\nabout your use case.\n\n## Example Queries\n\n* History for a folder: `{ \"query_folder\": \"path/to/folder\" }`\n* History for a range of time: `{ \"start_at\": \"2021-03-18 12:00:00\", \"end_at\": \"2021-03-19 12:00:00\" }`\n* History of all notifications that used GET or POST: `{ \"query_request_method\": \"GET,POST\" }`",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "History Export ID",
 				Required:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace whose logs are exported. Set to `0` for the default workspace. A null value means a site-wide export.",
+				Computed:    true,
 			},
 			"export_version": schema.StringAttribute{
 				Description: "Version of the underlying records for the export.",
@@ -160,6 +165,7 @@ func (r *actionNotificationExportDataSource) Read(ctx context.Context, req datas
 
 func (r *actionNotificationExportDataSource) populateDataSourceModel(ctx context.Context, actionNotificationExport files_sdk.ActionNotificationExport, state *actionNotificationExportDataSourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(actionNotificationExport.Id)
+	state.WorkspaceId = types.Int64Value(actionNotificationExport.WorkspaceId)
 	state.ExportVersion = types.StringValue(actionNotificationExport.ExportVersion)
 	if err := lib.TimeToStringType(ctx, path.Root("start_at"), actionNotificationExport.StartAt, &state.StartAt); err != nil {
 		diags.AddError(
