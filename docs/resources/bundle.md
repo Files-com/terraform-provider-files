@@ -147,7 +147,7 @@ List of objects.
 
 | Field in `requested_upload_slots` | Type | Required | Description |
 | --- | --- | --- | --- |
-| `name` | string | Yes | Upload slot label and destination subfolder name. Must be nonblank and unique regardless of letter case or accents. Cannot contain path separators or be `.` or `..`. |
+| `name` | string | Yes | Upload slot label and destination subfolder name. Must be a valid single folder name without trailing whitespace, and unique regardless of letter case or accents. |
 
 #### Migrating JSON-encoded configuration
 
