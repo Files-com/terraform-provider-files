@@ -4,11 +4,22 @@ page_title: "files_partner_channel_template Data Source - files"
 subcategory: ""
 description: |-
   A PartnerChannelTemplate defines reusable Partner Channel configuration that can be applied to Partners.
+  In route path patterns, {{partner_name}} expands to a single folder name. Slashes in Partner names become pipes (|).
+  Leading and trailing whitespace, percent signs, and null bytes are percent-encoded. Names consisting of . or ..
+  become %2E or %2E%2E. For example, a Partner named "Acme " uses the folder "Acme%20", while "Acme%20" uses
+  "Acme%2520". These percent sequences are literal folder-name characters, not URL encoding to decode.
+  The expanded route must point to an existing folder in the same Workspace.
 ---
 
 # files_partner_channel_template (Data Source)
 
 A PartnerChannelTemplate defines reusable Partner Channel configuration that can be applied to Partners.
+
+In route path patterns, {{partner_name}} expands to a single folder name. Slashes in Partner names become pipes (|).
+Leading and trailing whitespace, percent signs, and null bytes are percent-encoded. Names consisting of . or ..
+become %2E or %2E%2E. For example, a Partner named "Acme " uses the folder "Acme%20", while "Acme%20" uses
+"Acme%2520". These percent sequences are literal folder-name characters, not URL encoding to decode.
+The expanded route must point to an existing folder in the same Workspace.
 
 ## Example Usage
 
