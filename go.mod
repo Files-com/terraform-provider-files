@@ -3,7 +3,7 @@ module github.com/Files-com/terraform-provider-files
 go 1.27.1
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.3.267
+	github.com/Files-com/files-sdk-go/v3 v3.3.268
 	github.com/dnaeon/go-vcr v1.2.0
 	github.com/hashicorp/terraform-plugin-docs v0.24.0
 	github.com/hashicorp/terraform-plugin-framework v1.19.0
