@@ -234,6 +234,9 @@ A README is available on the GitHub link.
 
 ## Usage
 
+The macOS provider binaries require macOS 13 or later. Building from source
+requires Go 1.27.1 or later.
+
 See the [docs](./docs) directory for Resource and Data Source examples and documentation.
 
 ## Debugging
