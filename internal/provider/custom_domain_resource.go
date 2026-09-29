@@ -16,6 +16,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -40,16 +42,19 @@ type customDomainResource struct {
 }
 
 type customDomainResourceModel struct {
-	Domain           types.String `tfsdk:"domain"`
-	Destination      types.String `tfsdk:"destination"`
-	SslCertificateId types.Int64  `tfsdk:"ssl_certificate_id"`
-	FolderBehaviorId types.Int64  `tfsdk:"folder_behavior_id"`
-	Id               types.Int64  `tfsdk:"id"`
-	DnsStatus        types.String `tfsdk:"dns_status"`
-	BrickManaged     types.Bool   `tfsdk:"brick_managed"`
-	IpAddresses      types.List   `tfsdk:"ip_addresses"`
-	CreatedAt        types.String `tfsdk:"created_at"`
-	UpdatedAt        types.String `tfsdk:"updated_at"`
+	Domain                   types.String `tfsdk:"domain"`
+	WorkspaceId              types.Int64  `tfsdk:"workspace_id"`
+	AvailableToAllWorkspaces types.Bool   `tfsdk:"available_to_all_workspaces"`
+	Destination              types.String `tfsdk:"destination"`
+	SslCertificateId         types.Int64  `tfsdk:"ssl_certificate_id"`
+	FolderBehaviorId         types.Int64  `tfsdk:"folder_behavior_id"`
+	Id                       types.Int64  `tfsdk:"id"`
+	OutboundIpAddresses      types.List   `tfsdk:"outbound_ip_addresses"`
+	DnsStatus                types.String `tfsdk:"dns_status"`
+	BrickManaged             types.Bool   `tfsdk:"brick_managed"`
+	IpAddresses              types.List   `tfsdk:"ip_addresses"`
+	CreatedAt                types.String `tfsdk:"created_at"`
+	UpdatedAt                types.String `tfsdk:"updated_at"`
 }
 
 func (r *customDomainResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -82,6 +87,22 @@ func (r *customDomainResource) Schema(_ context.Context, _ resource.SchemaReques
 			"domain": schema.StringAttribute{
 				Description: "Customer-owned domain name.",
 				Required:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID (0 for the default workspace).",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"available_to_all_workspaces": schema.BoolAttribute{
+				Description: "Allow all workspaces to use this default-workspace Custom Domain.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"destination": schema.StringAttribute{
 				Description: "Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason.",
@@ -116,6 +137,11 @@ func (r *customDomainResource) Schema(_ context.Context, _ resource.SchemaReques
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
+			},
+			"outbound_ip_addresses": schema.ListAttribute{
+				Description: "Eligible public IP addresses for Remote Server outbound connections. Empty when this Custom Domain is not eligible for outbound selection.",
+				Computed:    true,
+				ElementType: types.StringType,
 			},
 			"dns_status": schema.StringAttribute{
 				Description: "Current DNS verification status.",
@@ -160,6 +186,10 @@ func (r *customDomainResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	paramsCustomDomainCreate := files_sdk.CustomDomainCreateParams{}
+	if !plan.AvailableToAllWorkspaces.IsNull() && !plan.AvailableToAllWorkspaces.IsUnknown() {
+		paramsCustomDomainCreate.AvailableToAllWorkspaces = plan.AvailableToAllWorkspaces.ValueBoolPointer()
+	}
+	paramsCustomDomainCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
 	paramsCustomDomainCreate.Destination = paramsCustomDomainCreate.Destination.Enum()[plan.Destination.ValueString()]
 	paramsCustomDomainCreate.FolderBehaviorId = plan.FolderBehaviorId.ValueInt64()
 	paramsCustomDomainCreate.SslCertificateId = plan.SslCertificateId.ValueInt64()
@@ -240,6 +270,12 @@ func (r *customDomainResource) Update(ctx context.Context, req resource.UpdateRe
 	paramsCustomDomainUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
 		paramsCustomDomainUpdate["id"] = plan.Id.ValueInt64()
+	}
+	if !config.AvailableToAllWorkspaces.IsNull() && !config.AvailableToAllWorkspaces.IsUnknown() {
+		paramsCustomDomainUpdate["available_to_all_workspaces"] = config.AvailableToAllWorkspaces.ValueBool()
+	}
+	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
+		paramsCustomDomainUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
 	if !config.Destination.IsNull() && !config.Destination.IsUnknown() {
 		paramsCustomDomainUpdate["destination"] = config.Destination.ValueString()
@@ -324,6 +360,10 @@ func (r *customDomainResource) populateResourceModel(ctx context.Context, custom
 	var propDiags diag.Diagnostics
 
 	state.Id = types.Int64Value(customDomain.Id)
+	state.WorkspaceId = types.Int64Value(customDomain.WorkspaceId)
+	state.AvailableToAllWorkspaces = types.BoolPointerValue(customDomain.AvailableToAllWorkspaces)
+	state.OutboundIpAddresses, propDiags = types.ListValueFrom(ctx, types.StringType, customDomain.OutboundIpAddresses)
+	diags.Append(propDiags...)
 	state.Domain = types.StringValue(customDomain.Domain)
 	state.Destination = types.StringValue(customDomain.Destination)
 	state.DnsStatus = types.StringValue(customDomain.DnsStatus)

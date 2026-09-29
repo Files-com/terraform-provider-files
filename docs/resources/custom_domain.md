@@ -14,10 +14,12 @@ A CustomDomain object represents an additional customer-owned domain that routes
 
 ```terraform
 resource "files_custom_domain" "example_custom_domain" {
-  destination        = "site_alias"
-  folder_behavior_id = 1
-  ssl_certificate_id = 1
-  domain             = "files.example.com"
+  available_to_all_workspaces = false
+  workspace_id                = 0
+  destination                 = "site_alias"
+  folder_behavior_id          = 1
+  ssl_certificate_id          = 1
+  domain                      = "files.example.com"
 }
 ```
 
@@ -30,9 +32,11 @@ resource "files_custom_domain" "example_custom_domain" {
 
 ### Optional
 
+- `available_to_all_workspaces` (Boolean) Allow all workspaces to use this default-workspace Custom Domain.
 - `destination` (String) Where this custom domain routes. Can be `site_alias`, `public_hosting`, `s3_endpoint`, or `unassigned` (not routing traffic). Set to `unassigned` automatically when a bound `public_hosting` folder behavior is deleted, and can be set manually via the API for any reason.
 - `folder_behavior_id` (Number) Public Hosting behavior ID when this domain routes to a specific Public Hosting behavior.  Preserved as historical context when `destination` becomes `unassigned`.
 - `ssl_certificate_id` (Number) Current SSL certificate ID.
+- `workspace_id` (Number) Workspace ID (0 for the default workspace).
 
 ### Read-Only
 
@@ -41,6 +45,7 @@ resource "files_custom_domain" "example_custom_domain" {
 - `dns_status` (String) Current DNS verification status.
 - `id` (Number) Custom Domain ID.
 - `ip_addresses` (List of String) Dedicated public IP addresses allocated to this Custom Domain.
+- `outbound_ip_addresses` (List of String) Eligible public IP addresses for Remote Server outbound connections. Empty when this Custom Domain is not eligible for outbound selection.
 - `updated_at` (String) When this Custom Domain was last updated.
 
 ## Import

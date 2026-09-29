@@ -109,6 +109,7 @@ data "files_remote_server" "example_remote_server" {
 - `cloudflare_access_key` (String) Cloudflare: Access Key.
 - `cloudflare_bucket` (String) Cloudflare: Bucket name
 - `cloudflare_endpoint` (String) Cloudflare: endpoint
+- `custom_domain_id` (Number) Custom Domain ID whose dedicated IP addresses are selected when this Remote Server uses dedicated IPs. Must be available to this Remote Server's workspace. Requires enable_dedicated_ips and cannot be combined with an outbound Agent. Set to null to use the site's default dedicated IPs.
 - `description` (String) Internal description for your reference
 - `direct_transfer_available` (Boolean) Whether the Files Agent Proxy recently validated a direct transfer connection. `true` means a direct connection was recently validated (actual availability can vary by client network), `false` means direct transfers are enabled but not currently available, and `null` means direct transfers are disabled or unsupported. Only provided for a connected Files Agent when showing a single Remote Server.
 - `disabled` (Boolean) If true, this Remote Server is disabled. Updating it clears this flag, except for retired Agent v1 records, which remain disabled.
@@ -136,6 +137,7 @@ data "files_remote_server" "example_remote_server" {
 - `name` (String) Internal name for your reference
 - `one_drive_account_type` (String) OneDrive: Either personal or business_other account types
 - `outbound_agent_id` (Number) Route traffic to outbound on a files-agent
+- `outbound_ip_addresses` (List of String) Current eligible public IP addresses for the selected Custom Domain. Any address in this list may originate a connection. Empty when no domain is selected or its configuration is unavailable. Only included in responses for a single Remote Server.
 - `pin_to_site_region` (Boolean) If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.
 - `pinned_region` (String) If set, all communications with this remote server are made through the provided region.
 - `port` (Number) Port for remote server.

@@ -30,16 +30,19 @@ type customDomainDataSource struct {
 }
 
 type customDomainDataSourceModel struct {
-	Id               types.Int64  `tfsdk:"id"`
-	Domain           types.String `tfsdk:"domain"`
-	Destination      types.String `tfsdk:"destination"`
-	DnsStatus        types.String `tfsdk:"dns_status"`
-	SslCertificateId types.Int64  `tfsdk:"ssl_certificate_id"`
-	BrickManaged     types.Bool   `tfsdk:"brick_managed"`
-	FolderBehaviorId types.Int64  `tfsdk:"folder_behavior_id"`
-	IpAddresses      types.List   `tfsdk:"ip_addresses"`
-	CreatedAt        types.String `tfsdk:"created_at"`
-	UpdatedAt        types.String `tfsdk:"updated_at"`
+	Id                       types.Int64  `tfsdk:"id"`
+	WorkspaceId              types.Int64  `tfsdk:"workspace_id"`
+	AvailableToAllWorkspaces types.Bool   `tfsdk:"available_to_all_workspaces"`
+	OutboundIpAddresses      types.List   `tfsdk:"outbound_ip_addresses"`
+	Domain                   types.String `tfsdk:"domain"`
+	Destination              types.String `tfsdk:"destination"`
+	DnsStatus                types.String `tfsdk:"dns_status"`
+	SslCertificateId         types.Int64  `tfsdk:"ssl_certificate_id"`
+	BrickManaged             types.Bool   `tfsdk:"brick_managed"`
+	FolderBehaviorId         types.Int64  `tfsdk:"folder_behavior_id"`
+	IpAddresses              types.List   `tfsdk:"ip_addresses"`
+	CreatedAt                types.String `tfsdk:"created_at"`
+	UpdatedAt                types.String `tfsdk:"updated_at"`
 }
 
 func (r *customDomainDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -72,6 +75,19 @@ func (r *customDomainDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			"id": schema.Int64Attribute{
 				Description: "Custom Domain ID.",
 				Required:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID (0 for the default workspace).",
+				Computed:    true,
+			},
+			"available_to_all_workspaces": schema.BoolAttribute{
+				Description: "Allow all workspaces to use this default-workspace Custom Domain.",
+				Computed:    true,
+			},
+			"outbound_ip_addresses": schema.ListAttribute{
+				Description: "Eligible public IP addresses for Remote Server outbound connections. Empty when this Custom Domain is not eligible for outbound selection.",
+				Computed:    true,
+				ElementType: types.StringType,
 			},
 			"domain": schema.StringAttribute{
 				Description: "Customer-owned domain name.",
@@ -148,6 +164,10 @@ func (r *customDomainDataSource) populateDataSourceModel(ctx context.Context, cu
 	var propDiags diag.Diagnostics
 
 	state.Id = types.Int64Value(customDomain.Id)
+	state.WorkspaceId = types.Int64Value(customDomain.WorkspaceId)
+	state.AvailableToAllWorkspaces = types.BoolPointerValue(customDomain.AvailableToAllWorkspaces)
+	state.OutboundIpAddresses, propDiags = types.ListValueFrom(ctx, types.StringType, customDomain.OutboundIpAddresses)
+	diags.Append(propDiags...)
 	state.Domain = types.StringValue(customDomain.Domain)
 	state.Destination = types.StringValue(customDomain.Destination)
 	state.DnsStatus = types.StringValue(customDomain.DnsStatus)

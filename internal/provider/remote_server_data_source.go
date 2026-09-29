@@ -86,6 +86,8 @@ type remoteServerDataSourceModel struct {
 	S3CompatibleVirtualHostedStyle          types.Bool   `tfsdk:"s3_compatible_virtual_hosted_style"`
 	S3CompatibleAccessKey                   types.String `tfsdk:"s3_compatible_access_key"`
 	EnableDedicatedIps                      types.Bool   `tfsdk:"enable_dedicated_ips"`
+	CustomDomainId                          types.Int64  `tfsdk:"custom_domain_id"`
+	OutboundIpAddresses                     types.List   `tfsdk:"outbound_ip_addresses"`
 	FilesAgentPermissionSet                 types.String `tfsdk:"files_agent_permission_set"`
 	FilesAgentRoot                          types.String `tfsdk:"files_agent_root"`
 	FilesAgentVersion                       types.String `tfsdk:"files_agent_version"`
@@ -366,6 +368,15 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Description: "`true` if remote server only accepts connections from dedicated IPs",
 				Computed:    true,
 			},
+			"custom_domain_id": schema.Int64Attribute{
+				Description: "Custom Domain ID whose dedicated IP addresses are selected when this Remote Server uses dedicated IPs. Must be available to this Remote Server's workspace. Requires enable_dedicated_ips and cannot be combined with an outbound Agent. Set to null to use the site's default dedicated IPs.",
+				Computed:    true,
+			},
+			"outbound_ip_addresses": schema.ListAttribute{
+				Description: "Current eligible public IP addresses for the selected Custom Domain. Any address in this list may originate a connection. Empty when no domain is selected or its configuration is unavailable. Only included in responses for a single Remote Server.",
+				Computed:    true,
+				ElementType: types.StringType,
+			},
 			"files_agent_permission_set": schema.StringAttribute{
 				Description: "Local permissions for files agent. read_only, write_only, or read_write",
 				Computed:    true,
@@ -477,6 +488,8 @@ func (r *remoteServerDataSource) Read(ctx context.Context, req datasource.ReadRe
 }
 
 func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, remoteServer files_sdk.RemoteServer, state *remoteServerDataSourceModel) (diags diag.Diagnostics) {
+	var propDiags diag.Diagnostics
+
 	state.Id = types.Int64Value(remoteServer.Id)
 	state.Disabled = types.BoolPointerValue(remoteServer.Disabled)
 	state.AuthenticationMethod = types.StringValue(remoteServer.AuthenticationMethod)
@@ -535,6 +548,9 @@ func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, re
 	state.S3CompatibleVirtualHostedStyle = types.BoolPointerValue(remoteServer.S3CompatibleVirtualHostedStyle)
 	state.S3CompatibleAccessKey = types.StringValue(remoteServer.S3CompatibleAccessKey)
 	state.EnableDedicatedIps = types.BoolPointerValue(remoteServer.EnableDedicatedIps)
+	state.CustomDomainId = types.Int64Value(remoteServer.CustomDomainId)
+	state.OutboundIpAddresses, propDiags = types.ListValueFrom(ctx, types.StringType, remoteServer.OutboundIpAddresses)
+	diags.Append(propDiags...)
 	state.FilesAgentPermissionSet = types.StringValue(remoteServer.FilesAgentPermissionSet)
 	state.FilesAgentRoot = types.StringValue(remoteServer.FilesAgentRoot)
 	state.FilesAgentVersion = types.StringValue(remoteServer.FilesAgentVersion)

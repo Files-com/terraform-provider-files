@@ -104,6 +104,7 @@ resource "files_remote_server" "example_remote_server" {
   files_agent_root                              = "example"
   files_agent_version                           = "example"
   outbound_agent_id                             = 1
+  custom_domain_id                              = 1
   google_cloud_storage_authentication_method    = "json"
   google_cloud_storage_bucket                   = "my-bucket"
   google_cloud_storage_oauth_scope              = "https://www.googleapis.com/auth/devstorage.read_only"
@@ -174,6 +175,7 @@ resource "files_remote_server" "example_remote_server" {
 - `cloudflare_bucket` (String) Cloudflare: Bucket name
 - `cloudflare_endpoint` (String) Cloudflare: endpoint
 - `cloudflare_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Cloudflare: Secret Key
+- `custom_domain_id` (Number) Custom Domain ID whose dedicated IP addresses are selected when this Remote Server uses dedicated IPs. Must be available to this Remote Server's workspace. Requires enable_dedicated_ips and cannot be combined with an outbound Agent. Set to null to use the site's default dedicated IPs.
 - `description` (String) Internal description for your reference
 - `dropbox_teams` (Boolean) Dropbox: If true, list Team folders in root?
 - `enable_dedicated_ips` (Boolean) `true` if remote server only accepts connections from dedicated IPs
@@ -248,6 +250,7 @@ resource "files_remote_server" "example_remote_server" {
 - `files_agent_up_to_date` (Boolean) If true, the Files Agent is up to date.
 - `files_api_key_prefix` (String) Files.com direct link: paired API key prefix.
 - `id` (Number) Remote Server ID
+- `outbound_ip_addresses` (List of String) Current eligible public IP addresses for the selected Custom Domain. Any address in this list may originate a connection. Empty when no domain is selected or its configuration is unavailable. Only included in responses for a single Remote Server.
 - `pinned_region` (String) If set, all communications with this remote server are made through the provided region.
 - `remote_home_path` (String) Initial home folder on remote server
 - `s3_assume_role_external_id` (String) External ID for AssumeRole authentication.

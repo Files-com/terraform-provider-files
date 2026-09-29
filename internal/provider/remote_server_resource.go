@@ -90,6 +90,7 @@ type remoteServerResourceModel struct {
 	S3CompatibleVirtualHostedStyle          types.Bool   `tfsdk:"s3_compatible_virtual_hosted_style"`
 	S3CompatibleAccessKey                   types.String `tfsdk:"s3_compatible_access_key"`
 	EnableDedicatedIps                      types.Bool   `tfsdk:"enable_dedicated_ips"`
+	CustomDomainId                          types.Int64  `tfsdk:"custom_domain_id"`
 	FilesAgentPermissionSet                 types.String `tfsdk:"files_agent_permission_set"`
 	FilesAgentRoot                          types.String `tfsdk:"files_agent_root"`
 	FilesAgentVersion                       types.String `tfsdk:"files_agent_version"`
@@ -136,6 +137,7 @@ type remoteServerResourceModel struct {
 	AuthAccountName                         types.String `tfsdk:"auth_account_name"`
 	SharepointAppAuthentication             types.Bool   `tfsdk:"sharepoint_app_authentication"`
 	SharepointAppCredentialType             types.String `tfsdk:"sharepoint_app_credential_type"`
+	OutboundIpAddresses                     types.List   `tfsdk:"outbound_ip_addresses"`
 	FilesAgentUpToDate                      types.Bool   `tfsdk:"files_agent_up_to_date"`
 	FilesAgentLatestVersion                 types.String `tfsdk:"files_agent_latest_version"`
 	FilesAgentSupportsPushUpdates           types.Bool   `tfsdk:"files_agent_supports_push_updates"`
@@ -578,6 +580,14 @@ func (r *remoteServerResource) resourceSchema() schema.Schema {
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"custom_domain_id": schema.Int64Attribute{
+				Description: "Custom Domain ID whose dedicated IP addresses are selected when this Remote Server uses dedicated IPs. Must be available to this Remote Server's workspace. Requires enable_dedicated_ips and cannot be combined with an outbound Agent. Set to null to use the site's default dedicated IPs.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"files_agent_permission_set": schema.StringAttribute{
 				Description: "Local permissions for files agent. read_only, write_only, or read_write",
 				Computed:    true,
@@ -849,6 +859,11 @@ func (r *remoteServerResource) resourceSchema() schema.Schema {
 				Description: "SharePoint: App-only credential type. Either secret or certificate.",
 				Computed:    true,
 			},
+			"outbound_ip_addresses": schema.ListAttribute{
+				Description: "Current eligible public IP addresses for the selected Custom Domain. Any address in this list may originate a connection. Empty when no domain is selected or its configuration is unavailable. Only included in responses for a single Remote Server.",
+				Computed:    true,
+				ElementType: types.StringType,
+			},
 			"files_agent_up_to_date": schema.BoolAttribute{
 				Description: "If true, the Files Agent is up to date.",
 				Computed:    true,
@@ -950,6 +965,7 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.FilesAgentRoot = plan.FilesAgentRoot.ValueString()
 	paramsRemoteServerCreate.FilesAgentVersion = plan.FilesAgentVersion.ValueString()
 	paramsRemoteServerCreate.OutboundAgentId = plan.OutboundAgentId.ValueInt64()
+	paramsRemoteServerCreate.CustomDomainId = plan.CustomDomainId.ValueInt64()
 	paramsRemoteServerCreate.GoogleCloudStorageAuthenticationMethod = paramsRemoteServerCreate.GoogleCloudStorageAuthenticationMethod.Enum()[plan.GoogleCloudStorageAuthenticationMethod.ValueString()]
 	paramsRemoteServerCreate.GoogleCloudStorageBucket = plan.GoogleCloudStorageBucket.ValueString()
 	paramsRemoteServerCreate.GoogleCloudStorageOauthScope = plan.GoogleCloudStorageOauthScope.ValueString()
@@ -1206,6 +1222,9 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	if !config.OutboundAgentId.IsNull() && !config.OutboundAgentId.IsUnknown() {
 		paramsRemoteServerUpdate["outbound_agent_id"] = config.OutboundAgentId.ValueInt64()
 	}
+	if !config.CustomDomainId.IsNull() && !config.CustomDomainId.IsUnknown() {
+		paramsRemoteServerUpdate["custom_domain_id"] = config.CustomDomainId.ValueInt64()
+	}
 	if !config.GoogleCloudStorageAuthenticationMethod.IsNull() && !config.GoogleCloudStorageAuthenticationMethod.IsUnknown() {
 		paramsRemoteServerUpdate["google_cloud_storage_authentication_method"] = config.GoogleCloudStorageAuthenticationMethod.ValueString()
 	}
@@ -1382,6 +1401,8 @@ func (r *remoteServerResource) ImportState(ctx context.Context, req resource.Imp
 }
 
 func (r *remoteServerResource) populateResourceModel(ctx context.Context, remoteServer files_sdk.RemoteServer, state *remoteServerResourceModel) (diags diag.Diagnostics) {
+	var propDiags diag.Diagnostics
+
 	state.Id = types.Int64Value(remoteServer.Id)
 	state.Disabled = types.BoolPointerValue(remoteServer.Disabled)
 	state.AuthenticationMethod = types.StringValue(remoteServer.AuthenticationMethod)
@@ -1440,6 +1461,9 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.S3CompatibleVirtualHostedStyle = types.BoolPointerValue(remoteServer.S3CompatibleVirtualHostedStyle)
 	state.S3CompatibleAccessKey = types.StringValue(remoteServer.S3CompatibleAccessKey)
 	state.EnableDedicatedIps = types.BoolPointerValue(remoteServer.EnableDedicatedIps)
+	state.CustomDomainId = types.Int64Value(remoteServer.CustomDomainId)
+	state.OutboundIpAddresses, propDiags = types.ListValueFrom(ctx, types.StringType, remoteServer.OutboundIpAddresses)
+	diags.Append(propDiags...)
 	state.FilesAgentPermissionSet = types.StringValue(remoteServer.FilesAgentPermissionSet)
 	state.FilesAgentRoot = types.StringValue(remoteServer.FilesAgentRoot)
 	state.FilesAgentVersion = types.StringValue(remoteServer.FilesAgentVersion)
