@@ -31,6 +31,7 @@ type partnerChannelTemplateDataSourceModel struct {
 	Id                             types.Int64  `tfsdk:"id"`
 	WorkspaceId                    types.Int64  `tfsdk:"workspace_id"`
 	Direction                      types.String `tfsdk:"direction"`
+	UseChannelRoot                 types.Bool   `tfsdk:"use_channel_root"`
 	Name                           types.String `tfsdk:"name"`
 	Path                           types.String `tfsdk:"path"`
 	ToPartnerFolderName            types.String `tfsdk:"to_partner_folder_name"`
@@ -68,7 +69,7 @@ func (r *partnerChannelTemplateDataSource) Metadata(_ context.Context, req datas
 
 func (r *partnerChannelTemplateDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A PartnerChannelTemplate defines reusable Partner Channel configuration that can be applied to Partners.\n\nIn route path patterns, {{partner_name}} expands to a single folder name. Slashes in Partner names become pipes (|).\nLeading and trailing whitespace, percent signs, and null bytes are percent-encoded. Names consisting of . or ..\nbecome %2E or %2E%2E. For example, a Partner named \"Acme \" uses the folder \"Acme%20\", while \"Acme%20\" uses\n\"Acme%2520\". These percent sequences are literal folder-name characters, not URL encoding to decode.\nThe expanded route must point to an existing folder in the same Workspace.",
+		Description: "A PartnerChannelTemplate defines reusable Partner Channel configuration that can be applied to Partners.\n\nRoute path patterns can be fixed paths shared by all assigned Partners, or include {{partner_name}} to expand to a single folder name. Slashes in Partner names become pipes (|).\nLeading and trailing whitespace, percent signs, and null bytes are percent-encoded. Names consisting of . or ..\nbecome %2E or %2E%2E. For example, a Partner named \"Acme \" uses the folder \"Acme%20\", while \"Acme%20\" uses\n\"Acme%2520\". These percent sequences are literal folder-name characters, not URL encoding to decode.\nThe expanded route must point to an existing folder in the same Workspace.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "The unique ID of the Partner Channel Template.",
@@ -80,6 +81,10 @@ func (r *partnerChannelTemplateDataSource) Schema(_ context.Context, _ datasourc
 			},
 			"direction": schema.StringAttribute{
 				Description: "Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads.",
+				Computed:    true,
+			},
+			"use_channel_root": schema.BoolAttribute{
+				Description: "Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Template must remain one-way.",
 				Computed:    true,
 			},
 			"name": schema.StringAttribute{
@@ -117,11 +122,11 @@ func (r *partnerChannelTemplateDataSource) Schema(_ context.Context, _ datasourc
 				ElementType: types.StringType,
 			},
 			"effective_to_partner_folder_name": schema.StringAttribute{
-				Description: "Resolved to-Partner folder name after Template override and default.",
+				Description: "Resolved to-Partner subfolder name. Null when the direction is disabled or uses the Channel folder directly.",
 				Computed:    true,
 			},
 			"effective_from_partner_folder_name": schema.StringAttribute{
-				Description: "Resolved from-Partner folder name after Template override and default.",
+				Description: "Resolved from-Partner subfolder name. Null when the direction is disabled or uses the Channel folder directly.",
 				Computed:    true,
 			},
 		},
@@ -164,6 +169,7 @@ func (r *partnerChannelTemplateDataSource) populateDataSourceModel(ctx context.C
 	state.Id = types.Int64Value(partnerChannelTemplate.Id)
 	state.WorkspaceId = types.Int64Value(partnerChannelTemplate.WorkspaceId)
 	state.Direction = types.StringValue(partnerChannelTemplate.Direction)
+	state.UseChannelRoot = types.BoolPointerValue(partnerChannelTemplate.UseChannelRoot)
 	state.Name = types.StringValue(partnerChannelTemplate.Name)
 	state.Path = types.StringValue(partnerChannelTemplate.Path)
 	state.ToPartnerFolderName = types.StringValue(partnerChannelTemplate.ToPartnerFolderName)

@@ -1,5 +1,6 @@
 resource "files_partner_channel" "example_partner_channel" {
   direction                         = "two_way"
+  use_channel_root                  = false
   from_partner_folder_name          = "incoming"
   from_partner_managed_folder_paths = ["claims/received"]
   from_partner_route_path           = "processing/from-partner"

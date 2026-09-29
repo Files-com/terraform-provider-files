@@ -15,6 +15,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 
@@ -44,6 +46,7 @@ type partnerChannelResourceModel struct {
 	Path                           types.String `tfsdk:"path"`
 	WorkspaceId                    types.Int64  `tfsdk:"workspace_id"`
 	Direction                      types.String `tfsdk:"direction"`
+	UseChannelRoot                 types.Bool   `tfsdk:"use_channel_root"`
 	ToPartnerFolderName            types.String `tfsdk:"to_partner_folder_name"`
 	FromPartnerFolderName          types.String `tfsdk:"from_partner_folder_name"`
 	FromPartnerRoutePath           types.String `tfsdk:"from_partner_route_path"`
@@ -117,6 +120,14 @@ func (r *partnerChannelResource) Schema(_ context.Context, _ resource.SchemaRequ
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"use_channel_root": schema.BoolAttribute{
+				Description: "Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Channel must remain one-way.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"to_partner_folder_name": schema.StringAttribute{
 				Description: "Optional Channel-level to-Partner folder name override.",
 				Computed:    true,
@@ -179,11 +190,11 @@ func (r *partnerChannelResource) Schema(_ context.Context, _ resource.SchemaRequ
 				Computed:    true,
 			},
 			"effective_to_partner_folder_name": schema.StringAttribute{
-				Description: "Resolved to-Partner folder name after Channel override and default.",
+				Description: "Resolved to-Partner subfolder name. Null when the direction is disabled or uses the Channel folder directly.",
 				Computed:    true,
 			},
 			"effective_from_partner_folder_name": schema.StringAttribute{
-				Description: "Resolved from-Partner folder name after Channel override and default.",
+				Description: "Resolved from-Partner subfolder name. Null when the direction is disabled or uses the Channel folder directly.",
 				Computed:    true,
 			},
 			"channel_path": schema.StringAttribute{
@@ -218,6 +229,9 @@ func (r *partnerChannelResource) Create(ctx context.Context, req resource.Create
 
 	paramsPartnerChannelCreate := files_sdk.PartnerChannelCreateParams{}
 	paramsPartnerChannelCreate.Direction = paramsPartnerChannelCreate.Direction.Enum()[plan.Direction.ValueString()]
+	if !plan.UseChannelRoot.IsNull() && !plan.UseChannelRoot.IsUnknown() {
+		paramsPartnerChannelCreate.UseChannelRoot = plan.UseChannelRoot.ValueBoolPointer()
+	}
 	paramsPartnerChannelCreate.FromPartnerFolderName = plan.FromPartnerFolderName.ValueString()
 	if !plan.FromPartnerManagedFolderPaths.IsNull() && !plan.FromPartnerManagedFolderPaths.IsUnknown() {
 		diags = plan.FromPartnerManagedFolderPaths.ElementsAs(ctx, &paramsPartnerChannelCreate.FromPartnerManagedFolderPaths, false)
@@ -312,6 +326,9 @@ func (r *partnerChannelResource) Update(ctx context.Context, req resource.Update
 	}
 	if !config.Direction.IsNull() && !config.Direction.IsUnknown() {
 		paramsPartnerChannelUpdate["direction"] = config.Direction.ValueString()
+	}
+	if !config.UseChannelRoot.IsNull() && !config.UseChannelRoot.IsUnknown() {
+		paramsPartnerChannelUpdate["use_channel_root"] = config.UseChannelRoot.ValueBool()
 	}
 	if !config.FromPartnerFolderName.IsNull() && !config.FromPartnerFolderName.IsUnknown() {
 		paramsPartnerChannelUpdate["from_partner_folder_name"] = config.FromPartnerFolderName.ValueString()
@@ -413,6 +430,7 @@ func (r *partnerChannelResource) populateResourceModel(ctx context.Context, part
 	state.Id = types.Int64Value(partnerChannel.Id)
 	state.WorkspaceId = types.Int64Value(partnerChannel.WorkspaceId)
 	state.Direction = types.StringValue(partnerChannel.Direction)
+	state.UseChannelRoot = types.BoolPointerValue(partnerChannel.UseChannelRoot)
 	state.PartnerId = types.Int64Value(partnerChannel.PartnerId)
 	state.PartnerChannelTemplateId = types.Int64Value(partnerChannel.PartnerChannelTemplateId)
 	state.Path = types.StringValue(partnerChannel.Path)

@@ -4,7 +4,7 @@ page_title: "files_partner_channel_template Resource - files"
 subcategory: ""
 description: |-
   A PartnerChannelTemplate defines reusable Partner Channel configuration that can be applied to Partners.
-  In route path patterns, {{partner_name}} expands to a single folder name. Slashes in Partner names become pipes (|).
+  Route path patterns can be fixed paths shared by all assigned Partners, or include {{partner_name}} to expand to a single folder name. Slashes in Partner names become pipes (|).
   Leading and trailing whitespace, percent signs, and null bytes are percent-encoded. Names consisting of . or ..
   become %2E or %2E%2E. For example, a Partner named "Acme " uses the folder "Acme%20", while "Acme%20" uses
   "Acme%2520". These percent sequences are literal folder-name characters, not URL encoding to decode.
@@ -15,7 +15,7 @@ description: |-
 
 A PartnerChannelTemplate defines reusable Partner Channel configuration that can be applied to Partners.
 
-In route path patterns, {{partner_name}} expands to a single folder name. Slashes in Partner names become pipes (|).
+Route path patterns can be fixed paths shared by all assigned Partners, or include {{partner_name}} to expand to a single folder name. Slashes in Partner names become pipes (|).
 Leading and trailing whitespace, percent signs, and null bytes are percent-encoded. Names consisting of . or ..
 become %2E or %2E%2E. For example, a Partner named "Acme " uses the folder "Acme%20", while "Acme%20" uses
 "Acme%2520". These percent sequences are literal folder-name characters, not URL encoding to decode.
@@ -26,6 +26,7 @@ The expanded route must point to an existing folder in the same Workspace.
 ```terraform
 resource "files_partner_channel_template" "example_partner_channel_template" {
   direction                         = "two_way"
+  use_channel_root                  = false
   from_partner_folder_name          = "incoming"
   from_partner_managed_folder_paths = ["claims/received"]
   from_partner_route_path_pattern   = "processing/{{partner_name}}/from-partner"
@@ -55,12 +56,13 @@ resource "files_partner_channel_template" "example_partner_channel_template" {
 - `to_partner_folder_name` (String) Optional Channel-level to-Partner folder name override.
 - `to_partner_managed_folder_paths` (List of String) Managed folder paths inside the to-Partner folder.
 - `to_partner_route_path_pattern` (String) Optional route path pattern for files delivered to the Partner. Supports {{partner_name}}.
+- `use_channel_root` (Boolean) Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Template must remain one-way.
 - `workspace_id` (Number) ID of the Workspace associated with this Partner Channel Template.
 
 ### Read-Only
 
-- `effective_from_partner_folder_name` (String) Resolved from-Partner folder name after Template override and default.
-- `effective_to_partner_folder_name` (String) Resolved to-Partner folder name after Template override and default.
+- `effective_from_partner_folder_name` (String) Resolved from-Partner subfolder name. Null when the direction is disabled or uses the Channel folder directly.
+- `effective_to_partner_folder_name` (String) Resolved to-Partner subfolder name. Null when the direction is disabled or uses the Channel folder directly.
 - `id` (Number) The unique ID of the Partner Channel Template.
 
 ## Import

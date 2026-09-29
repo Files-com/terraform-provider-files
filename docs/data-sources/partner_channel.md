@@ -29,8 +29,8 @@ data "files_partner_channel" "example_partner_channel" {
 
 - `channel_path` (String) Resolved Channel folder path.
 - `direction` (String) Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads.
-- `effective_from_partner_folder_name` (String) Resolved from-Partner folder name after Channel override and default.
-- `effective_to_partner_folder_name` (String) Resolved to-Partner folder name after Channel override and default.
+- `effective_from_partner_folder_name` (String) Resolved from-Partner subfolder name. Null when the direction is disabled or uses the Channel folder directly.
+- `effective_to_partner_folder_name` (String) Resolved to-Partner subfolder name. Null when the direction is disabled or uses the Channel folder directly.
 - `from_partner_folder_name` (String) Optional Channel-level from-Partner folder name override.
 - `from_partner_folder_path` (String) Resolved from-Partner folder path.
 - `from_partner_managed_folder_paths` (List of String) Managed folder paths inside the from-Partner folder.
@@ -42,4 +42,5 @@ data "files_partner_channel" "example_partner_channel" {
 - `to_partner_folder_path` (String) Resolved to-Partner folder path.
 - `to_partner_managed_folder_paths` (List of String) Managed folder paths inside the to-Partner folder.
 - `to_partner_route_path` (String) Optional route path for files delivered to the Partner.
+- `use_channel_root` (Boolean) Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Channel must remain one-way.
 - `workspace_id` (Number) ID of the Workspace associated with this Partner Channel.

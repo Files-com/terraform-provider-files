@@ -15,6 +15,7 @@ A PartnerChannel defines a structured communication path within a Partner root f
 ```terraform
 resource "files_partner_channel" "example_partner_channel" {
   direction                         = "two_way"
+  use_channel_root                  = false
   from_partner_folder_name          = "incoming"
   from_partner_managed_folder_paths = ["claims/received"]
   from_partner_route_path           = "processing/from-partner"
@@ -44,13 +45,14 @@ resource "files_partner_channel" "example_partner_channel" {
 - `to_partner_folder_name` (String) Optional Channel-level to-Partner folder name override.
 - `to_partner_managed_folder_paths` (List of String) Managed folder paths inside the to-Partner folder.
 - `to_partner_route_path` (String) Optional route path for files delivered to the Partner.
+- `use_channel_root` (Boolean) Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Channel must remain one-way.
 - `workspace_id` (Number) ID of the Workspace associated with this Partner Channel.
 
 ### Read-Only
 
 - `channel_path` (String) Resolved Channel folder path.
-- `effective_from_partner_folder_name` (String) Resolved from-Partner folder name after Channel override and default.
-- `effective_to_partner_folder_name` (String) Resolved to-Partner folder name after Channel override and default.
+- `effective_from_partner_folder_name` (String) Resolved from-Partner subfolder name. Null when the direction is disabled or uses the Channel folder directly.
+- `effective_to_partner_folder_name` (String) Resolved to-Partner subfolder name. Null when the direction is disabled or uses the Channel folder directly.
 - `from_partner_folder_path` (String) Resolved from-Partner folder path.
 - `id` (Number) The unique ID of the Partner Channel.
 - `partner_channel_template_id` (Number) ID of the Partner Channel Template that manages this Channel, if any.

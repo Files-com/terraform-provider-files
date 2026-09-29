@@ -31,6 +31,7 @@ type partnerChannelDataSourceModel struct {
 	Id                             types.Int64  `tfsdk:"id"`
 	WorkspaceId                    types.Int64  `tfsdk:"workspace_id"`
 	Direction                      types.String `tfsdk:"direction"`
+	UseChannelRoot                 types.Bool   `tfsdk:"use_channel_root"`
 	PartnerId                      types.Int64  `tfsdk:"partner_id"`
 	PartnerChannelTemplateId       types.Int64  `tfsdk:"partner_channel_template_id"`
 	Path                           types.String `tfsdk:"path"`
@@ -86,6 +87,10 @@ func (r *partnerChannelDataSource) Schema(_ context.Context, _ datasource.Schema
 				Description: "Channel directions. `two_way` enables both directions, `to_partner` enables outgoing downloads, and `from_partner` enables incoming uploads.",
 				Computed:    true,
 			},
+			"use_channel_root": schema.BoolAttribute{
+				Description: "Use the Channel folder directly for a one-way exchange. Defaults to false. Cannot be changed after creation. Folder name overrides must be blank when enabled, and the Channel must remain one-way.",
+				Computed:    true,
+			},
 			"partner_id": schema.Int64Attribute{
 				Description: "ID of the Partner this Channel belongs to.",
 				Computed:    true,
@@ -125,11 +130,11 @@ func (r *partnerChannelDataSource) Schema(_ context.Context, _ datasource.Schema
 				ElementType: types.StringType,
 			},
 			"effective_to_partner_folder_name": schema.StringAttribute{
-				Description: "Resolved to-Partner folder name after Channel override and default.",
+				Description: "Resolved to-Partner subfolder name. Null when the direction is disabled or uses the Channel folder directly.",
 				Computed:    true,
 			},
 			"effective_from_partner_folder_name": schema.StringAttribute{
-				Description: "Resolved from-Partner folder name after Channel override and default.",
+				Description: "Resolved from-Partner subfolder name. Null when the direction is disabled or uses the Channel folder directly.",
 				Computed:    true,
 			},
 			"channel_path": schema.StringAttribute{
@@ -184,6 +189,7 @@ func (r *partnerChannelDataSource) populateDataSourceModel(ctx context.Context, 
 	state.Id = types.Int64Value(partnerChannel.Id)
 	state.WorkspaceId = types.Int64Value(partnerChannel.WorkspaceId)
 	state.Direction = types.StringValue(partnerChannel.Direction)
+	state.UseChannelRoot = types.BoolPointerValue(partnerChannel.UseChannelRoot)
 	state.PartnerId = types.Int64Value(partnerChannel.PartnerId)
 	state.PartnerChannelTemplateId = types.Int64Value(partnerChannel.PartnerChannelTemplateId)
 	state.Path = types.StringValue(partnerChannel.Path)
