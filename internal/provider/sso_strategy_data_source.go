@@ -77,6 +77,7 @@ type ssoStrategyDataSourceModel struct {
 	LdapPort                         types.Int64  `tfsdk:"ldap_port"`
 	LdapProvisioningEnabled          types.Bool   `tfsdk:"ldap_provisioning_enabled"`
 	LdapSecure                       types.Bool   `tfsdk:"ldap_secure"`
+	LdapServerCertificate            types.String `tfsdk:"ldap_server_certificate"`
 	LdapType                         types.String `tfsdk:"ldap_type"`
 	LdapUsername                     types.String `tfsdk:"ldap_username"`
 	LdapUsernameField                types.String `tfsdk:"ldap_username_field"`
@@ -304,6 +305,10 @@ func (r *ssoStrategyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Description: "Use secure LDAP?",
 				Computed:    true,
 			},
+			"ldap_server_certificate": schema.StringAttribute{
+				Description: "How to validate the LDAP server certificate. `require_match` validates the certificate chain and hostname; `allow_any` disables certificate validation.",
+				Computed:    true,
+			},
 			"ldap_type": schema.StringAttribute{
 				Description: "LDAP server type",
 				Computed:    true,
@@ -400,6 +405,7 @@ func (r *ssoStrategyDataSource) populateDataSourceModel(ctx context.Context, sso
 	state.LdapPort = types.Int64Value(ssoStrategy.LdapPort)
 	state.LdapProvisioningEnabled = types.BoolPointerValue(ssoStrategy.LdapProvisioningEnabled)
 	state.LdapSecure = types.BoolPointerValue(ssoStrategy.LdapSecure)
+	state.LdapServerCertificate = types.StringValue(ssoStrategy.LdapServerCertificate)
 	state.LdapType = types.StringValue(ssoStrategy.LdapType)
 	state.LdapUsername = types.StringValue(ssoStrategy.LdapUsername)
 	state.LdapUsernameField = types.StringValue(ssoStrategy.LdapUsernameField)

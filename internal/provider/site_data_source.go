@@ -138,6 +138,7 @@ type siteDataSourceModel struct {
 	LdapHost3                                          types.String  `tfsdk:"ldap_host_3"`
 	LdapPort                                           types.Int64   `tfsdk:"ldap_port"`
 	LdapSecure                                         types.Bool    `tfsdk:"ldap_secure"`
+	LdapServerCertificate                              types.String  `tfsdk:"ldap_server_certificate"`
 	LdapType                                           types.String  `tfsdk:"ldap_type"`
 	LdapUserAction                                     types.String  `tfsdk:"ldap_user_action"`
 	LdapUserIncludeGroups                              types.String  `tfsdk:"ldap_user_include_groups"`
@@ -688,6 +689,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Use secure LDAP?",
 				Computed:    true,
 			},
+			"ldap_server_certificate": schema.StringAttribute{
+				Description: "How to validate the LDAP server certificate. `require_match` validates the certificate chain and hostname; `allow_any` disables certificate validation.",
+				Computed:    true,
+			},
 			"ldap_type": schema.StringAttribute{
 				Description: "LDAP type",
 				Computed:    true,
@@ -1228,6 +1233,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.LdapHost3 = types.StringValue(site.LdapHost3)
 	state.LdapPort = types.Int64Value(site.LdapPort)
 	state.LdapSecure = types.BoolPointerValue(site.LdapSecure)
+	state.LdapServerCertificate = types.StringValue(site.LdapServerCertificate)
 	state.LdapType = types.StringValue(site.LdapType)
 	state.LdapUserAction = types.StringValue(site.LdapUserAction)
 	state.LdapUserIncludeGroups = types.StringValue(site.LdapUserIncludeGroups)

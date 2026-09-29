@@ -137,6 +137,7 @@ type siteResourceModel struct {
 	LdapHost3                                          types.String  `tfsdk:"ldap_host_3"`
 	LdapPort                                           types.Int64   `tfsdk:"ldap_port"`
 	LdapSecure                                         types.Bool    `tfsdk:"ldap_secure"`
+	LdapServerCertificate                              types.String  `tfsdk:"ldap_server_certificate"`
 	LdapType                                           types.String  `tfsdk:"ldap_type"`
 	LdapUserAction                                     types.String  `tfsdk:"ldap_user_action"`
 	LdapUserIncludeGroups                              types.String  `tfsdk:"ldap_user_include_groups"`
@@ -1041,6 +1042,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"ldap_server_certificate": schema.StringAttribute{
+				Description: "How to validate the LDAP server certificate. `require_match` validates the certificate chain and hostname; `allow_any` disables certificate validation.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"ldap_type": schema.StringAttribute{
@@ -2298,6 +2307,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.LdapSecure.IsNull() && !config.LdapSecure.IsUnknown() {
 		paramsSiteUpdate["ldap_secure"] = config.LdapSecure.ValueBool()
 	}
+	if !config.LdapServerCertificate.IsNull() && !config.LdapServerCertificate.IsUnknown() {
+		paramsSiteUpdate["ldap_server_certificate"] = config.LdapServerCertificate.ValueString()
+	}
 	if !config.LdapUsername.IsNull() && !config.LdapUsername.IsUnknown() {
 		paramsSiteUpdate["ldap_username"] = config.LdapUsername.ValueString()
 	}
@@ -2528,6 +2540,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.LdapHost3 = types.StringValue(site.LdapHost3)
 	state.LdapPort = types.Int64Value(site.LdapPort)
 	state.LdapSecure = types.BoolPointerValue(site.LdapSecure)
+	state.LdapServerCertificate = types.StringValue(site.LdapServerCertificate)
 	state.LdapType = types.StringValue(site.LdapType)
 	state.LdapUserAction = types.StringValue(site.LdapUserAction)
 	state.LdapUserIncludeGroups = types.StringValue(site.LdapUserIncludeGroups)

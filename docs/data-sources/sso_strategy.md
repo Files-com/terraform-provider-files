@@ -46,6 +46,7 @@ data "files_sso_strategy" "example_sso_strategy" {
 - `ldap_port` (Number) LDAP port
 - `ldap_provisioning_enabled` (Boolean) Use LDAP server settings for scheduled provisioning while using this SSO provider for authentication?
 - `ldap_secure` (Boolean) Use secure LDAP?
+- `ldap_server_certificate` (String) How to validate the LDAP server certificate. `require_match` validates the certificate chain and hostname; `allow_any` disables certificate validation.
 - `ldap_type` (String) LDAP server type
 - `ldap_username` (String) Username for signing in to LDAP server.
 - `ldap_username_field` (String) LDAP username field

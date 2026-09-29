@@ -164,6 +164,7 @@ resource "files_site" "example_site" {
   ldap_host_3                                                = "ldap3.site.com"
   ldap_port                                                  = 1
   ldap_secure                                                = false
+  ldap_server_certificate                                    = "require_match"
   ldap_username                                              = "[ldap username]"
   ldap_username_field                                        = "sAMAccountName"
   ldap_domain                                                = "mysite.com"
