@@ -35,10 +35,12 @@ resource "files_site" "example_site" {
   disable_all_ai_features                                    = false
   ai_feature_availability                                    = {
     in_app_ai_assistant = {
-      site_admins      = true
-      workspace_admins = true
-      folder_admins    = true
-      all_users        = true
+      site_admins            = true
+      workspace_admins       = true
+      folder_admins          = true
+      all_users              = false
+      selected_group_members = true
+      group_ids              = [1, 2]
     }
   }
   mcp_dcr_enabled                                            = false
@@ -109,6 +111,7 @@ resource "files_site" "example_site" {
   user_requests_notify_admins                                = false
   dav_enabled                                                = false
   ftp_enabled                                                = false
+  s3_compatible_endpoint_enabled                             = false
   sftp_enabled                                               = false
   sftp_finalize_partial_uploads                              = false
   users_can_create_api_keys                                  = false

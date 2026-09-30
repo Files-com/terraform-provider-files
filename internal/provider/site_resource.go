@@ -169,6 +169,7 @@ type siteResourceModel struct {
 	RevokeBundleAccessOnDisableOrDelete                types.Bool    `tfsdk:"revoke_bundle_access_on_disable_or_delete"`
 	Require2faUserType                                 types.String  `tfsdk:"require_2fa_user_type"`
 	RequireLogoutFromBundlesAndInboxes                 types.Bool    `tfsdk:"require_logout_from_bundles_and_inboxes"`
+	S3CompatibleEndpointEnabled                        types.Bool    `tfsdk:"s3_compatible_endpoint_enabled"`
 	SftpEnabled                                        types.Bool    `tfsdk:"sftp_enabled"`
 	SftpFinalizePartialUploads                         types.Bool    `tfsdk:"sftp_finalize_partial_uploads"`
 	SftpHostKeyType                                    types.String  `tfsdk:"sftp_host_key_type"`
@@ -285,7 +286,7 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"ai_feature_availability": schema.DynamicAttribute{
-				Description: "Availability settings for AI features by user class",
+				Description: "Availability settings for AI features. Each feature requires the site_admins, workspace_admins, folder_admins, and all_users keys. Optional selected_group_members defaults to false; when true, members of at least one group in group_ids get access regardless of the other options. All availability options are additive: any enabled option matching the user grants access. Optional group_ids is an array of integer IDs of active groups on this site, from any workspace. Omitted or empty group_ids grants no access through selected_group_members and does not affect other options. Disabling all AI features overrides these settings.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Dynamic{
@@ -1306,6 +1307,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"s3_compatible_endpoint_enabled": schema.BoolAttribute{
+				Description: "Is the S3-compatible endpoint enabled for all users and workspaces on this site? Defaults to true. When false, user and group S3 permissions do not allow access.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"sftp_enabled": schema.BoolAttribute{
 				Description: "Is SFTP enabled?",
 				Computed:    true,
@@ -2136,6 +2145,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.FtpEnabled.IsNull() && !config.FtpEnabled.IsUnknown() {
 		paramsSiteUpdate["ftp_enabled"] = config.FtpEnabled.ValueBool()
 	}
+	if !config.S3CompatibleEndpointEnabled.IsNull() && !config.S3CompatibleEndpointEnabled.IsUnknown() {
+		paramsSiteUpdate["s3_compatible_endpoint_enabled"] = config.S3CompatibleEndpointEnabled.ValueBool()
+	}
 	if !config.SftpEnabled.IsNull() && !config.SftpEnabled.IsUnknown() {
 		paramsSiteUpdate["sftp_enabled"] = config.SftpEnabled.ValueBool()
 	}
@@ -2609,6 +2621,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 		)
 	}
 	state.Session = types.StringValue(string(respSession))
+	state.S3CompatibleEndpointEnabled = types.BoolPointerValue(site.S3CompatibleEndpointEnabled)
 	state.SftpEnabled = types.BoolPointerValue(site.SftpEnabled)
 	state.SftpFinalizePartialUploads = types.BoolPointerValue(site.SftpFinalizePartialUploads)
 	state.SftpHostKeyType = types.StringValue(site.SftpHostKeyType)

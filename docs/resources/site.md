@@ -53,10 +53,12 @@ resource "files_site" "example_site" {
   disable_all_ai_features                                    = false
   ai_feature_availability                                    = {
     in_app_ai_assistant = {
-      site_admins      = true
-      workspace_admins = true
-      folder_admins    = true
-      all_users        = true
+      site_admins            = true
+      workspace_admins       = true
+      folder_admins          = true
+      all_users              = false
+      selected_group_members = true
+      group_ids              = [1, 2]
     }
   }
   mcp_dcr_enabled                                            = false
@@ -127,6 +129,7 @@ resource "files_site" "example_site" {
   user_requests_notify_admins                                = false
   dav_enabled                                                = false
   ftp_enabled                                                = false
+  s3_compatible_endpoint_enabled                             = false
   sftp_enabled                                               = false
   sftp_finalize_partial_uploads                              = false
   users_can_create_api_keys                                  = false
@@ -219,7 +222,7 @@ resource "files_site" "example_site" {
 - `active_sftp_host_key_ids` (List of Number) Ids of the selected custom SFTP Host Keys
 - `additional_text_file_types` (List of String) Additional extensions that are considered text files
 - `admins_bypass_locked_subfolders` (Boolean) Allow admins to bypass the locked subfolders setting.
-- `ai_feature_availability` (Dynamic) Availability settings for AI features by user class
+- `ai_feature_availability` (Dynamic) Availability settings for AI features. Each feature requires the site_admins, workspace_admins, folder_admins, and all_users keys. Optional selected_group_members defaults to false; when true, members of at least one group in group_ids get access regardless of the other options. All availability options are additive: any enabled option matching the user grants access. Optional group_ids is an array of integer IDs of active groups on this site, from any workspace. Omitted or empty group_ids grants no access through selected_group_members and does not affect other options. Disabling all AI features overrides these settings.
 - `allow_bundle_names` (Boolean) Are manual Bundle names allowed?
 - `allow_user_level_2fa_override` (Boolean) Allow the site-wide two-factor authentication requirement to be overriden on a per-user-basis?
 - `allow_user_level_allowed_ip_override` (Boolean) Allow the site-wide allowed IP restriction to be overriden on a per-user-basis?
@@ -344,6 +347,7 @@ resource "files_site" "example_site" {
 - `restrict_root_folder_behaviors_to_site_admins` (Boolean) If true, only site admins may create, modify, or delete any behavior at the site root, or a skip that would disable one.
 - `revoke_bundle_access_on_disable_or_delete` (Boolean) Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period.
 - `root_folder_behaviors_apply_to_workspaces` (Boolean) If true, supported protective behaviors at the site root also apply within named workspaces. Requires restrict_root_folder_behaviors_to_site_admins to be enabled.
+- `s3_compatible_endpoint_enabled` (Boolean) Is the S3-compatible endpoint enabled for all users and workspaces on this site? Defaults to true. When false, user and group S3 permissions do not allow access.
 - `session_expiry_minutes` (Number) Session expiry in minutes
 - `sftp_enabled` (Boolean) Is SFTP enabled?
 - `sftp_finalize_partial_uploads` (Boolean) Finalize partial SFTP uploads from interrupted connections? Default: true.

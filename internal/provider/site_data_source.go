@@ -180,6 +180,7 @@ type siteDataSourceModel struct {
 	Require2faUserType                                 types.String  `tfsdk:"require_2fa_user_type"`
 	RequireLogoutFromBundlesAndInboxes                 types.Bool    `tfsdk:"require_logout_from_bundles_and_inboxes"`
 	Session                                            types.String  `tfsdk:"session"`
+	S3CompatibleEndpointEnabled                        types.Bool    `tfsdk:"s3_compatible_endpoint_enabled"`
 	SftpEnabled                                        types.Bool    `tfsdk:"sftp_enabled"`
 	SftpFinalizePartialUploads                         types.Bool    `tfsdk:"sftp_finalize_partial_uploads"`
 	SftpHostKeyType                                    types.String  `tfsdk:"sftp_host_key_type"`
@@ -269,7 +270,7 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				ElementType: types.StringType,
 			},
 			"ai_feature_availability": schema.DynamicAttribute{
-				Description: "Availability settings for AI features by user class",
+				Description: "Availability settings for AI features. Each feature requires the site_admins, workspace_admins, folder_admins, and all_users keys. Optional selected_group_members defaults to false; when true, members of at least one group in group_ids get access regardless of the other options. All availability options are additive: any enabled option matching the user grants access. Optional group_ids is an array of integer IDs of active groups on this site, from any workspace. Omitted or empty group_ids grants no access through selected_group_members and does not affect other options. Disabling all AI features overrides these settings.",
 				Computed:    true,
 			},
 			"allowed_2fa_method_sms": schema.BoolAttribute{
@@ -857,6 +858,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Current session",
 				Computed:    true,
 			},
+			"s3_compatible_endpoint_enabled": schema.BoolAttribute{
+				Description: "Is the S3-compatible endpoint enabled for all users and workspaces on this site? Defaults to true. When false, user and group S3 permissions do not allow access.",
+				Computed:    true,
+			},
 			"sftp_enabled": schema.BoolAttribute{
 				Description: "Is SFTP enabled?",
 				Computed:    true,
@@ -1302,6 +1307,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 		)
 	}
 	state.Session = types.StringValue(string(respSession))
+	state.S3CompatibleEndpointEnabled = types.BoolPointerValue(site.S3CompatibleEndpointEnabled)
 	state.SftpEnabled = types.BoolPointerValue(site.SftpEnabled)
 	state.SftpFinalizePartialUploads = types.BoolPointerValue(site.SftpFinalizePartialUploads)
 	state.SftpHostKeyType = types.StringValue(site.SftpHostKeyType)
