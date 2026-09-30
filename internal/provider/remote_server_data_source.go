@@ -225,7 +225,7 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Computed:    true,
 			},
 			"server_host_key": schema.StringAttribute{
-				Description: "Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts",
+				Description: "Pinned plain SSH host key for SFTP, in OpenSSH public key format. If omitted, Files.com detects and stores the server's plain host key, including when the server offers an OpenSSH host certificate. With `server_certificate=require_match` (the default), the server must present the pinned key and prove it holds the matching private key. The pin remains in force until an administrator updates `server_host_key`. Files.com does not authenticate remote hosts through SSH certificates and does not check their CA signatures, principals, or validity periods. Certificate expiration does not end the pin; update `server_host_key` to retire a host key.",
 				Computed:    true,
 			},
 			"server_type": schema.StringAttribute{

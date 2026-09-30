@@ -154,7 +154,7 @@ data "files_remote_server" "example_remote_server" {
 - `s3_compatible_virtual_hosted_style` (Boolean) S3-compatible: If true, use virtual-hosted-style URLs instead of path-style URLs
 - `s3_region` (String) S3 region
 - `server_certificate` (String) Remote server certificate
-- `server_host_key` (String) Remote server SSH Host Key. If provided, we will require that the server host key matches the provided key. Uses OpenSSH format similar to what would go into ~/.ssh/known_hosts
+- `server_host_key` (String) Pinned plain SSH host key for SFTP, in OpenSSH public key format. If omitted, Files.com detects and stores the server's plain host key, including when the server offers an OpenSSH host certificate. With `server_certificate=require_match` (the default), the server must present the pinned key and prove it holds the matching private key. The pin remains in force until an administrator updates `server_host_key`. Files.com does not authenticate remote hosts through SSH certificates and does not check their CA signatures, principals, or validity periods. Certificate expiration does not end the pin; update `server_host_key` to retire a host key.
 - `server_type` (String) Remote server type.
 - `sharepoint_app_authentication` (Boolean) SharePoint: If true, this remote server uses Microsoft Entra app-only authentication.
 - `sharepoint_app_credential_type` (String) SharePoint: App-only credential type. Either secret or certificate.
