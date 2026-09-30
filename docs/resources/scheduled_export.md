@@ -61,8 +61,9 @@ resource "files_scheduled_export" "example_scheduled_export" {
 - `created_at` (String) Creation time.
 - `human_readable_schedule` (String) Human-readable schedule description.
 - `id` (Number) Scheduled Export ID
+- `last_error` (String) Validation error from the most recent scheduled attempt. The schedule remains enabled and retries at its next scheduled time. Cleared when an export is successfully created; does not describe errors during export generation.
 - `last_export_id` (Number) Most recent Export ID created by this schedule.
-- `last_run_at` (String) Most recent scheduled run time.
+- `last_run_at` (String) Most recent scheduled attempt time, including attempts that failed validation.
 - `report_name` (String) Human-readable report name.
 - `updated_at` (String) Last update time.
 

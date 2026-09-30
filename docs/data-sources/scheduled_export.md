@@ -34,8 +34,9 @@ data "files_scheduled_export" "example_scheduled_export" {
 - `holiday_region` (String) Optional holiday region used by the scheduled export schedule.
 - `human_readable_schedule` (String) Human-readable schedule description.
 - `interval` (String) If trigger is `daily`, this specifies how often to run the scheduled export.
+- `last_error` (String) Validation error from the most recent scheduled attempt. The schedule remains enabled and retries at its next scheduled time. Cleared when an export is successfully created; does not describe errors during export generation.
 - `last_export_id` (Number) Most recent Export ID created by this schedule.
-- `last_run_at` (String) Most recent scheduled run time.
+- `last_run_at` (String) Most recent scheduled attempt time, including attempts that failed validation.
 - `name` (String) Name for this scheduled export.
 - `recurring_day` (Number) If trigger is `daily`, this selects the day number inside the chosen interval.
 - `recurring_days` (List of Number) If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.

@@ -63,6 +63,7 @@ type scheduledExportResourceModel struct {
 	HumanReadableSchedule types.String  `tfsdk:"human_readable_schedule"`
 	LastRunAt             types.String  `tfsdk:"last_run_at"`
 	LastExportId          types.Int64   `tfsdk:"last_export_id"`
+	LastError             types.String  `tfsdk:"last_error"`
 	CreatedAt             types.String  `tfsdk:"created_at"`
 	UpdatedAt             types.String  `tfsdk:"updated_at"`
 }
@@ -220,11 +221,15 @@ func (r *scheduledExportResource) Schema(_ context.Context, _ resource.SchemaReq
 				Computed:    true,
 			},
 			"last_run_at": schema.StringAttribute{
-				Description: "Most recent scheduled run time.",
+				Description: "Most recent scheduled attempt time, including attempts that failed validation.",
 				Computed:    true,
 			},
 			"last_export_id": schema.Int64Attribute{
 				Description: "Most recent Export ID created by this schedule.",
+				Computed:    true,
+			},
+			"last_error": schema.StringAttribute{
+				Description: "Validation error from the most recent scheduled attempt. The schedule remains enabled and retries at its next scheduled time. Cleared when an export is successfully created; does not describe errors during export generation.",
 				Computed:    true,
 			},
 			"created_at": schema.StringAttribute{
@@ -507,6 +512,7 @@ func (r *scheduledExportResource) populateResourceModel(ctx context.Context, sch
 		)
 	}
 	state.LastExportId = types.Int64Value(scheduledExport.LastExportId)
+	state.LastError = types.StringValue(scheduledExport.LastError)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), scheduledExport.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files ScheduledExport",
