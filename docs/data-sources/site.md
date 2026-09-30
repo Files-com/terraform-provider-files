@@ -202,7 +202,7 @@ data "files_site" "example_site" {
 - `switch_to_plan_date` (String) If switching plans, when does the new plan take effect?
 - `trial_days_left` (Number) Number of days left in trial
 - `trial_until` (String) When does this Site trial expire?
-- `uploads_via_email_authentication` (Boolean) Do incoming emails in the Inboxes require checking for SPF/DKIM/DMARC?
+- `uploads_via_email_authentication` (Boolean) Require email authentication, virus, and spam checks for incoming emails to Inboxes and Incoming Email Automations in every Workspace on this site?
 - `use_dedicated_ips_for_smtp` (Boolean) If using custom SMTP, should we use dedicated IPs to deliver emails?
 - `use_provided_modified_at` (Boolean) Allow uploaders to set `provided_modified_at` for uploaded files?
 - `user` (String) User of current session

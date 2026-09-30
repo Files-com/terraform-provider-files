@@ -594,7 +594,7 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"uploads_via_email_authentication": schema.BoolAttribute{
-				Description: "Do incoming emails in the Inboxes require checking for SPF/DKIM/DMARC?",
+				Description: "Require email authentication, virus, and spam checks for incoming emails to Inboxes and Incoming Email Automations in every Workspace on this site?",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
