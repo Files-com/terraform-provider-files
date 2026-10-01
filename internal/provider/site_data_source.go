@@ -200,6 +200,7 @@ type siteDataSourceModel struct {
 	SmtpAuthentication                                 types.String  `tfsdk:"smtp_authentication"`
 	SmtpFrom                                           types.String  `tfsdk:"smtp_from"`
 	SmtpPort                                           types.Int64   `tfsdk:"smtp_port"`
+	SmtpSsl                                            types.String  `tfsdk:"smtp_ssl"`
 	SmtpUsername                                       types.String  `tfsdk:"smtp_username"`
 	SessionExpiryMinutes                               types.Int64   `tfsdk:"session_expiry_minutes"`
 	SnapshotSharingEnabled                             types.Bool    `tfsdk:"snapshot_sharing_enabled"`
@@ -939,6 +940,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "SMTP server port",
 				Computed:    true,
 			},
+			"smtp_ssl": schema.StringAttribute{
+				Description: "Custom SMTP encryption mode: if_available (default) uses STARTTLS when offered and otherwise sends credentials and messages unencrypted; require requires STARTTLS before authentication; require_implicit uses TLS from connection start; never disables TLS. TLS verifies the server certificate against smtp_address.",
+				Computed:    true,
+			},
 			"smtp_username": schema.StringAttribute{
 				Description: "SMTP server username",
 				Computed:    true,
@@ -1328,6 +1333,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.SmtpAuthentication = types.StringValue(site.SmtpAuthentication)
 	state.SmtpFrom = types.StringValue(site.SmtpFrom)
 	state.SmtpPort = types.Int64Value(site.SmtpPort)
+	state.SmtpSsl = types.StringValue(site.SmtpSsl)
 	state.SmtpUsername = types.StringValue(site.SmtpUsername)
 	state.SessionExpiryMinutes = types.Int64Value(site.SessionExpiryMinutes)
 	state.SnapshotSharingEnabled = types.BoolPointerValue(site.SnapshotSharingEnabled)

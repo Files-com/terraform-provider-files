@@ -160,6 +160,7 @@ resource "files_site" "example_site" {
   smtp_from                                                  = "me@my-mail-server.com"
   smtp_username                                              = "mail"
   smtp_port                                                  = 1
+  smtp_ssl                                                   = "require"
   ldap_enabled                                               = false
   ldap_type                                                  = "open_ldap"
   ldap_host                                                  = "ldap.site.com"

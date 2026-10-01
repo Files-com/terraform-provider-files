@@ -189,6 +189,7 @@ type siteResourceModel struct {
 	SmtpAuthentication                                 types.String  `tfsdk:"smtp_authentication"`
 	SmtpFrom                                           types.String  `tfsdk:"smtp_from"`
 	SmtpPort                                           types.Int64   `tfsdk:"smtp_port"`
+	SmtpSsl                                            types.String  `tfsdk:"smtp_ssl"`
 	SmtpUsername                                       types.String  `tfsdk:"smtp_username"`
 	SessionExpiryMinutes                               types.Int64   `tfsdk:"session_expiry_minutes"`
 	SnapshotSharingEnabled                             types.Bool    `tfsdk:"snapshot_sharing_enabled"`
@@ -1471,6 +1472,17 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"smtp_ssl": schema.StringAttribute{
+				Description: "Custom SMTP encryption mode: if_available (default) uses STARTTLS when offered and otherwise sends credentials and messages unencrypted; require requires STARTTLS before authentication; require_implicit uses TLS from connection start; never disables TLS. TLS verifies the server certificate against smtp_address.",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("if_available", "require", "require_implicit", "never"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"smtp_username": schema.StringAttribute{
 				Description: "SMTP server username",
 				Computed:    true,
@@ -2298,6 +2310,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.SmtpPort.IsNull() && !config.SmtpPort.IsUnknown() {
 		paramsSiteUpdate["smtp_port"] = config.SmtpPort.ValueInt64()
 	}
+	if !config.SmtpSsl.IsNull() && !config.SmtpSsl.IsUnknown() {
+		paramsSiteUpdate["smtp_ssl"] = config.SmtpSsl.ValueString()
+	}
 	if !config.LdapEnabled.IsNull() && !config.LdapEnabled.IsUnknown() {
 		paramsSiteUpdate["ldap_enabled"] = config.LdapEnabled.ValueBool()
 	}
@@ -2642,6 +2657,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.SmtpAuthentication = types.StringValue(site.SmtpAuthentication)
 	state.SmtpFrom = types.StringValue(site.SmtpFrom)
 	state.SmtpPort = types.Int64Value(site.SmtpPort)
+	state.SmtpSsl = types.StringValue(site.SmtpSsl)
 	state.SmtpUsername = types.StringValue(site.SmtpUsername)
 	state.SessionExpiryMinutes = types.Int64Value(site.SessionExpiryMinutes)
 	state.SnapshotSharingEnabled = types.BoolPointerValue(site.SnapshotSharingEnabled)
