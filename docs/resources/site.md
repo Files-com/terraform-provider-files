@@ -367,7 +367,7 @@ resource "files_site" "example_site" {
 - `smtp_authentication` (String) SMTP server authentication type
 - `smtp_from` (String) From address to use when mailing through custom SMTP
 - `smtp_port` (Number) SMTP server port
-- `smtp_ssl` (String) Custom SMTP encryption mode: if_available (default) uses STARTTLS when offered and otherwise sends credentials and messages unencrypted; require requires STARTTLS before authentication; require_implicit uses TLS from connection start; never disables TLS. TLS verifies the server certificate against smtp_address.
+- `smtp_ssl` (String) Custom SMTP encryption mode: if_available (default) uses STARTTLS when offered and otherwise sends credentials and messages unencrypted. A certificate-verified STARTTLS connection automatically changes if_available to require unless smtp_ssl is managed by a parent policy. require requires STARTTLS before authentication; require_implicit uses TLS from connection start; never disables TLS. TLS verifies the server certificate against smtp_address. Encryption is never automatically downgraded.
 - `smtp_username` (String) SMTP server username
 - `snapshot_sharing_enabled` (Boolean) Allow snapshot share links creation
 - `ssl_required` (Boolean) Is SSL required?  Disabling this is insecure.
