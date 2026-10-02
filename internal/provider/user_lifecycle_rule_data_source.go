@@ -70,7 +70,7 @@ func (r *userLifecycleRuleDataSource) Metadata(_ context.Context, req datasource
 
 func (r *userLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A UserLifecycleRule represents a rule that applies to users based on their inactivity, state and authentication method.\n\nThe rule either disable or delete users who have been inactive or disabled for a specified number of days.\n\nThe authentication_method property specifies the authentication method for the rule, which can be set to \"all\", \"all_non_sso\", or a specific authentication method.\n\nThe rule can also include or exclude site and folder admins from the action.",
+		Description: "A UserLifecycleRule represents a rule that applies to users based on their inactivity, state and authentication method.\n\nThe rule either disable or delete users who have been inactive or disabled for a specified number of days.\n\nThe authentication_method property specifies the authentication method for the rule, which can be set to \"all\", \"all_non_sso\", or a specific authentication method.\n\nThe rule can also include or exclude site and folder admins from the action.\n\nA Custom Workspace rule applies only to users who belong to that Workspace. Default Workspace users with access to a Custom Workspace, including Workspace Administrators, remain covered by Default Workspace rules.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "User Lifecycle Rule ID",
@@ -98,11 +98,11 @@ func (r *userLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.Sch
 				Computed:    true,
 			},
 			"include_site_admins": schema.BoolAttribute{
-				Description: "If true, the rule will apply to site admins.",
+				Description: "If true, the rule includes Site Administrators, who always belong to the Default Workspace. Can only be enabled when `workspace_id` is `0`.",
 				Computed:    true,
 			},
 			"apply_to_all_workspaces": schema.BoolAttribute{
-				Description: "If true, a default-workspace rule also applies to users in all workspaces.",
+				Description: "If true, a Default Workspace rule also applies to users in all Custom Workspaces. Can only be enabled when `workspace_id` is `0`.",
 				Computed:    true,
 			},
 			"name": schema.StringAttribute{
@@ -122,7 +122,7 @@ func (r *userLifecycleRuleDataSource) Schema(_ context.Context, _ datasource.Sch
 				Computed:    true,
 			},
 			"workspace_id": schema.Int64Attribute{
-				Description: "Workspace ID. `0` means the default workspace.",
+				Description: "Workspace whose users the rule applies to. `0` means the Default Workspace. A Custom Workspace rule applies only to users who belong to that Workspace, regardless of access granted to other users.",
 				Computed:    true,
 			},
 			"user_state": schema.StringAttribute{

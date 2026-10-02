@@ -7,6 +7,7 @@ description: |-
   The rule either disable or delete users who have been inactive or disabled for a specified number of days.
   The authentication_method property specifies the authentication method for the rule, which can be set to "all", "all_non_sso", or a specific authentication method.
   The rule can also include or exclude site and folder admins from the action.
+  A Custom Workspace rule applies only to users who belong to that Workspace. Default Workspace users with access to a Custom Workspace, including Workspace Administrators, remain covered by Default Workspace rules.
 ---
 
 # files_user_lifecycle_rule (Data Source)
@@ -18,6 +19,8 @@ The rule either disable or delete users who have been inactive or disabled for a
 The authentication_method property specifies the authentication method for the rule, which can be set to "all", "all_non_sso", or a specific authentication method.
 
 The rule can also include or exclude site and folder admins from the action.
+
+A Custom Workspace rule applies only to users who belong to that Workspace. Default Workspace users with access to a Custom Workspace, including Workspace Administrators, remain covered by Default Workspace rules.
 
 ## Example Usage
 
@@ -37,16 +40,16 @@ data "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
 ### Read-Only
 
 - `action` (String) Action to take on inactive users (disable or delete)
-- `apply_to_all_workspaces` (Boolean) If true, a default-workspace rule also applies to users in all workspaces.
+- `apply_to_all_workspaces` (Boolean) If true, a Default Workspace rule also applies to users in all Custom Workspaces. Can only be enabled when `workspace_id` is `0`.
 - `authentication_method` (String) User authentication method for which the rule will apply. Use `all_non_sso` to target every non-SSO authentication method with one rule.
 - `group_ids` (List of Number) Array of Group IDs to which the rule applies. If empty or not set, the rule applies to all users.
 - `inactivity_days` (Number) Number of days of inactivity before the rule applies
 - `include_folder_admins` (Boolean) If true, the rule will apply to folder admins.
-- `include_site_admins` (Boolean) If true, the rule will apply to site admins.
+- `include_site_admins` (Boolean) If true, the rule includes Site Administrators, who always belong to the Default Workspace. Can only be enabled when `workspace_id` is `0`.
 - `name` (String) User Lifecycle Rule name
 - `notify_users` (Boolean) If true, users will be emailed before the rule disables or deletes them.
 - `partner_tag` (String) If provided, only users belonging to Partners with this tag at the Partner level will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.
 - `site_id` (Number) Site ID
 - `user_state` (String) State of the users to apply the rule to (inactive or disabled)
 - `user_tag` (String) If provided, only users with this tag will be affected by the rule. Tags must only contain lowercase letters, numbers, and hyphens.
-- `workspace_id` (Number) Workspace ID. `0` means the default workspace.
+- `workspace_id` (Number) Workspace whose users the rule applies to. `0` means the Default Workspace. A Custom Workspace rule applies only to users who belong to that Workspace, regardless of access granted to other users.

@@ -1243,7 +1243,7 @@ func (r *automationResource) resourceSchema() schema.Schema {
 												Required:    true,
 												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
 													"name": schema.StringAttribute{
-														Description: "Identifier used to connect nodes and named inputs or outputs.",
+														Description: "Case-sensitive output name. Use 1-64 letters, numbers, underscores, or hyphens.",
 														Required:    true,
 													},
 													"condition": schema.StringAttribute{

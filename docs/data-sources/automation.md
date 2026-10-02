@@ -1065,7 +1065,7 @@ Read-Only:
 Read-Only:
 
 - `condition` (String) A bare Files TransformScript expression, no braces.
-- `name` (String) Identifier used to connect nodes and named inputs or outputs.
+- `name` (String) Case-sensitive output name. Use 1-64 letters, numbers, underscores, or hyphens.
 
 
 <a id="nestedatt--definition--nodes--switch--config--on_error"></a>

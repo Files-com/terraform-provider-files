@@ -10,6 +10,6 @@ resource "files_user_lifecycle_rule" "example_user_lifecycle_rule" {
   partner_tag             = "guest"
   user_state              = "inactive"
   user_tag                = "guest"
-  workspace_id            = 12
+  workspace_id            = 0
 }
 
