@@ -149,7 +149,7 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Computed:    true,
 			},
 			"hostname": schema.StringAttribute{
-				Description: "Hostname or IP address",
+				Description: "Hostname or IP address. For Agent Remote Servers, the Agent reports the hostname it connects from at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not change the running Agent.",
 				Computed:    true,
 			},
 			"remote_home_path": schema.StringAttribute{
@@ -173,7 +173,7 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Computed:    true,
 			},
 			"port": schema.Int64Attribute{
-				Description: "Port for remote server.",
+				Description: "Port for remote server. For Agent Remote Servers, the Agent reports its downstream proxy port at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not change the running Agent.",
 				Computed:    true,
 			},
 			"buffer_uploads": schema.StringAttribute{
@@ -378,15 +378,15 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				ElementType: types.StringType,
 			},
 			"files_agent_permission_set": schema.StringAttribute{
-				Description: "Local permissions for files agent. read_only, write_only, or read_write",
+				Description: "Agent file permissions: `read_only`, `write_only`, or `read_write`. Files.com writes this value as `permission_set` in the configuration file generated for this Remote Server. Setting it on Create or Update changes the generated file, not a running Agent. The Agent enforces the permissions in its local configuration file, controlled by the host's system administrator, and reports them at registration, replacing the stored value.",
 				Computed:    true,
 			},
 			"files_agent_root": schema.StringAttribute{
-				Description: "Agent local root path",
+				Description: "Agent local root path. Files.com writes this value as `root` in the configuration file generated for this Remote Server. Setting it on Create or Update changes the generated file, not a running Agent. The Agent enforces the root in its local configuration file, controlled by the host's system administrator, and reports it at registration, replacing the stored value.",
 				Computed:    true,
 			},
 			"files_agent_version": schema.StringAttribute{
-				Description: "Files Agent version",
+				Description: "Files.com Agent version reported by the Agent at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not update the running Agent.",
 				Computed:    true,
 			},
 			"files_agent_up_to_date": schema.BoolAttribute{

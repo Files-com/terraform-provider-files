@@ -31,6 +31,7 @@ type historyExportDataSource struct {
 
 type historyExportDataSourceModel struct {
 	Id                       types.Int64  `tfsdk:"id"`
+	WorkspaceId              types.Int64  `tfsdk:"workspace_id"`
 	HistoryVersion           types.String `tfsdk:"history_version"`
 	StartAt                  types.String `tfsdk:"start_at"`
 	EndAt                    types.String `tfsdk:"end_at"`
@@ -87,6 +88,10 @@ func (r *historyExportDataSource) Schema(_ context.Context, _ datasource.SchemaR
 			"id": schema.Int64Attribute{
 				Description: "History Export ID",
 				Required:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace of the export. 0 represents the default workspace. A null value means a site-wide export.",
+				Computed:    true,
 			},
 			"history_version": schema.StringAttribute{
 				Description: "Version of the history for the export.",
@@ -219,6 +224,7 @@ func (r *historyExportDataSource) Read(ctx context.Context, req datasource.ReadR
 }
 
 func (r *historyExportDataSource) populateDataSourceModel(ctx context.Context, historyExport files_sdk.HistoryExport, state *historyExportDataSourceModel) (diags diag.Diagnostics) {
+	state.WorkspaceId = types.Int64Value(historyExport.WorkspaceId)
 	state.Id = types.Int64Value(historyExport.Id)
 	state.HistoryVersion = types.StringValue(historyExport.HistoryVersion)
 	if err := lib.TimeToStringType(ctx, path.Root("start_at"), historyExport.StartAt, &state.StartAt); err != nil {

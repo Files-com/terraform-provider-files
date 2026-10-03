@@ -110,6 +110,7 @@ resource "files_site" "example_site" {
   user_requests_enabled                                      = false
   user_requests_notify_admins                                = false
   dav_enabled                                                = false
+  files_com_remote_server_enabled                            = false
   ftp_enabled                                                = false
   s3_compatible_endpoint_enabled                             = false
   sftp_enabled                                               = false

@@ -91,3 +91,4 @@ data "files_history_export" "example_history_export" {
 - `results_url` (String) If `status` is `ready`, this will be a URL where all the results can be downloaded at once as a CSV.
 - `start_at` (String) Start date/time of export range.
 - `status` (String) Status of export.  Will be: `building`, `ready`, or `failed`
+- `workspace_id` (Number) Workspace of the export. 0 represents the default workspace. A null value means a site-wide export.

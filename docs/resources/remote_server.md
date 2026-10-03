@@ -182,9 +182,9 @@ resource "files_remote_server" "example_remote_server" {
 - `filebase_access_key` (String) Filebase: Access Key.
 - `filebase_bucket` (String) Filebase: Bucket name
 - `filebase_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Filebase: Secret Key
-- `files_agent_permission_set` (String) Local permissions for files agent. read_only, write_only, or read_write
-- `files_agent_root` (String) Agent local root path
-- `files_agent_version` (String) Files Agent version
+- `files_agent_permission_set` (String) Agent file permissions: `read_only`, `write_only`, or `read_write`. Files.com writes this value as `permission_set` in the configuration file generated for this Remote Server. Setting it on Create or Update changes the generated file, not a running Agent. The Agent enforces the permissions in its local configuration file, controlled by the host's system administrator, and reports them at registration, replacing the stored value.
+- `files_agent_root` (String) Agent local root path. Files.com writes this value as `root` in the configuration file generated for this Remote Server. Setting it on Create or Update changes the generated file, not a running Agent. The Agent enforces the root in its local configuration file, controlled by the host's system administrator, and reports it at registration, replacing the stored value.
+- `files_agent_version` (String) Files.com Agent version reported by the Agent at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not update the running Agent.
 - `files_api_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Files.com direct link: API key used once to pair the remote server.
 - `google_cloud_storage_authentication_method` (String) Google Cloud Storage: Authentication method. Can be json, hmac, or oauth.
 - `google_cloud_storage_bucket` (String) Google Cloud Storage: Bucket Name
@@ -193,7 +193,7 @@ resource "files_remote_server" "example_remote_server" {
 - `google_cloud_storage_project_id` (String) Google Cloud Storage: Project ID
 - `google_cloud_storage_s3_compatible_access_key` (String) Google Cloud Storage: S3-compatible Access Key.
 - `google_cloud_storage_s3_compatible_secret_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Google Cloud Storage: S3-compatible secret key
-- `hostname` (String) Hostname or IP address
+- `hostname` (String) Hostname or IP address. For Agent Remote Servers, the Agent reports the hostname it connects from at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not change the running Agent.
 - `linode_access_key` (String) Linode: Access Key
 - `linode_bucket` (String) Linode: Bucket name
 - `linode_region` (String) Linode: region
@@ -204,7 +204,7 @@ resource "files_remote_server" "example_remote_server" {
 - `outbound_agent_id` (Number) Route traffic to outbound on a files-agent
 - `password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password, if needed.
 - `pin_to_site_region` (Boolean) If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.
-- `port` (Number) Port for remote server.
+- `port` (Number) Port for remote server. For Agent Remote Servers, the Agent reports its downstream proxy port at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not change the running Agent.
 - `private_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Private key, if needed.
 - `private_key_passphrase` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Passphrase for private key if needed.
 - `remote_server_credential_id` (Number) ID of Remote Server Credential, if applicable.

@@ -106,6 +106,7 @@ type siteDataSourceModel struct {
 	DomainLetsencryptChain                             types.String  `tfsdk:"domain_letsencrypt_chain"`
 	Email                                              types.String  `tfsdk:"email"`
 	Fedramp                                            types.Bool    `tfsdk:"fedramp"`
+	FilesComRemoteServerEnabled                        types.Bool    `tfsdk:"files_com_remote_server_enabled"`
 	FtpEnabled                                         types.Bool    `tfsdk:"ftp_enabled"`
 	ReplyToEmail                                       types.String  `tfsdk:"reply_to_email"`
 	NonSsoGroupsAllowed                                types.Bool    `tfsdk:"non_sso_groups_allowed"`
@@ -561,6 +562,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"fedramp": schema.BoolAttribute{
 				Description: "Are FedRAMP security restrictions enabled for this site?",
+				Computed:    true,
+			},
+			"files_com_remote_server_enabled": schema.BoolAttribute{
+				Description: "Allow other Files.com sites to use this site's API keys for native Files.com Remote Server connections? Defaults to true and applies to all keys and workspaces on this site. When false, new pairings and access through existing connections are rejected without revoking keys or deleting connections. Re-enabling permits access again with usable keys. Does not disable this site's connections to other sites, ordinary API access, or Connected Sites.",
 				Computed:    true,
 			},
 			"ftp_enabled": schema.BoolAttribute{
@@ -1178,6 +1183,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.DomainLetsencryptChain = types.StringValue(site.DomainLetsencryptChain)
 	state.Email = types.StringValue(site.Email)
 	state.Fedramp = types.BoolPointerValue(site.Fedramp)
+	state.FilesComRemoteServerEnabled = types.BoolPointerValue(site.FilesComRemoteServerEnabled)
 	state.FtpEnabled = types.BoolPointerValue(site.FtpEnabled)
 	state.ReplyToEmail = types.StringValue(site.ReplyToEmail)
 	state.NonSsoGroupsAllowed = types.BoolPointerValue(site.NonSsoGroupsAllowed)

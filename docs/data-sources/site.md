@@ -95,6 +95,7 @@ data "files_site" "example_site" {
 - `email` (String) Main email for this site
 - `email_footer_custom_text` (String) Custom footer text for system-generated emails (as Markdown). Supports standard strftime date/time patterns like %Y (4-digit year), %m (month), %d (day).
 - `fedramp` (Boolean) Are FedRAMP security restrictions enabled for this site?
+- `files_com_remote_server_enabled` (Boolean) Allow other Files.com sites to use this site's API keys for native Files.com Remote Server connections? Defaults to true and applies to all keys and workspaces on this site. When false, new pairings and access through existing connections are rejected without revoking keys or deleting connections. Re-enabling permits access again with usable keys. Does not disable this site's connections to other sites, ordinary API access, or Connected Sites.
 - `folder_permissions_groups_only` (Boolean) If true, permissions for this site must be bound to a group (not a user).
 - `ftp_enabled` (Boolean) Is FTP enabled?
 - `group_admins_can_add_users` (Boolean) Allow group admins to create users in their groups

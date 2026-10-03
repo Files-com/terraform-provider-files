@@ -118,18 +118,18 @@ data "files_remote_server" "example_remote_server" {
 - `filebase_access_key` (String) Filebase: Access Key.
 - `filebase_bucket` (String) Filebase: Bucket name
 - `files_agent_latest_version` (String) Latest available Files Agent version
-- `files_agent_permission_set` (String) Local permissions for files agent. read_only, write_only, or read_write
-- `files_agent_root` (String) Agent local root path
+- `files_agent_permission_set` (String) Agent file permissions: `read_only`, `write_only`, or `read_write`. Files.com writes this value as `permission_set` in the configuration file generated for this Remote Server. Setting it on Create or Update changes the generated file, not a running Agent. The Agent enforces the permissions in its local configuration file, controlled by the host's system administrator, and reports them at registration, replacing the stored value.
+- `files_agent_root` (String) Agent local root path. Files.com writes this value as `root` in the configuration file generated for this Remote Server. Setting it on Create or Update changes the generated file, not a running Agent. The Agent enforces the root in its local configuration file, controlled by the host's system administrator, and reports it at registration, replacing the stored value.
 - `files_agent_supports_push_updates` (Boolean) Files Agent supports receiving push updates
 - `files_agent_up_to_date` (Boolean) If true, the Files Agent is up to date.
-- `files_agent_version` (String) Files Agent version
+- `files_agent_version` (String) Files.com Agent version reported by the Agent at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not update the running Agent.
 - `files_api_key_prefix` (String) Files.com direct link: paired API key prefix.
 - `google_cloud_storage_authentication_method` (String) Google Cloud Storage: Authentication method. Can be json, hmac, or oauth.
 - `google_cloud_storage_bucket` (String) Google Cloud Storage: Bucket Name
 - `google_cloud_storage_oauth_scope` (String) Google Cloud Storage: OAuth scope. Can be https://www.googleapis.com/auth/devstorage.read_only or https://www.googleapis.com/auth/devstorage.read_write.
 - `google_cloud_storage_project_id` (String) Google Cloud Storage: Project ID
 - `google_cloud_storage_s3_compatible_access_key` (String) Google Cloud Storage: S3-compatible Access Key.
-- `hostname` (String) Hostname or IP address
+- `hostname` (String) Hostname or IP address. For Agent Remote Servers, the Agent reports the hostname it connects from at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not change the running Agent.
 - `linode_access_key` (String) Linode: Access Key
 - `linode_bucket` (String) Linode: Bucket name
 - `linode_region` (String) Linode: region
@@ -140,7 +140,7 @@ data "files_remote_server" "example_remote_server" {
 - `outbound_ip_addresses` (List of String) Current eligible public IP addresses for the selected Custom Domain. Any address in this list may originate a connection. Empty when no domain is selected or its configuration is unavailable. Only included in responses for a single Remote Server.
 - `pin_to_site_region` (Boolean) If true, we will ensure that all communications with this remote server are made through the primary region of the site.  This setting can also be overridden by a site-wide setting which will force it to true.
 - `pinned_region` (String) If set, all communications with this remote server are made through the provided region.
-- `port` (Number) Port for remote server.
+- `port` (Number) Port for remote server. For Agent Remote Servers, the Agent reports its downstream proxy port at each registration, replacing the stored value. This field is not included in the generated Agent configuration file. Setting it on Create or Update does not change the running Agent.
 - `remote_home_path` (String) Initial home folder on remote server
 - `remote_server_credential_id` (Number) ID of Remote Server Credential, if applicable.
 - `s3_assume_role_arn` (String) AWS IAM Role ARN for AssumeRole authentication.
