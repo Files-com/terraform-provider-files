@@ -4,12 +4,12 @@ page_title: "files_permission Data Source - files"
 subcategory: ""
 description: |-
   A Permission object represents a grant of access permission on a specific Path to a User or Group.
-  They can be optionally recursive or nonrecursive into the subfolders of that path.
+  A Permission can apply to the folder alone or recursively to its subfolders.
   A Permission may be applied to a User or a Group, but not both at once.
   The following table sets forth the available Permission types:
   | Permission | Access Level Granted | Automatically Also Includes/Implies Permissions |
   | --- | ----------- | --------------------- |
-  | `admin` | Able to manage Folder Behaviors, Permissions, and Notifications for the folder.  Also grants all other permissions. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |
+  | `admin` | Able to manage Folder Behaviors, Permissions, and Notifications for the folder. Also grants all other permissions. On a Custom Workspace's root folder, also grants Workspace Administrator access. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |
   | `bundle` | Able to share files and folders via a Bundle (share link). | `readonly`, `list` |
   | `full` | Able to read, write, move, delete, and rename files and folders. Also grants the ability to overwrite files upon upload. | `writeonly`, `readonly`, `list` |
   | `history` | Able to view the history of files and folders and to create email notifications for themselves. | `list` |
@@ -24,7 +24,7 @@ description: |-
 
 A Permission object represents a grant of access permission on a specific Path to a User or Group.
 
-They can be optionally recursive or nonrecursive into the subfolders of that path.
+A Permission can apply to the folder alone or recursively to its subfolders.
 
 A Permission may be applied to a User *or* a Group, but not both at once.
 
@@ -32,7 +32,7 @@ The following table sets forth the available Permission types:
 
 | Permission | Access Level Granted | Automatically Also Includes/Implies Permissions |
 | --- | ----------- | --------------------- |
-| `admin` | Able to manage Folder Behaviors, Permissions, and Notifications for the folder.  Also grants all other permissions. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |
+| `admin` | Able to manage Folder Behaviors, Permissions, and Notifications for the folder. Also grants all other permissions. On a Custom Workspace's root folder, also grants Workspace Administrator access. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |
 | `bundle` | Able to share files and folders via a Bundle (share link). | `readonly`, `list` |
 | `full` | Able to read, write, move, delete, and rename files and folders. Also grants the ability to overwrite files upon upload. | `writeonly`, `readonly`, `list` |
 | `history` | Able to view the history of files and folders and to create email notifications for themselves. | `list` |
@@ -60,14 +60,14 @@ data "files_permission" "example_permission" {
 ### Read-Only
 
 - `group_id` (Number) Group ID
-- `group_ids` (List of Number) Group IDs when this permission requires multiple groups
+- `group_ids` (List of Number) Group IDs when this Permission requires membership in every listed group.
 - `group_name` (String) Group name (if applicable)
 - `group_names` (List of String) Group names when this permission requires multiple groups
 - `partner_id` (Number) Partner ID (if applicable)
 - `partner_name` (String) Partner name (if applicable)
-- `path` (String) Path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
+- `path` (String) Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `permission` (String) Permission type.  See the table referenced in the documentation for an explanation of each permission.
-- `recursive` (Boolean) Recursive: does this permission apply to subfolders?
+- `recursive` (Boolean) Whether this Permission applies to subfolders. Must be true for `admin` Permissions.
 - `site_id` (Number) Site ID
 - `user_id` (Number) User ID
 - `username` (String) Username (if applicable)

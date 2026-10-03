@@ -83,10 +83,10 @@ func (r *permissionResource) Metadata(_ context.Context, req resource.MetadataRe
 
 func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Permission object represents a grant of access permission on a specific Path to a User or Group.\n\nThey can be optionally recursive or nonrecursive into the subfolders of that path.\n\nA Permission may be applied to a User *or* a Group, but not both at once.\n\nThe following table sets forth the available Permission types:\n\n| Permission | Access Level Granted | Automatically Also Includes/Implies Permissions |\n| --- | ----------- | --------------------- |\n| `admin` | Able to manage Folder Behaviors, Permissions, and Notifications for the folder.  Also grants all other permissions. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |\n| `bundle` | Able to share files and folders via a Bundle (share link). | `readonly`, `list` |\n| `full` | Able to read, write, move, delete, and rename files and folders. Also grants the ability to overwrite files upon upload. | `writeonly`, `readonly`, `list` |\n| `history` | Able to view the history of files and folders and to create email notifications for themselves. | `list` |\n| `list` | Able to list files and folders, but not download. | none |\n| `readonly` | Able to list, preview, and download files and folders. | `list` |\n| `readonly_site_admin` | Able to behave as a read-only Site Admin on a given child site. Only applies to child sites. | `readonly`, `list`, `history` |\n| `site_admin` | Able to behave as a Site Admin on a given child site. Only applies to child sites. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |\n| `writeonly` | Able to upload files, create folders and list subfolders the user has write permission to. | none |",
+		Description: "A Permission object represents a grant of access permission on a specific Path to a User or Group.\n\nA Permission can apply to the folder alone or recursively to its subfolders.\n\nA Permission may be applied to a User *or* a Group, but not both at once.\n\nThe following table sets forth the available Permission types:\n\n| Permission | Access Level Granted | Automatically Also Includes/Implies Permissions |\n| --- | ----------- | --------------------- |\n| `admin` | Able to manage Folder Behaviors, Permissions, and Notifications for the folder. Also grants all other permissions. On a Custom Workspace's root folder, also grants Workspace Administrator access. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |\n| `bundle` | Able to share files and folders via a Bundle (share link). | `readonly`, `list` |\n| `full` | Able to read, write, move, delete, and rename files and folders. Also grants the ability to overwrite files upon upload. | `writeonly`, `readonly`, `list` |\n| `history` | Able to view the history of files and folders and to create email notifications for themselves. | `list` |\n| `list` | Able to list files and folders, but not download. | none |\n| `readonly` | Able to list, preview, and download files and folders. | `list` |\n| `readonly_site_admin` | Able to behave as a read-only Site Admin on a given child site. Only applies to child sites. | `readonly`, `list`, `history` |\n| `site_admin` | Able to behave as a Site Admin on a given child site. Only applies to child sites. | `bundle`, `full`, `writeonly`, `readonly`, `list`, `history` |\n| `writeonly` | Able to upload files, create folders and list subfolders the user has write permission to. | none |",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
-				Description: "Path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
+				Description: "Folder path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
 				Required:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -129,7 +129,7 @@ func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				},
 			},
 			"group_ids": schema.ListAttribute{
-				Description: "Group IDs when this permission requires multiple groups",
+				Description: "Group IDs when this Permission requires membership in every listed group.",
 				Computed:    true,
 				Optional:    true,
 				ElementType: types.Int64Type,
@@ -160,7 +160,7 @@ func (r *permissionResource) Schema(_ context.Context, _ resource.SchemaRequest,
 				},
 			},
 			"recursive": schema.BoolAttribute{
-				Description: "Recursive: does this permission apply to subfolders?",
+				Description: "Whether this Permission applies to subfolders. Must be true for `admin` Permissions.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{

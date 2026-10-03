@@ -176,8 +176,8 @@ resource "files_user" "example_user" {
 - `time_zone` (String) User time zone
 - `user_home` (String) Home folder for FTP/SFTP. For users with the partner_root filesystem layout, this path is relative to the Partner root folder. In all other cases, it is an absolute path. Only applies to FTP and SFTP, and not any other interface.
 - `user_root` (String) If filesystem layout is user_root, this path is the root path the user is fixed to for all interfaces. If the filesystem layout is site_root or partner_root, this acts as a root folder only for FTP and SFTP (SFTP applicability also requires a site-wide setting to be set). For partner_root layout, this path is relative to the Partner root folder for all callers and blank opts out of an additional protocol root. In this situation, this path is not applied to the API, Desktop, or Web interface.
-- `workspace_admin` (Boolean) Is the user a Workspace administrator?  Applicable only to the workspace ID related to this user, if one is set.
-- `workspace_id` (Number) Workspace ID
+- `workspace_admin` (Boolean) Whether the user is an administrator of their own Custom Workspace. Does not reflect administration granted through Permissions.
+- `workspace_id` (Number) ID of the Workspace the user belongs to. 0 is the Default Workspace.
 
 ### Read-Only
 

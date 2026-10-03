@@ -566,7 +566,7 @@ func (r *userResource) resourceSchema() schema.Schema {
 				},
 			},
 			"workspace_admin": schema.BoolAttribute{
-				Description: "Is the user a Workspace administrator?  Applicable only to the workspace ID related to this user, if one is set.",
+				Description: "Whether the user is an administrator of their own Custom Workspace. Does not reflect administration granted through Permissions.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -574,7 +574,7 @@ func (r *userResource) resourceSchema() schema.Schema {
 				},
 			},
 			"workspace_id": schema.Int64Attribute{
-				Description: "Workspace ID",
+				Description: "ID of the Workspace the user belongs to. 0 is the Default Workspace.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
