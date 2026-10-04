@@ -42,11 +42,12 @@ type lockResourceModel struct {
 	Timeout              types.Int64  `tfsdk:"timeout"`
 	Recursive            types.Bool   `tfsdk:"recursive"`
 	Exclusive            types.Bool   `tfsdk:"exclusive"`
+	Token                types.String `tfsdk:"token"`
 	AllowAccessByAnyUser types.Bool   `tfsdk:"allow_access_by_any_user"`
+	ExpectedToken        types.String `tfsdk:"expected_token"`
 	Depth                types.String `tfsdk:"depth"`
 	Owner                types.String `tfsdk:"owner"`
 	Scope                types.String `tfsdk:"scope"`
-	Token                types.String `tfsdk:"token"`
 	Type                 types.String `tfsdk:"type"`
 	UserId               types.Int64  `tfsdk:"user_id"`
 	Username             types.String `tfsdk:"username"`
@@ -77,7 +78,7 @@ func (r *lockResource) Metadata(_ context.Context, req resource.MetadataRequest,
 
 func (r *lockResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Lock can be used by your custom-developed applications to implement file locking and concurrency features. These locks are advisory, meaning that while a lock can be created, it does not prevent other API requests from being processed concurrently.  You are responsible for checking locks prior to accessing a file.\n\nThe lock feature is designed to emulate the locking functionality provided by WebDAV. For a deeper understanding of how the lock mechanism works, refer to the WebDAV specification, which outlines how these endpoints function.\n\nFiles.com's WebDAV offering and desktop app leverage this locking API to manage concurrent file operations, ensuring consistency when multiple users or systems interact with the same files.  It is not used within the Files.com web interface.",
+		Description: "A Lock can be used by your custom-developed applications to implement file locking and concurrency features. These locks are advisory, meaning that while a lock can be created, it does not prevent other API requests from being processed concurrently.  You are responsible for checking locks prior to accessing a file.\n\nThe lock feature is designed to emulate the locking functionality provided by WebDAV. For a deeper understanding of how the lock mechanism works, refer to the WebDAV specification, which outlines how these endpoints function.\n\nFiles.com's WebDAV offering and desktop app leverage this locking API to manage concurrent file operations, ensuring consistency when multiple users or systems interact with the same files.  It is not used within the Files.com web interface.\n\nTo refresh only an existing lock or replace its token, send expected_token, token, and timeout to the create endpoint. Set token to expected_token to refresh, or to a different value to replace. The expected token must identify an existing, unexpired lock on that path, and the caller must have permission to modify it. The token check and update happen together; invalid replacement values leave the stored lock unchanged.\n\nA missing, expired, or mismatched expected token returns processing-failure/resource-locked with data.lock_token containing an active token on that path, or an empty string when none exists. Omitting expected_token retains the existing acquire-or-refresh behavior. Shared locks retain their existing semantics.",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
 				Description: "Path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
@@ -114,6 +115,15 @@ func (r *lockResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.RequiresReplace(),
 				},
 			},
+			"token": schema.StringAttribute{
+				Description: "Lock token.  Use to release lock.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifier.RequiresReplace(),
+				},
+			},
 			"allow_access_by_any_user": schema.BoolAttribute{
 				Description: "Can lock be modified by users other than its creator?",
 				Computed:    true,
@@ -121,6 +131,13 @@ func (r *lockResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 					boolplanmodifier.RequiresReplace(),
+				},
+			},
+			"expected_token": schema.StringAttribute{
+				Description: "Require this existing, unexpired token before refreshing or replacing a lock. Set token to the same value to refresh, or a different value to replace.",
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"depth": schema.StringAttribute{
@@ -132,10 +149,6 @@ func (r *lockResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"scope": schema.StringAttribute{
 				Computed: true,
-			},
-			"token": schema.StringAttribute{
-				Description: "Lock token.  Use to release lock.",
-				Computed:    true,
 			},
 			"type": schema.StringAttribute{
 				Computed: true,
@@ -168,6 +181,8 @@ func (r *lockResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	paramsLockCreate := files_sdk.LockCreateParams{}
 	paramsLockCreate.Path = plan.Path.ValueString()
+	paramsLockCreate.Token = plan.Token.ValueString()
+	paramsLockCreate.ExpectedToken = plan.ExpectedToken.ValueString()
 	if !plan.AllowAccessByAnyUser.IsNull() && !plan.AllowAccessByAnyUser.IsUnknown() {
 		paramsLockCreate.AllowAccessByAnyUser = plan.AllowAccessByAnyUser.ValueBoolPointer()
 	}
