@@ -6,6 +6,8 @@ description: |-
   A Form Field Set is a custom form to be used for bundle and inbox registrations.
   Each Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.
   Once created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.
+  Editing a field definition creates a replacement field with a new ID and preserves the original definition for existing registration answers. Unchanged fields and fields moved within the layout retain their IDs. Use the returned form_layout when submitting new answers or editing the form again.
+  Authenticated form field set responses include historical definitions in form_fields so existing answers can still be interpreted. Only IDs in form_layout are current fields. Forms embedded in Share Link and Inbox responses contain current definitions only.
 ---
 
 # files_form_field_set (Data Source)
@@ -15,6 +17,10 @@ A Form Field Set is a custom form to be used for bundle and inbox registrations.
 Each Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.
 
 Once created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.
+
+Editing a field definition creates a replacement field with a new ID and preserves the original definition for existing registration answers. Unchanged fields and fields moved within the layout retain their IDs. Use the returned form_layout when submitting new answers or editing the form again.
+
+Authenticated form field set responses include historical definitions in form_fields so existing answers can still be interpreted. Only IDs in form_layout are current fields. Forms embedded in Share Link and Inbox responses contain current definitions only.
 
 ## Example Usage
 
@@ -33,7 +39,7 @@ data "files_form_field_set" "example_form_field_set" {
 
 ### Read-Only
 
-- `form_fields` (Dynamic) Associated form fields
+- `form_fields` (Dynamic) Associated form field definitions; authenticated form field set responses include historical definitions, while form_layout identifies current fields
 - `form_layout` (List of Number) Layout of the form
 - `in_use` (Boolean) Form Field Set is in use by an active Inbox / Bundle / Inbox Registration / Bundle Registration
 - `skip_company` (Boolean) Any associated InboxRegistrations or BundleRegistrations can be saved without providing company
