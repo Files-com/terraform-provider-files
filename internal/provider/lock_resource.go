@@ -41,12 +41,12 @@ type lockResourceModel struct {
 	Path                 types.String `tfsdk:"path"`
 	Timeout              types.Int64  `tfsdk:"timeout"`
 	Recursive            types.Bool   `tfsdk:"recursive"`
+	Owner                types.String `tfsdk:"owner"`
 	Exclusive            types.Bool   `tfsdk:"exclusive"`
 	Token                types.String `tfsdk:"token"`
 	AllowAccessByAnyUser types.Bool   `tfsdk:"allow_access_by_any_user"`
 	ExpectedToken        types.String `tfsdk:"expected_token"`
 	Depth                types.String `tfsdk:"depth"`
-	Owner                types.String `tfsdk:"owner"`
 	Scope                types.String `tfsdk:"scope"`
 	Type                 types.String `tfsdk:"type"`
 	UserId               types.Int64  `tfsdk:"user_id"`
@@ -78,7 +78,7 @@ func (r *lockResource) Metadata(_ context.Context, req resource.MetadataRequest,
 
 func (r *lockResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Lock can be used by your custom-developed applications to implement file locking and concurrency features. These locks are advisory, meaning that while a lock can be created, it does not prevent other API requests from being processed concurrently.  You are responsible for checking locks prior to accessing a file.\n\nThe lock feature is designed to emulate the locking functionality provided by WebDAV. For a deeper understanding of how the lock mechanism works, refer to the WebDAV specification, which outlines how these endpoints function.\n\nFiles.com's WebDAV offering and desktop app leverage this locking API to manage concurrent file operations, ensuring consistency when multiple users or systems interact with the same files.  It is not used within the Files.com web interface.\n\nTo refresh only an existing lock or replace its token, send expected_token, token, and timeout to the create endpoint. Set token to expected_token to refresh, or to a different value to replace. The expected token must identify an existing, unexpired lock on that path, and the caller must have permission to modify it. The token check and update happen together; invalid replacement values leave the stored lock unchanged.\n\nA missing, expired, or mismatched expected token returns processing-failure/resource-locked with data.lock_token containing an active token on that path, or an empty string when none exists. Omitting expected_token retains the existing acquire-or-refresh behavior. Shared locks retain their existing semantics.",
+		Description: "A Lock can be used by your custom-developed applications to implement file locking and concurrency features. These locks are advisory, meaning that while a lock can be created, it does not prevent other API requests from being processed concurrently.  You are responsible for checking locks prior to accessing a file.\n\nThe lock feature is designed to emulate the locking functionality provided by WebDAV. For a deeper understanding of how the lock mechanism works, refer to the WebDAV specification, which outlines how these endpoints function.\n\nFiles.com's WebDAV offering and desktop app leverage this locking API to manage concurrent file operations, ensuring consistency when multiple users or systems interact with the same files.  It is not used within the Files.com web interface.\n\nThe optional owner parameter is a descriptive label, not the lock creator or a grant of permission. It can be set when creating a lock; refreshing a lock or replacing its token preserves it.\n\nTo refresh only an existing lock or replace its token, send expected_token, token, and timeout to the create endpoint. Set token to expected_token to refresh, or to a different value to replace. The expected token must identify an existing, unexpired lock on that path, and the caller must have permission to modify it. The token check and update happen together; invalid replacement values leave the stored lock unchanged.\n\nA missing, expired, or mismatched expected token returns processing-failure/resource-locked with data.lock_token containing an active token on that path, or an empty string when none exists. Omitting expected_token retains the existing acquire-or-refresh behavior. Shared locks retain their existing semantics.",
 		Attributes: map[string]schema.Attribute{
 			"path": schema.StringAttribute{
 				Description: "Path. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.",
@@ -104,6 +104,15 @@ func (r *lockResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
 					boolplanmodifier.RequiresReplace(),
+				},
+			},
+			"owner": schema.StringAttribute{
+				Description: "Arbitrary descriptive label for the lock. Does not change the lock creator or permissions.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+					stringplanmodifier.RequiresReplace(),
 				},
 			},
 			"exclusive": schema.BoolAttribute{
@@ -142,10 +151,6 @@ func (r *lockResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"depth": schema.StringAttribute{
 				Computed: true,
-			},
-			"owner": schema.StringAttribute{
-				Description: "Owner of the lock.  This can be any arbitrary string.",
-				Computed:    true,
 			},
 			"scope": schema.StringAttribute{
 				Computed: true,
@@ -192,6 +197,7 @@ func (r *lockResource) Create(ctx context.Context, req resource.CreateRequest, r
 	if !plan.Recursive.IsNull() && !plan.Recursive.IsUnknown() {
 		paramsLockCreate.Recursive = plan.Recursive.ValueBoolPointer()
 	}
+	paramsLockCreate.Owner = plan.Owner.ValueString()
 	paramsLockCreate.Timeout = plan.Timeout.ValueInt64()
 
 	if resp.Diagnostics.HasError() {

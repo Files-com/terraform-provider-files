@@ -4,6 +4,7 @@ resource "files_lock" "example_lock" {
   allow_access_by_any_user = false
   exclusive                = false
   recursive                = true
+  owner                    = "user"
   timeout                  = 1
 }
 
