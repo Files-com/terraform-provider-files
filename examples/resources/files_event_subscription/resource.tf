@@ -7,7 +7,7 @@ resource "files_event_subscription" "example_event_subscription" {
   message                 = "example"
   message_only            = true
   enabled                 = true
-  event_types             = ["example"]
+  event_types             = ["sync_run.failure.v1"]
   delivery_policy         = "example"
   event_target_ids        = [1]
 }
