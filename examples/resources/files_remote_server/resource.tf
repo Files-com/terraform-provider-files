@@ -50,6 +50,7 @@ resource "files_remote_server" "example_remote_server" {
   s3_compatible_endpoint                        = "mys3platform.com"
   s3_compatible_region                          = "us-east-1"
   s3_compatible_virtual_hosted_style            = true
+  s3_kms_key_id                                 = "arn:aws:kms:us-east-1:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"
   s3_region                                     = "us-east-1"
   server_certificate                            = "require_match"
   server_host_key                               = "[public key]"

@@ -3,7 +3,7 @@ module github.com/Files-com/terraform-provider-files
 go 1.27.1
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.3.297
+	github.com/Files-com/files-sdk-go/v3 v3.3.298
 	github.com/dnaeon/go-vcr v1.2.0
 	github.com/hashicorp/terraform-plugin-docs v0.24.0
 	github.com/hashicorp/terraform-plugin-framework v1.19.0
@@ -90,7 +90,7 @@ require (
 	golang.org/x/crypto v0.57.0 // indirect
 	golang.org/x/exp v0.0.0-20250506013437-ce4c2cf36ca6 // indirect
 	golang.org/x/mod v0.41.0 // indirect
-	golang.org/x/net v0.59.0 // indirect
+	golang.org/x/net v0.60.0 // indirect
 	golang.org/x/sync v0.23.0 // indirect
 	golang.org/x/sys v0.48.0 // indirect
 	golang.org/x/text v0.42.0 // indirect

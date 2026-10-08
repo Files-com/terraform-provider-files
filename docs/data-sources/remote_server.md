@@ -8,7 +8,7 @@ description: |-
   Not every attribute will apply to every remote server.
   FTP Servers require that you specify their hostname, port, username, password, and a value for ssl.  Optionally, provide server_certificate.
   SFTP Servers require that you specify their hostname, port, username, password or private_key, and a value for ssl.  Optionally, provide server_certificate, private_key_passphrase.
-  S3 Buckets require that you specify their s3_bucket name, and s3_region.  Optionally provide a aws_access_key, and aws_secret_key.  If you don't provide credentials, you will need to use AWS to grant us access to your bucket.
+  S3 Buckets require that you specify their s3_bucket name, and s3_region.  Optionally provide a aws_access_key, and aws_secret_key.  If you don't provide credentials, you will need to use AWS to grant us access to your bucket.  If your bucket requires a customer-managed KMS key, provide its ARN in s3_kms_key_id.
   S3-Compatible Buckets require that you specify s3_compatible_bucket, s3_compatible_endpoint, s3_compatible_access_key, and s3_compatible_secret_key. Optionally provide s3_compatible_virtual_hosted_style to use virtual-hosted-style URLs instead of path-style URLs.
   Google Cloud Storage requires that you specify google_cloud_storage_bucket, and then one of the following sets of authentication credentials, selected by google_cloud_storage_authentication_method (defaults to json):
   for JSON authentication: google_cloud_storage_project_id, and google_cloud_storage_credentials_jsonfor HMAC (S3-Compatible) authentication: google_cloud_storage_s3_compatible_access_key, and google_cloud_storage_s3_compatible_secret_keyfor OAuth authentication: google_cloud_storage_oauth_scope, then follow the auth_setup_link and login with Google
@@ -39,7 +39,7 @@ FTP Servers require that you specify their `hostname`, `port`, `username`, `pass
 
 SFTP Servers require that you specify their `hostname`, `port`, `username`, `password` or `private_key`, and a value for `ssl`.  Optionally, provide `server_certificate`, `private_key_passphrase`.
 
-S3 Buckets require that you specify their `s3_bucket` name, and `s3_region`.  Optionally provide a `aws_access_key`, and `aws_secret_key`.  If you don't provide credentials, you will need to use AWS to grant us access to your bucket.
+S3 Buckets require that you specify their `s3_bucket` name, and `s3_region`.  Optionally provide a `aws_access_key`, and `aws_secret_key`.  If you don't provide credentials, you will need to use AWS to grant us access to your bucket.  If your bucket requires a customer-managed KMS key, provide its ARN in `s3_kms_key_id`.
 
 S3-Compatible Buckets require that you specify `s3_compatible_bucket`, `s3_compatible_endpoint`, `s3_compatible_access_key`, and `s3_compatible_secret_key`. Optionally provide `s3_compatible_virtual_hosted_style` to use virtual-hosted-style URLs instead of path-style URLs.
 
@@ -152,6 +152,7 @@ data "files_remote_server" "example_remote_server" {
 - `s3_compatible_endpoint` (String) S3-compatible: endpoint
 - `s3_compatible_region` (String) S3-compatible: region
 - `s3_compatible_virtual_hosted_style` (Boolean) S3-compatible: If true, use virtual-hosted-style URLs instead of path-style URLs
+- `s3_kms_key_id` (String) ARN of the AWS KMS key that encrypts files written to the bucket (SSE-KMS). Leave blank unless your bucket requires a specific key.
 - `s3_region` (String) S3 region
 - `server_certificate` (String) Remote server certificate
 - `server_host_key` (String) Pinned SSH host key or OpenSSH host certificate for SFTP. If omitted, Files.com detects and stores a host key, preferring plain keys over certificates. With `server_certificate=require_match` (the default), the server must present the exact pinned key or certificate and prove it holds the matching private key. A pinned certificate is compared in full, so renewal can require updating `server_host_key` even when its underlying key is unchanged. Files.com does not check certificate CA signatures, principals, or validity periods. Certificate expiration alone does not end the pin. Update `server_host_key` to replace the pin.
