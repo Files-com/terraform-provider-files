@@ -11,6 +11,6 @@ resource "files_as2_partner" "example_as2_partner" {
   as2_station_id             = 1
   name                       = "AS2 Partner Name"
   uri                        = "example"
-  public_certificate         = "public_certificate"
+  public_certificate         = "example"
 }
 

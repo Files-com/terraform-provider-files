@@ -18,6 +18,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -38,10 +39,12 @@ type as2StationResource struct {
 
 type as2StationResourceModel struct {
 	Name                       types.String `tfsdk:"name"`
+	WorkspaceId                types.Int64  `tfsdk:"workspace_id"`
 	PublicCertificate          types.String `tfsdk:"public_certificate"`
 	PrivateKey                 types.String `tfsdk:"private_key"`
-	WorkspaceId                types.Int64  `tfsdk:"workspace_id"`
 	PrivateKeyPassword         types.String `tfsdk:"private_key_password"`
+	Pkcs12                     types.String `tfsdk:"pkcs12"`
+	Pkcs12Password             types.String `tfsdk:"pkcs12_password"`
 	Id                         types.Int64  `tfsdk:"id"`
 	Uri                        types.String `tfsdk:"uri"`
 	Domain                     types.String `tfsdk:"domain"`
@@ -91,14 +94,6 @@ func (r *as2StationResource) resourceSchema() schema.Schema {
 				Description: "The station's formal AS2 name.",
 				Required:    true,
 			},
-			"public_certificate": schema.StringAttribute{
-				Description: "Public certificate used for message security.",
-				Required:    true,
-			},
-			"private_key": schema.StringAttribute{
-				Required:  true,
-				WriteOnly: true,
-			},
 			"workspace_id": schema.Int64Attribute{
 				Description: "ID of the Workspace associated with this AS2 Station.",
 				Computed:    true,
@@ -108,9 +103,33 @@ func (r *as2StationResource) resourceSchema() schema.Schema {
 					int64planmodifier.RequiresReplace(),
 				},
 			},
+			"public_certificate": schema.StringAttribute{
+				Description: "Public certificate used for message security.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"private_key": schema.StringAttribute{
+				Description: "PEM-encoded private key matching public_certificate.",
+				Optional:    true,
+				WriteOnly:   true,
+			},
 			"private_key_password": schema.StringAttribute{
-				Optional:  true,
-				WriteOnly: true,
+				Description: "Password for the PEM-encoded private key.",
+				Optional:    true,
+				WriteOnly:   true,
+			},
+			"pkcs12": schema.StringAttribute{
+				Description: "Base64-encoded PKCS#12 (.pfx or .p12) file containing the identity's certificate and private key. Provide this instead of public_certificate and private_key.",
+				Optional:    true,
+				WriteOnly:   true,
+			},
+			"pkcs12_password": schema.StringAttribute{
+				Description: "Password for pkcs12. The file and password are used only for import; the extracted certificate and private key are stored as PEM.",
+				Optional:    true,
+				WriteOnly:   true,
 			},
 			"id": schema.Int64Attribute{
 				Description: "Id of the AS2 Station.",
@@ -188,6 +207,8 @@ func (r *as2StationResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsAs2StationCreate.PublicCertificate = plan.PublicCertificate.ValueString()
 	paramsAs2StationCreate.PrivateKey = config.PrivateKey.ValueString()
 	paramsAs2StationCreate.PrivateKeyPassword = config.PrivateKeyPassword.ValueString()
+	paramsAs2StationCreate.Pkcs12 = config.Pkcs12.ValueString()
+	paramsAs2StationCreate.Pkcs12Password = config.Pkcs12Password.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -276,6 +297,12 @@ func (r *as2StationResource) Update(ctx context.Context, req resource.UpdateRequ
 	}
 	if !config.PrivateKeyPassword.IsNull() && !config.PrivateKeyPassword.IsUnknown() {
 		paramsAs2StationUpdate["private_key_password"] = config.PrivateKeyPassword.ValueString()
+	}
+	if !config.Pkcs12.IsNull() && !config.Pkcs12.IsUnknown() {
+		paramsAs2StationUpdate["pkcs12"] = config.Pkcs12.ValueString()
+	}
+	if !config.Pkcs12Password.IsNull() && !config.Pkcs12Password.IsUnknown() {
+		paramsAs2StationUpdate["pkcs12_password"] = config.Pkcs12Password.ValueString()
 	}
 
 	if resp.Diagnostics.HasError() {

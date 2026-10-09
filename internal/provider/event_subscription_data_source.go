@@ -7,7 +7,6 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	event_subscription "github.com/Files-com/files-sdk-go/v3/eventsubscription"
 	"github.com/Files-com/terraform-provider-files/lib"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -116,7 +115,7 @@ func (r *eventSubscriptionDataSource) Schema(_ context.Context, _ datasource.Sch
 				ElementType: types.StringType,
 			},
 			"filter": schema.DynamicAttribute{
-				Description: "Structured event payload filter.",
+				Description: "Conditions on event fields that an event must meet to be delivered, keyed by dot-notation field path. All conditions must match.",
 				Computed:    true,
 			},
 			"delivery_policy": schema.DynamicAttribute{
@@ -184,7 +183,9 @@ func (r *eventSubscriptionDataSource) populateDataSourceModel(ctx context.Contex
 	state.Enabled = types.BoolPointerValue(eventSubscription.Enabled)
 	state.EventTypes, propDiags = types.ListValueFrom(ctx, types.StringType, eventSubscription.EventTypes)
 	diags.Append(propDiags...)
-	state.Filter, propDiags = lib.ToDynamic(ctx, path.Root("filter"), eventSubscription.Filter, state.Filter.UnderlyingValue())
+	filterValue := interface{}(eventSubscription.Filter)
+
+	state.Filter, propDiags = lib.ToDynamic(ctx, path.Root("filter"), filterValue, state.Filter)
 	diags.Append(propDiags...)
 	state.DeliveryPolicy, propDiags = lib.ToDynamic(ctx, path.Root("delivery_policy"), eventSubscription.DeliveryPolicy, state.DeliveryPolicy.UnderlyingValue())
 	diags.Append(propDiags...)

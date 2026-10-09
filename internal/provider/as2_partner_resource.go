@@ -47,7 +47,6 @@ type as2PartnerResourceModel struct {
 	As2StationId               types.Int64   `tfsdk:"as2_station_id"`
 	Name                       types.String  `tfsdk:"name"`
 	Uri                        types.String  `tfsdk:"uri"`
-	PublicCertificate          types.String  `tfsdk:"public_certificate"`
 	ServerCertificate          types.String  `tfsdk:"server_certificate"`
 	HttpAuthUsername           types.String  `tfsdk:"http_auth_username"`
 	AdditionalHttpHeaders      types.Dynamic `tfsdk:"additional_http_headers"`
@@ -55,7 +54,10 @@ type as2PartnerResourceModel struct {
 	MdnValidationLevel         types.String  `tfsdk:"mdn_validation_level"`
 	SignatureValidationLevel   types.String  `tfsdk:"signature_validation_level"`
 	EnableDedicatedIps         types.Bool    `tfsdk:"enable_dedicated_ips"`
+	PublicCertificate          types.String  `tfsdk:"public_certificate"`
 	HttpAuthPassword           types.String  `tfsdk:"http_auth_password"`
+	Pkcs12                     types.String  `tfsdk:"pkcs12"`
+	Pkcs12Password             types.String  `tfsdk:"pkcs12_password"`
 	Id                         types.Int64   `tfsdk:"id"`
 	WorkspaceId                types.Int64   `tfsdk:"workspace_id"`
 	HexPublicCertificateSerial types.String  `tfsdk:"hex_public_certificate_serial"`
@@ -111,10 +113,6 @@ func (r *as2PartnerResource) resourceSchema() schema.Schema {
 			},
 			"uri": schema.StringAttribute{
 				Description: "Public URI where we will send the AS2 messages (via HTTP/HTTPS).",
-				Required:    true,
-			},
-			"public_certificate": schema.StringAttribute{
-				Description: "Public certificate used for message security.",
 				Required:    true,
 			},
 			"server_certificate": schema.StringAttribute{
@@ -185,8 +183,26 @@ func (r *as2PartnerResource) resourceSchema() schema.Schema {
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"public_certificate": schema.StringAttribute{
+				Description: "Public certificate used for message security.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"http_auth_password": schema.StringAttribute{
 				Description: "Password to send to server for HTTP Authentication.",
+				Optional:    true,
+				WriteOnly:   true,
+			},
+			"pkcs12": schema.StringAttribute{
+				Description: "Base64-encoded PKCS#12 (.pfx or .p12) file containing the partner's public certificate. Provide this instead of public_certificate. Any private key in the file is discarded. A public-only file must contain exactly one certificate.",
+				Optional:    true,
+				WriteOnly:   true,
+			},
+			"pkcs12_password": schema.StringAttribute{
+				Description: "Password for pkcs12. The file and password are used only for import; the extracted public certificate is stored as PEM.",
 				Optional:    true,
 				WriteOnly:   true,
 			},
@@ -265,6 +281,8 @@ func (r *as2PartnerResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsAs2PartnerCreate.Name = plan.Name.ValueString()
 	paramsAs2PartnerCreate.Uri = plan.Uri.ValueString()
 	paramsAs2PartnerCreate.PublicCertificate = plan.PublicCertificate.ValueString()
+	paramsAs2PartnerCreate.Pkcs12 = config.Pkcs12.ValueString()
+	paramsAs2PartnerCreate.Pkcs12Password = config.Pkcs12Password.ValueString()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -382,6 +400,12 @@ func (r *as2PartnerResource) Update(ctx context.Context, req resource.UpdateRequ
 	}
 	if !config.PublicCertificate.IsNull() && !config.PublicCertificate.IsUnknown() {
 		paramsAs2PartnerUpdate["public_certificate"] = config.PublicCertificate.ValueString()
+	}
+	if !config.Pkcs12.IsNull() && !config.Pkcs12.IsUnknown() {
+		paramsAs2PartnerUpdate["pkcs12"] = config.Pkcs12.ValueString()
+	}
+	if !config.Pkcs12Password.IsNull() && !config.Pkcs12Password.IsUnknown() {
+		paramsAs2PartnerUpdate["pkcs12_password"] = config.Pkcs12Password.ValueString()
 	}
 
 	if resp.Diagnostics.HasError() {

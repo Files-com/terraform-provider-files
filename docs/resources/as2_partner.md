@@ -26,7 +26,7 @@ resource "files_as2_partner" "example_as2_partner" {
   as2_station_id             = 1
   name                       = "AS2 Partner Name"
   uri                        = "example"
-  public_certificate         = "public_certificate"
+  public_certificate         = "example"
 }
 ```
 
@@ -37,7 +37,6 @@ resource "files_as2_partner" "example_as2_partner" {
 
 - `as2_station_id` (Number) ID of the AS2 Station associated with this partner.
 - `name` (String) The partner's formal AS2 name.
-- `public_certificate` (String) Public certificate used for message security.
 - `uri` (String) Public URI where we will send the AS2 messages (via HTTP/HTTPS).
 
 ### Optional
@@ -50,6 +49,9 @@ resource "files_as2_partner" "example_as2_partner" {
 - `http_auth_password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password to send to server for HTTP Authentication.
 - `http_auth_username` (String) Username to send to server for HTTP Authentication.
 - `mdn_validation_level` (String) How should Files.com evaluate message transfer success based on a partner's MDN response?  This setting does not affect MDN storage; all MDNs received from a partner are always stored. `none`: MDN is stored for informational purposes only, a successful HTTPS transfer is a successful AS2 transfer. `weak`: Inspect the MDN for MIC and Disposition only. `normal`: `weak` plus validate MDN signature matches body, `strict`: `normal` but do not allow signatures from self-signed or incorrectly purposed certificates. `auto`: Automatically set the correct value for this setting based on next mdn received.
+- `pkcs12` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Base64-encoded PKCS#12 (.pfx or .p12) file containing the partner's public certificate. Provide this instead of public_certificate. Any private key in the file is discarded. A public-only file must contain exactly one certificate.
+- `pkcs12_password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password for pkcs12. The file and password are used only for import; the extracted public certificate is stored as PEM.
+- `public_certificate` (String) Public certificate used for message security.
 - `server_certificate` (String) Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? (This only applies to Outgoing AS2 message from Files.com to a Partner.)
 - `signature_validation_level` (String) Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: Automatically set the correct value for this setting based on next message received.
 

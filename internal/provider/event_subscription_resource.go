@@ -156,12 +156,10 @@ func (r *eventSubscriptionResource) Schema(_ context.Context, _ resource.SchemaR
 				},
 			},
 			"filter": schema.DynamicAttribute{
-				Description: "Structured event payload filter.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Dynamic{
-					dynamicplanmodifier.UseStateForUnknown(),
-				},
+				Description:   "Conditions on event fields that an event must meet to be delivered, keyed by dot-notation field path. All conditions must match.",
+				Computed:      true,
+				Optional:      true,
+				PlanModifiers: []planmodifier.Dynamic{dynamicplanmodifier.UseStateForUnknown()},
 			},
 			"delivery_policy": schema.DynamicAttribute{
 				Description: "Event Subscription delivery policy.",
@@ -232,8 +230,9 @@ func (r *eventSubscriptionResource) Create(ctx context.Context, req resource.Cre
 		diags = plan.EventTypes.ElementsAs(ctx, &paramsEventSubscriptionCreate.EventTypes, false)
 		resp.Diagnostics.Append(diags...)
 	}
-	createFilter, diags := lib.DynamicToInterface(ctx, path.Root("filter"), plan.Filter)
+	createFilter, diags := lib.SchemaAttributeToInterface(ctx, path.Root("filter"), plan.Filter)
 	resp.Diagnostics.Append(diags...)
+
 	paramsEventSubscriptionCreate.Filter = createFilter
 	createDeliveryPolicy, diags := lib.DynamicToInterface(ctx, path.Root("delivery_policy"), plan.DeliveryPolicy)
 	resp.Diagnostics.Append(diags...)
@@ -349,9 +348,12 @@ func (r *eventSubscriptionResource) Update(ctx context.Context, req resource.Upd
 		resp.Diagnostics.Append(diags...)
 		paramsEventSubscriptionUpdate["event_types"] = updateEventTypes
 	}
-	updateFilter, diags := lib.DynamicToInterface(ctx, path.Root("filter"), config.Filter)
-	resp.Diagnostics.Append(diags...)
-	paramsEventSubscriptionUpdate["filter"] = updateFilter
+	if !config.Filter.IsNull() && !config.Filter.IsUnknown() {
+		updateFilter, diags := lib.SchemaAttributeToInterface(ctx, path.Root("filter"), config.Filter)
+		resp.Diagnostics.Append(diags...)
+
+		paramsEventSubscriptionUpdate["filter"] = updateFilter
+	}
 	updateDeliveryPolicy, diags := lib.DynamicToInterface(ctx, path.Root("delivery_policy"), config.DeliveryPolicy)
 	resp.Diagnostics.Append(diags...)
 	paramsEventSubscriptionUpdate["delivery_policy"] = updateDeliveryPolicy
@@ -442,7 +444,9 @@ func (r *eventSubscriptionResource) populateResourceModel(ctx context.Context, e
 	state.Enabled = types.BoolPointerValue(eventSubscription.Enabled)
 	state.EventTypes, propDiags = types.ListValueFrom(ctx, types.StringType, eventSubscription.EventTypes)
 	diags.Append(propDiags...)
-	state.Filter, propDiags = lib.ToDynamic(ctx, path.Root("filter"), eventSubscription.Filter, state.Filter.UnderlyingValue())
+	filterValue := interface{}(eventSubscription.Filter)
+
+	state.Filter, propDiags = lib.ToDynamic(ctx, path.Root("filter"), filterValue, state.Filter)
 	diags.Append(propDiags...)
 	state.DeliveryPolicy, propDiags = lib.ToDynamic(ctx, path.Root("delivery_policy"), eventSubscription.DeliveryPolicy, state.DeliveryPolicy.UnderlyingValue())
 	diags.Append(propDiags...)

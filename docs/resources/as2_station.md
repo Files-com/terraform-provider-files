@@ -16,8 +16,7 @@ An AS2Station is a remote AS2 server that can send data into Files.com and recei
 resource "files_as2_station" "example_as2_station" {
   name               = "AS2 Station Name"
   workspace_id       = 1
-  public_certificate = "public_certificate"
-  private_key        = "private_key"
+  public_certificate = "example"
 }
 ```
 
@@ -26,17 +25,17 @@ resource "files_as2_station" "example_as2_station" {
 
 ### Required
 
-> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
-
 - `name` (String) The station's formal AS2 name.
-- `private_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments))
-- `public_certificate` (String) Public certificate used for message security.
 
 ### Optional
 
 > **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
 
-- `private_key_password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments))
+- `pkcs12` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Base64-encoded PKCS#12 (.pfx or .p12) file containing the identity's certificate and private key. Provide this instead of public_certificate and private_key.
+- `pkcs12_password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password for pkcs12. The file and password are used only for import; the extracted certificate and private key are stored as PEM.
+- `private_key` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) PEM-encoded private key matching public_certificate.
+- `private_key_password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password for the PEM-encoded private key.
+- `public_certificate` (String) Public certificate used for message security.
 - `workspace_id` (Number) ID of the Workspace associated with this AS2 Station.
 
 ### Read-Only
