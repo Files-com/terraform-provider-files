@@ -53,7 +53,7 @@ resource "files_as2_partner" "example_as2_partner" {
 - `pkcs12_password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password for pkcs12. The file and password are used only for import; the extracted public certificate is stored as PEM.
 - `public_certificate` (String) Public certificate used for message security.
 - `server_certificate` (String) Should we require that the remote HTTP server have a valid SSL Certificate for HTTPS? (This only applies to Outgoing AS2 message from Files.com to a Partner.)
-- `signature_validation_level` (String) Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: Automatically set the correct value for this setting based on next message received.
+- `signature_validation_level` (String) Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: A one-time starting state. The next message received is always accepted and switches this to `normal` if it carries a valid signature, or `none` if it does not.
 
 ### Read-Only
 

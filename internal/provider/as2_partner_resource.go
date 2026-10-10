@@ -165,7 +165,7 @@ func (r *as2PartnerResource) resourceSchema() schema.Schema {
 				},
 			},
 			"signature_validation_level": schema.StringAttribute{
-				Description: "Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: Automatically set the correct value for this setting based on next message received.",
+				Description: "Should Files.com require signatures on incoming AS2 messages?  `normal`: require that incoming messages are signed with a valid matching signature. `none`: Unsigned incoming messages are allowed. `auto`: A one-time starting state. The next message received is always accepted and switches this to `normal` if it carries a valid signature, or `none` if it does not.",
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
