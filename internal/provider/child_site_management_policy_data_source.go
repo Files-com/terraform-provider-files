@@ -68,7 +68,7 @@ func (r *childSiteManagementPolicyDataSource) Metadata(_ context.Context, req da
 
 func (r *childSiteManagementPolicyDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Child Site Management Policy is a centralized policy defined by a parent site to enforce consistent configurations across child sites. These policies allow parent sites to maintain control over specific aspects of their child sites' functionality and appearance.\n\nNon-default policies apply only to the child sites listed in `child_site_ids`, and each child site can be explicitly assigned to only one policy.\n\nOne policy can be designated as the default policy. It applies to every child site not explicitly assigned to another policy or listed in its `skip_child_site_ids`, including newly created child sites. Only a default policy can exclude child sites. The `value` field contains the policy configuration data, with the format varying based on the policy type. When a policy is active, its managed configurations are automatically enforced on applicable child sites, and attribute modifications are not permitted.",
+		Description: "A Child Site Management Policy is a centralized policy defined by a parent site to enforce consistent configurations across child sites. These policies allow parent sites to maintain control over specific aspects of their child sites' functionality and appearance.\n\nNon-default policies apply only to the child sites listed in `child_site_ids`, and each child site can be explicitly assigned to only one policy.\n\nOne policy can be designated as the default policy. It applies to every child site not explicitly assigned to another policy or listed in its `skip_child_site_ids`, including newly created child sites. Only a default policy can exclude child sites. The `value` field contains the policy configuration data, with the format varying based on the policy type. When a policy is active, its managed configurations are automatically enforced on applicable child sites, and attribute modifications are not permitted.\n\nOn a Child Site, listing policies returns only the policy covering that site. Each key in `value` identifies a managed setting, but its value is always `null`. Read non-secret effective setting values from the Child Site's own Site settings response.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Policy ID.",
@@ -87,7 +87,7 @@ func (r *childSiteManagementPolicyDataSource) Schema(_ context.Context, _ dataso
 				Computed:    true,
 			},
 			"value": schema.DynamicAttribute{
-				Description: "Policy configuration data. Settings policies accept site settings plus an optional `folder_behaviors` array for parent-managed root behaviors on child sites. For more information, refer to the Value Hash section of the developer documentation.",
+				Description: "Policy configuration data. On a Child Site, contains only managed setting names with null values. Settings policies accept site settings plus an optional `folder_behaviors` array for parent-managed root behaviors on child sites. For more information, refer to the Value Hash section of the developer documentation.",
 				Computed:    true,
 			},
 			"applied_child_site_ids": schema.ListAttribute{

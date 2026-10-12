@@ -412,7 +412,7 @@ resource "files_site" "example_site" {
 - `immutable_files_set_at` (String) Can files be modified?
 - `login_page_background_image` (String) Branded login page background
 - `logo` (String) Branded logo
-- `managed_site_settings` (Dynamic) List of site settings managed by the parent site
+- `managed_site_settings` (Dynamic) Site settings managed by the parent site. Each key identifies a managed setting, with a null value. Non-secret effective values are returned in their own Site settings fields.
 - `next_billing_amount` (String) Next billing amount
 - `next_billing_date` (String) Next billing date
 - `oncehub_link` (String) Link to scheduling a meeting with our Sales team

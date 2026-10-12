@@ -1755,7 +1755,7 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Computed:    true,
 			},
 			"managed_site_settings": schema.DynamicAttribute{
-				Description: "List of site settings managed by the parent site",
+				Description: "Site settings managed by the parent site. Each key identifies a managed setting, with a null value. Non-secret effective values are returned in their own Site settings fields.",
 				Computed:    true,
 			},
 			"next_billing_amount": schema.StringAttribute{

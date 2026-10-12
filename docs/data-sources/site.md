@@ -137,7 +137,7 @@ data "files_site" "example_site" {
 - `login_help_text` (String) Login help text
 - `login_page_background_image` (String) Branded login page background
 - `logo` (String) Branded logo
-- `managed_site_settings` (Dynamic) List of site settings managed by the parent site
+- `managed_site_settings` (Dynamic) Site settings managed by the parent site. Each key identifies a managed setting, with a null value. Non-secret effective values are returned in their own Site settings fields.
 - `max_prior_passwords` (Number) Number of prior passwords to disallow
 - `mcp_dcr_enabled` (Boolean) Is OAuth DCR (dynamic client registration) for MCP enabled?
 - `migrate_remote_server_sync_to_sync` (Boolean) If true, we will migrate all remote server syncs to the new Sync model.

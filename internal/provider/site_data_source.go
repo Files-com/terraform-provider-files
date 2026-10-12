@@ -742,7 +742,7 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed:    true,
 			},
 			"managed_site_settings": schema.DynamicAttribute{
-				Description: "List of site settings managed by the parent site",
+				Description: "Site settings managed by the parent site. Each key identifies a managed setting, with a null value. Non-secret effective values are returned in their own Site settings fields.",
 				Computed:    true,
 			},
 			"motd_text": schema.StringAttribute{
