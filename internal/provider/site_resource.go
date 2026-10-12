@@ -105,6 +105,7 @@ type siteResourceModel struct {
 	DisallowedCountries                                types.String  `tfsdk:"disallowed_countries"`
 	DisableAllAiFeatures                               types.Bool    `tfsdk:"disable_all_ai_features"`
 	DisableFilesCertificateGeneration                  types.Bool    `tfsdk:"disable_files_certificate_generation"`
+	FileActivityEventsEnabled                          types.Bool    `tfsdk:"file_activity_events_enabled"`
 	DisablePasswordReset                               types.Bool    `tfsdk:"disable_password_reset"`
 	Domain                                             types.String  `tfsdk:"domain"`
 	DomainHstsHeader                                   types.Bool    `tfsdk:"domain_hsts_header"`
@@ -782,6 +783,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"disable_files_certificate_generation": schema.BoolAttribute{
 				Description: "If set, Files.com will not set the CAA records required to generate future SSL certificates for this domain.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"file_activity_events_enabled": schema.BoolAttribute{
+				Description: "If true, file operations produce file_action.activity.v1 EventChannel events in all workspaces. Defaults to false; subscription filters and workspace access still control delivery.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -2001,6 +2010,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.As2MessageRetentionDays.IsNull() && !config.As2MessageRetentionDays.IsUnknown() {
 		paramsSiteUpdate["as2_message_retention_days"] = config.As2MessageRetentionDays.ValueInt64()
 	}
+	if !config.FileActivityEventsEnabled.IsNull() && !config.FileActivityEventsEnabled.IsUnknown() {
+		paramsSiteUpdate["file_activity_events_enabled"] = config.FileActivityEventsEnabled.ValueBool()
+	}
 	if !config.UsernameDisplay.IsNull() && !config.UsernameDisplay.IsUnknown() {
 		paramsSiteUpdate["username_display"] = config.UsernameDisplay.ValueString()
 	}
@@ -2508,6 +2520,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.DisableAllAiFeatures = types.BoolPointerValue(site.DisableAllAiFeatures)
 	state.DisableFilesCertificateGeneration = types.BoolPointerValue(site.DisableFilesCertificateGeneration)
 	state.DisableNotifications = types.BoolPointerValue(site.DisableNotifications)
+	state.FileActivityEventsEnabled = types.BoolPointerValue(site.FileActivityEventsEnabled)
 	state.DisablePasswordReset = types.BoolPointerValue(site.DisablePasswordReset)
 	state.Domain = types.StringValue(site.Domain)
 	state.DomainHstsHeader = types.BoolPointerValue(site.DomainHstsHeader)

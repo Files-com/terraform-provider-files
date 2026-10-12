@@ -27,6 +27,7 @@ data "files_event_delivery_attempt" "example_event_delivery_attempt" {
 
 ### Read-Only
 
+- `activity_notification_batch_id` (Number) Shared summary ID when this event is delivered in a Slack or Teams subfolder summary. All events in a summary share its delivery outcome.
 - `attempt_number` (Number) Number of delivery attempts made.
 - `created_at` (String) Delivery Attempt create date/time.
 - `delivered_at` (String) Successful delivery date/time.

@@ -125,7 +125,7 @@ func (r *eventTargetResource) Schema(_ context.Context, _ resource.SchemaRequest
 				},
 			},
 			"delivery_policy": schema.DynamicAttribute{
-				Description: "Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400.",
+				Description: "Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. Slack and Teams support delivery_mode (immediate or subfolder_summary), summary_path (empty string means root), and summary_delay (15–300 seconds, default 60). The summary applies to matching file activity under summary_path; other matching events retain immediate delivery.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Dynamic{

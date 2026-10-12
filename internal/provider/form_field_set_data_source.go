@@ -30,14 +30,15 @@ type formFieldSetDataSource struct {
 }
 
 type formFieldSetDataSourceModel struct {
-	Id          types.Int64   `tfsdk:"id"`
-	Title       types.String  `tfsdk:"title"`
-	FormLayout  types.List    `tfsdk:"form_layout"`
-	FormFields  types.Dynamic `tfsdk:"form_fields"`
-	SkipName    types.Bool    `tfsdk:"skip_name"`
-	SkipEmail   types.Bool    `tfsdk:"skip_email"`
-	SkipCompany types.Bool    `tfsdk:"skip_company"`
-	InUse       types.Bool    `tfsdk:"in_use"`
+	Id                             types.Int64   `tfsdk:"id"`
+	Title                          types.String  `tfsdk:"title"`
+	RequireCompleteMetadataCapture types.Bool    `tfsdk:"require_complete_metadata_capture"`
+	FormLayout                     types.List    `tfsdk:"form_layout"`
+	FormFields                     types.Dynamic `tfsdk:"form_fields"`
+	SkipName                       types.Bool    `tfsdk:"skip_name"`
+	SkipEmail                      types.Bool    `tfsdk:"skip_email"`
+	SkipCompany                    types.Bool    `tfsdk:"skip_company"`
+	InUse                          types.Bool    `tfsdk:"in_use"`
 }
 
 func (r *formFieldSetDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -65,7 +66,7 @@ func (r *formFieldSetDataSource) Metadata(_ context.Context, req datasource.Meta
 
 func (r *formFieldSetDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
 	resp.Schema = schema.Schema{
-		Description: "A Form Field Set is a custom form to be used for bundle and inbox registrations.\n\nEach Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.\n\nOnce created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.\n\nEditing a field definition creates a replacement field with a new ID and preserves the original definition for existing registration answers. Unchanged fields and fields moved within the layout retain their IDs. Use the returned form_layout when submitting new answers or editing the form again.\n\nAuthenticated form field set responses include historical definitions in form_fields so existing answers can still be interpreted. Only IDs in form_layout are current fields. Forms embedded in Share Link and Inbox responses contain current definitions only.",
+		Description: "A Form Field Set is a custom form to be used for bundle and inbox registrations.\n\nEach Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.\n\nOnce created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.\n\nCustom answers saved on a registration are saved as Custom Metadata on each file uploaded through that registration, with field labels as keys. This applies to existing registrations as well as new ones. Unanswered optional fields and values exceeding 1024 characters are omitted; the first 32 remaining answers in saved form-answer order are captured. Dates use YYYY-MM-DD. Existing answers with unavailable field definitions or unparseable dates are omitted. Built-in name, email, and company fields are excluded. Form answers take precedence over explicit upload metadata with matching keys, including keeping omitted answer labels absent.\n\nEnable require_complete_metadata_capture to reject answers exceeding these value or count limits instead of omitting them. Uploaded files use the labels and answers accepted at registration even if the form is edited later.\n\nEditing a field definition creates a replacement field with a new ID and preserves the original definition for existing registration answers. Unchanged fields and fields moved within the layout retain their IDs. Use the returned form_layout when submitting new answers or editing the form again.\n\nAuthenticated form field set responses include historical definitions in form_fields so existing answers can still be interpreted. Only IDs in form_layout are current fields. Forms embedded in Share Link and Inbox responses contain current definitions only.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Description: "Form field set id",
@@ -73,6 +74,10 @@ func (r *formFieldSetDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			},
 			"title": schema.StringAttribute{
 				Description: "Title to be displayed",
+				Computed:    true,
+			},
+			"require_complete_metadata_capture": schema.BoolAttribute{
+				Description: "Reject answers over 1024 characters or more than 32 answered custom fields to ensure complete file metadata capture",
 				Computed:    true,
 			},
 			"form_layout": schema.ListAttribute{
@@ -139,6 +144,7 @@ func (r *formFieldSetDataSource) populateDataSourceModel(ctx context.Context, fo
 
 	state.Id = types.Int64Value(formFieldSet.Id)
 	state.Title = types.StringValue(formFieldSet.Title)
+	state.RequireCompleteMetadataCapture = types.BoolPointerValue(formFieldSet.RequireCompleteMetadataCapture)
 	state.FormLayout, propDiags = types.ListValueFrom(ctx, types.Int64Type, formFieldSet.FormLayout)
 	diags.Append(propDiags...)
 	state.FormFields, propDiags = lib.ToDynamic(ctx, path.Root("form_fields"), formFieldSet.FormFields, state.FormFields.UnderlyingValue())

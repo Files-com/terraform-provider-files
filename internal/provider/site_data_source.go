@@ -100,6 +100,7 @@ type siteDataSourceModel struct {
 	DisableAllAiFeatures                               types.Bool    `tfsdk:"disable_all_ai_features"`
 	DisableFilesCertificateGeneration                  types.Bool    `tfsdk:"disable_files_certificate_generation"`
 	DisableNotifications                               types.Bool    `tfsdk:"disable_notifications"`
+	FileActivityEventsEnabled                          types.Bool    `tfsdk:"file_activity_events_enabled"`
 	DisablePasswordReset                               types.Bool    `tfsdk:"disable_password_reset"`
 	Domain                                             types.String  `tfsdk:"domain"`
 	DomainHstsHeader                                   types.Bool    `tfsdk:"domain_hsts_header"`
@@ -538,6 +539,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"disable_notifications": schema.BoolAttribute{
 				Description: "Are notifications disabled?",
+				Computed:    true,
+			},
+			"file_activity_events_enabled": schema.BoolAttribute{
+				Description: "If true, file operations produce file_action.activity.v1 EventChannel events in all workspaces. Defaults to false; subscription filters and workspace access still control delivery.",
 				Computed:    true,
 			},
 			"disable_password_reset": schema.BoolAttribute{
@@ -1177,6 +1182,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.DisableAllAiFeatures = types.BoolPointerValue(site.DisableAllAiFeatures)
 	state.DisableFilesCertificateGeneration = types.BoolPointerValue(site.DisableFilesCertificateGeneration)
 	state.DisableNotifications = types.BoolPointerValue(site.DisableNotifications)
+	state.FileActivityEventsEnabled = types.BoolPointerValue(site.FileActivityEventsEnabled)
 	state.DisablePasswordReset = types.BoolPointerValue(site.DisablePasswordReset)
 	state.Domain = types.StringValue(site.Domain)
 	state.DomainHstsHeader = types.BoolPointerValue(site.DomainHstsHeader)

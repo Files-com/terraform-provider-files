@@ -30,21 +30,22 @@ type eventDeliveryAttemptDataSource struct {
 }
 
 type eventDeliveryAttemptDataSourceModel struct {
-	Id                  types.Int64  `tfsdk:"id"`
-	EventRecordId       types.Int64  `tfsdk:"event_record_id"`
-	EventSubscriptionId types.Int64  `tfsdk:"event_subscription_id"`
-	EventTargetId       types.Int64  `tfsdk:"event_target_id"`
-	WorkspaceId         types.Int64  `tfsdk:"workspace_id"`
-	Status              types.String `tfsdk:"status"`
-	AttemptNumber       types.Int64  `tfsdk:"attempt_number"`
-	ResponseCode        types.Int64  `tfsdk:"response_code"`
-	ErrorMessage        types.String `tfsdk:"error_message"`
-	ResponseBody        types.String `tfsdk:"response_body"`
-	LatencyMs           types.Int64  `tfsdk:"latency_ms"`
-	DeliveredAt         types.String `tfsdk:"delivered_at"`
-	LastAttemptedAt     types.String `tfsdk:"last_attempted_at"`
-	NextAttemptAt       types.String `tfsdk:"next_attempt_at"`
-	CreatedAt           types.String `tfsdk:"created_at"`
+	Id                          types.Int64  `tfsdk:"id"`
+	EventRecordId               types.Int64  `tfsdk:"event_record_id"`
+	EventSubscriptionId         types.Int64  `tfsdk:"event_subscription_id"`
+	EventTargetId               types.Int64  `tfsdk:"event_target_id"`
+	ActivityNotificationBatchId types.Int64  `tfsdk:"activity_notification_batch_id"`
+	WorkspaceId                 types.Int64  `tfsdk:"workspace_id"`
+	Status                      types.String `tfsdk:"status"`
+	AttemptNumber               types.Int64  `tfsdk:"attempt_number"`
+	ResponseCode                types.Int64  `tfsdk:"response_code"`
+	ErrorMessage                types.String `tfsdk:"error_message"`
+	ResponseBody                types.String `tfsdk:"response_body"`
+	LatencyMs                   types.Int64  `tfsdk:"latency_ms"`
+	DeliveredAt                 types.String `tfsdk:"delivered_at"`
+	LastAttemptedAt             types.String `tfsdk:"last_attempted_at"`
+	NextAttemptAt               types.String `tfsdk:"next_attempt_at"`
+	CreatedAt                   types.String `tfsdk:"created_at"`
 }
 
 func (r *eventDeliveryAttemptDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -88,6 +89,10 @@ func (r *eventDeliveryAttemptDataSource) Schema(_ context.Context, _ datasource.
 			},
 			"event_target_id": schema.Int64Attribute{
 				Description: "Event Target ID",
+				Computed:    true,
+			},
+			"activity_notification_batch_id": schema.Int64Attribute{
+				Description: "Shared summary ID when this event is delivered in a Slack or Teams subfolder summary. All events in a summary share its delivery outcome.",
 				Computed:    true,
 			},
 			"workspace_id": schema.Int64Attribute{
@@ -173,6 +178,7 @@ func (r *eventDeliveryAttemptDataSource) populateDataSourceModel(ctx context.Con
 	state.EventRecordId = types.Int64Value(eventDeliveryAttempt.EventRecordId)
 	state.EventSubscriptionId = types.Int64Value(eventDeliveryAttempt.EventSubscriptionId)
 	state.EventTargetId = types.Int64Value(eventDeliveryAttempt.EventTargetId)
+	state.ActivityNotificationBatchId = types.Int64Value(eventDeliveryAttempt.ActivityNotificationBatchId)
 	state.WorkspaceId = types.Int64Value(eventDeliveryAttempt.WorkspaceId)
 	state.Status = types.StringValue(eventDeliveryAttempt.Status)
 	state.AttemptNumber = types.Int64Value(eventDeliveryAttempt.AttemptNumber)

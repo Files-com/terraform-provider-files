@@ -42,16 +42,17 @@ type formFieldSetResource struct {
 }
 
 type formFieldSetResourceModel struct {
-	Title       types.String  `tfsdk:"title"`
-	FormFields  types.Dynamic `tfsdk:"form_fields"`
-	SkipName    types.Bool    `tfsdk:"skip_name"`
-	SkipEmail   types.Bool    `tfsdk:"skip_email"`
-	SkipCompany types.Bool    `tfsdk:"skip_company"`
-	UserId      types.Int64   `tfsdk:"user_id"`
-	WorkspaceId types.Int64   `tfsdk:"workspace_id"`
-	Id          types.Int64   `tfsdk:"id"`
-	FormLayout  types.List    `tfsdk:"form_layout"`
-	InUse       types.Bool    `tfsdk:"in_use"`
+	Title                          types.String  `tfsdk:"title"`
+	RequireCompleteMetadataCapture types.Bool    `tfsdk:"require_complete_metadata_capture"`
+	FormFields                     types.Dynamic `tfsdk:"form_fields"`
+	SkipName                       types.Bool    `tfsdk:"skip_name"`
+	SkipEmail                      types.Bool    `tfsdk:"skip_email"`
+	SkipCompany                    types.Bool    `tfsdk:"skip_company"`
+	UserId                         types.Int64   `tfsdk:"user_id"`
+	WorkspaceId                    types.Int64   `tfsdk:"workspace_id"`
+	Id                             types.Int64   `tfsdk:"id"`
+	FormLayout                     types.List    `tfsdk:"form_layout"`
+	InUse                          types.Bool    `tfsdk:"in_use"`
 }
 
 func (r *formFieldSetResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -83,7 +84,7 @@ func (r *formFieldSetResource) Schema(_ context.Context, _ resource.SchemaReques
 
 func (r *formFieldSetResource) resourceSchema() schema.Schema {
 	return schema.Schema{
-		Description: "A Form Field Set is a custom form to be used for bundle and inbox registrations.\n\nEach Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.\n\nOnce created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.\n\nEditing a field definition creates a replacement field with a new ID and preserves the original definition for existing registration answers. Unchanged fields and fields moved within the layout retain their IDs. Use the returned form_layout when submitting new answers or editing the form again.\n\nAuthenticated form field set responses include historical definitions in form_fields so existing answers can still be interpreted. Only IDs in form_layout are current fields. Forms embedded in Share Link and Inbox responses contain current definitions only.",
+		Description: "A Form Field Set is a custom form to be used for bundle and inbox registrations.\n\nEach Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.\n\nOnce created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.\n\nCustom answers saved on a registration are saved as Custom Metadata on each file uploaded through that registration, with field labels as keys. This applies to existing registrations as well as new ones. Unanswered optional fields and values exceeding 1024 characters are omitted; the first 32 remaining answers in saved form-answer order are captured. Dates use YYYY-MM-DD. Existing answers with unavailable field definitions or unparseable dates are omitted. Built-in name, email, and company fields are excluded. Form answers take precedence over explicit upload metadata with matching keys, including keeping omitted answer labels absent.\n\nEnable require_complete_metadata_capture to reject answers exceeding these value or count limits instead of omitting them. Uploaded files use the labels and answers accepted at registration even if the form is edited later.\n\nEditing a field definition creates a replacement field with a new ID and preserves the original definition for existing registration answers. Unchanged fields and fields moved within the layout retain their IDs. Use the returned form_layout when submitting new answers or editing the form again.\n\nAuthenticated form field set responses include historical definitions in form_fields so existing answers can still be interpreted. Only IDs in form_layout are current fields. Forms embedded in Share Link and Inbox responses contain current definitions only.",
 		Attributes: map[string]schema.Attribute{
 			"title": schema.StringAttribute{
 				Description: "Title to be displayed",
@@ -91,6 +92,14 @@ func (r *formFieldSetResource) resourceSchema() schema.Schema {
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"require_complete_metadata_capture": schema.BoolAttribute{
+				Description: "Reject answers over 1024 characters or more than 32 answered custom fields to ensure complete file metadata capture",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"form_fields": schema.DynamicAttribute{
@@ -176,6 +185,9 @@ func (r *formFieldSetResource) Create(ctx context.Context, req resource.CreateRe
 	paramsFormFieldSetCreate := files_sdk.FormFieldSetCreateParams{}
 	paramsFormFieldSetCreate.UserId = config.UserId.ValueInt64()
 	paramsFormFieldSetCreate.Title = plan.Title.ValueString()
+	if !plan.RequireCompleteMetadataCapture.IsNull() && !plan.RequireCompleteMetadataCapture.IsUnknown() {
+		paramsFormFieldSetCreate.RequireCompleteMetadataCapture = plan.RequireCompleteMetadataCapture.ValueBoolPointer()
+	}
 	paramsFormFieldSetCreate.WorkspaceId = config.WorkspaceId.ValueInt64()
 	if !plan.SkipEmail.IsNull() && !plan.SkipEmail.IsUnknown() {
 		paramsFormFieldSetCreate.SkipEmail = plan.SkipEmail.ValueBoolPointer()
@@ -268,6 +280,9 @@ func (r *formFieldSetResource) Update(ctx context.Context, req resource.UpdateRe
 	if !config.Title.IsNull() && !config.Title.IsUnknown() {
 		paramsFormFieldSetUpdate["title"] = config.Title.ValueString()
 	}
+	if !config.RequireCompleteMetadataCapture.IsNull() && !config.RequireCompleteMetadataCapture.IsUnknown() {
+		paramsFormFieldSetUpdate["require_complete_metadata_capture"] = config.RequireCompleteMetadataCapture.ValueBool()
+	}
 	if !config.WorkspaceId.IsNull() && !config.WorkspaceId.IsUnknown() {
 		paramsFormFieldSetUpdate["workspace_id"] = config.WorkspaceId.ValueInt64()
 	}
@@ -357,6 +372,7 @@ func (r *formFieldSetResource) populateResourceModel(ctx context.Context, formFi
 
 	state.Id = types.Int64Value(formFieldSet.Id)
 	state.Title = types.StringValue(formFieldSet.Title)
+	state.RequireCompleteMetadataCapture = types.BoolPointerValue(formFieldSet.RequireCompleteMetadataCapture)
 	state.FormLayout, propDiags = types.ListValueFrom(ctx, types.Int64Type, formFieldSet.FormLayout)
 	diags.Append(propDiags...)
 	state.FormFields, propDiags = lib.ToDynamic(ctx, path.Root("form_fields"), formFieldSet.FormFields, state.FormFields.UnderlyingValue())
