@@ -131,7 +131,7 @@ resource "files_user" "example_user" {
 - `email` (String) User email address
 - `filesystem_layout` (String) File system layout
 - `ftp_permission` (Boolean) Can the user access with FTP/FTPS?
-- `grant_permission` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Permission to grant on the User Root upon user creation. Can be blank or `full`, `read`, `write`, `list`, `read+write`, or `list+write`
+- `grant_permission` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Permission to grant on the User Root upon creation, or on the Workspace root when the User Root is blank. For the Default Workspace, a blank User Root uses the site root. `admin` on a Custom Workspace's root grants Workspace Administrator access; on a subfolder it grants Folder Admin access. Can be blank or `admin`, `full`, `read`, `write`, `list`, `read+write`, `list+write`, or `history`.
 - `group_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Group ID to associate this user with.
 - `group_ids` (String) Comma-separated list of group IDs of which this user is a member
 - `header_text` (String) Text to display to the user in the header of the UI

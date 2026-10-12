@@ -672,7 +672,7 @@ func (r *userResource) resourceSchema() schema.Schema {
 				WriteOnly:   true,
 			},
 			"grant_permission": schema.StringAttribute{
-				Description: "Permission to grant on the User Root upon user creation. Can be blank or `full`, `read`, `write`, `list`, `read+write`, or `list+write`",
+				Description: "Permission to grant on the User Root upon creation, or on the Workspace root when the User Root is blank. For the Default Workspace, a blank User Root uses the site root. `admin` on a Custom Workspace's root grants Workspace Administrator access; on a subfolder it grants Folder Admin access. Can be blank or `admin`, `full`, `read`, `write`, `list`, `read+write`, `list+write`, or `history`.",
 				Optional:    true,
 				WriteOnly:   true,
 			},
