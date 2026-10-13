@@ -432,6 +432,7 @@ Read-Only:
 - `transform` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--transform))
 - `trigger_action` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_action))
 - `trigger_email` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_email))
+- `trigger_folder_creation` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_folder_creation))
 - `trigger_manual` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_manual))
 - `trigger_scheduled` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_scheduled))
 - `trigger_webhook` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_webhook))
@@ -1149,6 +1150,26 @@ Read-Only:
 - `limit` (Number)
 - `path_time_zone` (String)
 - `save_body` (Boolean)
+- `source` (String)
+
+
+
+<a id="nestedatt--definition--nodes--trigger_folder_creation"></a>
+### Nested Schema for `definition.nodes.trigger_folder_creation`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--trigger_folder_creation--config))
+- `id` (String) Unique node ID within the graph.
+
+<a id="nestedatt--definition--nodes--trigger_folder_creation--config"></a>
+### Nested Schema for `definition.nodes.trigger_folder_creation.config`
+
+Read-Only:
+
+- `exclude_pattern` (String)
+- `path` (String)
+- `path_time_zone` (String)
 - `source` (String)
 
 
