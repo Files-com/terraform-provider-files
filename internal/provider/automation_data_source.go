@@ -185,7 +185,8 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 												Computed: true,
 											},
 											"source": schema.StringAttribute{
-												Computed: true,
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Computed:    true,
 											},
 											"limit": schema.Int64Attribute{
 												Computed: true,
@@ -215,7 +216,8 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 												Computed: true,
 											},
 											"source": schema.StringAttribute{
-												Computed: true,
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Computed:    true,
 											},
 											"limit": schema.Int64Attribute{
 												Computed: true,
@@ -241,6 +243,9 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 										Description: "Configuration fields for this node type.",
 										Computed:    true,
 										Attributes: map[string]schema.Attribute{
+											"kind": schema.StringAttribute{
+												Computed: true,
+											},
 											"trigger_actions": schema.ListAttribute{
 												Computed:    true,
 												ElementType: types.StringType,
@@ -276,7 +281,8 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 												Computed: true,
 											},
 											"source": schema.StringAttribute{
-												Computed: true,
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Computed:    true,
 											},
 											"limit": schema.Int64Attribute{
 												Computed: true,
@@ -529,9 +535,10 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Computed:    true,
 											},
-											"destination": schema.StringAttribute{
-												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+											"destinations": schema.ListAttribute{
+												Description: "One or more destination path templates.",
 												Computed:    true,
+												ElementType: types.StringType,
 											},
 											"method": schema.StringAttribute{
 												Computed: true,
@@ -1188,6 +1195,9 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 										Description: "Configuration fields for this node type.",
 										Computed:    true,
 										Attributes: map[string]schema.Attribute{
+											"kind": schema.StringAttribute{
+												Computed: true,
+											},
 											"condition": schema.StringAttribute{
 												Description: "A bare Files TransformScript expression, no braces.",
 												Computed:    true,

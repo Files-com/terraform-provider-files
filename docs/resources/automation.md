@@ -814,6 +814,7 @@ Required:
 
 Optional:
 
+- `kind` (String)
 - `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--filter--config--on_error))
 
 <a id="nestedatt--definition--nodes--filter--config--on_error"></a>
@@ -993,7 +994,7 @@ Required:
 Optional:
 
 - `content` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
-- `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `destinations` (List of String) One or more destination path templates.
 - `headers` (Map of String)
 - `method` (String)
 - `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--import_file--config--on_error))
@@ -1321,6 +1322,7 @@ Required:
 Optional:
 
 - `exclude_pattern` (String)
+- `kind` (String)
 - `path` (String)
 - `path_time_zone` (String)
 - `source` (String)
@@ -1372,7 +1374,7 @@ Optional:
 - `limit` (Number)
 - `path` (String)
 - `path_time_zone` (String)
-- `source` (String)
+- `source` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 
 
 
@@ -1404,7 +1406,7 @@ Optional:
 - `schedule_id` (Number)
 - `schedule_time_zone` (String)
 - `schedule_times_of_day` (List of String)
-- `source` (String)
+- `source` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 
 
 
@@ -1428,7 +1430,7 @@ Optional:
 - `limit` (Number)
 - `path` (String)
 - `path_time_zone` (String)
-- `source` (String)
+- `source` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 
 
 
