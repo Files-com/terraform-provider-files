@@ -132,6 +132,7 @@ resource "files_site" "example_site" {
   group_admins_can_bypass_user_lifecycle_rules               = false
   group_admins_can_reset_passwords                           = false
   group_admins_can_set_user_password                         = false
+  child_site_folder_admins_can_see_parent_site_directory     = false
   bundle_recipient_blacklist_free_email_domains              = false
   bundle_recipient_blacklist_domains                         = ["example"]
   admins_bypass_locked_subfolders                            = false

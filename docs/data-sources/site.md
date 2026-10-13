@@ -67,6 +67,7 @@ data "files_site" "example_site" {
 - `calculate_file_checksums_md5` (Boolean) Calculate MD5 checksums for files?
 - `calculate_file_checksums_sha1` (Boolean) Calculate SHA1 checksums for files?
 - `calculate_file_checksums_sha256` (Boolean) Calculate SHA256 checksums for files?
+- `child_site_folder_admins_can_see_parent_site_directory` (Boolean) If true, administrators on this site's Child Sites, including Folder Admins, can list this site's Default Workspace users and groups and grant them folder permissions and notifications on Child Site paths.
 - `color2_left` (String) Page link and button color
 - `color2_link` (String) Top bar link color
 - `color2_text` (String) Page link and button color

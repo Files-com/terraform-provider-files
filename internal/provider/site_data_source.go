@@ -72,6 +72,7 @@ type siteDataSourceModel struct {
 	CalculateFileChecksumsMd5                          types.Bool    `tfsdk:"calculate_file_checksums_md5"`
 	CalculateFileChecksumsSha1                         types.Bool    `tfsdk:"calculate_file_checksums_sha1"`
 	CalculateFileChecksumsSha256                       types.Bool    `tfsdk:"calculate_file_checksums_sha256"`
+	ChildSiteFolderAdminsCanSeeParentSiteDirectory     types.Bool    `tfsdk:"child_site_folder_admins_can_see_parent_site_directory"`
 	UploadsViaEmailAuthentication                      types.Bool    `tfsdk:"uploads_via_email_authentication"`
 	Color2Left                                         types.String  `tfsdk:"color2_left"`
 	Color2Link                                         types.String  `tfsdk:"color2_link"`
@@ -427,6 +428,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"calculate_file_checksums_sha256": schema.BoolAttribute{
 				Description: "Calculate SHA256 checksums for files?",
+				Computed:    true,
+			},
+			"child_site_folder_admins_can_see_parent_site_directory": schema.BoolAttribute{
+				Description: "If true, administrators on this site's Child Sites, including Folder Admins, can list this site's Default Workspace users and groups and grant them folder permissions and notifications on Child Site paths.",
 				Computed:    true,
 			},
 			"uploads_via_email_authentication": schema.BoolAttribute{
@@ -1149,6 +1154,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.CalculateFileChecksumsMd5 = types.BoolPointerValue(site.CalculateFileChecksumsMd5)
 	state.CalculateFileChecksumsSha1 = types.BoolPointerValue(site.CalculateFileChecksumsSha1)
 	state.CalculateFileChecksumsSha256 = types.BoolPointerValue(site.CalculateFileChecksumsSha256)
+	state.ChildSiteFolderAdminsCanSeeParentSiteDirectory = types.BoolPointerValue(site.ChildSiteFolderAdminsCanSeeParentSiteDirectory)
 	state.UploadsViaEmailAuthentication = types.BoolPointerValue(site.UploadsViaEmailAuthentication)
 	state.Color2Left = types.StringValue(site.Color2Left)
 	state.Color2Link = types.StringValue(site.Color2Link)
