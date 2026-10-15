@@ -226,6 +226,7 @@ data "files_site" "example_site" {
 - `welcome_email_subject` (String) Include this email subject in welcome emails if enabled
 - `welcome_screen` (String) Does the welcome screen appear?
 - `windows_mode_ftp` (Boolean) Does FTP user Windows emulation mode?
+- `workspace_folder_admins_can_see_default_workspace_directory` (Boolean) If true, Workspace Administrators and Folder Admins in a Custom Workspace can list the Default Workspace users and groups that have permissions in that Workspace and choose them as Email Notification recipients.
 
 ### JSON property details
 
