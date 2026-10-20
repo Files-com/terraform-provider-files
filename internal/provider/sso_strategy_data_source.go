@@ -223,11 +223,11 @@ func (r *ssoStrategyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Computed:    true,
 			},
 			"provision_readonly_site_admin_groups": schema.StringAttribute{
-				Description: "Comma-separated list of group names whose members will be created as Read-Only Site Admins.",
+				Description: "Comma-separated list of group names used to grant or remove Read-Only Site Admin access for users on this SSO provider. When this list is nonempty and a directory sync changes a user's group membership, membership in at least one listed group grants this access; membership in none removes it, including access granted manually. Directory syncs include SCIM requests from any provider on the site, LDAP syncs, and sign-ins that set the user's groups from the identity provider. Membership changes made any other way, including through the web app, API, SDKs, or CLI, do not affect administrator access.",
 				Computed:    true,
 			},
 			"provision_site_admin_groups": schema.StringAttribute{
-				Description: "Comma-separated list of group names whose members will be created as Site Admins.",
+				Description: "Comma-separated list of group names used to grant or remove Site Admin access for users on this SSO provider. When this list is nonempty and a directory sync changes a user's group membership, membership in at least one listed group grants this access; membership in none removes it, including access granted manually. Directory syncs include SCIM requests from any provider on the site, LDAP syncs, and sign-ins that set the user's groups from the identity provider. Membership changes made any other way, including through the web app, API, SDKs, or CLI, do not affect administrator access.",
 				Computed:    true,
 			},
 			"provision_group_admin_groups": schema.StringAttribute{
