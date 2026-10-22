@@ -8,23 +8,19 @@ With universal SFTP, AS2, HTTPS, and 50+ native connectors backed by military-gr
 
 ## Introduction
 
-Terraform lets you manage your Files.com resources using Infrastructure-as-Code (IaC) processes.
+The Files.com provider lets teams already using Terraform or OpenTofu manage Site resources through their existing configuration workflow. This reference documents provider configuration, resources, data sources, and import syntax for both tools.
 
-Terraform users define and configure data center infrastructure using a declarative configuration language known as Terraform Configuration Language, or optionally JSON.
-
-The Files.com Provider for Terraform allows you to automate the management of your Files.com site, including resources such as users, groups, folders, share links, inboxes, automations, security, encryption, access protocols, permissions, remote servers, remote syncs, data governance, and more.
+[Configuration as Code](https://www.files.com/docs/configuration-as-code) explains which resources code should own, how to adopt an existing Site, and how accounts, Groups, folders, and permissions work together in a complete provisioning example.
 
 ### Requirements
 
-- [Terraform](https://www.terraform.io/downloads.html) 0.13+
+- [Terraform](https://developer.hashicorp.com/terraform/install) 0.13 or later, or [OpenTofu](https://opentofu.org/docs/intro/install/)
 
 ### Installation
 
-Require the provider in your Terraform configuration:
+Require the provider in your existing configuration. Supply the API key through the `FILES_API_KEY` environment variable in your shell or deployment system's secret configuration, and keep it out of committed files. Replace `MYSITE.files.com` with your intended Site address:
 
 ```hcl title="Getting started"
-## Specify that we want to use the Files.com Provider
-
 terraform {
   required_providers {
     files = {
@@ -33,10 +29,7 @@ terraform {
   }
 }
 
-## Configure the Files.com Provider with your API Key and site URL
-
 provider "files" {
-  api_key = "YOUR_API_KEY"
   endpoint_override = "https://MYSITE.files.com"
 }
 ```
@@ -51,25 +44,18 @@ Authenticating with an API key is the recommended authentication method for most
 the method used in the examples on this site.
 
 To use the Terraform provider with an API Key, first generate an API key from the [web
-interface](https://www.files.com/docs/sdk-and-apis/api-keys) or [via the API or an
+interface](https://www.files.com/docs/security/authentication-and-credentials/api-keys) or [via the API or an
 SDK](/rest/resources/developers/api-keys).
 
-Note that when using a user-specific API key, if the user is an administrator, you will have full
-access to the entire API. If the user is not an administrator, you will only be able to access files
-that user can access, and no access will be granted to site administration functions in the API.
+The key's permission scope and Workspace limit the operations it can perform. A user key also follows its account's permissions, including any delegated administrative access. A successful connection does not grant additional access. [API Keys](https://www.files.com/docs/security/authentication-and-credentials/api-keys) explains how to choose the scope and manage the credential's lifecycle.
 
-```hcl title="Example Configuration"
-provider "files" {
-  api_key = "YOUR_API_KEY"
-}
-```
+Supply the key through your deployment system's secret configuration or the environment:
 
 ```shell title="Environment Variable"
-## Alternatively, you can set the API key as an environment variable.
 export FILES_API_KEY="YOUR_API_KEY"
 ```
 
-Don't forget to replace the placeholder, `YOUR_API_KEY`, with your actual API key.
+Replace `YOUR_API_KEY` with the key value. Do not commit it to a configuration file.
 
 ## Configuration
 
@@ -147,7 +133,7 @@ This behavior applies across:
 - Folder and file lookup operations
 - Automations and workflows
 
-See also: [Case Sensitivity Documentation](https://www.files.com/docs/files-and-folders/case-sensitivity/)
+See also: [Case Sensitivity Documentation](https://www.files.com/docs/files-and-folders/file-system-semantics/case-sensitivity)
 
 ### Slashes
 
