@@ -88,7 +88,6 @@ resource "files_user" "example_user" {
   skip_welcome_screen                          = true
   ssl_required                                 = "always_require"
   sso_strategy_id                              = 1
-  subscribe_to_newsletter                      = true
   require_2fa                                  = "always_require"
   tags                                         = "example"
   time_zone                                    = "Pacific Time (US & Canada)"
@@ -171,7 +170,6 @@ resource "files_user" "example_user" {
 - `skip_welcome_screen` (Boolean) Skip Welcome page in the UI?
 - `ssl_required` (String) SSL required setting
 - `sso_strategy_id` (Number) SSO (Single Sign On) strategy ID for the user, if applicable.
-- `subscribe_to_newsletter` (Boolean) Is the user subscribed to the newsletter?
 - `tags` (String) Comma-separated list of Tags for this user. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.
 - `time_zone` (String) User time zone
 - `user_home` (String) Home folder for FTP/SFTP. For users with the partner_root filesystem layout, this path is relative to the Partner root folder. In all other cases, it is an absolute path. Only applies to FTP and SFTP, and not any other interface.

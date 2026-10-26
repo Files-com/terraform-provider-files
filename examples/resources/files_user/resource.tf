@@ -52,7 +52,6 @@ resource "files_user" "example_user" {
   skip_welcome_screen                          = true
   ssl_required                                 = "always_require"
   sso_strategy_id                              = 1
-  subscribe_to_newsletter                      = true
   require_2fa                                  = "always_require"
   tags                                         = "example"
   time_zone                                    = "Pacific Time (US & Canada)"

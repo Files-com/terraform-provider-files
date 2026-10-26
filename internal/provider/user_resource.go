@@ -98,7 +98,6 @@ type userResourceModel struct {
 	SkipWelcomeScreen                      types.Bool              `tfsdk:"skip_welcome_screen"`
 	SslRequired                            types.String            `tfsdk:"ssl_required"`
 	SsoStrategyId                          types.Int64             `tfsdk:"sso_strategy_id"`
-	SubscribeToNewsletter                  types.Bool              `tfsdk:"subscribe_to_newsletter"`
 	Tags                                   types.String            `tfsdk:"tags"`
 	TimeZone                               types.String            `tfsdk:"time_zone"`
 	UserRoot                               types.String            `tfsdk:"user_root"`
@@ -616,14 +615,6 @@ func (r *userResource) resourceSchema() schema.Schema {
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
-			"subscribe_to_newsletter": schema.BoolAttribute{
-				Description: "Is the user subscribed to the newsletter?",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
-				},
-			},
 			"tags": schema.StringAttribute{
 				Description: "Comma-separated list of Tags for this user. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.",
 				Computed:    true,
@@ -990,9 +981,6 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 	paramsUserCreate.SslRequired = paramsUserCreate.SslRequired.Enum()[plan.SslRequired.ValueString()]
 	paramsUserCreate.SsoStrategyId = plan.SsoStrategyId.ValueInt64()
-	if !plan.SubscribeToNewsletter.IsNull() && !plan.SubscribeToNewsletter.IsUnknown() {
-		paramsUserCreate.SubscribeToNewsletter = plan.SubscribeToNewsletter.ValueBoolPointer()
-	}
 	paramsUserCreate.Require2fa = paramsUserCreate.Require2fa.Enum()[plan.Require2fa.ValueString()]
 	paramsUserCreate.Tags = plan.Tags.ValueString()
 	paramsUserCreate.TimeZone = plan.TimeZone.ValueString()
@@ -1283,9 +1271,6 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.SsoStrategyId.IsNull() && !config.SsoStrategyId.IsUnknown() {
 		paramsUserUpdate["sso_strategy_id"] = config.SsoStrategyId.ValueInt64()
 	}
-	if !config.SubscribeToNewsletter.IsNull() && !config.SubscribeToNewsletter.IsUnknown() {
-		paramsUserUpdate["subscribe_to_newsletter"] = config.SubscribeToNewsletter.ValueBool()
-	}
 	if !config.Require2fa.IsNull() && !config.Require2fa.IsUnknown() {
 		paramsUserUpdate["require_2fa"] = config.Require2fa.ValueString()
 	}
@@ -1535,7 +1520,6 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.SkipWelcomeScreen = types.BoolPointerValue(user.SkipWelcomeScreen)
 	state.SslRequired = types.StringValue(user.SslRequired)
 	state.SsoStrategyId = types.Int64Value(user.SsoStrategyId)
-	state.SubscribeToNewsletter = types.BoolPointerValue(user.SubscribeToNewsletter)
 	state.ExternallyManaged = types.BoolPointerValue(user.ExternallyManaged)
 	state.Tags = types.StringValue(user.Tags)
 	state.TimeZone = types.StringValue(user.TimeZone)

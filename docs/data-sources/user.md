@@ -126,7 +126,6 @@ data "files_user" "example_user" {
 - `skip_welcome_screen` (Boolean) Skip Welcome page in the UI?
 - `ssl_required` (String) SSL required setting
 - `sso_strategy_id` (Number) SSO (Single Sign On) strategy ID for the user, if applicable.
-- `subscribe_to_newsletter` (Boolean) Is the user subscribed to the newsletter?
 - `tags` (String) Comma-separated list of Tags for this user. Tags are used for other features, such as UserLifecycleRules, which can target specific tags.  Tags must only contain lowercase letters, numbers, and hyphens.
 - `time_zone` (String) User time zone
 - `type_of_2fa` (String) Type(s) of 2FA methods in use, for programmatic use.  Will be either `sms`, `totp`, `webauthn`, `yubi`, `email`, or multiple values sorted alphabetically and joined by an underscore.  Does not specify whether user has more than one of a given method.

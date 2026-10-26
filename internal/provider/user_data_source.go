@@ -109,7 +109,6 @@ type userDataSourceModel struct {
 	SkipWelcomeScreen                      types.Bool   `tfsdk:"skip_welcome_screen"`
 	SslRequired                            types.String `tfsdk:"ssl_required"`
 	SsoStrategyId                          types.Int64  `tfsdk:"sso_strategy_id"`
-	SubscribeToNewsletter                  types.Bool   `tfsdk:"subscribe_to_newsletter"`
 	ExternallyManaged                      types.Bool   `tfsdk:"externally_managed"`
 	Tags                                   types.String `tfsdk:"tags"`
 	TimeZone                               types.String `tfsdk:"time_zone"`
@@ -465,10 +464,6 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "SSO (Single Sign On) strategy ID for the user, if applicable.",
 				Computed:    true,
 			},
-			"subscribe_to_newsletter": schema.BoolAttribute{
-				Description: "Is the user subscribed to the newsletter?",
-				Computed:    true,
-			},
 			"externally_managed": schema.BoolAttribute{
 				Description: "Is this user managed by a SsoStrategy?",
 				Computed:    true,
@@ -697,7 +692,6 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.SkipWelcomeScreen = types.BoolPointerValue(user.SkipWelcomeScreen)
 	state.SslRequired = types.StringValue(user.SslRequired)
 	state.SsoStrategyId = types.Int64Value(user.SsoStrategyId)
-	state.SubscribeToNewsletter = types.BoolPointerValue(user.SubscribeToNewsletter)
 	state.ExternallyManaged = types.BoolPointerValue(user.ExternallyManaged)
 	state.Tags = types.StringValue(user.Tags)
 	state.TimeZone = types.StringValue(user.TimeZone)
