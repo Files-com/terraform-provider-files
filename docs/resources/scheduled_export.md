@@ -44,7 +44,7 @@ resource "files_scheduled_export" "example_scheduled_export" {
 ### Optional
 
 - `disabled` (Boolean) If true, this scheduled export will not run.
-- `export_options` (Dynamic) Report-specific options. `permission_audit` supports `group_by` with `user` or `path`.
+- `export_options` (Dynamic) Options for the report selected by export_type.
 - `holiday_region` (String) Optional holiday region used by the scheduled export schedule.
 - `interval` (String) If trigger is `daily`, this specifies how often to run the scheduled export.
 - `recurring_day` (Number) If trigger is `daily`, this selects the day number inside the chosen interval.
@@ -66,6 +66,36 @@ resource "files_scheduled_export" "example_scheduled_export" {
 - `last_run_at` (String) Most recent scheduled attempt time, including attempts that failed validation.
 - `report_name` (String) Human-readable report name.
 - `updated_at` (String) Last update time.
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027. Until then, JSON-encoded configuration remains supported with a deprecation warning.
+
+#### export_options
+
+Options for the report selected by export_type. Each field names the report that uses it. share_link_audit and group_membership_audit have no options. Other keys are stored but not used.
+
+- `path` (string, optional) folder_size_audit only. Folder to start from. Omitted or null uses the root folder.
+- `max_depth` (integer, optional) folder_size_audit only. Number of folder levels below path to include. Null or a value below 1 uses 10. A numeric string such as `"50"` is also accepted and stored as sent.
+- `size_threshold` (integer, optional) folder_size_audit only. Minimum folder size to include, in GB. Null or a value below 1 uses 1. A numeric string such as `"50"` is also accepted and stored as sent.
+- `all_folders` (boolean, optional) folder_size_audit only. If enabled, every folder up to max_depth is included regardless of size_threshold. Use `true` or `false`. Any value other than `false` or `null` enables it, including integers such as `0` and `1`.
+- `group_by` (string, optional) permission_audit only. Groups rows by `user` or `path`. Null and other values use `user`.
+
+#### Migrating JSON-encoded configuration
+
+Replace `jsonencode(...)` with native HCL as in the examples below.
+
+```hcl
+# Legacy JSON encoding
+export_options = jsonencode({
+  group_by = "user"
+})
+
+# Native HCL, same keys and nesting
+export_options = {
+  group_by = "user"
+}
+```
 
 ## Import
 

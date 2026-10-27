@@ -7,7 +7,6 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	event_target "github.com/Files-com/files-sdk-go/v3/eventtarget"
 	"github.com/Files-com/terraform-provider-files/lib"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -94,8 +93,9 @@ func (r *eventTargetDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Computed:    true,
 			},
 			"config": schema.DynamicAttribute{
-				Description: "Event Target configuration. Folder targets accept path and format (json or csv).",
+				Description: "Event Target configuration. Fields depend on target_type.",
 				Computed:    true,
+				Sensitive:   true,
 			},
 			"delivery_policy": schema.DynamicAttribute{
 				Description: "Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. Slack and Teams support delivery_mode (immediate or subfolder_summary), summary_path (empty string means root), and summary_delay (15–300 seconds, default 60). The summary applies to matching file activity under summary_path; other matching events retain immediate delivery.",
@@ -152,9 +152,9 @@ func (r *eventTargetDataSource) populateDataSourceModel(ctx context.Context, eve
 	state.WorkspaceId = types.Int64Value(eventTarget.WorkspaceId)
 	state.ApplyToAllWorkspaces = types.BoolPointerValue(eventTarget.ApplyToAllWorkspaces)
 	state.Enabled = types.BoolPointerValue(eventTarget.Enabled)
-	state.Config, propDiags = lib.ToDynamic(ctx, path.Root("config"), eventTarget.Config, state.Config.UnderlyingValue())
+	state.Config, propDiags = lib.ToDynamic(ctx, path.Root("config"), eventTarget.Config, nil)
 	diags.Append(propDiags...)
-	state.DeliveryPolicy, propDiags = lib.ToDynamic(ctx, path.Root("delivery_policy"), eventTarget.DeliveryPolicy, state.DeliveryPolicy.UnderlyingValue())
+	state.DeliveryPolicy, propDiags = lib.ToDynamic(ctx, path.Root("delivery_policy"), eventTarget.DeliveryPolicy, nil)
 	diags.Append(propDiags...)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), eventTarget.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(

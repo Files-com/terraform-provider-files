@@ -23,9 +23,9 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
     Authorization = "Bearer YOUR_TOKEN"
   }
   sending_active                           = true
-  generic_payload_type                     = "example"
+  generic_payload_type                     = "json_newline"
   file_destination_path                    = "example"
-  file_format                              = "example"
+  file_format                              = "json"
   file_interval_minutes                    = 1
   azure_dcr_immutable_id                   = "example"
   azure_stream_name                        = "example"
@@ -44,7 +44,7 @@ resource "files_siem_http_destination" "example_siem_http_destination" {
   email_send_enabled                       = true
   exavault_api_request_send_enabled        = true
   settings_change_send_enabled             = true
-  destination_type                         = "example"
+  destination_type                         = "generic"
   destination_url                          = "example"
 }
 ```
@@ -133,13 +133,13 @@ These properties will move from Dynamic to typed schemas in a major provider rel
 
 Additional HTTP Headers included in calls to the destination URL
 
-| Field in `additional_headers` | Type | Required | Description |
-| --- | --- | --- | --- |
-| `[key]` | string | No |  |
+- `[key]` (string, optional)
+
+Terraform treats `additional_headers` as sensitive because it can hold secrets. A root module output that returns it needs `sensitive = true`.
 
 #### Migrating JSON-encoded configuration
 
-Replace `jsonencode(...)` with native HCL, keeping the same keys and nesting.
+Replace `jsonencode(...)` with native HCL as in the examples below.
 
 ```hcl
 # Legacy JSON encoding

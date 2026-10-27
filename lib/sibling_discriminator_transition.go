@@ -7,6 +7,7 @@ import (
 	"math"
 	"reflect"
 	"slices"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -58,11 +59,29 @@ func (v deprecatedSiblingDiscriminatorValueValidator) ValidateDynamic(ctx contex
 		return
 	}
 
-	legacy, diags := siblingDiscriminatorValueIsLegacy(req.Path, value, selector.ValueString(), v.variants)
+	// A JSON string can hold either format, so the decoded value decides which one it is.
+	decoded, encoded := decodeJSONString(value)
+	legacy, diags := siblingDiscriminatorValueIsLegacy(req.Path, decoded, selector.ValueString(), v.variants)
 	resp.Diagnostics.Append(diags...)
-	if legacy && !resp.Diagnostics.HasError() {
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	// Type guidance reads the selected behavior's settings: the wrapped value, or a legacy value in the same shape.
+	variant, _ := findJSONSchemaVariant(v.variants, selector.ValueString())
+	settings := decoded
+	if !legacy {
+		settings = decoded.(map[string]interface{})[variant.Name]
+	}
+	guidance := valueTypeGuidance(variant.Name, settings, variant.ValueTypes)
+	switch {
+	case legacy:
 		detail := fmt.Sprintf("Wrap value under %q: value = { %s = <documented %s value> }. Remove jsonencode(...) if present. %s", selector.ValueString(), selector.ValueString(), selector.ValueString(), v.warning)
-		resp.Diagnostics.AddAttributeWarning(req.Path, fmt.Sprintf("Deprecated %s format: %s", v.rule, selector.ValueString()), detail)
+		resp.Diagnostics.AddAttributeWarning(req.Path, fmt.Sprintf("Deprecated %s format: %s", v.rule, selector.ValueString()), strings.TrimSpace(detail+" "+guidance))
+	case encoded:
+		detail := fmt.Sprintf("Remove jsonencode(...) and write the value as native HCL, keeping it under %q. %s", selector.ValueString(), v.warning)
+		resp.Diagnostics.AddAttributeWarning(req.Path, "Deprecated JSON encoding: "+v.rule, strings.TrimSpace(detail+" "+guidance))
+	case guidance != "":
+		resp.Diagnostics.AddAttributeWarning(req.Path, "Typed values expected: "+v.rule, guidance+" "+v.warning)
 	}
 }
 
@@ -93,19 +112,8 @@ func DynamicSiblingDiscriminatorUpdateToAPI(ctx context.Context, attributePath p
 	if diags.HasError() || priorValue == nil {
 		return value, diags
 	}
-
-	valueObject, valueIsObject := value.(map[string]interface{})
-	priorObject, priorIsObject := priorValue.(map[string]interface{})
-	if !valueIsObject || !priorIsObject {
-		return value, diags
-	}
 	variant, _ := findJSONSchemaVariant(variants, selector)
-	for key := range priorObject {
-		if _, exists := valueObject[key]; !exists && slices.Contains(variant.Writable, key) {
-			valueObject[key] = nil
-		}
-	}
-	return valueObject, diags
+	return nullRemovedWritableFields(value, priorValue, variant), diags
 }
 
 func APIToDynamicSiblingDiscriminator(ctx context.Context, attributePath path.Path, source any, selector string, variants []JSONSchemaVariant, prior types.Dynamic) (types.Dynamic, diag.Diagnostics) {
@@ -256,7 +264,7 @@ func configuredDynamicStateValue(source any, sourceExists bool, configured any, 
 			}
 		}
 		result := make(map[string]interface{}, len(configuredValue))
-		if slices.Contains(mapPaths, currentPath) {
+		if apiKeyedPath(mapPaths, currentPath) {
 			for key, entry := range sourceValue {
 				result[key] = entry
 			}
@@ -290,6 +298,16 @@ func configuredDynamicStateValue(source any, sourceExists bool, configured any, 
 		}
 		return result, true
 	default:
+		// An object configured as JSON text, such as a key file, keeps its text while the API value plus the write-only
+		// fields that the API omits still matches it. Only text above a write-only field is decoded.
+		if text, ok := configured.(string); ok && sourceExists && slices.ContainsFunc(writeOnly, func(writeOnlyPath string) bool { return strings.HasPrefix(writeOnlyPath, currentPath+".") }) {
+			var decoded any
+			if json.Unmarshal([]byte(text), &decoded) == nil {
+				if merged, _ := configuredDynamicStateValue(source, true, decoded, writeOnly, currentPath, mapPaths...); reflect.DeepEqual(merged, decoded) {
+					return configured, true
+				}
+			}
+		}
 		if sourceExists {
 			return source, true
 		}

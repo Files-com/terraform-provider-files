@@ -31,7 +31,10 @@ resource "files_event_subscription" "example_event_subscription" {
       exists = true
     }
   }
-  delivery_policy         = "example"
+  delivery_policy         = {
+    max_attempts        = 3
+    retry_delay_minutes = [5, 30]
+  }
   event_target_ids        = [1]
 }
 ```
@@ -46,7 +49,7 @@ resource "files_event_subscription" "example_event_subscription" {
 ### Optional
 
 - `apply_to_all_workspaces` (Boolean) If true, this default-workspace subscription applies to events from all workspaces.
-- `delivery_policy` (Dynamic) Event Subscription delivery policy.
+- `delivery_policy` (Dynamic) Event Subscription delivery policy. Overrides retry settings from each Event Target's delivery policy.
 - `enabled` (Boolean) Whether this Event Subscription can dispatch events.
 - `event_channel_id` (Number) Event Channel ID
 - `event_target_ids` (List of Number) Event Target IDs this subscription sends to.
@@ -62,6 +65,45 @@ resource "files_event_subscription" "example_event_subscription" {
 - `created_at` (String) Event Subscription create date/time.
 - `id` (Number) Event Subscription ID
 - `updated_at` (String) Event Subscription update date/time.
+
+### JSON property details
+
+Except for `filter`, these properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027. Until then, JSON-encoded configuration remains supported with a deprecation warning.
+
+#### filter
+
+Stays Dynamic in every release because its values vary. Native HCL and JSON-encoded strings are both accepted, with no deprecation warning.
+
+Each key is the full dot-notation path to a field in the event JSON that webhook targets receive, such as `payload.status`. Paths can reference top-level fields such as `type`, `workspace_id`, and `occurred_at`, actor fields such as `actor.username`, human-readable fields such as `human.title`, and event-specific fields under `payload`, such as `payload.status`, `payload.sync_name`, or `payload.automation_name`. Fields under `payload` vary by event type. Every segment of a path must name an object key.
+Each value is the condition that field must meet: a plain value, an array of values, or an object with exactly one operator key. A plain value works the same as `equals`, and an array works the same as `one_of`.
+An event matches only when every condition matches. An empty object matches every event of the subscription's event types.
+
+- `[key]` (string or number or boolean or list of values or object, optional)
+
+#### delivery_policy
+
+Retry settings for deliveries from this subscription. Each omitted key uses the value from the Event Target's delivery_policy, and then the default.
+
+- `max_attempts` (integer, optional) Maximum delivery attempts, including the first attempt. A value below 1 uses the default of 5. Null works like an omitted key.
+- `retry_delay_minutes` (list of integers, optional) Minutes to wait before each retry. The last value is used for any later retries, so a list with one value applies it to every retry. An empty list uses the default of [1,5,15,60,180]. Null works like an omitted key.
+
+#### Migrating JSON-encoded configuration
+
+Replace `jsonencode(...)` with native HCL as in the examples below.
+
+```hcl
+# Legacy JSON encoding
+delivery_policy = jsonencode({
+  max_attempts        = 3
+  retry_delay_minutes = [5, 30]
+})
+
+# Native HCL, same keys and nesting
+delivery_policy = {
+  max_attempts        = 3
+  retry_delay_minutes = [5, 30]
+}
+```
 
 ## Import
 

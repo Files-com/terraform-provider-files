@@ -50,13 +50,11 @@ These properties will move from Dynamic to typed schemas in a major provider rel
 
 Mount point mappings for the desktop app. Keys must be a single uppercase Windows drive letter other than A, B, or C, and values are Files.com paths to mount there. Empty mappings are allowed only when disable_drive_mounting is true.
 
-| Field in `mount_mappings` | Type | Required | Description |
-| --- | --- | --- | --- |
-| `[key]` | string | No |  |
+- `[key]` (string, optional)
 
 #### Migrating JSON-encoded configuration
 
-Replace `jsonencode(...)` with native HCL, keeping the same keys and nesting.
+Replace `jsonencode(...)` with native HCL as in the examples below.
 
 ```hcl
 # Legacy JSON encoding

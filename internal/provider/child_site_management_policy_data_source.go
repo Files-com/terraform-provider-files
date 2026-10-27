@@ -7,12 +7,12 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	child_site_management_policy "github.com/Files-com/files-sdk-go/v3/childsitemanagementpolicy"
 	"github.com/Files-com/terraform-provider-files/lib"
-
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
-
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -35,6 +35,7 @@ type childSiteManagementPolicyDataSourceModel struct {
 	Name                types.String  `tfsdk:"name"`
 	Description         types.String  `tfsdk:"description"`
 	Value               types.Dynamic `tfsdk:"value"`
+	ValueFormat         types.String  `tfsdk:"value_format"`
 	AppliedChildSiteIds types.List    `tfsdk:"applied_child_site_ids"`
 	SkipChildSiteIds    types.List    `tfsdk:"skip_child_site_ids"`
 	ChildSiteIds        types.List    `tfsdk:"child_site_ids"`
@@ -86,9 +87,17 @@ func (r *childSiteManagementPolicyDataSource) Schema(_ context.Context, _ dataso
 				Description: "Description for this policy.",
 				Computed:    true,
 			},
+			"value_format": schema.StringAttribute{
+				Description: "Set to `typed` to return each folder_behaviors item under the name in its behavior field, as files_child_site_management_policy.value will on March 1, 2027. Only that nesting changes. The typed release also returns settings stored as numeric or true/false strings as numbers and booleans, and returns every setting, with null for settings that the policy does not manage. Omit this attribute to keep the current output until then.",
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("typed"),
+				},
+			},
 			"value": schema.DynamicAttribute{
-				Description: "Policy configuration data. On a Child Site, contains only managed setting names with null values. Settings policies accept site settings plus an optional `folder_behaviors` array for parent-managed root behaviors on child sites. For more information, refer to the Value Hash section of the developer documentation.",
+				Description: "Policy value. Set `value_format = \"typed\"` to return each folder_behaviors item under the name in its behavior field, as the typed schema does.",
 				Computed:    true,
+				Sensitive:   true,
 			},
 			"applied_child_site_ids": schema.ListAttribute{
 				Description: "IDs of child sites that this policy has been applied to. This field is read-only.",
@@ -158,7 +167,17 @@ func (r *childSiteManagementPolicyDataSource) populateDataSourceModel(ctx contex
 	state.PolicyType = types.StringValue(childSiteManagementPolicy.PolicyType)
 	state.Name = types.StringValue(childSiteManagementPolicy.Name)
 	state.Description = types.StringValue(childSiteManagementPolicy.Description)
-	state.Value, propDiags = lib.ToDynamic(ctx, path.Root("value"), childSiteManagementPolicy.Value, state.Value.UnderlyingValue())
+	if state.ValueFormat.ValueString() == "typed" {
+		valueValue := interface{}(childSiteManagementPolicy.Value)
+		valueValue, valueValueTransformDiags0 := lib.WrapDiscriminatedUnionAtPath(ctx, path.Root("value"), valueValue, []string{"folder_behaviors"}, "behavior", []lib.JSONSchemaVariant{{Name: "malware_scanning", Value: "malware_scanning"}, {Name: "file_expiration", Value: "file_expiration"}, {Name: "limit_file_extensions", Value: "limit_file_extensions"}, {Name: "limit_file_regex", Value: "limit_file_regex"}})
+		diags.Append(valueValueTransformDiags0...)
+		state.Value, propDiags = lib.ToDynamic(ctx, path.Root("value"), valueValue, nil)
+	} else {
+		if lib.JSONValueHas(childSiteManagementPolicy.Value, "folder_behaviors[].behavior") {
+			diags.AddAttributeWarning(path.Root("value"), "Value Output Changes March 1, 2027", "On March 1, 2027, `value.folder_behaviors` output will switch to the typed shape, which moves each item under the name in its behavior field, for example `.value.folder_behaviors[0].file_expiration.value` instead of `.value.folder_behaviors[0].value`. Set `value_format = \"typed\"` now to use the new output before the change.")
+		}
+		state.Value, propDiags = lib.ToDynamic(ctx, path.Root("value"), childSiteManagementPolicy.Value, nil)
+	}
 	diags.Append(propDiags...)
 	state.AppliedChildSiteIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, childSiteManagementPolicy.AppliedChildSiteIds)
 	diags.Append(propDiags...)

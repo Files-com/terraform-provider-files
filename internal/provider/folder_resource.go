@@ -124,7 +124,7 @@ func (r *folderResource) resourceSchema() schema.Schema {
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.Dynamic{
-					lib.DeprecatedJSONEncoding("files_folder.custom_metadata", "custom_metadata = {\n  department = \"finance\"\n}", "March 1, 2027"),
+					lib.DeprecatedJSONEncoding("files_folder.custom_metadata", "custom_metadata = {\n  department = \"finance\"\n}", "March 1, 2027", nil, nil),
 				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),

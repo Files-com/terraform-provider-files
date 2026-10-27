@@ -75,13 +75,11 @@ These properties will move from Dynamic to typed schemas in a major provider rel
 
 Additional HTTP Headers for outgoing message sent to this partner.
 
-| Field in `additional_http_headers` | Type | Required | Description |
-| --- | --- | --- | --- |
-| `[key]` | string | No |  |
+- `[key]` (string, optional)
 
 #### Migrating JSON-encoded configuration
 
-Replace `jsonencode(...)` with native HCL, keeping the same keys and nesting.
+Replace `jsonencode(...)` with native HCL as in the examples below.
 
 ```hcl
 # Legacy JSON encoding

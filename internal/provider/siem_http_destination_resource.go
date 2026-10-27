@@ -195,7 +195,7 @@ func (r *siemHttpDestinationResource) resourceSchema() schema.Schema {
 				Optional:    true,
 				Sensitive:   true,
 				Validators: []validator.Dynamic{
-					lib.DeprecatedJSONEncoding("files_siem_http_destination.additional_headers", "additional_headers = {\n  Authorization = \"Bearer YOUR_TOKEN\"\n}", "March 1, 2027"),
+					lib.DeprecatedJSONEncoding("files_siem_http_destination.additional_headers", "additional_headers = {\n  Authorization = \"Bearer YOUR_TOKEN\"\n}", "March 1, 2027", nil, nil),
 				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),

@@ -20,6 +20,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -79,6 +80,11 @@ func (r *shareGroupResource) Schema(_ context.Context, _ resource.SchemaRequest,
 			"members": schema.DynamicAttribute{
 				Description: "A list of share group members",
 				Required:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_share_group.members", "members = [\n  {\n    name    = \"John Doe\"\n    company = \"Acme Ltd\"\n    email   = \"johndoe@example.com\"\n  }\n]", "March 1, 2027", map[string]string{"": "list", "[]": "object"}, nil),
+					lib.RejectJSONNull("Files.com ignores a null members value and keeps the current members. Set members to the list of members instead of jsonencode(null)."),
+					lib.RejectEmptyList("Files.com needs at least one member: it rejects an empty members list on create and ignores it on update. Set members to the list of members."),
+				},
 			},
 			"notes": schema.StringAttribute{
 				Description: "Additional notes of the share group",
@@ -126,14 +132,17 @@ func (r *shareGroupResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsShareGroupCreate.UserId = plan.UserId.ValueInt64()
 	paramsShareGroupCreate.Notes = plan.Notes.ValueString()
 	paramsShareGroupCreate.Name = plan.Name.ValueString()
-	paramsShareGroupCreate.Members, diags = lib.DynamicToStringMapSlice(ctx, path.Root("members"), plan.Members)
+	createMembers, diags := lib.JSONValueToAPI(ctx, path.Root("members"), config.Members)
+	resp.Diagnostics.Append(diags...)
+	paramsShareGroupCreate.Members, diags = lib.JSONToStringMapSlice(path.Root("members"), createMembers)
 	resp.Diagnostics.Append(diags...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	shareGroup, err := r.client.Create(paramsShareGroupCreate, files_sdk.WithContext(ctx))
+	var responseBody []byte
+	shareGroup, err := r.client.Create(paramsShareGroupCreate, files_sdk.WithContext(ctx), lib.CaptureResponseBody(&responseBody))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Creating Files ShareGroup",
@@ -142,7 +151,7 @@ func (r *shareGroupResource) Create(ctx context.Context, req resource.CreateRequ
 		return
 	}
 
-	diags = r.populateResourceModel(ctx, shareGroup, &plan)
+	diags = r.populateResourceModel(ctx, shareGroup, &plan, responseBody)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -163,7 +172,8 @@ func (r *shareGroupResource) Read(ctx context.Context, req resource.ReadRequest,
 	paramsShareGroupFind := files_sdk.ShareGroupFindParams{}
 	paramsShareGroupFind.Id = state.Id.ValueInt64()
 
-	shareGroup, err := r.client.Find(paramsShareGroupFind, files_sdk.WithContext(ctx))
+	var responseBody []byte
+	shareGroup, err := r.client.Find(paramsShareGroupFind, files_sdk.WithContext(ctx), lib.CaptureResponseBody(&responseBody))
 	if err != nil {
 		if files_sdk.IsNotExist(err) {
 			resp.State.RemoveResource(ctx)
@@ -177,7 +187,7 @@ func (r *shareGroupResource) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	diags = r.populateResourceModel(ctx, shareGroup, &state)
+	diags = r.populateResourceModel(ctx, shareGroup, &state, responseBody)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -200,6 +210,12 @@ func (r *shareGroupResource) Update(ctx context.Context, req resource.UpdateRequ
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var state shareGroupResourceModel
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsShareGroupUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
@@ -212,7 +228,7 @@ func (r *shareGroupResource) Update(ctx context.Context, req resource.UpdateRequ
 		paramsShareGroupUpdate["name"] = config.Name.ValueString()
 	}
 	if !config.Members.IsNull() && !config.Members.IsUnknown() {
-		updateMembers, diags := lib.DynamicToStringMapSlice(ctx, path.Root("members"), config.Members)
+		updateMembers, diags := lib.JSONValueToAPI(ctx, path.Root("members"), config.Members)
 		resp.Diagnostics.Append(diags...)
 		paramsShareGroupUpdate["members"] = updateMembers
 	}
@@ -221,7 +237,8 @@ func (r *shareGroupResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	shareGroup, err := r.client.UpdateWithMap(paramsShareGroupUpdate, files_sdk.WithContext(ctx))
+	var responseBody []byte
+	shareGroup, err := r.client.UpdateWithMap(paramsShareGroupUpdate, files_sdk.WithContext(ctx), lib.CaptureResponseBody(&responseBody))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files ShareGroup",
@@ -230,7 +247,7 @@ func (r *shareGroupResource) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	diags = r.populateResourceModel(ctx, shareGroup, &plan)
+	diags = r.populateResourceModel(ctx, shareGroup, &plan, responseBody)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -283,14 +300,16 @@ func (r *shareGroupResource) ImportState(ctx context.Context, req resource.Impor
 
 }
 
-func (r *shareGroupResource) populateResourceModel(ctx context.Context, shareGroup files_sdk.ShareGroup, state *shareGroupResourceModel) (diags diag.Diagnostics) {
+func (r *shareGroupResource) populateResourceModel(ctx context.Context, shareGroup files_sdk.ShareGroup, state *shareGroupResourceModel, responseBody []byte) (diags diag.Diagnostics) {
 	var propDiags diag.Diagnostics
 
 	state.Id = types.Int64Value(shareGroup.Id)
 	state.Name = types.StringValue(shareGroup.Name)
 	state.Notes = types.StringValue(shareGroup.Notes)
 	state.UserId = types.Int64Value(shareGroup.UserId)
-	state.Members, propDiags = lib.ToDynamic(ctx, path.Root("members"), shareGroup.Members, state.Members.UnderlyingValue())
+	membersResponse, membersResponseDiags := lib.ResponseProperty(path.Root("members"), responseBody, "members")
+	diags.Append(membersResponseDiags...)
+	state.Members, propDiags = lib.APIToDynamicJSON(ctx, path.Root("members"), lib.AlignMembersByEmail(ctx, membersResponse, state.Members), state.Members, []string{}, []string{}, "")
 	diags.Append(propDiags...)
 
 	return

@@ -168,30 +168,46 @@ These properties will move from Dynamic to typed schemas in a major provider rel
 
 Versioned success criteria definition for the expectation. Criteria v2 supports optional FTS content validation.
 
-| Field in `criteria` | Type | Required | Description |
-| --- | --- | --- | --- |
-| `count` | object | No | Number of matched files. exact cannot be combined with min or max. min must not exceed max. |
-| `count.exact` | integer | No | Exact value. |
-| `count.max` | integer | No | Maximum value. |
-| `count.min` | integer | No | Minimum value. |
-| `extensions` | list of strings | No | Allowed file extensions. |
-| `filename_regex` | string | No | Regular expression matched against each file's basename. Uses Ruby regular expression syntax. |
-| `total_bytes` | object | No | Combined size of matched files, in bytes. exact cannot be combined with min or max. min must not exceed max. |
-| `total_bytes.exact` | integer | No | Exact value. |
-| `total_bytes.max` | integer | No | Maximum value. |
-| `total_bytes.min` | integer | No | Minimum value. |
-| `forbidden_files` | list of strings | No | Basename glob patterns for files that must not be present. |
-| `required_files` | map of objects | No | Rules for specific file names or basename glob patterns. Literal names default to count.exact = 1 when count is omitted. Glob patterns have no default count. Overlapping globs are rejected. |
-| `required_files[key].count` | object | No | Number of files matching this entry. exact cannot be combined with min or max. min must not exceed max. |
-| `required_files[key].count.exact` | integer | No | Exact value. |
-| `required_files[key].count.max` | integer | No | Maximum value. |
-| `required_files[key].count.min` | integer | No | Minimum value. |
-| `required_files[key].extensions` | list of strings | No | Allowed extensions for files matching this entry. |
-| `required_files[key].filename_regex` | string | No | Regular expression matched against each matching file's basename. Uses Ruby regular expression syntax. |
-| `required_files[key].size_bytes` | object | No | Size of each matching file, in bytes. exact cannot be combined with min or max. min must not exceed max. |
-| `required_files[key].size_bytes.exact` | integer | No | Exact value. |
-| `required_files[key].size_bytes.max` | integer | No | Maximum value. |
-| `required_files[key].size_bytes.min` | integer | No | Minimum value. |
-| `content_validation` | object | No | File content validation using Files Transform Script. Requires expectations_version = 2. |
-| `content_validation.mode` | string | Yes | Whether to validate each file separately or the whole batch. |
-| `content_validation.fts` | string | Yes | Files Transform Script used to validate file contents. |
+- `count` (object, optional) Number of matched files. exact cannot be combined with min or max. min must not exceed max.
+- `extensions` (list of strings, optional) Allowed file extensions.
+- `filename_regex` (string, optional) Regular expression matched against each file's basename. Uses Ruby regular expression syntax.
+- `total_bytes` (object, optional) Combined size of matched files, in bytes. exact cannot be combined with min or max. min must not exceed max.
+- `forbidden_files` (list of strings, optional) Basename glob patterns for files that must not be present.
+- `required_files` (map of objects, optional) Rules for specific file names or basename glob patterns. Literal names default to count.exact = 1 when count is omitted. Glob patterns have no default count. Overlapping globs are rejected.
+- `content_validation` (object, optional) File content validation using Files Transform Script. Requires expectations_version = 2.
+
+##### `criteria.count`
+
+- `exact` (integer, optional) Exact value.
+- `max` (integer, optional) Maximum value.
+- `min` (integer, optional) Minimum value.
+
+##### `criteria.total_bytes`
+
+- `exact` (integer, optional) Exact value.
+- `max` (integer, optional) Maximum value.
+- `min` (integer, optional) Minimum value.
+
+##### `criteria.required_files[key]`
+
+- `count` (object, optional) Number of files matching this entry. exact cannot be combined with min or max. min must not exceed max.
+- `extensions` (list of strings, optional) Allowed extensions for files matching this entry.
+- `filename_regex` (string, optional) Regular expression matched against each matching file's basename. Uses Ruby regular expression syntax.
+- `size_bytes` (object, optional) Size of each matching file, in bytes. exact cannot be combined with min or max. min must not exceed max.
+
+##### `criteria.required_files[key].count`
+
+- `exact` (integer, optional) Exact value.
+- `max` (integer, optional) Maximum value.
+- `min` (integer, optional) Minimum value.
+
+##### `criteria.required_files[key].size_bytes`
+
+- `exact` (integer, optional) Exact value.
+- `max` (integer, optional) Maximum value.
+- `min` (integer, optional) Minimum value.
+
+##### `criteria.content_validation`
+
+- `mode` (string, required) Whether to validate each file separately or the whole batch.
+- `fts` (string, required) Files Transform Script used to validate file contents.

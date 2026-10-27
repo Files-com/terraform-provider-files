@@ -31,3 +31,17 @@ data "files_share_group" "example_share_group" {
 - `name` (String) Name of the share group
 - `notes` (String) Additional notes of the share group
 - `user_id` (Number) Owner User ID
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027.
+
+#### members
+
+Contacts in this share group. Creating a share group requires at least one member. An update replaces the members with this list, and an empty list leaves them unchanged. Existing members are matched by email and keep their stored email address.
+
+List of objects.
+
+- `email` (string, required) Email of the share group member
+- `name` (string, optional) Name of the share group member
+- `company` (string, optional) Company of the share group member

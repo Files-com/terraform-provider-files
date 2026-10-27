@@ -7,7 +7,6 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	form_field_set "github.com/Files-com/files-sdk-go/v3/formfieldset"
 	"github.com/Files-com/terraform-provider-files/lib"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -86,7 +85,7 @@ func (r *formFieldSetDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				ElementType: types.Int64Type,
 			},
 			"form_fields": schema.DynamicAttribute{
-				Description: "Associated form field definitions; authenticated form field set responses include historical definitions, while form_layout identifies current fields",
+				Description: "Form fields in display order. Managed state contains the current fields listed in form_layout. The data source also returns historical definitions.",
 				Computed:    true,
 			},
 			"skip_name": schema.BoolAttribute{
@@ -120,7 +119,8 @@ func (r *formFieldSetDataSource) Read(ctx context.Context, req datasource.ReadRe
 	paramsFormFieldSetFind := files_sdk.FormFieldSetFindParams{}
 	paramsFormFieldSetFind.Id = data.Id.ValueInt64()
 
-	formFieldSet, err := r.client.Find(paramsFormFieldSetFind, files_sdk.WithContext(ctx))
+	var responseBody []byte
+	formFieldSet, err := r.client.Find(paramsFormFieldSetFind, files_sdk.WithContext(ctx), lib.CaptureResponseBody(&responseBody))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Files FormFieldSet",
@@ -129,7 +129,7 @@ func (r *formFieldSetDataSource) Read(ctx context.Context, req datasource.ReadRe
 		return
 	}
 
-	diags = r.populateDataSourceModel(ctx, formFieldSet, &data)
+	diags = r.populateDataSourceModel(ctx, formFieldSet, &data, responseBody)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -139,7 +139,7 @@ func (r *formFieldSetDataSource) Read(ctx context.Context, req datasource.ReadRe
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *formFieldSetDataSource) populateDataSourceModel(ctx context.Context, formFieldSet files_sdk.FormFieldSet, state *formFieldSetDataSourceModel) (diags diag.Diagnostics) {
+func (r *formFieldSetDataSource) populateDataSourceModel(ctx context.Context, formFieldSet files_sdk.FormFieldSet, state *formFieldSetDataSourceModel, responseBody []byte) (diags diag.Diagnostics) {
 	var propDiags diag.Diagnostics
 
 	state.Id = types.Int64Value(formFieldSet.Id)
@@ -147,7 +147,9 @@ func (r *formFieldSetDataSource) populateDataSourceModel(ctx context.Context, fo
 	state.RequireCompleteMetadataCapture = types.BoolPointerValue(formFieldSet.RequireCompleteMetadataCapture)
 	state.FormLayout, propDiags = types.ListValueFrom(ctx, types.Int64Type, formFieldSet.FormLayout)
 	diags.Append(propDiags...)
-	state.FormFields, propDiags = lib.ToDynamic(ctx, path.Root("form_fields"), formFieldSet.FormFields, state.FormFields.UnderlyingValue())
+	formFieldsResponse, formFieldsResponseDiags := lib.ResponseProperty(path.Root("form_fields"), responseBody, "form_fields")
+	diags.Append(formFieldsResponseDiags...)
+	state.FormFields, propDiags = lib.ToDynamic(ctx, path.Root("form_fields"), formFieldsResponse, nil)
 	diags.Append(propDiags...)
 	state.SkipName = types.BoolPointerValue(formFieldSet.SkipName)
 	state.SkipEmail = types.BoolPointerValue(formFieldSet.SkipEmail)

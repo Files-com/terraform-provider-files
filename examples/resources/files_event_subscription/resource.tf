@@ -16,7 +16,10 @@ resource "files_event_subscription" "example_event_subscription" {
       exists = true
     }
   }
-  delivery_policy         = "example"
+  delivery_policy         = {
+    max_attempts        = 3
+    retry_delay_minutes = [5, 30]
+  }
   event_target_ids        = [1]
 }
 

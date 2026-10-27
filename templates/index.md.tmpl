@@ -17,3 +17,37 @@ Use the navigation to the left to read about the available Resources and Data So
 {{ tffile "examples/provider/provider.tf" }}
 
 {{ .SchemaMarkdown | trimspace }}
+
+## Upgrade notes
+
+### Google service account keys from a file
+
+Files.com API responses leave `private_key` out of `google_credentials` in the Google Pub/Sub `value` of `files_behavior` and the Google Pub/Sub `config` of `files_event_target`. Older provider versions compare that response with a key file set as text, such as `google_credentials = file("key.json")`. They plan a change on every run, and apply fails with "Provider produced inconsistent result after apply". Upgrade the provider to fix this. To stay on an older provider version, use an object instead of JSON text:
+
+```terraform
+google_credentials = jsondecode(file("key.json"))
+```
+
+### Sensitive Event Target config and Child Site Management Policy value
+
+Starting with this provider release, `config` in `files_event_target` and `value` in `files_child_site_management_policy` become sensitive for both resources and data sources. Plans show `(sensitive value)` instead of the contents. A root module output that returns one of these values, or a field inside one, fails with "Output refers to sensitive values". Add `sensitive = true` to that output:
+
+```terraform
+output "event_target_config" {
+  value     = files_event_target.example.config
+  sensitive = true
+}
+```
+
+### Null settings in Child Site Management Policy values
+
+The major provider release planned for March 1, 2027 makes `value` in `files_child_site_management_policy` a typed object. A typed object treats a setting set to null like an omitted setting. The provider omits both from requests to Files.com. For example:
+
+```terraform
+value = {
+  welcome_email_enabled = true
+  welcome_email_cc      = null
+}
+```
+
+Earlier provider versions send `welcome_email_cc` as null, and the policy manages it on Child Sites. The typed release sends only `welcome_email_enabled`. A policy that already stores `welcome_email_cc` as null keeps it after a refresh or import. The next update to `value` removes it, and the policy stops managing `welcome_email_cc` on Child Sites.

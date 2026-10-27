@@ -36,6 +36,7 @@ var (
 	_ resource.ResourceWithConfigure    = &automationResource{}
 	_ resource.ResourceWithImportState  = &automationResource{}
 	_ resource.ResourceWithUpgradeState = &automationResource{}
+	_ resource.ResourceWithModifyPlan   = &automationResource{}
 )
 
 func NewAutomationResource() resource.Resource {
@@ -384,6 +385,12 @@ func (r *automationResource) resourceSchema() schema.Schema {
 												ElementType: types.StringType,
 											},
 											"save_body": schema.BoolAttribute{
+												Optional: true,
+											},
+											"save_html_body": schema.BoolAttribute{
+												Optional: true,
+											},
+											"save_raw_message": schema.BoolAttribute{
 												Optional: true,
 											},
 											"source": schema.StringAttribute{
@@ -1639,6 +1646,9 @@ func (r *automationResource) resourceSchema() schema.Schema {
 				Description: "List of URLs to be imported and names to be used.",
 				Computed:    true,
 				Optional:    true,
+				Validators: []validator.Dynamic{
+					lib.ValidJSONEncoding(),
+				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
 				},
@@ -1834,7 +1844,7 @@ func (r *automationResource) resourceSchema() schema.Schema {
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.Dynamic{
-					lib.DeprecatedJSONEncoding("files_automation.value", "value = {\n  limit = \"1\"\n}", "March 1, 2027"),
+					lib.DeprecatedJSONEncoding("files_automation.value", "value = {\n  limit = \"1\"\n}", "March 1, 2027", nil, nil),
 				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
@@ -1892,6 +1902,12 @@ func (r *automationResource) resourceSchema() schema.Schema {
 	}
 }
 
+func (r *automationResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	if err := lib.SettleUnchangedPlan(req.Config, req.State, &resp.Plan); err != nil {
+		resp.Diagnostics.AddError("Error Planning Files Automation", "Could not compare the plan with prior state: "+err.Error())
+	}
+}
+
 func (r *automationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan automationResourceModel
 	diags := req.Plan.Get(ctx, &plan)
@@ -1942,14 +1958,16 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsAutomationCreate.Description = plan.Description.ValueString()
 	createDefinition, diags := lib.SchemaAttributeToInterface(ctx, path.Root("definition"), plan.Definition)
 	resp.Diagnostics.Append(diags...)
-	createDefinition, transformDiags0 := lib.UnwrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), createDefinition, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
-	resp.Diagnostics.Append(transformDiags0...)
+	createDefinition, createDefinitionTransformDiags0 := lib.UnwrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), createDefinition, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
+	resp.Diagnostics.Append(createDefinitionTransformDiags0...)
 	paramsAutomationCreate.Definition = createDefinition
 	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
 		paramsAutomationCreate.Disabled = plan.Disabled.ValueBoolPointer()
 	}
 	paramsAutomationCreate.ExcludePattern = plan.ExcludePattern.ValueString()
-	paramsAutomationCreate.ImportUrls, diags = lib.DynamicToStringMapSlice(ctx, path.Root("import_urls"), plan.ImportUrls)
+	createImportUrls, diags := lib.JSONValueToAPI(ctx, path.Root("import_urls"), config.ImportUrls)
+	resp.Diagnostics.Append(diags...)
+	paramsAutomationCreate.ImportUrls, diags = lib.JSONToStringMapSlice(path.Root("import_urls"), createImportUrls)
 	resp.Diagnostics.Append(diags...)
 	if !plan.FlattenDestinationStructure.IsNull() && !plan.FlattenDestinationStructure.IsUnknown() {
 		paramsAutomationCreate.FlattenDestinationStructure = plan.FlattenDestinationStructure.ValueBoolPointer()
@@ -2134,8 +2152,8 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 	if !config.Definition.IsNull() && !config.Definition.IsUnknown() {
 		updateDefinition, diags := lib.SchemaAttributeToInterface(ctx, path.Root("definition"), config.Definition)
 		resp.Diagnostics.Append(diags...)
-		updateDefinition, transformDiags0 := lib.UnwrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), updateDefinition, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
-		resp.Diagnostics.Append(transformDiags0...)
+		updateDefinition, updateDefinitionTransformDiags0 := lib.UnwrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), updateDefinition, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
+		resp.Diagnostics.Append(updateDefinitionTransformDiags0...)
 		paramsAutomationUpdate["definition"] = updateDefinition
 	}
 	if !config.Disabled.IsNull() && !config.Disabled.IsUnknown() {
@@ -2145,7 +2163,7 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 		paramsAutomationUpdate["exclude_pattern"] = config.ExcludePattern.ValueString()
 	}
 	if !config.ImportUrls.IsNull() && !config.ImportUrls.IsUnknown() {
-		updateImportUrls, diags := lib.DynamicToStringMapSlice(ctx, path.Root("import_urls"), config.ImportUrls)
+		updateImportUrls, diags := lib.JSONValueToAPI(ctx, path.Root("import_urls"), config.ImportUrls)
 		resp.Diagnostics.Append(diags...)
 		paramsAutomationUpdate["import_urls"] = updateImportUrls
 	}
@@ -2277,8 +2295,8 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	state.Deleted = types.BoolPointerValue(automation.Deleted)
 	state.Description = types.StringValue(automation.Description)
 	definitionValue := interface{}(automation.Definition)
-	definitionValue, transformDiags0 := lib.WrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
-	diags.Append(transformDiags0...)
+	definitionValue, definitionValueTransformDiags0 := lib.WrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
+	diags.Append(definitionValueTransformDiags0...)
 	state.Definition, propDiags = lib.ToObject(ctx, path.Root("definition"), definitionValue, state.Definition)
 	diags.Append(propDiags...)
 	state.DestinationReplaceFrom = types.StringValue(automation.DestinationReplaceFrom)
@@ -2287,7 +2305,7 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	diags.Append(propDiags...)
 	state.Disabled = types.BoolPointerValue(automation.Disabled)
 	state.ExcludePattern = types.StringValue(automation.ExcludePattern)
-	state.ImportUrls, propDiags = lib.ToDynamic(ctx, path.Root("import_urls"), automation.ImportUrls, state.ImportUrls.UnderlyingValue())
+	state.ImportUrls, propDiags = lib.APIToDynamicJSON(ctx, path.Root("import_urls"), automation.ImportUrls, state.ImportUrls, []string{"*"}, []string{}, "")
 	diags.Append(propDiags...)
 	state.InboundEmailAddress = types.StringValue(automation.InboundEmailAddress)
 	state.FlattenDestinationStructure = types.BoolPointerValue(automation.FlattenDestinationStructure)

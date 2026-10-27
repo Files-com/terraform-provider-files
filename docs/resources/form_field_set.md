@@ -41,13 +41,10 @@ resource "files_form_field_set" "example_form_field_set" {
   skip_company                      = false
   form_fields                       = [
     {
-      label              = "Sample Label"
+      label              = "Department"
+      field_type         = "dropdown"
       required           = true
-      help_text          = "Help Text"
-      field_type         = "text"
-      options_for_select = ["red", "green", "blue"]
-      default_option     = "red"
-      form_field_set_id  = 1
+      options_for_select = ["Finance", "Sales"]
     }
   ]
 }
@@ -60,7 +57,7 @@ resource "files_form_field_set" "example_form_field_set" {
 
 > **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
 
-- `form_fields` (Dynamic) Associated form field definitions; authenticated form field set responses include historical definitions, while form_layout identifies current fields
+- `form_fields` (Dynamic) Form fields in display order. Managed state contains the current fields listed in form_layout. The data source also returns historical definitions.
 - `require_complete_metadata_capture` (Boolean) Reject answers over 1024 characters or more than 32 answered custom fields to ensure complete file metadata capture
 - `skip_company` (Boolean) Any associated InboxRegistrations or BundleRegistrations can be saved without providing company
 - `skip_email` (Boolean) Any associated InboxRegistrations or BundleRegistrations can be saved without providing email
@@ -74,6 +71,51 @@ resource "files_form_field_set" "example_form_field_set" {
 - `form_layout` (List of Number) Layout of the form
 - `id` (Number) Form field set id
 - `in_use` (Boolean) Form Field Set is in use by an active Inbox / Bundle / Inbox Registration / Bundle Registration
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027. Until then, JSON-encoded configuration remains supported with a deprecation warning.
+
+#### form_fields
+
+Form fields in display order. A request replaces the form's fields with this list. Authenticated responses also include historical definitions used by existing registration answers, and form_layout lists the IDs of the current fields in display order.
+
+List of objects.
+
+- `id` (integer, optional) Form field ID. Send the ID of a current field to keep it. Changing any other attribute of that field creates a replacement field with a new ID. Omit it for a new field.
+- `label` (string, optional) Label to be displayed. Required for a new field. Labels must be unique within the form.
+- `field_type` (string, optional) Type of field. Required for a new field.
+- `help_text` (string, optional) Help text to be displayed.
+- `required` (boolean, optional) Is this a required field? Defaults to true for a new field.
+- `options_for_select` (list of strings, optional) Options to display. Required for dropdown and radio fields. Removed from text and text_area fields.
+- `default_option` (string, optional) Option to preselect. Must be one of options_for_select. Removed from text and text_area fields.
+- `form_field_set_id` (integer, optional) Form field set ID.
+
+#### Migrating JSON-encoded configuration
+
+Replace `jsonencode(...)` with native HCL as in the examples below.
+
+```hcl
+# Legacy JSON encoding
+form_fields = jsonencode([
+  {
+    label              = "Department"
+    field_type         = "dropdown"
+    required           = true
+    options_for_select = ["Finance", "Sales"]
+  }
+])
+
+# Native HCL, same keys and nesting
+form_fields = [
+  {
+    label              = "Department"
+    field_type         = "dropdown"
+    required           = true
+    options_for_select = ["Finance", "Sales"]
+  }
+]
+```
 
 ## Import
 

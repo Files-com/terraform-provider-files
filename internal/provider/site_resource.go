@@ -59,6 +59,7 @@ type siteResourceModel struct {
 	AllowUserLevelSslOverride                            types.Bool    `tfsdk:"allow_user_level_ssl_override"`
 	AllowedCountries                                     types.String  `tfsdk:"allowed_countries"`
 	AllowedIps                                           types.String  `tfsdk:"allowed_ips"`
+	EnforceParentSiteUserIpRestrictions                  types.Bool    `tfsdk:"enforce_parent_site_user_ip_restrictions"`
 	AlwaysMkdirParents                                   types.Bool    `tfsdk:"always_mkdir_parents"`
 	As2MessageRetentionDays                              types.Int64   `tfsdk:"as2_message_retention_days"`
 	AskAboutOverwrites                                   types.Bool    `tfsdk:"ask_about_overwrites"`
@@ -294,6 +295,9 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "Availability settings for AI features. Each feature requires the site_admins, workspace_admins, folder_admins, and all_users keys. Optional selected_group_members defaults to false; when true, members of at least one group in group_ids get access regardless of the other options. All availability options are additive: any enabled option matching the user grants access. Optional group_ids is an array of integer IDs of active groups on this site, from any workspace. Omitted or empty group_ids grants no access through selected_group_members and does not affect other options. Disabling all AI features overrides these settings.",
 				Computed:    true,
 				Optional:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_site.ai_feature_availability", "ai_feature_availability = {\n  in_app_ai_assistant = {\n    site_admins            = true\n    workspace_admins       = true\n    folder_admins          = true\n    all_users              = false\n    selected_group_members = false\n  }\n}", "March 1, 2027", map[string]string{"in_app_ai_assistant": "object", "in_app_ai_assistant.site_admins": "boolean", "in_app_ai_assistant.workspace_admins": "boolean", "in_app_ai_assistant.folder_admins": "boolean", "in_app_ai_assistant.all_users": "boolean", "in_app_ai_assistant.selected_group_members": "boolean", "in_app_ai_assistant.group_ids": "list", "in_app_ai_assistant.group_ids[]": "integer"}, []string{"in_app_ai_assistant.site_admins", "in_app_ai_assistant.workspace_admins", "in_app_ai_assistant.folder_admins", "in_app_ai_assistant.all_users"}),
+				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
 				},
@@ -408,6 +412,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"enforce_parent_site_user_ip_restrictions": schema.BoolAttribute{
+				Description: "Require Parent Site users entering this Child Site to match its allowed IP addresses in addition to their existing IP restrictions. Applies to all Workspaces. Defaults to false.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"always_mkdir_parents": schema.BoolAttribute{
@@ -561,7 +573,7 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.Dynamic{
-					lib.DeprecatedJSONEncoding("files_site.bundle_watermark_value", "bundle_watermark_value = {\n  gravity             = \"SouthWest\"\n  max_height_or_width = 20\n  transparency        = 25\n}", "March 1, 2027"),
+					lib.DeprecatedJSONEncoding("files_site.bundle_watermark_value", "bundle_watermark_value = {\n  gravity             = \"SouthWest\"\n  max_height_or_width = 20\n  transparency        = 25\n}", "March 1, 2027", map[string]string{"max_height_or_width": "integer", "transparency": "integer"}, nil),
 				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
@@ -1986,9 +1998,11 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.DisableAllAiFeatures.IsNull() && !config.DisableAllAiFeatures.IsUnknown() {
 		paramsSiteUpdate["disable_all_ai_features"] = config.DisableAllAiFeatures.ValueBool()
 	}
-	updateAiFeatureAvailability, diags := lib.DynamicToInterface(ctx, path.Root("ai_feature_availability"), config.AiFeatureAvailability)
-	resp.Diagnostics.Append(diags...)
-	paramsSiteUpdate["ai_feature_availability"] = updateAiFeatureAvailability
+	if !config.AiFeatureAvailability.IsNull() && !config.AiFeatureAvailability.IsUnknown() {
+		updateAiFeatureAvailability, diags := lib.JSONValueToAPI(ctx, path.Root("ai_feature_availability"), config.AiFeatureAvailability)
+		resp.Diagnostics.Append(diags...)
+		paramsSiteUpdate["ai_feature_availability"] = updateAiFeatureAvailability
+	}
 	if !config.McpDcrEnabled.IsNull() && !config.McpDcrEnabled.IsUnknown() {
 		paramsSiteUpdate["mcp_dcr_enabled"] = config.McpDcrEnabled.ValueBool()
 	}
@@ -2081,6 +2095,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 	if !config.AllowUserLevelSslOverride.IsNull() && !config.AllowUserLevelSslOverride.IsUnknown() {
 		paramsSiteUpdate["allow_user_level_ssl_override"] = config.AllowUserLevelSslOverride.ValueBool()
+	}
+	if !config.EnforceParentSiteUserIpRestrictions.IsNull() && !config.EnforceParentSiteUserIpRestrictions.IsUnknown() {
+		paramsSiteUpdate["enforce_parent_site_user_ip_restrictions"] = config.EnforceParentSiteUserIpRestrictions.ValueBool()
 	}
 	if !config.DisallowedCountries.IsNull() && !config.DisallowedCountries.IsUnknown() {
 		paramsSiteUpdate["disallowed_countries"] = config.DisallowedCountries.ValueString()
@@ -2462,7 +2479,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.Name = types.StringValue(site.Name)
 	state.AdditionalTextFileTypes, propDiags = types.ListValueFrom(ctx, types.StringType, site.AdditionalTextFileTypes)
 	diags.Append(propDiags...)
-	state.AiFeatureAvailability, propDiags = lib.ToDynamic(ctx, path.Root("ai_feature_availability"), site.AiFeatureAvailability, state.AiFeatureAvailability.UnderlyingValue())
+	state.AiFeatureAvailability, propDiags = lib.APIToDynamicJSON(ctx, path.Root("ai_feature_availability"), site.AiFeatureAvailability, state.AiFeatureAvailability, []string{}, []string{}, "")
 	diags.Append(propDiags...)
 	state.Allowed2faMethodSms = types.BoolPointerValue(site.Allowed2faMethodSms)
 	state.Allowed2faMethodTotp = types.BoolPointerValue(site.Allowed2faMethodTotp)
@@ -2479,6 +2496,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.AllowUserLevelSslOverride = types.BoolPointerValue(site.AllowUserLevelSslOverride)
 	state.AllowedCountries = types.StringValue(site.AllowedCountries)
 	state.AllowedIps = types.StringValue(site.AllowedIps)
+	state.EnforceParentSiteUserIpRestrictions = types.BoolPointerValue(site.EnforceParentSiteUserIpRestrictions)
 	state.AlwaysMkdirParents = types.BoolPointerValue(site.AlwaysMkdirParents)
 	state.As2MessageRetentionDays = types.Int64Value(site.As2MessageRetentionDays)
 	state.AskAboutOverwrites = types.BoolPointerValue(site.AskAboutOverwrites)

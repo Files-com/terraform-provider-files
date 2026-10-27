@@ -82,7 +82,7 @@ func (r *integrationCentricProfileResource) Schema(_ context.Context, _ resource
 				Description: "Remote Server integrations the user is expected to add and connect. Each entry requires `server_type` and may include a display `name`.",
 				Required:    true,
 				Validators: []validator.Dynamic{
-					lib.DeprecatedJSONEncoding("files_integration_centric_profile.expected_remote_servers", "expected_remote_servers = [\n  {\n    server_type = \"dropbox\"\n    name        = \"Dropbox\"\n  }\n]", "March 1, 2027"),
+					lib.DeprecatedJSONEncoding("files_integration_centric_profile.expected_remote_servers", "expected_remote_servers = [\n  {\n    server_type = \"dropbox\"\n    name        = \"Dropbox\"\n  }\n]", "March 1, 2027", map[string]string{"": "list", "[]": "object"}, nil),
 				},
 			},
 			"workspace_id": schema.Int64Attribute{

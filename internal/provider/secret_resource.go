@@ -112,7 +112,7 @@ func (r *secretResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.Dynamic{
-					lib.DeprecatedJSONEncoding("files_secret.metadata", "metadata = {\n  header_name = \"Authorization\"\n}", "March 1, 2027"),
+					lib.DeprecatedJSONEncoding("files_secret.metadata", "metadata = {\n  header_name = \"Authorization\"\n}", "March 1, 2027", nil, nil),
 				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),

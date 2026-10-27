@@ -21,7 +21,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -104,9 +103,12 @@ func (r *scheduledExportResource) Schema(_ context.Context, _ resource.SchemaReq
 				Required:    true,
 			},
 			"export_options": schema.DynamicAttribute{
-				Description: "Report-specific options. `permission_audit` supports `group_by` with `user` or `path`.",
+				Description: "Options for the report selected by export_type.",
 				Computed:    true,
 				Optional:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_scheduled_export.export_options", "export_options = {\n  group_by = \"user\"\n}", "March 1, 2027", map[string]string{"max_depth": "integer", "size_threshold": "integer", "all_folders": "boolean"}, nil),
+				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
 				},
@@ -261,7 +263,7 @@ func (r *scheduledExportResource) Create(ctx context.Context, req resource.Creat
 	paramsScheduledExportCreate := files_sdk.ScheduledExportCreateParams{}
 	paramsScheduledExportCreate.Name = plan.Name.ValueString()
 	paramsScheduledExportCreate.ExportType = plan.ExportType.ValueString()
-	createExportOptions, diags := lib.DynamicToInterface(ctx, path.Root("export_options"), plan.ExportOptions)
+	createExportOptions, diags := lib.JSONValueToAPI(ctx, path.Root("export_options"), config.ExportOptions)
 	resp.Diagnostics.Append(diags...)
 	paramsScheduledExportCreate.ExportOptions = createExportOptions
 	paramsScheduledExportCreate.UserId = plan.UserId.ValueInt64()
@@ -358,6 +360,12 @@ func (r *scheduledExportResource) Update(ctx context.Context, req resource.Updat
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var state scheduledExportResourceModel
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsScheduledExportUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
@@ -369,9 +377,11 @@ func (r *scheduledExportResource) Update(ctx context.Context, req resource.Updat
 	if !config.ExportType.IsNull() && !config.ExportType.IsUnknown() {
 		paramsScheduledExportUpdate["export_type"] = config.ExportType.ValueString()
 	}
-	updateExportOptions, diags := lib.DynamicToInterface(ctx, path.Root("export_options"), config.ExportOptions)
-	resp.Diagnostics.Append(diags...)
-	paramsScheduledExportUpdate["export_options"] = updateExportOptions
+	if !config.ExportOptions.IsNull() && !config.ExportOptions.IsUnknown() {
+		updateExportOptions, diags := lib.JSONValueToAPI(ctx, path.Root("export_options"), config.ExportOptions)
+		resp.Diagnostics.Append(diags...)
+		paramsScheduledExportUpdate["export_options"] = updateExportOptions
+	}
 	if !config.UserId.IsNull() && !config.UserId.IsUnknown() {
 		paramsScheduledExportUpdate["user_id"] = config.UserId.ValueInt64()
 	}
@@ -488,7 +498,7 @@ func (r *scheduledExportResource) populateResourceModel(ctx context.Context, sch
 	state.Name = types.StringValue(scheduledExport.Name)
 	state.ExportType = types.StringValue(scheduledExport.ExportType)
 	state.ReportName = types.StringValue(scheduledExport.ReportName)
-	state.ExportOptions, propDiags = lib.ToDynamic(ctx, path.Root("export_options"), scheduledExport.ExportOptions, state.ExportOptions.UnderlyingValue())
+	state.ExportOptions, propDiags = lib.APIToDynamicJSON(ctx, path.Root("export_options"), scheduledExport.ExportOptions, state.ExportOptions, []string{}, []string{}, "empty_object")
 	diags.Append(propDiags...)
 	state.UserId = types.Int64Value(scheduledExport.UserId)
 	state.Disabled = types.BoolPointerValue(scheduledExport.Disabled)

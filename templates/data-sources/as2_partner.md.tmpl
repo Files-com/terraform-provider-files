@@ -21,7 +21,7 @@ description: |-
 
 {{ .SchemaMarkdown | trimspace }}
 
-{{ print "### JSON property details\n\nThese properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027.\n\n#### additional_http_headers\n\nAdditional HTTP Headers for outgoing message sent to this partner.\n\n| Field in `additional_http_headers` | Type | Required | Description |\n| --- | --- | --- | --- |\n| `[key]` | string | No |  |" }}
+{{ print "### JSON property details\n\nThese properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027.\n\n#### additional_http_headers\n\nAdditional HTTP Headers for outgoing message sent to this partner.\n\n- `[key]` (string, optional)" }}
 {{- if or .HasImport .HasImportIDConfig .HasImportIdentityConfig }}
 
 ## Import

@@ -7,7 +7,6 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	share_group "github.com/Files-com/files-sdk-go/v3/sharegroup"
 	"github.com/Files-com/terraform-provider-files/lib"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -99,7 +98,8 @@ func (r *shareGroupDataSource) Read(ctx context.Context, req datasource.ReadRequ
 	paramsShareGroupFind := files_sdk.ShareGroupFindParams{}
 	paramsShareGroupFind.Id = data.Id.ValueInt64()
 
-	shareGroup, err := r.client.Find(paramsShareGroupFind, files_sdk.WithContext(ctx))
+	var responseBody []byte
+	shareGroup, err := r.client.Find(paramsShareGroupFind, files_sdk.WithContext(ctx), lib.CaptureResponseBody(&responseBody))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Files ShareGroup",
@@ -108,7 +108,7 @@ func (r *shareGroupDataSource) Read(ctx context.Context, req datasource.ReadRequ
 		return
 	}
 
-	diags = r.populateDataSourceModel(ctx, shareGroup, &data)
+	diags = r.populateDataSourceModel(ctx, shareGroup, &data, responseBody)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -118,14 +118,16 @@ func (r *shareGroupDataSource) Read(ctx context.Context, req datasource.ReadRequ
 	resp.Diagnostics.Append(diags...)
 }
 
-func (r *shareGroupDataSource) populateDataSourceModel(ctx context.Context, shareGroup files_sdk.ShareGroup, state *shareGroupDataSourceModel) (diags diag.Diagnostics) {
+func (r *shareGroupDataSource) populateDataSourceModel(ctx context.Context, shareGroup files_sdk.ShareGroup, state *shareGroupDataSourceModel, responseBody []byte) (diags diag.Diagnostics) {
 	var propDiags diag.Diagnostics
 
 	state.Id = types.Int64Value(shareGroup.Id)
 	state.Name = types.StringValue(shareGroup.Name)
 	state.Notes = types.StringValue(shareGroup.Notes)
 	state.UserId = types.Int64Value(shareGroup.UserId)
-	state.Members, propDiags = lib.ToDynamic(ctx, path.Root("members"), shareGroup.Members, state.Members.UnderlyingValue())
+	membersResponse, membersResponseDiags := lib.ResponseProperty(path.Root("members"), responseBody, "members")
+	diags.Append(membersResponseDiags...)
+	state.Members, propDiags = lib.ToDynamic(ctx, path.Root("members"), membersResponse, nil)
 	diags.Append(propDiags...)
 
 	return

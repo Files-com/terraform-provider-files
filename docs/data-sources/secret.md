@@ -47,8 +47,6 @@ These properties will move from Dynamic to typed schemas in a major provider rel
 
 Non-secret metadata for the Secret type.
 
-| Field in `metadata` | Type | Required | Description |
-| --- | --- | --- | --- |
-| `username` | string | No | Required for basic secrets. Not allowed for other secret types. |
-| `header_name` | string | No | For token secrets only. Cannot be combined with query_parameter_name. |
-| `query_parameter_name` | string | No | For token secrets only. Cannot be combined with header_name. |
+- `username` (string, optional) Required for basic secrets. Not allowed for other secret types.
+- `header_name` (string, optional) For token secrets only. Cannot be combined with query_parameter_name.
+- `query_parameter_name` (string, optional) For token secrets only. Cannot be combined with header_name.

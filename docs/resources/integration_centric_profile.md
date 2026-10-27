@@ -56,14 +56,12 @@ Remote Server integrations the user is expected to add and connect. Each entry r
 
 List of objects.
 
-| Field in `expected_remote_servers` | Type | Required | Description |
-| --- | --- | --- | --- |
-| `server_type` | string | Yes | Remote Server type. |
-| `name` | string | No | Display name for the Remote Server. |
+- `server_type` (string, required) Remote Server type.
+- `name` (string, optional) Display name for the Remote Server.
 
 #### Migrating JSON-encoded configuration
 
-Replace `jsonencode(...)` with native HCL, keeping the same keys and nesting.
+Replace `jsonencode(...)` with native HCL as in the examples below.
 
 ```hcl
 # Legacy JSON encoding

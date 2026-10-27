@@ -95,6 +95,7 @@ data "files_site" "example_site" {
 - `domain_letsencrypt_chain` (String) Letsencrypt chain to use when registering SSL Certificate for domain. No longer used as of 2026.
 - `email` (String) Main email for this site
 - `email_footer_custom_text` (String) Custom footer text for system-generated emails (as Markdown). Supports standard strftime date/time patterns like %Y (4-digit year), %m (month), %d (day).
+- `enforce_parent_site_user_ip_restrictions` (Boolean) Require Parent Site users entering this Child Site to match its allowed IP addresses in addition to their existing IP restrictions. Applies to all Workspaces. Defaults to false.
 - `fedramp` (Boolean) Are FedRAMP security restrictions enabled for this site?
 - `file_activity_events_enabled` (Boolean) If true, file operations produce file_action.activity.v1 EventChannel events in all workspaces. Defaults to false; subscription filters and workspace access still control delivery.
 - `files_com_remote_server_enabled` (Boolean) Allow other Files.com sites to use this site's API keys for native Files.com Remote Server connections? Defaults to true and applies to all keys and workspaces on this site. When false, new pairings and access through existing connections are rejected without revoking keys or deleting connections. Re-enabling permits access again with usable keys. Does not disable this site's connections to other sites, ordinary API access, or Connected Sites.
@@ -232,13 +233,26 @@ data "files_site" "example_site" {
 
 These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027.
 
+#### ai_feature_availability
+
+Availability settings for each AI feature. Every feature is required. Null, which is returned until the setting is saved, gives every user type access and leaves selected_group_members off.
+
+- `in_app_ai_assistant` (object, required) Options are additive: any enabled option that matches the user grants access. Disabling all AI features overrides these options.
+
+##### `ai_feature_availability.in_app_ai_assistant`
+
+- `site_admins` (boolean, required) If true, site admins have access. Null disables the option.
+- `workspace_admins` (boolean, required) If true, workspace admins have access. Null disables the option.
+- `folder_admins` (boolean, required) If true, folder admins have access. Null disables the option.
+- `all_users` (boolean, required) If true, all users have access. Null disables the option.
+- `selected_group_members` (boolean, optional) If true, members of at least one group in group_ids have access. Defaults to false. Null disables the option.
+- `group_ids` (list of integers, optional) IDs of active groups on this site, from any workspace. Omitted or empty group_ids grants no access through selected_group_members.
+
 #### bundle_watermark_value
 
 Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value
 
-| Field in `bundle_watermark_value` | Type | Required | Description |
-| --- | --- | --- | --- |
-| `gravity` | string | No | Where to locate the watermark?  Valid values: `Center`, `East`, `NorthEast`, `North`, `NorthWest`, `SouthEast`, `South`, `SouthWest`, `West`. |
-| `max_height_or_width` | integer | No | Max width/height as percent of image preview. |
-| `transparency` | integer | No | Percentage applied to the watermark. |
-| `dynamic_text` | string | No | Watermark text. Use {{user}} to embed a username into the string. |
+- `gravity` (string, optional) Where to locate the watermark?  Valid values: `Center`, `East`, `NorthEast`, `North`, `NorthWest`, `SouthEast`, `South`, `SouthWest`, `West`.
+- `max_height_or_width` (integer, optional) Max width/height as percent of image preview.
+- `transparency` (integer, optional) Percentage applied to the watermark.
+- `dynamic_text` (string, optional) Watermark text. Use {{user}} to embed a username into the string.

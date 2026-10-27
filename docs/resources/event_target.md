@@ -18,9 +18,18 @@ resource "files_event_target" "example_event_target" {
   workspace_id            = 1
   apply_to_all_workspaces = true
   enabled                 = true
-  config                  = "example"
-  delivery_policy         = "example"
-  target_type             = "example"
+  config                  = {
+    url               = "https://example.com/files-events"
+    headers           = {
+      X-Example = "value"
+    }
+    use_dedicated_ips = false
+  }
+  delivery_policy         = {
+    max_attempts        = 3
+    retry_delay_minutes = [1, 10]
+  }
+  target_type             = "webhook"
 }
 ```
 
@@ -29,7 +38,7 @@ resource "files_event_target" "example_event_target" {
 
 ### Required
 
-- `config` (Dynamic) Event Target configuration. Folder targets accept path and format (json or csv).
+- `config` (Dynamic, Sensitive) Event Target configuration. Fields depend on target_type.
 - `name` (String) Event Target name.
 - `target_type` (String) Event Target type.
 
@@ -45,6 +54,106 @@ resource "files_event_target" "example_event_target" {
 - `created_at` (String) Event Target create date/time.
 - `id` (Number) Event Target ID
 - `updated_at` (String) Event Target update date/time.
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027. Until then, JSON-encoded configuration remains supported with a deprecation warning.
+
+#### config
+
+Settings for the target's target_type. Each field names the target types that use it.
+
+- `user_ids` (list of integers, optional) Required for email targets. IDs of active users who receive the email. Each user must belong to this target's workspace and to this site or a parent site authorized to access it.
+- `url` (string, optional) Required for webhook, Slack and Teams targets. Webhook URL. Slack and Teams URLs must use HTTPS.
+- `headers` (map of strings, optional) Webhook targets only. Additional HTTP headers sent with each request. Files.com sets Content-Type, X-Files-Event-Id and X-Files-Event-Type itself. Null sends no additional headers.
+- `signing_secret` (string, optional) Webhook targets only. When set, each request includes X-Files-Signature and X-Files-Signature-V2 headers containing the HMAC-SHA256 hex digest of the request body.
+- `use_dedicated_ips` (boolean, optional) Webhook targets only. If enabled, requests are sent from this site's dedicated IP address. Delivery fails when the site has none. Use `true` or `false`. Any value other than `false` or `null` enables it, including integers such as `0` and `1`.
+- `username` (string, optional) Slack targets only. Display name for messages. Defaults to Files.com.
+- `channel` (string, optional) Slack targets only. Channel to post to instead of the webhook's default channel.
+- `icon_emoji` (string, optional) Slack targets only. Emoji to use as the message icon instead of the Files.com icon.
+- `arn` (string, optional) Required for Amazon SNS targets. ARN of the SNS topic.
+- `aws_credentials` (object, optional) Required for Amazon SNS targets. Responses omit secret_access_key. Region defaults to us-east-1.
+- `project_id` (string, optional) Required for Google Pub/Sub targets. Google Cloud project ID.
+- `topic_id` (string, optional) Required for Google Pub/Sub targets. Pub/Sub topic ID. It must start with a letter, must not start with goog, and must be 3 to 255 characters.
+- `google_credentials` (object, optional) Required for Google Pub/Sub targets. Service account key as an object, or the key file contents as a JSON string. It is stored as an object. Responses omit private_key.
+- `path` (string, optional) Required for folder targets. Folder that receives event files.
+- `format` (string, optional) Required for folder targets. Event file format. Cannot be changed after creation.
+
+Terraform treats `config` as sensitive because it can hold secrets. A root module output that returns it needs `sensitive = true`.
+
+##### `config.headers`
+
+- `[key]` (string, optional)
+
+##### `config.aws_credentials`
+
+- `access_key_id` (string, required)
+- `region` (string, optional)
+- `secret_access_key` (string, required)
+
+##### `config.google_credentials`
+
+- `type` (string, optional)
+- `project_id` (string, optional)
+- `private_key_id` (string, optional)
+- `private_key` (string, optional)
+- `client_email` (string, optional)
+- `client_id` (string, optional)
+- `auth_uri` (string, optional)
+- `token_uri` (string, optional)
+- `auth_provider_x509_cert_url` (string, optional)
+- `client_x509_cert_url` (string, optional)
+- `universe_domain` (string, optional)
+- `quota_project_id` (string, optional)
+
+#### delivery_policy
+
+Delivery settings for this target. Each target-specific field names the target types that use it. max_attempts and retry_delay_minutes control retries of failed deliveries, and an Event Subscription's delivery_policy can override them.
+
+- `max_attempts` (integer, optional) Maximum delivery attempts, including the first attempt. A value below 1 uses the default of 5. Null works like an omitted key.
+- `retry_delay_minutes` (list of integers, optional) Minutes to wait before each retry. The last value is used for any later retries, so a list with one value applies it to every retry. An empty list uses the default of [1,5,15,60,180]. Null works like an omitted key.
+- `batch_interval` (integer, optional) Email and folder targets only. Seconds to collect events before delivering them together. An omitted or blank value is stored as 600. A numeric string is stored as an integer.
+- `delivery_mode` (string, optional) Slack and Teams targets only. Send each event immediately, or summarize file activity under summary_path by first-level subfolder. Other events are still sent immediately. Omitted means immediate.
+- `summary_path` (string, optional) Slack and Teams targets only. Required when delivery_mode is subfolder_summary. Folder whose file activity is summarized. An empty string means the root folder.
+- `summary_delay` (integer, optional) Slack and Teams targets only. Seconds without new matching activity before a summary is sent. Omitted means 60.
+
+#### Migrating JSON-encoded configuration
+
+Replace `jsonencode(...)` with native HCL as in the examples below.
+
+```hcl
+# Legacy JSON encoding
+config = jsonencode({
+  url               = "https://example.com/files-events"
+  headers           = {
+    X-Example = "value"
+  }
+  use_dedicated_ips = false
+})
+
+# Native HCL, same keys and nesting
+config = {
+  url               = "https://example.com/files-events"
+  headers           = {
+    X-Example = "value"
+  }
+  use_dedicated_ips = false
+}
+```
+
+```hcl
+# Legacy JSON encoding
+delivery_policy = jsonencode({
+  max_attempts        = 3
+  retry_delay_minutes = [1, 10]
+})
+
+# Native HCL, same keys and nesting
+delivery_policy = {
+  max_attempts        = 3
+  retry_delay_minutes = [1, 10]
+}
+```
 
 ## Import
 

@@ -94,6 +94,6 @@ These properties will move from Dynamic to typed schemas in a major provider rel
 
 Additional HTTP Headers included in calls to the destination URL
 
-| Field in `additional_headers` | Type | Required | Description |
-| --- | --- | --- | --- |
-| `[key]` | string | No |  |
+- `[key]` (string, optional)
+
+Terraform treats `additional_headers` as sensitive because it can hold secrets. A root module output that returns it needs `sensitive = true`.

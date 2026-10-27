@@ -29,7 +29,7 @@ data "files_scheduled_export" "example_scheduled_export" {
 
 - `created_at` (String) Creation time.
 - `disabled` (Boolean) If true, this scheduled export will not run.
-- `export_options` (Dynamic) Report-specific options. `permission_audit` supports `group_by` with `user` or `path`.
+- `export_options` (Dynamic) Options for the report selected by export_type.
 - `export_type` (String) Export report type. Valid values: folder_size_audit, group_membership_audit, permission_audit, share_link_audit
 - `holiday_region` (String) Optional holiday region used by the scheduled export schedule.
 - `human_readable_schedule` (String) Human-readable schedule description.
@@ -48,3 +48,17 @@ data "files_scheduled_export" "example_scheduled_export" {
 - `trigger` (String) Schedule trigger type: `daily` or `custom_schedule`.
 - `updated_at` (String) Last update time.
 - `user_id` (Number) Site Admin user who receives the completed export e-mail.
+
+### JSON property details
+
+These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027.
+
+#### export_options
+
+Options for the report selected by export_type. Each field names the report that uses it. share_link_audit and group_membership_audit have no options. Other keys are stored but not used.
+
+- `path` (string, optional) folder_size_audit only. Folder to start from. Omitted or null uses the root folder.
+- `max_depth` (integer, optional) folder_size_audit only. Number of folder levels below path to include. Null or a value below 1 uses 10. A numeric string such as `"50"` is also accepted and stored as sent.
+- `size_threshold` (integer, optional) folder_size_audit only. Minimum folder size to include, in GB. Null or a value below 1 uses 1. A numeric string such as `"50"` is also accepted and stored as sent.
+- `all_folders` (boolean, optional) folder_size_audit only. If enabled, every folder up to max_depth is included regardless of size_threshold. Use `true` or `false`. Any value other than `false` or `null` enables it, including integers such as `0` and `1`.
+- `group_by` (string, optional) permission_audit only. Groups rows by `user` or `path`. Null and other values use `user`.

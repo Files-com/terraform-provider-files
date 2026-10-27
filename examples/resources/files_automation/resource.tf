@@ -45,8 +45,8 @@ resource "files_automation" "example_automation" {
   import_urls                          = [
     {
       name    = "users.json"
-      url     = "http://example.com/users"
-      method  = "POST"
+      url     = "https://example.com/users"
+      method  = "post"
       headers = {
         Content-Type = "application/json"
       }

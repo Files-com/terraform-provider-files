@@ -21,7 +21,7 @@ description: |-
 
 {{ .SchemaMarkdown | trimspace }}
 
-{{ print "### JSON property details\n\nThese properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027.\n\n#### additional_headers\n\nAdditional HTTP Headers included in calls to the destination URL\n\n| Field in `additional_headers` | Type | Required | Description |\n| --- | --- | --- | --- |\n| `[key]` | string | No |  |" }}
+{{ print "### JSON property details\n\nThese properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027.\n\n#### additional_headers\n\nAdditional HTTP Headers included in calls to the destination URL\n\n- `[key]` (string, optional)\n\nTerraform treats `additional_headers` as sensitive because it can hold secrets. A root module output that returns it needs `sensitive = true`." }}
 {{- if or .HasImport .HasImportIDConfig .HasImportIdentityConfig }}
 
 ## Import

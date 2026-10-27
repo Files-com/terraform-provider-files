@@ -3,7 +3,7 @@ resource "files_site" "example_site" {
   subdomain                                                   = "mysite"
   domain                                                      = "my-custom-domain.com"
   domain_hsts_header                                          = false
-  domain_letsencrypt_chain                                    = "example"
+  domain_letsencrypt_chain                                    = "default"
   email                                                       = "john.doe@files.com"
   reply_to_email                                              = "jane.doe@files.com"
   allow_bundle_names                                          = false
@@ -25,9 +25,9 @@ resource "files_site" "example_site" {
   mobile_app_session_ip_pinning                               = false
   mobile_app_session_lifetime                                 = 1
   folder_permissions_groups_only                              = false
-  welcome_screen                                              = "user_controlled"
+  welcome_screen                                              = "enabled"
   office_integration_available                                = false
-  office_integration_type                                     = "example"
+  office_integration_type                                     = "only_office"
   pin_all_remote_servers_to_site_region                       = false
   motd_text                                                   = "example"
   motd_use_for_ftp                                            = false
@@ -39,8 +39,7 @@ resource "files_site" "example_site" {
       workspace_admins       = true
       folder_admins          = true
       all_users              = false
-      selected_group_members = true
-      group_ids              = [1, 2]
+      selected_group_members = false
     }
   }
   mcp_dcr_enabled                                             = false
@@ -73,6 +72,7 @@ resource "files_site" "example_site" {
   allow_user_level_2fa_override                               = false
   allow_user_level_allowed_ip_override                        = false
   allow_user_level_ssl_override                               = false
+  enforce_parent_site_user_ip_restrictions                    = false
   disallowed_countries                                        = "US,DE"
   days_to_retain_backups                                      = 1
   max_prior_passwords                                         = 1
@@ -87,7 +87,6 @@ resource "files_site" "example_site" {
   dav_user_root_enabled                                       = false
   sftp_user_root_enabled                                      = false
   disable_password_reset                                      = false
-  immutable_files                                             = false
   bundle_not_found_message                                    = "example"
   bundle_password_required                                    = false
   bundle_require_registration                                 = false
@@ -146,7 +145,7 @@ resource "files_site" "example_site" {
   allowed_2fa_method_bypass_for_ftp_sftp_dav                  = false
   require_2fa                                                 = false
   require_2fa_exempt_all_sso_users                            = false
-  require_2fa_user_type                                       = "`site_admins`"
+  require_2fa_user_type                                       = "all"
   color2_top                                                  = "#000000"
   color2_left                                                 = "#0066a7"
   color2_link                                                 = "#d34f5d"
@@ -188,14 +187,5 @@ resource "files_site" "example_site" {
     max_height_or_width = 20
     transparency        = 25
   }
-  icon16_delete                                               = false
-  icon32_delete                                               = false
-  icon48_delete                                               = false
-  icon128_delete                                              = false
-  logo_delete                                                 = false
-  bundle_watermark_attachment_delete                          = false
-  login_page_background_image_delete                          = false
-  disable_2fa_with_delay                                      = false
-  redirect_old_subdomain                                      = false
 }
 

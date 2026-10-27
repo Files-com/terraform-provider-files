@@ -55,6 +55,4 @@ These properties will move from Dynamic to typed schemas in a major provider rel
 
 Additional HTTP Headers for outgoing message sent to this partner.
 
-| Field in `additional_http_headers` | Type | Required | Description |
-| --- | --- | --- | --- |
-| `[key]` | string | No |  |
+- `[key]` (string, optional)

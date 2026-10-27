@@ -371,8 +371,8 @@ resource "files_automation" "example_automation" {
   import_urls                          = [
     {
       name    = "users.json"
-      url     = "http://example.com/users"
-      method  = "POST"
+      url     = "https://example.com/users"
+      method  = "post"
       headers = {
         Content-Type = "application/json"
       }
@@ -1351,6 +1351,8 @@ Optional:
 - `limit` (Number)
 - `path_time_zone` (String)
 - `save_body` (Boolean)
+- `save_html_body` (Boolean)
+- `save_raw_message` (Boolean)
 - `source` (String)
 
 
@@ -1555,19 +1557,32 @@ Required:
 
 ### JSON property details
 
-These properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027. Until then, JSON-encoded configuration remains supported with a deprecation warning.
+Except for `import_urls`, these properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027. Until then, JSON-encoded configuration remains supported with a deprecation warning.
+
+#### import_urls
+
+Stays Dynamic in every release because its values vary. Native HCL and JSON-encoded strings are both accepted, with no deprecation warning.
+
+URLs that an Import File automation requests. Each response is saved as `name` in every destination folder.
+
+List of objects.
+
+- `name` (string, required) File name used to save the response. `%` tokens are replaced as described under Formatting Parameters.
+- `url` (string, required) URL to request.
+- `method` (string, optional) HTTP method: `get` or `post`, case-insensitive. Omitted or null uses `get`.
+- `headers` (map of strings or list of values, optional) Request headers as an object of header names and values. `%` tokens in the values are replaced as described under Formatting Parameters. An empty array or null is also accepted, stored as is, and sends no headers.
+- `content` (value, optional) Body for a POST request. A string is sent with `%` tokens expanded. An object is sent as JSON with `%` tokens expanded in its top-level string values. Other JSON values are sent as is.
+- `content_type` (string, optional) Stored for compatibility and not used. Send a Content-Type header instead.
 
 #### value
 
 A Hash of attributes specific to the automation type.
 
-| Field in `value` | Type | Required | Description |
-| --- | --- | --- | --- |
-| `[key]` | string | No |  |
+- `[key]` (string, optional)
 
 #### Migrating JSON-encoded configuration
 
-Replace `jsonencode(...)` with native HCL, keeping the same keys and nesting.
+Replace `jsonencode(...)` with native HCL as in the examples below.
 
 ```hcl
 # Legacy JSON encoding

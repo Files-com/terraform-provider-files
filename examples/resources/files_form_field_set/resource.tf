@@ -8,13 +8,10 @@ resource "files_form_field_set" "example_form_field_set" {
   skip_company                      = false
   form_fields                       = [
     {
-      label              = "Sample Label"
+      label              = "Department"
+      field_type         = "dropdown"
       required           = true
-      help_text          = "Help Text"
-      field_type         = "text"
-      options_for_select = ["red", "green", "blue"]
-      default_option     = "red"
-      form_field_set_id  = 1
+      options_for_select = ["Finance", "Sales"]
     }
   ]
 }

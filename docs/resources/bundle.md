@@ -132,12 +132,10 @@ These properties will move from Dynamic to typed schemas in a major provider rel
 
 Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value
 
-| Field in `watermark_value` | Type | Required | Description |
-| --- | --- | --- | --- |
-| `gravity` | string | No | Where to locate the watermark?  Valid values: `Center`, `East`, `NorthEast`, `North`, `NorthWest`, `SouthEast`, `South`, `SouthWest`, `West`. |
-| `max_height_or_width` | integer | No | Max width/height as percent of image preview. |
-| `transparency` | integer | No | Percentage applied to the watermark. |
-| `dynamic_text` | string | No | Watermark text. Use {{user}} to embed a username into the string. |
+- `gravity` (string, optional) Where to locate the watermark?  Valid values: `Center`, `East`, `NorthEast`, `North`, `NorthWest`, `SouthEast`, `South`, `SouthWest`, `West`.
+- `max_height_or_width` (integer, optional) Max width/height as percent of image preview.
+- `transparency` (integer, optional) Percentage applied to the watermark.
+- `dynamic_text` (string, optional) Watermark text. Use {{user}} to embed a username into the string.
 
 #### requested_upload_slots
 
@@ -145,13 +143,11 @@ Upload slots requested by the associated Inbox. Each slot contains a name used a
 
 List of objects.
 
-| Field in `requested_upload_slots` | Type | Required | Description |
-| --- | --- | --- | --- |
-| `name` | string | Yes | Upload slot label and destination subfolder name. Must be a valid single folder name without trailing whitespace, and unique regardless of letter case or accents. |
+- `name` (string, required) Upload slot label and destination subfolder name. Must be a valid single folder name without trailing whitespace, and unique regardless of letter case or accents.
 
 #### Migrating JSON-encoded configuration
 
-Replace `jsonencode(...)` with native HCL, keeping the same keys and nesting.
+Replace `jsonencode(...)` with native HCL as in the examples below.
 
 ```hcl
 # Legacy JSON encoding

@@ -1,6 +1,15 @@
 resource "files_child_site_management_policy" "example_child_site_management_policy" {
   value               = {
-    color2_left = "#000000"
+    color2_left      = "#000000"
+    folder_behaviors = [
+      {
+        file_expiration = {
+          value = {
+            days_to_retain = 30
+          }
+        }
+      }
+    ]
   }
   skip_child_site_ids = [1, 2]
   child_site_ids      = [1, 2]

@@ -71,6 +71,4 @@ These properties will move from Dynamic to typed schemas in a major provider rel
 
 Custom metadata map of keys and values. Limited to 32 keys, 256 characters per key and 1024 characters per value.
 
-| Field in `custom_metadata` | Type | Required | Description |
-| --- | --- | --- | --- |
-| `[key]` | string | No |  |
+- `[key]` (string, optional)

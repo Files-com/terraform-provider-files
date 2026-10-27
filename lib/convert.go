@@ -31,6 +31,7 @@ type JSONSchemaVariant struct {
 	WriteOnly      []string
 	LegacyProperty string
 	LegacyList     bool
+	ValueTypes     map[string]string
 }
 
 func TimeToStringType(ctx context.Context, path path.Path, source *time.Time, dest *types.String) error {
@@ -198,6 +199,9 @@ func attributeToInterface(ctx context.Context, path path.Path, source attr.Value
 		tflog.Info(ctx, "Converting TupleValue to interface slice")
 		dest, diags = elementsToInterfaces(ctx, path, actualValue.Elements(), false, preserveNulls)
 	case types.Dynamic:
+		if actualValue.UnderlyingValue() == nil {
+			return nil, nil
+		}
 		dest, diags = attributeToInterface(ctx, path, actualValue.UnderlyingValue(), false, preserveNulls)
 	default:
 		diags.AddAttributeError(
@@ -227,47 +231,114 @@ func elementsToInterfaces(ctx context.Context, path path.Path, elements []attr.V
 	return
 }
 
+// UnwrapDiscriminatedUnionAtPath turns typed list union items, such as {"file_expiration": {"value": ...}}, into API
+// items, such as {"behavior": "file_expiration", "value": ...}. Items that already have the discriminator are API items
+// and stay as they are, so a Dynamic value can use either nesting.
 func UnwrapDiscriminatedUnionAtPath(ctx context.Context, attributePath path.Path, source any, names []string, discriminator string, variants []JSONSchemaVariant) (any, diag.Diagnostics) {
-	return transformJSONSchemaAtPath(attributePath, source, names, func(valuePath path.Path, value any) (any, diag.Diagnostics) {
-		items, ok := value.([]interface{})
+	return transformDiscriminatedItemsAtPath(attributePath, source, names, func(itemPath path.Path, _ int, item any) (any, diag.Diagnostics) {
+		wrapper, ok := item.(map[string]interface{})
 		if !ok {
-			return jsonSchemaTransformError(valuePath, "expected an array")
+			return jsonSchemaTransformError(itemPath, "expected an object")
 		}
-		result := make([]interface{}, 0, len(items))
-		for index, item := range items {
-			itemPath := valuePath.AtListIndex(index)
-			wrapper, ok := item.(map[string]interface{})
-			if !ok {
-				return jsonSchemaTransformError(itemPath, "expected an object")
+		if wrapper[discriminator] != nil {
+			return item, nil
+		}
+		var selected *JSONSchemaVariant
+		var inner map[string]interface{}
+		for variantIndex := range variants {
+			candidate, exists := wrapper[variants[variantIndex].Name]
+			if !exists || candidate == nil {
+				continue
 			}
-			var selected *JSONSchemaVariant
-			var inner map[string]interface{}
-			for variantIndex := range variants {
-				candidate, exists := wrapper[variants[variantIndex].Name]
-				if !exists || candidate == nil {
-					continue
-				}
-				if selected != nil {
-					return jsonSchemaTransformError(itemPath, "expected exactly one variant")
-				}
-				selected = &variants[variantIndex]
-				inner, ok = candidate.(map[string]interface{})
-				if !ok {
-					return jsonSchemaTransformError(itemPath.AtName(variants[variantIndex].Name), "expected an object")
-				}
-			}
-			if selected == nil {
+			if selected != nil {
 				return jsonSchemaTransformError(itemPath, "expected exactly one variant")
 			}
-			unwrapped := maps.Clone(inner)
-			unwrapped[discriminator] = selected.Value
-			result = append(result, unwrapped)
+			selected = &variants[variantIndex]
+			inner, ok = candidate.(map[string]interface{})
+			if !ok {
+				return jsonSchemaTransformError(itemPath.AtName(variants[variantIndex].Name), "expected an object")
+			}
 		}
-		return result, nil
+		if selected == nil {
+			return jsonSchemaTransformError(itemPath, "expected exactly one variant")
+		}
+		unwrapped := maps.Clone(inner)
+		unwrapped[discriminator] = selected.Value
+		return unwrapped, nil
 	})
 }
 
+// WrapDiscriminatedUnionAtPath turns API list union items into typed items under their variant name. Items that are
+// already typed, as in state that a Dynamic value stored with the typed nesting, stay as they are.
 func WrapDiscriminatedUnionAtPath(ctx context.Context, attributePath path.Path, source any, names []string, discriminator string, variants []JSONSchemaVariant) (any, diag.Diagnostics) {
+	return transformDiscriminatedItemsAtPath(attributePath, source, names, func(itemPath path.Path, _ int, item any) (any, diag.Diagnostics) {
+		return wrapDiscriminatedItem(itemPath, item, discriminator, variants)
+	})
+}
+
+// WrapDiscriminatedUnionLikeConfigAtPath wraps an API list union item only where the configured item at the same
+// position uses the typed nesting. A Dynamic value read back then keeps the nesting of each configured item.
+func WrapDiscriminatedUnionLikeConfigAtPath(ctx context.Context, attributePath path.Path, source any, configured attr.Value, names []string, discriminator string, variants []JSONSchemaVariant) (any, diag.Diagnostics) {
+	value, diags := JSONValueToAPI(ctx, attributePath, configured)
+	if diags.HasError() {
+		return source, diags
+	}
+	var configuredItems []any
+	if _, diags := transformJSONSchemaAtPath(attributePath, value, names, func(_ path.Path, items any) (any, diag.Diagnostics) {
+		configuredItems, _ = items.([]any)
+		return items, nil
+	}); diags.HasError() {
+		return source, diags
+	}
+	return transformDiscriminatedItemsAtPath(attributePath, source, names, func(itemPath path.Path, index int, item any) (any, diag.Diagnostics) {
+		if index >= len(configuredItems) || !typedDiscriminatedItem(configuredItems[index], variants) {
+			return item, nil
+		}
+		return wrapDiscriminatedItem(itemPath, item, discriminator, variants)
+	})
+}
+
+func wrapDiscriminatedItem(itemPath path.Path, item any, discriminator string, variants []JSONSchemaVariant) (any, diag.Diagnostics) {
+	if typedDiscriminatedItem(item, variants) {
+		return item, nil
+	}
+	object, ok := item.(map[string]interface{})
+	if !ok {
+		return jsonSchemaTransformError(itemPath, "expected an object")
+	}
+	variantValue, ok := object[discriminator].(string)
+	if !ok {
+		return jsonSchemaTransformError(itemPath.AtName(discriminator), "expected a string discriminator")
+	}
+	variant, ok := findJSONSchemaVariant(variants, variantValue)
+	if !ok {
+		return jsonSchemaTransformError(itemPath.AtName(discriminator), "unknown variant "+variantValue)
+	}
+	wrapped := maps.Clone(object)
+	delete(wrapped, discriminator)
+	return map[string]interface{}{variant.Name: wrapped}, nil
+}
+
+// typedDiscriminatedItem reports whether item is a typed list union item: an object whose keys are all variant names,
+// with exactly one of them set. Unused variants may be null, as in a value of an object-typed Terraform variable.
+func typedDiscriminatedItem(item any, variants []JSONSchemaVariant) bool {
+	object, ok := item.(map[string]interface{})
+	if !ok {
+		return false
+	}
+	selected := 0
+	for name, value := range object {
+		if !slices.ContainsFunc(variants, func(variant JSONSchemaVariant) bool { return variant.Name == name }) {
+			return false
+		}
+		if value != nil {
+			selected++
+		}
+	}
+	return selected == 1
+}
+
+func transformDiscriminatedItemsAtPath(attributePath path.Path, source any, names []string, transform func(path.Path, int, any) (any, diag.Diagnostics)) (any, diag.Diagnostics) {
 	return transformJSONSchemaAtPath(attributePath, source, names, func(valuePath path.Path, value any) (any, diag.Diagnostics) {
 		items, ok := value.([]interface{})
 		if !ok {
@@ -275,22 +346,11 @@ func WrapDiscriminatedUnionAtPath(ctx context.Context, attributePath path.Path, 
 		}
 		result := make([]interface{}, 0, len(items))
 		for index, item := range items {
-			itemPath := valuePath.AtListIndex(index)
-			object, ok := item.(map[string]interface{})
-			if !ok {
-				return jsonSchemaTransformError(itemPath, "expected an object")
+			converted, diags := transform(valuePath.AtListIndex(index), index, item)
+			if diags.HasError() {
+				return nil, diags
 			}
-			variantValue, ok := object[discriminator].(string)
-			if !ok {
-				return jsonSchemaTransformError(itemPath.AtName(discriminator), "expected a string discriminator")
-			}
-			variant, ok := findJSONSchemaVariant(variants, variantValue)
-			if !ok {
-				return jsonSchemaTransformError(itemPath.AtName(discriminator), "unknown variant "+variantValue)
-			}
-			wrapped := maps.Clone(object)
-			delete(wrapped, discriminator)
-			result = append(result, map[string]interface{}{variant.Name: wrapped})
+			result = append(result, converted)
 		}
 		return result, nil
 	})
@@ -324,6 +384,40 @@ func UnwrapSiblingDiscriminator(_ context.Context, attributePath path.Path, sour
 		return jsonSchemaTransformError(attributePath, "value variant must match sibling discriminator "+discriminator)
 	}
 	return value, nil
+}
+
+// NullRemovedSiblingFields sends null for each writable field that prior, the typed value in state, sets and value, the
+// unwrapped request value, no longer sets. Rails merges a Behavior value on update and removes only fields sent as null.
+func NullRemovedSiblingFields(ctx context.Context, attributePath path.Path, value any, prior attr.Value, discriminator string, variants []JSONSchemaVariant) (any, diag.Diagnostics) {
+	if prior == nil || prior.IsNull() || prior.IsUnknown() {
+		return value, nil
+	}
+	priorValue, diags := SchemaAttributeToInterface(ctx, attributePath, prior)
+	if diags.HasError() {
+		return value, diags
+	}
+	// A prior value under another behavior name has nothing to remove from this one.
+	priorValue, unwrapDiags := UnwrapSiblingDiscriminator(ctx, attributePath, priorValue, discriminator, variants)
+	if unwrapDiags.HasError() {
+		return value, nil
+	}
+	variant, _ := findJSONSchemaVariant(variants, discriminator)
+	return nullRemovedWritableFields(value, priorValue, variant), nil
+}
+
+func nullRemovedWritableFields(value, prior any, variant JSONSchemaVariant) any {
+	valueObject, valueIsObject := value.(map[string]interface{})
+	priorObject, priorIsObject := prior.(map[string]interface{})
+	if !valueIsObject || !priorIsObject {
+		return value
+	}
+	result := maps.Clone(valueObject)
+	for key := range priorObject {
+		if _, exists := result[key]; !exists && slices.Contains(variant.Writable, key) {
+			result[key] = nil
+		}
+	}
+	return result
 }
 
 func WrapSiblingDiscriminator(_ context.Context, attributePath path.Path, source any, discriminator string, variants []JSONSchemaVariant) (any, diag.Diagnostics) {
@@ -427,6 +521,29 @@ func GroupStructuralUnionAtPath(ctx context.Context, attributePath path.Path, so
 	})
 }
 
+// WrapLegacySingleItemAtPath reads one stored item at a list marked x-files-legacy-single-item as a one-item list, so
+// 5 becomes [5]. Lists and null stay as they are. The item conversion that follows still turns "5" into 5 and rejects
+// values that are not valid items.
+func WrapLegacySingleItemAtPath(_ context.Context, attributePath path.Path, source any, names []string) (any, diag.Diagnostics) {
+	return transformJSONSchemaAtPath(attributePath, source, names, func(_ path.Path, value any) (any, diag.Diagnostics) {
+		switch value.(type) {
+		case []interface{}, []map[string]interface{}:
+			return value, nil
+		}
+		return []interface{}{value}, nil
+	})
+}
+
+// Read marked boolean fields using Ruby truthiness, rather than parsing strings such as "false".
+func ReadLegacyTruthyAtPath(_ context.Context, attributePath path.Path, source any, names []string) (any, diag.Diagnostics) {
+	return transformJSONSchemaAtPath(attributePath, source, names, func(_ path.Path, value any) (any, diag.Diagnostics) {
+		if _, boolean := value.(bool); boolean {
+			return value, nil
+		}
+		return true, nil
+	})
+}
+
 func transformJSONSchemaAtPath(attributePath path.Path, source any, names []string, transform func(path.Path, any) (any, diag.Diagnostics)) (any, diag.Diagnostics) {
 	if source == nil {
 		return nil, nil
@@ -506,10 +623,23 @@ func schemaValue(ctx context.Context, path path.Path, source any, target attr.Ty
 	if source == nil {
 		return nullSchemaValue(target), nil
 	}
+	switch source.(type) {
+	case map[string]any, []any, []map[string]any, string, bool, int, int64, float64:
+	default:
+		generic, err := decodeSDKValue(source)
+		if err != nil {
+			return schemaConversionError(path, target, source)
+		}
+		return schemaValue(ctx, path, generic, target)
+	}
 
 	switch targetType := target.(type) {
 	case basetypes.ObjectType:
 		sourceMap, ok := source.(map[string]any)
+		if text, isString := source.(string); isString {
+			// Older records and Dynamic state may hold an object as its JSON text, such as a key file.
+			ok = json.Unmarshal([]byte(text), &sourceMap) == nil && sourceMap != nil
+		}
 		if !ok {
 			return schemaConversionError(path, target, source)
 		}
@@ -734,36 +864,40 @@ func ToDynamic(ctx context.Context, path path.Path, source any, plan attr.Value)
 	case nil:
 		tflog.Info(ctx, "Skipping nil value")
 	default:
-		kind := reflect.TypeOf(source).Kind()
-		if kind != reflect.Struct && kind != reflect.Slice {
-			diags.AddError("Failed to convert Element", "Unhandled type for "+path.String()+": "+fmt.Sprintf("%T", source))
-			return
-		}
-		// SDK structs and typed slices such as []files_sdk.BundlePath hold the JSON the API returned. Decode them into generic values first.
-		encoded, err := json.Marshal(source)
+		generic, err := decodeSDKValue(source)
 		if err != nil {
-			diags.AddError(
-				"Failed to convert Element",
-				"Unhandled type for "+path.String()+": "+fmt.Sprintf("%T", source),
-			)
+			diags.AddError("Failed to convert Element", "Unhandled type for "+path.String()+": "+err.Error())
 			return
 		}
-		var generic any
-		if err := json.Unmarshal(encoded, &generic); err != nil {
-			diags.AddError("Failed to convert Element", "Could not decode "+path.String()+" as JSON: "+err.Error())
-			return
-		}
-		switch generic.(type) {
-		case nil:
-			return
-		case map[string]any, []any:
+		if generic != nil {
 			return ToDynamic(ctx, path, generic, plan)
-		default:
-			diags.AddError("Failed to convert Element", "Expected JSON object or array for "+path.String()+", got "+fmt.Sprintf("%T", source))
 		}
 	}
 
 	return
+}
+
+// decodeSDKValue turns Go SDK objects and typed lists, such as []files_sdk.FormField, into generic JSON values.
+func decodeSDKValue(source any) (any, error) {
+	if source == nil {
+		return nil, nil
+	}
+	if kind := reflect.TypeOf(source).Kind(); kind != reflect.Struct && kind != reflect.Slice {
+		return nil, fmt.Errorf("%T", source)
+	}
+	encoded, err := json.Marshal(source)
+	if err != nil {
+		return nil, fmt.Errorf("%T: %w", source, err)
+	}
+	var generic any
+	if err := json.Unmarshal(encoded, &generic); err != nil {
+		return nil, fmt.Errorf("%T: %w", source, err)
+	}
+	switch generic.(type) {
+	case nil, map[string]any, []any:
+		return generic, nil
+	}
+	return nil, fmt.Errorf("%T is not a JSON object or array", source)
 }
 
 func ListValueToString(ctx context.Context, path path.Path, list types.List, delim string) (string, diag.Diagnostics) {

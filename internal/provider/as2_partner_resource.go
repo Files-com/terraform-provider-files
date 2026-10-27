@@ -139,7 +139,7 @@ func (r *as2PartnerResource) resourceSchema() schema.Schema {
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.Dynamic{
-					lib.DeprecatedJSONEncoding("files_as2_partner.additional_http_headers", "additional_http_headers = {\n  X-Partner = \"acme\"\n}", "March 1, 2027"),
+					lib.DeprecatedJSONEncoding("files_as2_partner.additional_http_headers", "additional_http_headers = {\n  X-Partner = \"acme\"\n}", "March 1, 2027", nil, nil),
 				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),

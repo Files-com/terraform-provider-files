@@ -20,10 +20,10 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
-
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -156,15 +156,23 @@ func (r *eventSubscriptionResource) Schema(_ context.Context, _ resource.SchemaR
 				},
 			},
 			"filter": schema.DynamicAttribute{
-				Description:   "Conditions on event fields that an event must meet to be delivered, keyed by dot-notation field path. All conditions must match.",
-				Computed:      true,
-				Optional:      true,
-				PlanModifiers: []planmodifier.Dynamic{dynamicplanmodifier.UseStateForUnknown()},
-			},
-			"delivery_policy": schema.DynamicAttribute{
-				Description: "Event Subscription delivery policy.",
+				Description: "Conditions on event fields that an event must meet to be delivered, keyed by dot-notation field path. All conditions must match.",
 				Computed:    true,
 				Optional:    true,
+				Validators: []validator.Dynamic{
+					lib.ValidJSONEncoding(),
+				},
+				PlanModifiers: []planmodifier.Dynamic{
+					dynamicplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"delivery_policy": schema.DynamicAttribute{
+				Description: "Event Subscription delivery policy. Overrides retry settings from each Event Target's delivery policy.",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_event_subscription.delivery_policy", "delivery_policy = {\n  max_attempts        = 3\n  retry_delay_minutes = [5, 30]\n}", "March 1, 2027", map[string]string{"max_attempts": "integer", "retry_delay_minutes": "list", "retry_delay_minutes[]": "integer"}, nil),
+				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
 				},
@@ -230,11 +238,10 @@ func (r *eventSubscriptionResource) Create(ctx context.Context, req resource.Cre
 		diags = plan.EventTypes.ElementsAs(ctx, &paramsEventSubscriptionCreate.EventTypes, false)
 		resp.Diagnostics.Append(diags...)
 	}
-	createFilter, diags := lib.SchemaAttributeToInterface(ctx, path.Root("filter"), plan.Filter)
+	createFilter, diags := lib.JSONValueToAPI(ctx, path.Root("filter"), config.Filter)
 	resp.Diagnostics.Append(diags...)
-
 	paramsEventSubscriptionCreate.Filter = createFilter
-	createDeliveryPolicy, diags := lib.DynamicToInterface(ctx, path.Root("delivery_policy"), plan.DeliveryPolicy)
+	createDeliveryPolicy, diags := lib.JSONValueToAPI(ctx, path.Root("delivery_policy"), config.DeliveryPolicy)
 	resp.Diagnostics.Append(diags...)
 	paramsEventSubscriptionCreate.DeliveryPolicy = createDeliveryPolicy
 	if !plan.EventTargetIds.IsNull() && !plan.EventTargetIds.IsUnknown() {
@@ -313,6 +320,12 @@ func (r *eventSubscriptionResource) Update(ctx context.Context, req resource.Upd
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var state eventSubscriptionResourceModel
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsEventSubscriptionUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
@@ -349,14 +362,15 @@ func (r *eventSubscriptionResource) Update(ctx context.Context, req resource.Upd
 		paramsEventSubscriptionUpdate["event_types"] = updateEventTypes
 	}
 	if !config.Filter.IsNull() && !config.Filter.IsUnknown() {
-		updateFilter, diags := lib.SchemaAttributeToInterface(ctx, path.Root("filter"), config.Filter)
+		updateFilter, diags := lib.JSONValueToAPI(ctx, path.Root("filter"), config.Filter)
 		resp.Diagnostics.Append(diags...)
-
 		paramsEventSubscriptionUpdate["filter"] = updateFilter
 	}
-	updateDeliveryPolicy, diags := lib.DynamicToInterface(ctx, path.Root("delivery_policy"), config.DeliveryPolicy)
-	resp.Diagnostics.Append(diags...)
-	paramsEventSubscriptionUpdate["delivery_policy"] = updateDeliveryPolicy
+	if !config.DeliveryPolicy.IsNull() && !config.DeliveryPolicy.IsUnknown() {
+		updateDeliveryPolicy, diags := lib.JSONValueToAPI(ctx, path.Root("delivery_policy"), config.DeliveryPolicy)
+		resp.Diagnostics.Append(diags...)
+		paramsEventSubscriptionUpdate["delivery_policy"] = updateDeliveryPolicy
+	}
 	if !config.EventTargetIds.IsNull() && !config.EventTargetIds.IsUnknown() {
 		var updateEventTargetIds []int64
 		diags = config.EventTargetIds.ElementsAs(ctx, &updateEventTargetIds, false)
@@ -444,11 +458,9 @@ func (r *eventSubscriptionResource) populateResourceModel(ctx context.Context, e
 	state.Enabled = types.BoolPointerValue(eventSubscription.Enabled)
 	state.EventTypes, propDiags = types.ListValueFrom(ctx, types.StringType, eventSubscription.EventTypes)
 	diags.Append(propDiags...)
-	filterValue := interface{}(eventSubscription.Filter)
-
-	state.Filter, propDiags = lib.ToDynamic(ctx, path.Root("filter"), filterValue, state.Filter)
+	state.Filter, propDiags = lib.APIToDynamicJSON(ctx, path.Root("filter"), eventSubscription.Filter, state.Filter, []string{"*"}, []string{}, "")
 	diags.Append(propDiags...)
-	state.DeliveryPolicy, propDiags = lib.ToDynamic(ctx, path.Root("delivery_policy"), eventSubscription.DeliveryPolicy, state.DeliveryPolicy.UnderlyingValue())
+	state.DeliveryPolicy, propDiags = lib.APIToDynamicJSON(ctx, path.Root("delivery_policy"), eventSubscription.DeliveryPolicy, state.DeliveryPolicy, []string{}, []string{}, "empty_object")
 	diags.Append(propDiags...)
 	state.EventTargetIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, eventSubscription.EventTargetIds)
 	diags.Append(propDiags...)

@@ -29,7 +29,7 @@ data "files_event_subscription" "example_event_subscription" {
 
 - `apply_to_all_workspaces` (Boolean) If true, this default-workspace subscription applies to events from all workspaces.
 - `created_at` (String) Event Subscription create date/time.
-- `delivery_policy` (Dynamic) Event Subscription delivery policy.
+- `delivery_policy` (Dynamic) Event Subscription delivery policy. Overrides retry settings from each Event Target's delivery policy.
 - `enabled` (Boolean) Whether this Event Subscription can dispatch events.
 - `event_channel_id` (Number) Event Channel ID
 - `event_target_ids` (List of Number) Event Target IDs this subscription sends to.
@@ -41,3 +41,24 @@ data "files_event_subscription" "example_event_subscription" {
 - `subject` (String) Custom subject line to use for notification emails.
 - `updated_at` (String) Event Subscription update date/time.
 - `workspace_id` (Number) Workspace ID. 0 means the default workspace or site-wide.
+
+### JSON property details
+
+Except for `filter`, these properties will move from Dynamic to typed schemas in a major provider release planned for March 1, 2027.
+
+#### filter
+
+Stays Dynamic in every release because its values vary.
+
+Each key is the full dot-notation path to a field in the event JSON that webhook targets receive, such as `payload.status`. Paths can reference top-level fields such as `type`, `workspace_id`, and `occurred_at`, actor fields such as `actor.username`, human-readable fields such as `human.title`, and event-specific fields under `payload`, such as `payload.status`, `payload.sync_name`, or `payload.automation_name`. Fields under `payload` vary by event type. Every segment of a path must name an object key.
+Each value is the condition that field must meet: a plain value, an array of values, or an object with exactly one operator key. A plain value works the same as `equals`, and an array works the same as `one_of`.
+An event matches only when every condition matches. An empty object matches every event of the subscription's event types.
+
+- `[key]` (string or number or boolean or list of values or object, optional)
+
+#### delivery_policy
+
+Retry settings for deliveries from this subscription. Each omitted key uses the value from the Event Target's delivery_policy, and then the default.
+
+- `max_attempts` (integer, optional) Maximum delivery attempts, including the first attempt. A value below 1 uses the default of 5. Null works like an omitted key.
+- `retry_delay_minutes` (list of integers, optional) Minutes to wait before each retry. The last value is used for any later retries, so a list with one value applies it to every retry. An empty list uses the default of [1,5,15,60,180]. Null works like an omitted key.

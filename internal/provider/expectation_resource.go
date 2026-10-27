@@ -272,7 +272,7 @@ func (r *expectationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.Dynamic{
-					lib.DeprecatedJSONEncoding("files_expectation.criteria", "criteria = {\n  count      = {\n    exact = 1\n  }\n  extensions = [\"csv\"]\n}", "March 1, 2027"),
+					lib.DeprecatedJSONEncoding("files_expectation.criteria", "criteria = {\n  count      = {\n    exact = 1\n  }\n  extensions = [\"csv\"]\n}", "March 1, 2027", map[string]string{"count": "object", "count.exact": "integer", "count.max": "integer", "count.min": "integer", "extensions": "list", "total_bytes": "object", "total_bytes.exact": "integer", "total_bytes.max": "integer", "total_bytes.min": "integer", "forbidden_files": "list", "required_files.*": "object", "required_files.*.count": "object", "required_files.*.count.exact": "integer", "required_files.*.count.max": "integer", "required_files.*.count.min": "integer", "required_files.*.extensions": "list", "required_files.*.size_bytes": "object", "required_files.*.size_bytes.exact": "integer", "required_files.*.size_bytes.max": "integer", "required_files.*.size_bytes.min": "integer", "content_validation": "object"}, nil),
 				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),

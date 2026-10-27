@@ -119,7 +119,7 @@ func (r *eventSubscriptionDataSource) Schema(_ context.Context, _ datasource.Sch
 				Computed:    true,
 			},
 			"delivery_policy": schema.DynamicAttribute{
-				Description: "Event Subscription delivery policy.",
+				Description: "Event Subscription delivery policy. Overrides retry settings from each Event Target's delivery policy.",
 				Computed:    true,
 			},
 			"event_target_ids": schema.ListAttribute{
@@ -183,11 +183,9 @@ func (r *eventSubscriptionDataSource) populateDataSourceModel(ctx context.Contex
 	state.Enabled = types.BoolPointerValue(eventSubscription.Enabled)
 	state.EventTypes, propDiags = types.ListValueFrom(ctx, types.StringType, eventSubscription.EventTypes)
 	diags.Append(propDiags...)
-	filterValue := interface{}(eventSubscription.Filter)
-
-	state.Filter, propDiags = lib.ToDynamic(ctx, path.Root("filter"), filterValue, state.Filter)
+	state.Filter, propDiags = lib.ToDynamic(ctx, path.Root("filter"), eventSubscription.Filter, nil)
 	diags.Append(propDiags...)
-	state.DeliveryPolicy, propDiags = lib.ToDynamic(ctx, path.Root("delivery_policy"), eventSubscription.DeliveryPolicy, state.DeliveryPolicy.UnderlyingValue())
+	state.DeliveryPolicy, propDiags = lib.ToDynamic(ctx, path.Root("delivery_policy"), eventSubscription.DeliveryPolicy, nil)
 	diags.Append(propDiags...)
 	state.EventTargetIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, eventSubscription.EventTargetIds)
 	diags.Append(propDiags...)

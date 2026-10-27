@@ -329,7 +329,7 @@ func (r *bundleResource) resourceSchema() schema.Schema {
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.Dynamic{
-					lib.DeprecatedJSONEncoding("files_bundle.watermark_value", "watermark_value = {\n  gravity             = \"SouthWest\"\n  max_height_or_width = 20\n  transparency        = 25\n}", "March 1, 2027"),
+					lib.DeprecatedJSONEncoding("files_bundle.watermark_value", "watermark_value = {\n  gravity             = \"SouthWest\"\n  max_height_or_width = 20\n  transparency        = 25\n}", "March 1, 2027", map[string]string{"max_height_or_width": "integer", "transparency": "integer"}, nil),
 				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),

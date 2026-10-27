@@ -179,6 +179,7 @@ func (p *filesProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewAiAssistantPersonalityDataSource,
 		NewAiTaskDataSource,
 		NewApiKeyDataSource,
+		NewAs2IncomingMessageDataSource,
 		NewAs2PartnerDataSource,
 		NewAs2StationDataSource,
 		NewAutomationDataSource,

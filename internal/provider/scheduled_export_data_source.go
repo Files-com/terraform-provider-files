@@ -7,7 +7,6 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	scheduled_export "github.com/Files-com/files-sdk-go/v3/scheduledexport"
 	"github.com/Files-com/terraform-provider-files/lib"
-
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -98,7 +97,7 @@ func (r *scheduledExportDataSource) Schema(_ context.Context, _ datasource.Schem
 				Computed:    true,
 			},
 			"export_options": schema.DynamicAttribute{
-				Description: "Report-specific options. `permission_audit` supports `group_by` with `user` or `path`.",
+				Description: "Options for the report selected by export_type.",
 				Computed:    true,
 			},
 			"user_id": schema.Int64Attribute{
@@ -213,7 +212,7 @@ func (r *scheduledExportDataSource) populateDataSourceModel(ctx context.Context,
 	state.Name = types.StringValue(scheduledExport.Name)
 	state.ExportType = types.StringValue(scheduledExport.ExportType)
 	state.ReportName = types.StringValue(scheduledExport.ReportName)
-	state.ExportOptions, propDiags = lib.ToDynamic(ctx, path.Root("export_options"), scheduledExport.ExportOptions, state.ExportOptions.UnderlyingValue())
+	state.ExportOptions, propDiags = lib.ToDynamic(ctx, path.Root("export_options"), scheduledExport.ExportOptions, nil)
 	diags.Append(propDiags...)
 	state.UserId = types.Int64Value(scheduledExport.UserId)
 	state.Disabled = types.BoolPointerValue(scheduledExport.Disabled)

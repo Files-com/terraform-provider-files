@@ -23,6 +23,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -103,11 +104,16 @@ func (r *formFieldSetResource) resourceSchema() schema.Schema {
 				},
 			},
 			"form_fields": schema.DynamicAttribute{
-				Description: "Associated form field definitions; authenticated form field set responses include historical definitions, while form_layout identifies current fields",
+				Description: "Form fields in display order. Managed state contains the current fields listed in form_layout. The data source also returns historical definitions.",
 				Computed:    true,
 				Optional:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_form_field_set.form_fields", "form_fields = [\n  {\n    label              = \"Department\"\n    field_type         = \"dropdown\"\n    required           = true\n    options_for_select = [\"Finance\", \"Sales\"]\n  }\n]", "March 1, 2027", map[string]string{"": "list", "[]": "object", "[].id": "integer", "[].required": "boolean", "[].options_for_select": "list"}, nil),
+					lib.RejectJSONNull("Files.com cannot store a null form_fields value. Set form_fields to the list of fields, or to [] to remove every field, instead of jsonencode(null)."),
+				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
+					lib.FixedRecordIDs("id", []string{"required", "form_field_set_id"}),
 				},
 			},
 			"skip_name": schema.BoolAttribute{
@@ -198,14 +204,17 @@ func (r *formFieldSetResource) Create(ctx context.Context, req resource.CreateRe
 	if !plan.SkipCompany.IsNull() && !plan.SkipCompany.IsUnknown() {
 		paramsFormFieldSetCreate.SkipCompany = plan.SkipCompany.ValueBoolPointer()
 	}
-	paramsFormFieldSetCreate.FormFields, diags = lib.DynamicToStringMapSlice(ctx, path.Root("form_fields"), plan.FormFields)
+	createFormFields, diags := lib.JSONValueToAPI(ctx, path.Root("form_fields"), config.FormFields)
+	resp.Diagnostics.Append(diags...)
+	paramsFormFieldSetCreate.FormFields, diags = lib.JSONToStringMapSlice(path.Root("form_fields"), createFormFields)
 	resp.Diagnostics.Append(diags...)
 
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	formFieldSet, err := r.client.Create(paramsFormFieldSetCreate, files_sdk.WithContext(ctx))
+	var responseBody []byte
+	formFieldSet, err := r.client.Create(paramsFormFieldSetCreate, files_sdk.WithContext(ctx), lib.CaptureResponseBody(&responseBody))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Creating Files FormFieldSet",
@@ -214,7 +223,7 @@ func (r *formFieldSetResource) Create(ctx context.Context, req resource.CreateRe
 		return
 	}
 
-	diags = r.populateResourceModel(ctx, formFieldSet, &plan)
+	diags = r.populateResourceModel(ctx, formFieldSet, &plan, responseBody)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -235,7 +244,8 @@ func (r *formFieldSetResource) Read(ctx context.Context, req resource.ReadReques
 	paramsFormFieldSetFind := files_sdk.FormFieldSetFindParams{}
 	paramsFormFieldSetFind.Id = state.Id.ValueInt64()
 
-	formFieldSet, err := r.client.Find(paramsFormFieldSetFind, files_sdk.WithContext(ctx))
+	var responseBody []byte
+	formFieldSet, err := r.client.Find(paramsFormFieldSetFind, files_sdk.WithContext(ctx), lib.CaptureResponseBody(&responseBody))
 	if err != nil {
 		if files_sdk.IsNotExist(err) {
 			resp.State.RemoveResource(ctx)
@@ -249,7 +259,7 @@ func (r *formFieldSetResource) Read(ctx context.Context, req resource.ReadReques
 		return
 	}
 
-	diags = r.populateResourceModel(ctx, formFieldSet, &state)
+	diags = r.populateResourceModel(ctx, formFieldSet, &state, responseBody)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -268,6 +278,12 @@ func (r *formFieldSetResource) Update(ctx context.Context, req resource.UpdateRe
 	}
 	var config formFieldSetResourceModel
 	diags = req.Config.Get(ctx, &config)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	var state formFieldSetResourceModel
+	diags = req.State.Get(ctx, &state)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -296,7 +312,7 @@ func (r *formFieldSetResource) Update(ctx context.Context, req resource.UpdateRe
 		paramsFormFieldSetUpdate["skip_company"] = config.SkipCompany.ValueBool()
 	}
 	if !config.FormFields.IsNull() && !config.FormFields.IsUnknown() {
-		updateFormFields, diags := lib.DynamicToStringMapSlice(ctx, path.Root("form_fields"), config.FormFields)
+		updateFormFields, diags := lib.JSONValueToAPI(ctx, path.Root("form_fields"), config.FormFields)
 		resp.Diagnostics.Append(diags...)
 		paramsFormFieldSetUpdate["form_fields"] = updateFormFields
 	}
@@ -305,7 +321,8 @@ func (r *formFieldSetResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	formFieldSet, err := r.client.UpdateWithMap(paramsFormFieldSetUpdate, files_sdk.WithContext(ctx))
+	var responseBody []byte
+	formFieldSet, err := r.client.UpdateWithMap(paramsFormFieldSetUpdate, files_sdk.WithContext(ctx), lib.CaptureResponseBody(&responseBody))
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Updating Files FormFieldSet",
@@ -314,7 +331,7 @@ func (r *formFieldSetResource) Update(ctx context.Context, req resource.UpdateRe
 		return
 	}
 
-	diags = r.populateResourceModel(ctx, formFieldSet, &plan)
+	diags = r.populateResourceModel(ctx, formFieldSet, &plan, responseBody)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -367,7 +384,7 @@ func (r *formFieldSetResource) ImportState(ctx context.Context, req resource.Imp
 
 }
 
-func (r *formFieldSetResource) populateResourceModel(ctx context.Context, formFieldSet files_sdk.FormFieldSet, state *formFieldSetResourceModel) (diags diag.Diagnostics) {
+func (r *formFieldSetResource) populateResourceModel(ctx context.Context, formFieldSet files_sdk.FormFieldSet, state *formFieldSetResourceModel, responseBody []byte) (diags diag.Diagnostics) {
 	var propDiags diag.Diagnostics
 
 	state.Id = types.Int64Value(formFieldSet.Id)
@@ -375,7 +392,9 @@ func (r *formFieldSetResource) populateResourceModel(ctx context.Context, formFi
 	state.RequireCompleteMetadataCapture = types.BoolPointerValue(formFieldSet.RequireCompleteMetadataCapture)
 	state.FormLayout, propDiags = types.ListValueFrom(ctx, types.Int64Type, formFieldSet.FormLayout)
 	diags.Append(propDiags...)
-	state.FormFields, propDiags = lib.ToDynamic(ctx, path.Root("form_fields"), formFieldSet.FormFields, state.FormFields.UnderlyingValue())
+	formFieldsResponse, formFieldsResponseDiags := lib.ResponseProperty(path.Root("form_fields"), responseBody, "form_fields")
+	diags.Append(formFieldsResponseDiags...)
+	state.FormFields, propDiags = lib.APIToDynamicJSON(ctx, path.Root("form_fields"), lib.CurrentFormFields(formFieldSet, formFieldsResponse), state.FormFields, []string{}, []string{}, "form_fields")
 	diags.Append(propDiags...)
 	state.SkipName = types.BoolPointerValue(formFieldSet.SkipName)
 	state.SkipEmail = types.BoolPointerValue(formFieldSet.SkipEmail)

@@ -44,8 +44,8 @@ func TestHolidayCalendarJSONStateUpgrades(t *testing.T) {
 			}
 			actual, diags := lib.SchemaAttributeToInterface(ctx, path.Root("definition"), upgraded)
 			require.False(t, diags.HasError(), diags)
-			actual, transformDiags0 := lib.UngroupStructuralUnionAtPath(ctx, path.Root("definition"), actual, []string{"months"}, []lib.JSONSchemaVariant{{Name: "calculated_rules", Required: []string{"function"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "function", "function_modifier"}}, {Name: "fixed_rules", Required: []string{"mday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "mday"}}, {Name: "weekday_rules", Required: []string{"week", "wday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "week", "wday"}}})
-			diags.Append(transformDiags0...)
+			actual, actualTransformDiags0 := lib.UngroupStructuralUnionAtPath(ctx, path.Root("definition"), actual, []string{"months"}, []lib.JSONSchemaVariant{{Name: "calculated_rules", Required: []string{"function"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "function", "function_modifier"}}, {Name: "fixed_rules", Required: []string{"mday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "mday"}}, {Name: "weekday_rules", Required: []string{"week", "wday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "week", "wday"}}})
+			diags.Append(actualTransformDiags0...)
 			require.False(t, diags.HasError(), diags)
 			encoded, err := json.Marshal(actual)
 			require.NoError(t, err)

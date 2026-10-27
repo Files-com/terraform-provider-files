@@ -46,7 +46,7 @@ data "files_behavior" "example_behavior" {
 
 ### Optional
 
-- `value_format` (String) Set to `typed` to return the future files_behavior.value output shape before it becomes the default on March 1, 2027. Omit this attribute to keep the current output until then.
+- `value_format` (String) Set to `typed` to return files_behavior.value under the selected behavior name, as it will be returned on March 1, 2027. Older stored forms are also returned in their documented shape: a value stored as JSON text is decoded, and an older value that is not an object moves under its field, such as a number of days under file_expiration.days_to_retain or webhook URLs under webhook.urls. Settings stored as numeric or true/false strings stay strings, and only stored fields are returned. The typed release returns those strings as numbers and booleans, and returns every field of the typed schema, with null for fields that are not set. Omit this attribute to keep the current output until then.
 
 ### Read-Only
 
@@ -61,4 +61,4 @@ data "files_behavior" "example_behavior" {
 - `public_hosting_url` (String) Public URL for this publicly hosted folder when the `Serve Publicly` behavior has a key configured. When a Custom Domain with `public_hosting` destination is attached to this behavior, the URL uses that domain. Otherwise it uses the site's `subdomain.hosted-by-files.com` host, unless `custom_domain_only` is enabled, in which case no URL is returned.
 - `recursive` (Boolean) Whether this behavior is recursive for this record. `always` behaviors are always `true`, `never` behaviors are always `false`, and `sometimes` behaviors may be either value.
 - `root_behavior_site_admin_only` (Boolean) If true, this behavior may only be modified by a site admin because it is at the site root or disables a root behavior.
-- `value` (Dynamic) Settings for this behavior. Set `value_format = "typed"` to return the future typed shape under the selected behavior name.
+- `value` (Dynamic) Settings for this behavior. Set `value_format = "typed"` to return them under the selected behavior name, as the typed schema does.

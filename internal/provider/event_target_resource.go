@@ -20,7 +20,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/dynamicplanmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -97,8 +96,12 @@ func (r *eventTargetResource) Schema(_ context.Context, _ resource.SchemaRequest
 				},
 			},
 			"config": schema.DynamicAttribute{
-				Description: "Event Target configuration. Folder targets accept path and format (json or csv).",
+				Description: "Event Target configuration. Fields depend on target_type.",
 				Required:    true,
+				Sensitive:   true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_event_target.config", "config = {\n  url               = \"https://example.com/files-events\"\n  headers           = {\n    X-Example = \"value\"\n  }\n  use_dedicated_ips = false\n}", "March 1, 2027", map[string]string{"user_ids": "list", "user_ids[]": "integer", "use_dedicated_ips": "boolean", "aws_credentials": "object", "google_credentials": "object"}, nil),
+				},
 			},
 			"workspace_id": schema.Int64Attribute{
 				Description: "Workspace ID. 0 means the default workspace or site-wide.",
@@ -128,6 +131,9 @@ func (r *eventTargetResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "Event Target delivery policy. Email and folder targets support batch_interval in seconds, between 600 and 86400. Slack and Teams support delivery_mode (immediate or subfolder_summary), summary_path (empty string means root), and summary_delay (15–300 seconds, default 60). The summary applies to matching file activity under summary_path; other matching events retain immediate delivery.",
 				Computed:    true,
 				Optional:    true,
+				Validators: []validator.Dynamic{
+					lib.DeprecatedJSONEncoding("files_event_target.delivery_policy", "delivery_policy = {\n  max_attempts        = 3\n  retry_delay_minutes = [1, 10]\n}", "March 1, 2027", map[string]string{"max_attempts": "integer", "retry_delay_minutes": "list", "retry_delay_minutes[]": "integer", "batch_interval": "integer", "summary_delay": "integer"}, nil),
+				},
 				PlanModifiers: []planmodifier.Dynamic{
 					dynamicplanmodifier.UseStateForUnknown(),
 				},
@@ -174,10 +180,10 @@ func (r *eventTargetResource) Create(ctx context.Context, req resource.CreateReq
 	if !plan.Enabled.IsNull() && !plan.Enabled.IsUnknown() {
 		paramsEventTargetCreate.Enabled = plan.Enabled.ValueBoolPointer()
 	}
-	createConfig, diags := lib.DynamicToInterface(ctx, path.Root("config"), plan.Config)
+	createConfig, diags := lib.JSONValueToAPI(ctx, path.Root("config"), config.Config)
 	resp.Diagnostics.Append(diags...)
 	paramsEventTargetCreate.Config = createConfig
-	createDeliveryPolicy, diags := lib.DynamicToInterface(ctx, path.Root("delivery_policy"), plan.DeliveryPolicy)
+	createDeliveryPolicy, diags := lib.JSONValueToAPI(ctx, path.Root("delivery_policy"), config.DeliveryPolicy)
 	resp.Diagnostics.Append(diags...)
 	paramsEventTargetCreate.DeliveryPolicy = createDeliveryPolicy
 	paramsEventTargetCreate.TargetType = paramsEventTargetCreate.TargetType.Enum()[plan.TargetType.ValueString()]
@@ -253,6 +259,12 @@ func (r *eventTargetResource) Update(ctx context.Context, req resource.UpdateReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
+	var state eventTargetResourceModel
+	diags = req.State.Get(ctx, &state)
+	resp.Diagnostics.Append(diags...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
 
 	paramsEventTargetUpdate := map[string]interface{}{}
 	if !plan.Id.IsNull() && !plan.Id.IsUnknown() {
@@ -270,12 +282,16 @@ func (r *eventTargetResource) Update(ctx context.Context, req resource.UpdateReq
 	if !config.Enabled.IsNull() && !config.Enabled.IsUnknown() {
 		paramsEventTargetUpdate["enabled"] = config.Enabled.ValueBool()
 	}
-	updateConfig, diags := lib.DynamicToInterface(ctx, path.Root("config"), config.Config)
-	resp.Diagnostics.Append(diags...)
-	paramsEventTargetUpdate["config"] = updateConfig
-	updateDeliveryPolicy, diags := lib.DynamicToInterface(ctx, path.Root("delivery_policy"), config.DeliveryPolicy)
-	resp.Diagnostics.Append(diags...)
-	paramsEventTargetUpdate["delivery_policy"] = updateDeliveryPolicy
+	if !config.Config.IsNull() && !config.Config.IsUnknown() {
+		updateConfig, diags := lib.JSONValueToAPI(ctx, path.Root("config"), config.Config)
+		resp.Diagnostics.Append(diags...)
+		paramsEventTargetUpdate["config"] = updateConfig
+	}
+	if !config.DeliveryPolicy.IsNull() && !config.DeliveryPolicy.IsUnknown() {
+		updateDeliveryPolicy, diags := lib.JSONValueToAPI(ctx, path.Root("delivery_policy"), config.DeliveryPolicy)
+		resp.Diagnostics.Append(diags...)
+		paramsEventTargetUpdate["delivery_policy"] = updateDeliveryPolicy
+	}
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -352,9 +368,9 @@ func (r *eventTargetResource) populateResourceModel(ctx context.Context, eventTa
 	state.WorkspaceId = types.Int64Value(eventTarget.WorkspaceId)
 	state.ApplyToAllWorkspaces = types.BoolPointerValue(eventTarget.ApplyToAllWorkspaces)
 	state.Enabled = types.BoolPointerValue(eventTarget.Enabled)
-	state.Config, propDiags = lib.ToDynamic(ctx, path.Root("config"), eventTarget.Config, state.Config.UnderlyingValue())
+	state.Config, propDiags = lib.APIToDynamicJSON(ctx, path.Root("config"), eventTarget.Config, state.Config, []string{"headers"}, []string{"aws_credentials.secret_access_key", "google_credentials.private_key"}, "event_target_config")
 	diags.Append(propDiags...)
-	state.DeliveryPolicy, propDiags = lib.ToDynamic(ctx, path.Root("delivery_policy"), eventTarget.DeliveryPolicy, state.DeliveryPolicy.UnderlyingValue())
+	state.DeliveryPolicy, propDiags = lib.APIToDynamicJSON(ctx, path.Root("delivery_policy"), eventTarget.DeliveryPolicy, state.DeliveryPolicy, []string{}, []string{}, "event_target_delivery_policy")
 	diags.Append(propDiags...)
 	if err := lib.TimeToStringType(ctx, path.Root("created_at"), eventTarget.CreatedAt, &state.CreatedAt); err != nil {
 		diags.AddError(

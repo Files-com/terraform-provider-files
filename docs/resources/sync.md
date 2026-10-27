@@ -38,7 +38,7 @@ resource "files_sync" "example_sync" {
   src_path                  = "example"
   src_remote_server_id      = 1
   sync_interval_minutes     = 1
-  trigger                   = "example"
+  trigger                   = "daily"
   trigger_file              = "example"
   always_write_trigger_file = true
   workspace_id              = 1

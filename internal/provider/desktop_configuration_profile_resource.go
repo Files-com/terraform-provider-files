@@ -83,7 +83,7 @@ func (r *desktopConfigurationProfileResource) Schema(_ context.Context, _ resour
 				Description: "Mount point mappings for the desktop app. Keys must be a single uppercase Windows drive letter other than A, B, or C, and values are Files.com paths to mount there.",
 				Required:    true,
 				Validators: []validator.Dynamic{
-					lib.DeprecatedJSONEncoding("files_desktop_configuration_profile.mount_mappings", "mount_mappings = {\n  W = \"Americas\"\n}", "March 1, 2027"),
+					lib.DeprecatedJSONEncoding("files_desktop_configuration_profile.mount_mappings", "mount_mappings = {\n  W = \"Americas\"\n}", "March 1, 2027", nil, nil),
 				},
 			},
 			"workspace_id": schema.Int64Attribute{

@@ -3,14 +3,17 @@ package lib
 import (
 	"context"
 	"math/big"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestTimeToStringType(t *testing.T) {
@@ -186,13 +189,15 @@ func TestSchemaObjectRoundTrip(t *testing.T) {
 		"optional": types.StringType,
 	}
 	source := map[string]interface{}{
-		"version": 1,
-		"labels":  map[string]interface{}{"team": "operations"},
-		"steps":   []interface{}{map[string]interface{}{"path": "incoming/", "delay": 30}},
+		"version":  1,
+		"labels":   map[string]interface{}{"team": "operations"},
+		"steps":    []interface{}{map[string]interface{}{"path": "incoming/", "delay": 30}},
+		"optional": nil,
 	}
 
 	value, diags := ToObject(context.Background(), path.Root("definition"), source, types.ObjectNull(definitionTypes))
 	assert.False(t, diags.HasError())
+	// A typed object cannot tell a field set to null from an omitted field, so the API value leaves both out.
 	result, diags := SchemaAttributeToInterface(context.Background(), path.Root("definition"), value)
 	assert.False(t, diags.HasError())
 	assert.Equal(t, map[string]interface{}{
@@ -200,6 +205,11 @@ func TestSchemaObjectRoundTrip(t *testing.T) {
 		"labels":  map[string]interface{}{"team": "operations"},
 		"steps":   []interface{}{map[string]interface{}{"path": "incoming/", "delay": int64(30)}},
 	}, result)
+
+	// A Dynamic value keeps the null in the API value.
+	dynamic, diags := JSONValueToAPI(context.Background(), path.Root("definition"), types.DynamicValue(nativeJSONValue(t, map[string]any{"optional": nil})))
+	require.False(t, diags.HasError(), diags)
+	assert.Equal(t, map[string]any{"optional": nil}, dynamic)
 }
 
 func TestDiscriminatedUnionRoundTrip(t *testing.T) {
@@ -257,6 +267,41 @@ func TestSiblingDiscriminatorRoundTrip(t *testing.T) {
 	assert.True(t, diags.HasError())
 }
 
+// Rails merges a Behavior value on update, so a typed update sends null for a writable field that state sets and the
+// configuration removed. Computed fields, fields of another behavior and unchanged fields are left alone.
+func TestNullRemovedSiblingFields(t *testing.T) {
+	variants := []JSONSchemaVariant{
+		{Name: "webhook", Value: "webhook", Writable: []string{"urls", "method", "headers"}},
+		{Name: "file_expiration", Value: "file_expiration", Writable: []string{"days_to_retain"}},
+	}
+	webhookType := types.ObjectType{AttrTypes: map[string]attr.Type{"urls": types.ListType{ElemType: types.StringType}, "method": types.StringType, "headers": types.MapType{ElemType: types.StringType}, "configured": types.BoolType}}
+	expirationType := types.ObjectType{AttrTypes: map[string]attr.Type{"days_to_retain": types.Int64Type}}
+	valueType := map[string]attr.Type{"webhook": webhookType, "file_expiration": expirationType}
+	urls := types.ListValueMust(types.StringType, []attr.Value{types.StringValue("https://example.com/hook")})
+	prior := types.ObjectValueMust(valueType, map[string]attr.Value{
+		"webhook": types.ObjectValueMust(webhookType.AttrTypes, map[string]attr.Value{
+			"urls": urls, "method": types.StringValue("POST"), "headers": types.MapValueMust(types.StringType, map[string]attr.Value{"X-Example": types.StringValue("1")}), "configured": types.BoolValue(true),
+		}),
+		"file_expiration": types.ObjectNull(expirationType.AttrTypes),
+	})
+	request := map[string]interface{}{"urls": []interface{}{"https://example.com/hook"}, "method": "GET"}
+
+	result, diags := NullRemovedSiblingFields(context.Background(), path.Root("value"), request, prior, "webhook", variants)
+	require.False(t, diags.HasError(), diags)
+	assert.Equal(t, map[string]interface{}{"urls": []interface{}{"https://example.com/hook"}, "method": "GET", "headers": nil}, result)
+	assert.NotContains(t, request, "headers", "the request value is not changed in place")
+
+	result, diags = NullRemovedSiblingFields(context.Background(), path.Root("value"), map[string]interface{}{"days_to_retain": float64(7)}, prior, "file_expiration", variants)
+	require.False(t, diags.HasError(), diags)
+	assert.Equal(t, map[string]interface{}{"days_to_retain": float64(7)}, result, "prior state under another behavior removes nothing")
+
+	for _, empty := range []attr.Value{types.ObjectNull(valueType), types.ObjectUnknown(valueType)} {
+		result, diags = NullRemovedSiblingFields(context.Background(), path.Root("value"), request, empty, "webhook", variants)
+		require.False(t, diags.HasError(), diags)
+		assert.Equal(t, request, result)
+	}
+}
+
 func TestSiblingDiscriminatorWrapsLegacyValues(t *testing.T) {
 	variants := []JSONSchemaVariant{
 		{Name: "file_expiration", Value: "file_expiration", LegacyProperty: "days_to_retain"},
@@ -276,10 +321,143 @@ func TestSiblingDiscriminatorWrapsLegacyValues(t *testing.T) {
 	assert.Nil(t, result)
 }
 
+// A typed object also reads its JSON text, as older records and Dynamic state may hold a Google key file. A response
+// without private_key leaves it null. Text that is not a JSON object fails instead of becoming an empty object.
+func TestSchemaValueReadsObjectJSONText(t *testing.T) {
+	credentials := types.ObjectType{AttrTypes: map[string]attr.Type{"client_email": types.StringType, "private_key": types.StringType}}
+	config := types.ObjectType{AttrTypes: map[string]attr.Type{"google_credentials": credentials}}
+	for _, test := range []struct {
+		name        string
+		credentials any
+		want        attr.Value
+	}{
+		{"object without private_key", map[string]any{"client_email": "events@example.com"}, types.ObjectValueMust(credentials.AttrTypes, map[string]attr.Value{"client_email": types.StringValue("events@example.com"), "private_key": types.StringNull()})},
+		{"key file text", `{"client_email":"events@example.com","private_key":"example-key"}`, types.ObjectValueMust(credentials.AttrTypes, map[string]attr.Value{"client_email": types.StringValue("events@example.com"), "private_key": types.StringValue("example-key")})},
+		{"malformed text", `{"client_email":`, nil},
+		{"list text", `["events@example.com"]`, nil},
+		{"null text", `null`, nil},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			value, diags := schemaValue(context.Background(), path.Root("config"), map[string]any{"google_credentials": test.credentials}, config)
+			if test.want == nil {
+				require.True(t, diags.HasError())
+				assert.Equal(t, "Failed to convert API value", diags[0].Summary())
+				assert.Nil(t, value)
+				return
+			}
+			require.False(t, diags.HasError(), diags)
+			assert.Equal(t, types.ObjectValueMust(config.AttrTypes, map[string]attr.Value{"google_credentials": test.want}), value)
+		})
+	}
+}
+
 func TestSchemaValueReadsLegacyBooleanStrings(t *testing.T) {
 	value, diags := schemaValue(context.Background(), path.Root("armor"), "true", types.BoolType)
 	assert.False(t, diags.HasError())
 	assert.Equal(t, types.BoolValue(true), value)
+}
+
+// Stored legacy values of the typed delivery_policy and ai_feature_availability fields convert, or fail with an error.
+// They never become 0 or false, and are never dropped. Only a list marked x-files-legacy-single-item, as
+// retry_delay_minutes is, reads one stored item as a one-item list.
+func TestSchemaValueReadsLegacyDeliveryPolicyAndAIOptions(t *testing.T) {
+	delays := types.ListType{ElemType: types.Int64Type}
+	policy := types.ObjectType{AttrTypes: map[string]attr.Type{"max_attempts": types.Int64Type, "retry_delay_minutes": delays}}
+	options := types.ObjectType{AttrTypes: map[string]attr.Type{"site_admins": types.BoolType, "all_users": types.BoolType}}
+	delayList := func(values ...int64) map[string]attr.Value {
+		items := []attr.Value{}
+		for _, value := range values {
+			items = append(items, types.Int64Value(value))
+		}
+		return map[string]attr.Value{"max_attempts": types.Int64Null(), "retry_delay_minutes": types.ListValueMust(types.Int64Type, items)}
+	}
+	for _, test := range []struct {
+		name   string
+		source map[string]any
+		target types.ObjectType
+		marked bool
+		want   map[string]attr.Value
+		error  string
+	}{
+		{name: "numeric strings", source: map[string]any{"max_attempts": "3", "retry_delay_minutes": []any{"1", float64(5)}}, target: policy, marked: true,
+			want: map[string]attr.Value{"max_attempts": types.Int64Value(3), "retry_delay_minutes": types.ListValueMust(types.Int64Type, []attr.Value{types.Int64Value(1), types.Int64Value(5)})}},
+		{name: "null and an empty list", source: map[string]any{"max_attempts": nil, "retry_delay_minutes": []any{}}, target: policy, marked: true, want: delayList()},
+		{name: "null delays", source: map[string]any{"retry_delay_minutes": nil}, target: policy, marked: true,
+			want: map[string]attr.Value{"max_attempts": types.Int64Null(), "retry_delay_minutes": types.ListNull(types.Int64Type)}},
+		{name: "one delay in a marked list", source: map[string]any{"retry_delay_minutes": float64(5)}, target: policy, marked: true, want: delayList(5)},
+		{name: "one numeric string delay in a marked list", source: map[string]any{"retry_delay_minutes": "5"}, target: policy, marked: true, want: delayList(5)},
+		{name: "one non-numeric delay in a marked list", source: map[string]any{"retry_delay_minutes": "soon"}, target: policy, marked: true, error: "retry_delay_minutes[0]: Expected basetypes.Int64Type, got string"},
+		{name: "one fraction delay in a marked list", source: map[string]any{"retry_delay_minutes": 1.5}, target: policy, marked: true, error: "retry_delay_minutes[0]: Expected basetypes.Int64Type, got float64"},
+		{name: "one delay in an unmarked list", source: map[string]any{"retry_delay_minutes": float64(5)}, target: policy, error: "retry_delay_minutes: Expected types.ListType[basetypes.Int64Type], got float64"},
+		{name: "one numeric string delay in an unmarked list", source: map[string]any{"retry_delay_minutes": "5"}, target: policy, error: "retry_delay_minutes: Expected types.ListType[basetypes.Int64Type], got string"},
+		{name: "non-numeric attempts", source: map[string]any{"max_attempts": "three"}, target: policy, marked: true, error: "max_attempts: Expected basetypes.Int64Type, got string"},
+		{name: "fraction delay", source: map[string]any{"retry_delay_minutes": []any{1.5}}, target: policy, marked: true, error: "retry_delay_minutes[0]: Expected basetypes.Int64Type, got float64"},
+		{name: "string booleans and null", source: map[string]any{"site_admins": "true", "all_users": nil}, target: options,
+			want: map[string]attr.Value{"site_admins": types.BoolValue(true), "all_users": types.BoolNull()}},
+		{name: "other boolean string", source: map[string]any{"site_admins": "yes"}, target: options, error: "site_admins: Expected basetypes.BoolType, got string"},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			ctx, source := context.Background(), any(test.source)
+			if test.marked {
+				var diags diag.Diagnostics
+				source, diags = WrapLegacySingleItemAtPath(ctx, path.Root("value"), source, []string{"retry_delay_minutes"})
+				require.False(t, diags.HasError(), diags)
+			}
+			value, diags := schemaValue(ctx, path.Root("value"), source, test.target)
+			if test.error == "" {
+				require.False(t, diags.HasError(), diags)
+				assert.Equal(t, types.ObjectValueMust(test.target.AttrTypes, test.want), value)
+				return
+			}
+			require.Equal(t, 1, diags.ErrorsCount(), diags)
+			assert.Nil(t, value)
+			attributePath := diags[0].(diag.DiagnosticWithPath).Path().String()
+			assert.Equal(t, test.error, strings.TrimPrefix(attributePath, "value.")+": "+diags[0].Detail())
+			assert.Equal(t, "Failed to convert API value", diags[0].Summary())
+		})
+	}
+}
+
+func TestWrapLegacySingleItemAtPathLeavesListsAndOtherFields(t *testing.T) {
+	ctx := context.Background()
+	source := map[string]any{"retry_delay_minutes": []any{float64(1), "5"}, "max_attempts": "3"}
+	value, diags := WrapLegacySingleItemAtPath(ctx, path.Root("delivery_policy"), source, []string{"retry_delay_minutes"})
+	require.False(t, diags.HasError(), diags)
+	assert.Equal(t, source, value)
+
+	value, diags = WrapLegacySingleItemAtPath(ctx, path.Root("delivery_policy"), map[string]any{"retry_delay_minutes": float64(5), "max_attempts": "3"}, []string{"retry_delay_minutes"})
+	require.False(t, diags.HasError(), diags)
+	assert.Equal(t, map[string]any{"retry_delay_minutes": []any{float64(5)}, "max_attempts": "3"}, value, "only the marked field changes, and its item is not converted yet")
+
+	for _, empty := range []any{nil, map[string]any{}} {
+		value, diags = WrapLegacySingleItemAtPath(ctx, path.Root("delivery_policy"), empty, []string{"retry_delay_minutes"})
+		require.False(t, diags.HasError(), diags)
+		assert.Equal(t, empty, value)
+	}
+}
+
+func TestReadLegacyTruthyAtPath(t *testing.T) {
+	ctx := context.Background()
+	for _, test := range []struct {
+		value any
+		want  any
+	}{
+		{float64(0), true},
+		{float64(1), true},
+		{"false", true},
+		{"", true},
+		{true, true},
+		{false, false},
+		{nil, nil},
+	} {
+		value, diags := ReadLegacyTruthyAtPath(ctx, path.Root("export_options"), map[string]any{"all_folders": test.value}, []string{"all_folders"})
+		require.False(t, diags.HasError(), diags)
+		assert.Equal(t, map[string]any{"all_folders": test.want}, value)
+	}
+	empty := map[string]any{}
+	value, diags := ReadLegacyTruthyAtPath(ctx, path.Root("export_options"), empty, []string{"all_folders"})
+	require.False(t, diags.HasError(), diags)
+	assert.Equal(t, empty, value)
 }
 
 func TestStructuralUnionRoundTrip(t *testing.T) {

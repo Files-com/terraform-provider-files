@@ -6,7 +6,7 @@ resource "files_share_group" "example_share_group" {
     {
       name    = "John Doe"
       company = "Acme Ltd"
-      email   = "johndoe@gmail.com"
+      email   = "johndoe@example.com"
     }
   ]
 }
