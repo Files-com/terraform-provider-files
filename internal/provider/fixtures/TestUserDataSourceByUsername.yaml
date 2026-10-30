@@ -1,0 +1,99 @@
+---
+version: 1
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/users?filter%5Busername%5D=test_user
+    method: GET
+  response:
+    body: '[{"id":1105124,"username":"test_user","name":"Test User","email":"test_user@example.com"}]'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/users/1105124
+    method: GET
+  response:
+    body: '{"id":1105124,"username":"test_user","name":"Test User","email":"test_user@example.com"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/users?filter%5Busername%5D=test_user
+    method: GET
+  response:
+    body: '[{"id":1105124,"username":"test_user","name":"Test User","email":"test_user@example.com"}]'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/users/1105124
+    method: GET
+  response:
+    body: '{"id":1105124,"username":"test_user","name":"Test User","email":"test_user@example.com"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/users?filter%5Busername%5D=test_user
+    method: GET
+  response:
+    body: '[{"id":1105124,"username":"test_user","name":"Test User","email":"test_user@example.com"}]'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""
+- request:
+    body: ""
+    form: {}
+    headers:
+      User-Agent:
+      - Files.com Go SDK 1.0
+    url: https://app.files.com/api/rest/v1/users/1105124
+    method: GET
+  response:
+    body: '{"id":1105124,"username":"test_user","name":"Test User","email":"test_user@example.com"}'
+    headers:
+      Content-Type:
+      - application/json
+    status: 200 OK
+    code: 200
+    duration: ""

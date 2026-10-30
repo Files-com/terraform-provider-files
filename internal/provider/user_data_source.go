@@ -8,6 +8,7 @@ import (
 	user "github.com/Files-com/files-sdk-go/v3/user"
 	"github.com/Files-com/terraform-provider-files/lib"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/datasourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -17,8 +18,9 @@ import (
 )
 
 var (
-	_ datasource.DataSource              = &userDataSource{}
-	_ datasource.DataSourceWithConfigure = &userDataSource{}
+	_ datasource.DataSource                     = &userDataSource{}
+	_ datasource.DataSourceWithConfigure        = &userDataSource{}
+	_ datasource.DataSourceWithConfigValidators = &userDataSource{}
 )
 
 func NewUserDataSource() datasource.DataSource {
@@ -148,12 +150,14 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 		Description: "A User represents a human or system/service user with the ability to connect to Files.com via any of the available connectivity methods (unless restricted to specific protocols).\n\nUsers are associated with API Keys, SSH (SFTP) Keys, Notifications, Permissions, and Group memberships.\n\n\n## Authentication\n\nThe `authentication_method` property on a User determines exactly how that user can login and authenticate to their Files.com account. Files.com offers a variety of authentication methods to ensure flexibility, security, migration, and compliance.\n\nThese authentication methods can be configured during user creation and can be modified at any time by site administrators. The meanings of the available values are as follows:\n\n* `password` - Allows authentication via a password.  If API Keys or SSH (SFTP) Keys are also configured, those can be used *instead* of the password.  If Two Factor Authentication (2FA) methods are also configured, a valid 2nd factor is required in addition to the password.\n* `email_signup` - When set upon user creation, an email will be sent to the new user with a link for them to create their password. Once the user has created their password, their authentication type will change to `password`.\n* `sso` - Allows authentication via a linked Single Sign On provider.  If API Keys or SSH (SFTP) Keys are also configured, those can be used *instead* of Single Sign On.  If Two Factor Authentication (2FA) methods are also configured, a valid 2nd factor is required in addition to Single Sign On.  When using this method, you must also provide a valid `sso_strategy_id` to associate the User to the appropriate SSO provider.\n* `password_with_imported_hash` - Works like the `password` method but allows importing a hashed password in MD5, SHA-1, or SHA-256 format.  Provide the imported hash in the field `imported_password_hash`.  Upon first use, the password will be converted to Files.com's internal storage format and the authentication type will change to `password`. Typically only used when migrating to Files.com from another MFT solution.\n* `none` - Does not allow authentication via username and password, but does allow authentication via API Key or SSH (SFTP) Key.  Typically only used for service users.\n* `password_and_ssh_key` - Allows authentication only by providing a password and also a valid SSH (SFTP) Key in a single attempt.  If API Keys are also configured, those can be used *instead* of the password and key combination.  This method only works with (typically enterprise) SSH/SFTP clients capable of sending both authentication methods at once.  Typically only used for service users.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
-				Description: "User ID",
-				Required:    true,
+				Description: "User ID. Provide `id` or `username`.",
+				Computed:    true,
+				Optional:    true,
 			},
 			"username": schema.StringAttribute{
-				Description: "User's username",
+				Description: "User's username. Provide `id` or `username`.",
 				Computed:    true,
+				Optional:    true,
 			},
 			"admin_group_ids": schema.ListAttribute{
 				Description: "List of group IDs of which this user is an administrator",
@@ -504,12 +508,51 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 	}
 }
 
+func (r *userDataSource) ConfigValidators(_ context.Context) []datasource.ConfigValidator {
+	return []datasource.ConfigValidator{
+		datasourcevalidator.ExactlyOneOf(
+			path.MatchRoot("id"),
+			path.MatchRoot("username"),
+		),
+	}
+}
+
 func (r *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data userDataSourceModel
 	diags := req.Config.Get(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
+	}
+
+	if data.Id.IsNull() {
+		userIt, err := r.client.List(files_sdk.UserListParams{
+			Filter: map[string]interface{}{"username": data.Username.ValueString()},
+		}, files_sdk.WithContext(ctx))
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Error Reading Files User",
+				"Could not read user username "+data.Username.ValueString()+": "+err.Error(),
+			)
+			return
+		}
+
+		if !userIt.Next() {
+			if err = userIt.Err(); err != nil {
+				resp.Diagnostics.AddError(
+					"Error Reading Files User",
+					"Could not read user username "+data.Username.ValueString()+": "+err.Error(),
+				)
+			} else {
+				resp.Diagnostics.AddError(
+					"Error Reading Files User",
+					"Could not find user username "+data.Username.ValueString(),
+				)
+			}
+			return
+		}
+
+		data.Id = types.Int64Value(userIt.User().Id)
 	}
 
 	paramsUserFind := files_sdk.UserFindParams{}

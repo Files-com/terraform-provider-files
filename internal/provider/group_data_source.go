@@ -7,16 +7,19 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	group "github.com/Files-com/files-sdk-go/v3/group"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/datasourcevalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var (
-	_ datasource.DataSource              = &groupDataSource{}
-	_ datasource.DataSourceWithConfigure = &groupDataSource{}
+	_ datasource.DataSource                     = &groupDataSource{}
+	_ datasource.DataSourceWithConfigure        = &groupDataSource{}
+	_ datasource.DataSourceWithConfigValidators = &groupDataSource{}
 )
 
 func NewGroupDataSource() datasource.DataSource {
@@ -75,12 +78,14 @@ func (r *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 		Description: "A Group is a powerful tool for permissions and user management on Files.com.  Users can belong to multiple groups.\n\nAll permissions can be managed via Groups, and Groups can also be synced to your identity platform via LDAP or SCIM.\n\nFiles.com's Group Admin feature allows you to define Group Admins, who then have access to add and remove users within their groups.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
-				Description: "Group ID",
-				Required:    true,
+				Description: "Group ID. Provide `id` or `name`.",
+				Computed:    true,
+				Optional:    true,
 			},
 			"name": schema.StringAttribute{
-				Description: "Group name",
+				Description: "Group name. Provide `id` or `name`.",
 				Computed:    true,
+				Optional:    true,
 			},
 			"allowed_ips": schema.StringAttribute{
 				Description: "A list of allowed IPs if applicable.  Newline delimited",
@@ -146,12 +151,51 @@ func (r *groupDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, 
 	}
 }
 
+func (r *groupDataSource) ConfigValidators(_ context.Context) []datasource.ConfigValidator {
+	return []datasource.ConfigValidator{
+		datasourcevalidator.ExactlyOneOf(
+			path.MatchRoot("id"),
+			path.MatchRoot("name"),
+		),
+	}
+}
+
 func (r *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, resp *datasource.ReadResponse) {
 	var data groupDataSourceModel
 	diags := req.Config.Get(ctx, &data)
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
+	}
+
+	if data.Id.IsNull() {
+		groupIt, err := r.client.List(files_sdk.GroupListParams{
+			Filter: map[string]interface{}{"name": data.Name.ValueString()},
+		}, files_sdk.WithContext(ctx))
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Error Reading Files Group",
+				"Could not read group name "+data.Name.ValueString()+": "+err.Error(),
+			)
+			return
+		}
+
+		if !groupIt.Next() {
+			if err = groupIt.Err(); err != nil {
+				resp.Diagnostics.AddError(
+					"Error Reading Files Group",
+					"Could not read group name "+data.Name.ValueString()+": "+err.Error(),
+				)
+			} else {
+				resp.Diagnostics.AddError(
+					"Error Reading Files Group",
+					"Could not find group name "+data.Name.ValueString(),
+				)
+			}
+			return
+		}
+
+		data.Id = types.Int64Value(groupIt.Group().Id)
 	}
 
 	paramsGroupFind := files_sdk.GroupFindParams{}
