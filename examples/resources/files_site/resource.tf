@@ -56,6 +56,7 @@ resource "files_site" "example_site" {
   as2_message_retention_days                                  = 1
   file_activity_events_enabled                                = false
   username_display                                            = "username_only"
+  integration_centric_remote_server_admin_access              = "always_visible"
   session_expiry_minutes                                      = 1
   ssl_required                                                = false
   sftp_insecure_ciphers                                       = false

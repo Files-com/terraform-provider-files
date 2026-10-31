@@ -119,6 +119,7 @@ Site settings and root folder behaviors that a settings policy manages on applic
 - `as2_message_retention_days` (integer, optional) Number of days to retain AS2 messages (incoming and outgoing).
 - `file_activity_events_enabled` (boolean, optional) If true, file operations produce file_action.activity.v1 EventChannel events in all workspaces. Defaults to false; subscription filters and workspace access still control delivery.
 - `username_display` (string, optional) How usernames are displayed in the web UI. Can be `username_only`, `full_name_only`, `full_name_username`, `full_name_company`, or `full_name_username_company`.
+- `integration_centric_remote_server_admin_access` (string, optional) Administrator access to user-owned Remote Servers in every Workspace: always_visible (default), never_visible, user_choice_default_visible, or user_choice_default_personal. Forced modes override owner preferences; choice modes use the preference or their default.
 - `session_expiry_minutes` (integer, optional) Session expiry in minutes
 - `ssl_required` (boolean, optional) Is SSL required?  Disabling this is insecure.
 - `sftp_insecure_ciphers` (boolean, optional) If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility.

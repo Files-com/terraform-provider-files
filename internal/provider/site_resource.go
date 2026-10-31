@@ -129,6 +129,7 @@ type siteResourceModel struct {
 	GroupAdminsCanBypassUserLifecycleRules               types.Bool    `tfsdk:"group_admins_can_bypass_user_lifecycle_rules"`
 	GroupAdminsCanResetPasswords                         types.Bool    `tfsdk:"group_admins_can_reset_passwords"`
 	GroupAdminsCanSetUserPassword                        types.Bool    `tfsdk:"group_admins_can_set_user_password"`
+	IntegrationCentricRemoteServerAdminAccess            types.String  `tfsdk:"integration_centric_remote_server_admin_access"`
 	IncludePasswordInWelcomeEmail                        types.Bool    `tfsdk:"include_password_in_welcome_email"`
 	Language                                             types.String  `tfsdk:"language"`
 	LdapBaseDn                                           types.String  `tfsdk:"ldap_base_dn"`
@@ -988,6 +989,17 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
 					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"integration_centric_remote_server_admin_access": schema.StringAttribute{
+				Description: "Administrator access to user-owned Remote Servers in every Workspace: always_visible (default), never_visible, user_choice_default_visible, or user_choice_default_personal. Forced modes override owner preferences; choice modes use the preference or their default.",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("always_visible", "never_visible", "user_choice_default_visible", "user_choice_default_personal"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"include_password_in_welcome_email": schema.BoolAttribute{
@@ -2048,6 +2060,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.UsernameDisplay.IsNull() && !config.UsernameDisplay.IsUnknown() {
 		paramsSiteUpdate["username_display"] = config.UsernameDisplay.ValueString()
 	}
+	if !config.IntegrationCentricRemoteServerAdminAccess.IsNull() && !config.IntegrationCentricRemoteServerAdminAccess.IsUnknown() {
+		paramsSiteUpdate["integration_centric_remote_server_admin_access"] = config.IntegrationCentricRemoteServerAdminAccess.ValueString()
+	}
 	if !config.SessionExpiryMinutes.IsNull() && !config.SessionExpiryMinutes.IsUnknown() {
 		paramsSiteUpdate["session_expiry_minutes"] = config.SessionExpiryMinutes.ValueInt64()
 	}
@@ -2624,6 +2639,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 			"Could not convert state immutable_files_set_at to string: "+err.Error(),
 		)
 	}
+	state.IntegrationCentricRemoteServerAdminAccess = types.StringValue(site.IntegrationCentricRemoteServerAdminAccess)
 	state.IncludePasswordInWelcomeEmail = types.BoolPointerValue(site.IncludePasswordInWelcomeEmail)
 	state.Language = types.StringValue(site.Language)
 	state.LdapBaseDn = types.StringValue(site.LdapBaseDn)

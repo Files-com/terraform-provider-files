@@ -130,6 +130,7 @@ type siteDataSourceModel struct {
 	Icon32                                               types.String  `tfsdk:"icon32"`
 	Icon48                                               types.String  `tfsdk:"icon48"`
 	ImmutableFilesSetAt                                  types.String  `tfsdk:"immutable_files_set_at"`
+	IntegrationCentricRemoteServerAdminAccess            types.String  `tfsdk:"integration_centric_remote_server_admin_access"`
 	IncludePasswordInWelcomeEmail                        types.Bool    `tfsdk:"include_password_in_welcome_email"`
 	Language                                             types.String  `tfsdk:"language"`
 	LdapBaseDn                                           types.String  `tfsdk:"ldap_base_dn"`
@@ -662,6 +663,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"immutable_files_set_at": schema.StringAttribute{
 				Description: "Can files be modified?",
+				Computed:    true,
+			},
+			"integration_centric_remote_server_admin_access": schema.StringAttribute{
+				Description: "Administrator access to user-owned Remote Servers in every Workspace: always_visible (default), never_visible, user_choice_default_visible, or user_choice_default_personal. Forced modes override owner preferences; choice modes use the preference or their default.",
 				Computed:    true,
 			},
 			"include_password_in_welcome_email": schema.BoolAttribute{
@@ -1260,6 +1265,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 			"Could not convert state immutable_files_set_at to string: "+err.Error(),
 		)
 	}
+	state.IntegrationCentricRemoteServerAdminAccess = types.StringValue(site.IntegrationCentricRemoteServerAdminAccess)
 	state.IncludePasswordInWelcomeEmail = types.BoolPointerValue(site.IncludePasswordInWelcomeEmail)
 	state.Language = types.StringValue(site.Language)
 	state.LdapBaseDn = types.StringValue(site.LdapBaseDn)

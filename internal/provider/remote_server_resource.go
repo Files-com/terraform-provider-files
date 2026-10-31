@@ -61,6 +61,8 @@ type remoteServerResourceModel struct {
 	ServerCertificate                       types.String `tfsdk:"server_certificate"`
 	ServerHostKey                           types.String `tfsdk:"server_host_key"`
 	ServerType                              types.String `tfsdk:"server_type"`
+	SiteAdminAccess                         types.Bool   `tfsdk:"site_admin_access"`
+	UserId                                  types.Int64  `tfsdk:"user_id"`
 	WorkspaceId                             types.Int64  `tfsdk:"workspace_id"`
 	Ssl                                     types.String `tfsdk:"ssl"`
 	Username                                types.String `tfsdk:"username"`
@@ -105,7 +107,6 @@ type remoteServerResourceModel struct {
 	LinodeBucket                            types.String `tfsdk:"linode_bucket"`
 	LinodeAccessKey                         types.String `tfsdk:"linode_access_key"`
 	LinodeRegion                            types.String `tfsdk:"linode_region"`
-	UserId                                  types.Int64  `tfsdk:"user_id"`
 	Password                                types.String `tfsdk:"password"`
 	PrivateKey                              types.String `tfsdk:"private_key"`
 	PrivateKeyPassphrase                    types.String `tfsdk:"private_key_passphrase"`
@@ -134,6 +135,7 @@ type remoteServerResourceModel struct {
 	RemoteHomePath                          types.String `tfsdk:"remote_home_path"`
 	PinnedRegion                            types.String `tfsdk:"pinned_region"`
 	S3AssumeRoleExternalId                  types.String `tfsdk:"s3_assume_role_external_id"`
+	EffectiveSiteAdminAccess                types.Bool   `tfsdk:"effective_site_admin_access"`
 	AuthStatus                              types.String `tfsdk:"auth_status"`
 	AuthAccountName                         types.String `tfsdk:"auth_account_name"`
 	SharepointAppAuthentication             types.Bool   `tfsdk:"sharepoint_app_authentication"`
@@ -337,6 +339,23 @@ func (r *remoteServerResource) resourceSchema() schema.Schema {
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"site_admin_access": schema.BoolAttribute{
+				Description: "Owner's preference for administrator access to this user-owned Remote Server. Null uses the Site policy's default. Only the owner may change it when the Site policy allows user choice.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"user_id": schema.Int64Attribute{
+				Description: "ID of the user who owns this Remote Server, if any.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
 				},
 			},
 			"workspace_id": schema.Int64Attribute{
@@ -704,14 +723,6 @@ func (r *remoteServerResource) resourceSchema() schema.Schema {
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"user_id": schema.Int64Attribute{
-				Description: "User ID.  Provide a value of `0` to operate the current session's user.",
-				Optional:    true,
-				WriteOnly:   true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.RequiresReplace(),
-				},
-			},
 			"password": schema.StringAttribute{
 				Description: "Password, if needed.",
 				Optional:    true,
@@ -849,6 +860,10 @@ func (r *remoteServerResource) resourceSchema() schema.Schema {
 				Description: "External ID for AssumeRole authentication.",
 				Computed:    true,
 			},
+			"effective_site_admin_access": schema.BoolAttribute{
+				Description: "Whether Site and Workspace Administrators can access this Remote Server under the current Site policy.",
+				Computed:    true,
+			},
 			"auth_status": schema.StringAttribute{
 				Description: "Either `in_setup` or `complete`",
 				Computed:    true,
@@ -917,7 +932,7 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	}
 
 	paramsRemoteServerCreate := files_sdk.RemoteServerCreateParams{}
-	paramsRemoteServerCreate.UserId = config.UserId.ValueInt64()
+	paramsRemoteServerCreate.UserId = plan.UserId.ValueInt64()
 	paramsRemoteServerCreate.Password = config.Password.ValueString()
 	paramsRemoteServerCreate.PrivateKey = config.PrivateKey.ValueString()
 	paramsRemoteServerCreate.PrivateKeyPassphrase = config.PrivateKeyPassphrase.ValueString()
@@ -1008,6 +1023,9 @@ func (r *remoteServerResource) Create(ctx context.Context, req resource.CreateRe
 	paramsRemoteServerCreate.ServerCertificate = paramsRemoteServerCreate.ServerCertificate.Enum()[plan.ServerCertificate.ValueString()]
 	paramsRemoteServerCreate.ServerHostKey = plan.ServerHostKey.ValueString()
 	paramsRemoteServerCreate.ServerType = paramsRemoteServerCreate.ServerType.Enum()[plan.ServerType.ValueString()]
+	if !plan.SiteAdminAccess.IsNull() && !plan.SiteAdminAccess.IsUnknown() {
+		paramsRemoteServerCreate.SiteAdminAccess = plan.SiteAdminAccess.ValueBoolPointer()
+	}
 	paramsRemoteServerCreate.SharepointClientId = plan.SharepointClientId.ValueString()
 	paramsRemoteServerCreate.SharepointSiteUrl = plan.SharepointSiteUrl.ValueString()
 	paramsRemoteServerCreate.SharepointTenantId = plan.SharepointTenantId.ValueString()
@@ -1322,6 +1340,9 @@ func (r *remoteServerResource) Update(ctx context.Context, req resource.UpdateRe
 	if !config.ServerType.IsNull() && !config.ServerType.IsUnknown() {
 		paramsRemoteServerUpdate["server_type"] = config.ServerType.ValueString()
 	}
+	if !config.SiteAdminAccess.IsNull() && !config.SiteAdminAccess.IsUnknown() {
+		paramsRemoteServerUpdate["site_admin_access"] = config.SiteAdminAccess.ValueBool()
+	}
 	if !config.SharepointClientId.IsNull() && !config.SharepointClientId.IsUnknown() {
 		paramsRemoteServerUpdate["sharepoint_client_id"] = config.SharepointClientId.ValueString()
 	}
@@ -1441,6 +1462,9 @@ func (r *remoteServerResource) populateResourceModel(ctx context.Context, remote
 	state.ServerCertificate = types.StringValue(remoteServer.ServerCertificate)
 	state.ServerHostKey = types.StringValue(remoteServer.ServerHostKey)
 	state.ServerType = types.StringValue(remoteServer.ServerType)
+	state.SiteAdminAccess = types.BoolPointerValue(remoteServer.SiteAdminAccess)
+	state.EffectiveSiteAdminAccess = types.BoolPointerValue(remoteServer.EffectiveSiteAdminAccess)
+	state.UserId = types.Int64Value(remoteServer.UserId)
 	state.WorkspaceId = types.Int64Value(remoteServer.WorkspaceId)
 	state.Ssl = types.StringValue(remoteServer.Ssl)
 	state.Username = types.StringValue(remoteServer.Username)

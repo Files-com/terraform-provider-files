@@ -53,6 +53,9 @@ type remoteServerDataSourceModel struct {
 	ServerCertificate                       types.String `tfsdk:"server_certificate"`
 	ServerHostKey                           types.String `tfsdk:"server_host_key"`
 	ServerType                              types.String `tfsdk:"server_type"`
+	SiteAdminAccess                         types.Bool   `tfsdk:"site_admin_access"`
+	EffectiveSiteAdminAccess                types.Bool   `tfsdk:"effective_site_admin_access"`
+	UserId                                  types.Int64  `tfsdk:"user_id"`
 	WorkspaceId                             types.Int64  `tfsdk:"workspace_id"`
 	Ssl                                     types.String `tfsdk:"ssl"`
 	Username                                types.String `tfsdk:"username"`
@@ -235,6 +238,18 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 			},
 			"server_type": schema.StringAttribute{
 				Description: "Remote server type.",
+				Computed:    true,
+			},
+			"site_admin_access": schema.BoolAttribute{
+				Description: "Owner's preference for administrator access to this user-owned Remote Server. Null uses the Site policy's default. Only the owner may change it when the Site policy allows user choice.",
+				Computed:    true,
+			},
+			"effective_site_admin_access": schema.BoolAttribute{
+				Description: "Whether Site and Workspace Administrators can access this Remote Server under the current Site policy.",
+				Computed:    true,
+			},
+			"user_id": schema.Int64Attribute{
+				Description: "ID of the user who owns this Remote Server, if any.",
 				Computed:    true,
 			},
 			"workspace_id": schema.Int64Attribute{
@@ -520,6 +535,9 @@ func (r *remoteServerDataSource) populateDataSourceModel(ctx context.Context, re
 	state.ServerCertificate = types.StringValue(remoteServer.ServerCertificate)
 	state.ServerHostKey = types.StringValue(remoteServer.ServerHostKey)
 	state.ServerType = types.StringValue(remoteServer.ServerType)
+	state.SiteAdminAccess = types.BoolPointerValue(remoteServer.SiteAdminAccess)
+	state.EffectiveSiteAdminAccess = types.BoolPointerValue(remoteServer.EffectiveSiteAdminAccess)
+	state.UserId = types.Int64Value(remoteServer.UserId)
 	state.WorkspaceId = types.Int64Value(remoteServer.WorkspaceId)
 	state.Ssl = types.StringValue(remoteServer.Ssl)
 	state.Username = types.StringValue(remoteServer.Username)

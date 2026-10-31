@@ -134,6 +134,7 @@ resource "files_remote_server" "example_remote_server" {
   server_certificate                            = "require_match"
   server_host_key                               = "[public key]"
   server_type                                   = "s3"
+  site_admin_access                             = true
   sharepoint_client_id                          = "00000000-0000-0000-0000-000000000000"
   sharepoint_site_url                           = "https://example.sharepoint.com/sites/accounting"
   sharepoint_tenant_id                          = "00000000-0000-0000-0000-000000000000"
@@ -229,10 +230,11 @@ resource "files_remote_server" "example_remote_server" {
 - `sharepoint_client_secret` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) SharePoint: Microsoft Entra application client secret for app-only authentication.
 - `sharepoint_site_url` (String) SharePoint: Site URL to scope app-only authentication to a single site. Leave blank to browse all sites.
 - `sharepoint_tenant_id` (String) SharePoint: Microsoft Entra tenant ID for app-only authentication.
+- `site_admin_access` (Boolean) Owner's preference for administrator access to this user-owned Remote Server. Null uses the Site policy's default. Only the owner may change it when the Site policy allows user choice.
 - `ssl` (String) Should we require SSL?
 - `ssl_certificate` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) SSL client certificate.
 - `upload_staging_path` (String) Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP.
-- `user_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) User ID.  Provide a value of `0` to operate the current session's user.
+- `user_id` (Number) ID of the user who owns this Remote Server, if any.
 - `username` (String) Remote server username.
 - `wasabi_access_key` (String) Wasabi: Access Key.
 - `wasabi_bucket` (String) Wasabi: Bucket name
@@ -247,6 +249,7 @@ resource "files_remote_server" "example_remote_server" {
 - `authentication_method` (String) Type of authentication method to use
 - `direct_transfer_available` (Boolean) Whether the Files Agent Proxy recently validated a direct transfer connection. `true` means a direct connection was recently validated (actual availability can vary by client network), `false` means direct transfers are enabled but not currently available, and `null` means direct transfers are disabled or unsupported. Only provided for a connected Files Agent when showing a single Remote Server.
 - `disabled` (Boolean) If true, this Remote Server is disabled. Updating it clears this flag, except for retired Agent v1 records, which remain disabled.
+- `effective_site_admin_access` (Boolean) Whether Site and Workspace Administrators can access this Remote Server under the current Site policy.
 - `files_agent_latest_version` (String) Latest available Files Agent version
 - `files_agent_supports_push_updates` (Boolean) Files Agent supports receiving push updates
 - `files_agent_up_to_date` (Boolean) If true, the Files Agent is up to date.

@@ -117,6 +117,7 @@ data "files_site" "example_site" {
 - `id` (Number) Site Id
 - `immutable_files_set_at` (String) Can files be modified?
 - `include_password_in_welcome_email` (Boolean) Include password in emails to new users?
+- `integration_centric_remote_server_admin_access` (String) Administrator access to user-owned Remote Servers in every Workspace: always_visible (default), never_visible, user_choice_default_visible, or user_choice_default_personal. Forced modes override owner preferences; choice modes use the preference or their default.
 - `language` (String) Site default language
 - `ldap_base_dn` (String) Base DN for looking up users in LDAP server
 - `ldap_domain` (String) Domain name that will be appended to usernames

@@ -74,6 +74,7 @@ resource "files_site" "example_site" {
   as2_message_retention_days                                  = 1
   file_activity_events_enabled                                = false
   username_display                                            = "username_only"
+  integration_centric_remote_server_admin_access              = "always_visible"
   session_expiry_minutes                                      = 1
   ssl_required                                                = false
   sftp_insecure_ciphers                                       = false
@@ -292,6 +293,7 @@ resource "files_site" "example_site" {
 - `group_admins_can_reset_passwords` (Boolean) Allow group admins to reset passwords for users in their groups
 - `group_admins_can_set_user_password` (Boolean) Allow group admins to set password authentication method
 - `include_password_in_welcome_email` (Boolean) Include password in emails to new users?
+- `integration_centric_remote_server_admin_access` (String) Administrator access to user-owned Remote Servers in every Workspace: always_visible (default), never_visible, user_choice_default_visible, or user_choice_default_personal. Forced modes override owner preferences; choice modes use the preference or their default.
 - `language` (String) Site default language
 - `ldap_base_dn` (String) Base DN for looking up users in LDAP server
 - `ldap_domain` (String) Domain name that will be appended to usernames
