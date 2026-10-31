@@ -29,7 +29,7 @@ data "files_as2_station" "example_as2_station" {
 
 - `domain` (String) The station's AS2 domain name.
 - `hex_public_certificate_serial` (String) Serial of public certificate used for message security in hex format.
-- `name` (String) The station's formal AS2 name.
+- `name` (String) The station's formal AS2 name, unique across all Workspaces on the Site.
 - `private_key_md5` (String) MD5 hash of private key used for message security.
 - `private_key_password_md5` (String) MD5 hash of private key password used for message security.
 - `public_certificate` (String) Public certificate used for message security.

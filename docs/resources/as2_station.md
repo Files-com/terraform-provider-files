@@ -25,7 +25,7 @@ resource "files_as2_station" "example_as2_station" {
 
 ### Required
 
-- `name` (String) The station's formal AS2 name.
+- `name` (String) The station's formal AS2 name, unique across all Workspaces on the Site.
 
 ### Optional
 

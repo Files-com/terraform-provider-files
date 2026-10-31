@@ -91,7 +91,7 @@ func (r *as2StationResource) resourceSchema() schema.Schema {
 		Description: "An AS2Station is a remote AS2 server that can send data into Files.com and receive data from Files.com.",
 		Attributes: map[string]schema.Attribute{
 			"name": schema.StringAttribute{
-				Description: "The station's formal AS2 name.",
+				Description: "The station's formal AS2 name, unique across all Workspaces on the Site.",
 				Required:    true,
 			},
 			"workspace_id": schema.Int64Attribute{

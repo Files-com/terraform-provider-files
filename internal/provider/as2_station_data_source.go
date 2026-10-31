@@ -81,7 +81,7 @@ func (r *as2StationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Computed:    true,
 			},
 			"name": schema.StringAttribute{
-				Description: "The station's formal AS2 name.",
+				Description: "The station's formal AS2 name, unique across all Workspaces on the Site.",
 				Computed:    true,
 			},
 			"uri": schema.StringAttribute{
