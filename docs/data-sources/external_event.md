@@ -32,3 +32,4 @@ data "files_external_event" "example_external_event" {
 - `created_at` (String) External event create date/time
 - `event_type` (String) Type of event being recorded.
 - `status` (String) Status of event.
+- `workspace_id` (Number) Workspace ID

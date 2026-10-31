@@ -30,12 +30,13 @@ type externalEventDataSource struct {
 }
 
 type externalEventDataSourceModel struct {
-	Id        types.Int64  `tfsdk:"id"`
-	EventType types.String `tfsdk:"event_type"`
-	Status    types.String `tfsdk:"status"`
-	Body      types.String `tfsdk:"body"`
-	CreatedAt types.String `tfsdk:"created_at"`
-	BodyUrl   types.String `tfsdk:"body_url"`
+	Id          types.Int64  `tfsdk:"id"`
+	WorkspaceId types.Int64  `tfsdk:"workspace_id"`
+	EventType   types.String `tfsdk:"event_type"`
+	Status      types.String `tfsdk:"status"`
+	Body        types.String `tfsdk:"body"`
+	CreatedAt   types.String `tfsdk:"created_at"`
+	BodyUrl     types.String `tfsdk:"body_url"`
 }
 
 func (r *externalEventDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -68,6 +69,10 @@ func (r *externalEventDataSource) Schema(_ context.Context, _ datasource.SchemaR
 			"id": schema.Int64Attribute{
 				Description: "Event ID",
 				Required:    true,
+			},
+			"workspace_id": schema.Int64Attribute{
+				Description: "Workspace ID",
+				Computed:    true,
 			},
 			"event_type": schema.StringAttribute{
 				Description: "Type of event being recorded.",
@@ -125,6 +130,7 @@ func (r *externalEventDataSource) Read(ctx context.Context, req datasource.ReadR
 
 func (r *externalEventDataSource) populateDataSourceModel(ctx context.Context, externalEvent files_sdk.ExternalEvent, state *externalEventDataSourceModel) (diags diag.Diagnostics) {
 	state.Id = types.Int64Value(externalEvent.Id)
+	state.WorkspaceId = types.Int64Value(externalEvent.WorkspaceId)
 	state.EventType = types.StringValue(externalEvent.EventType)
 	state.Status = types.StringValue(externalEvent.Status)
 	state.Body = types.StringValue(externalEvent.Body)
