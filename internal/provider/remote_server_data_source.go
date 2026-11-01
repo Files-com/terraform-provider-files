@@ -249,7 +249,7 @@ func (r *remoteServerDataSource) Schema(_ context.Context, _ datasource.SchemaRe
 				Computed:    true,
 			},
 			"user_id": schema.Int64Attribute{
-				Description: "ID of the user who owns this Remote Server, if any.",
+				Description: "ID of the Integration-Centric user who owns this personal Remote Server, if any. Connections created by Site and Workspace Administrators have no owner.",
 				Computed:    true,
 			},
 			"workspace_id": schema.Int64Attribute{

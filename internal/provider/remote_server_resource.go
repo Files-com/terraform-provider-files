@@ -350,7 +350,7 @@ func (r *remoteServerResource) resourceSchema() schema.Schema {
 				},
 			},
 			"user_id": schema.Int64Attribute{
-				Description: "ID of the user who owns this Remote Server, if any.",
+				Description: "ID of the Integration-Centric user who owns this personal Remote Server, if any. Connections created by Site and Workspace Administrators have no owner.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{

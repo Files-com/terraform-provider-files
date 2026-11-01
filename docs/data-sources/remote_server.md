@@ -167,7 +167,7 @@ data "files_remote_server" "example_remote_server" {
 - `ssl` (String) Should we require SSL?
 - `supports_versioning` (Boolean) If true, this remote server supports file versioning. This value is determined automatically by Files.com.
 - `upload_staging_path` (String) Upload staging path.  Applies to SFTP only.  If a path is provided here, files will first be uploaded to this path on the remote folder and the moved into the final correct path via an SFTP move command.  This is required by some remote MFT systems to emulate atomic uploads, which are otherwise not supoprted by SFTP.
-- `user_id` (Number) ID of the user who owns this Remote Server, if any.
+- `user_id` (Number) ID of the Integration-Centric user who owns this personal Remote Server, if any. Connections created by Site and Workspace Administrators have no owner.
 - `username` (String) Remote server username.
 - `wasabi_access_key` (String) Wasabi: Access Key.
 - `wasabi_bucket` (String) Wasabi: Bucket name
