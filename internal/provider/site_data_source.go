@@ -135,23 +135,6 @@ type siteDataSourceModel struct {
 	IntegrationCentricRemoteServerAdminAccess            types.String  `tfsdk:"integration_centric_remote_server_admin_access"`
 	IncludePasswordInWelcomeEmail                        types.Bool    `tfsdk:"include_password_in_welcome_email"`
 	Language                                             types.String  `tfsdk:"language"`
-	LdapBaseDn                                           types.String  `tfsdk:"ldap_base_dn"`
-	LdapDomain                                           types.String  `tfsdk:"ldap_domain"`
-	LdapEnabled                                          types.Bool    `tfsdk:"ldap_enabled"`
-	LdapGroupAction                                      types.String  `tfsdk:"ldap_group_action"`
-	LdapGroupExclusion                                   types.String  `tfsdk:"ldap_group_exclusion"`
-	LdapGroupInclusion                                   types.String  `tfsdk:"ldap_group_inclusion"`
-	LdapHost                                             types.String  `tfsdk:"ldap_host"`
-	LdapHost2                                            types.String  `tfsdk:"ldap_host_2"`
-	LdapHost3                                            types.String  `tfsdk:"ldap_host_3"`
-	LdapPort                                             types.Int64   `tfsdk:"ldap_port"`
-	LdapSecure                                           types.Bool    `tfsdk:"ldap_secure"`
-	LdapServerCertificate                                types.String  `tfsdk:"ldap_server_certificate"`
-	LdapType                                             types.String  `tfsdk:"ldap_type"`
-	LdapUserAction                                       types.String  `tfsdk:"ldap_user_action"`
-	LdapUserIncludeGroups                                types.String  `tfsdk:"ldap_user_include_groups"`
-	LdapUsername                                         types.String  `tfsdk:"ldap_username"`
-	LdapUsernameField                                    types.String  `tfsdk:"ldap_username_field"`
 	LoginHelpText                                        types.String  `tfsdk:"login_help_text"`
 	Logo                                                 types.String  `tfsdk:"logo"`
 	LoginPageBackgroundImage                             types.String  `tfsdk:"login_page_background_image"`
@@ -687,74 +670,6 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Site default language",
 				Computed:    true,
 			},
-			"ldap_base_dn": schema.StringAttribute{
-				Description: "Base DN for looking up users in LDAP server",
-				Computed:    true,
-			},
-			"ldap_domain": schema.StringAttribute{
-				Description: "Domain name that will be appended to usernames",
-				Computed:    true,
-			},
-			"ldap_enabled": schema.BoolAttribute{
-				Description: "Main LDAP setting: is LDAP enabled?",
-				Computed:    true,
-			},
-			"ldap_group_action": schema.StringAttribute{
-				Description: "Should we sync groups from LDAP server?",
-				Computed:    true,
-			},
-			"ldap_group_exclusion": schema.StringAttribute{
-				Description: "Comma or newline separated list of group names (with optional wildcards) to exclude when syncing.",
-				Computed:    true,
-			},
-			"ldap_group_inclusion": schema.StringAttribute{
-				Description: "Comma or newline separated list of group names (with optional wildcards) to include when syncing.",
-				Computed:    true,
-			},
-			"ldap_host": schema.StringAttribute{
-				Description: "LDAP host",
-				Computed:    true,
-			},
-			"ldap_host_2": schema.StringAttribute{
-				Description: "LDAP backup host",
-				Computed:    true,
-			},
-			"ldap_host_3": schema.StringAttribute{
-				Description: "LDAP backup host",
-				Computed:    true,
-			},
-			"ldap_port": schema.Int64Attribute{
-				Description: "LDAP port",
-				Computed:    true,
-			},
-			"ldap_secure": schema.BoolAttribute{
-				Description: "Use secure LDAP?",
-				Computed:    true,
-			},
-			"ldap_server_certificate": schema.StringAttribute{
-				Description: "How to validate the LDAP server certificate. `require_match` validates the certificate chain and hostname; `allow_any` disables certificate validation.",
-				Computed:    true,
-			},
-			"ldap_type": schema.StringAttribute{
-				Description: "LDAP type",
-				Computed:    true,
-			},
-			"ldap_user_action": schema.StringAttribute{
-				Description: "Should we sync users from LDAP server?",
-				Computed:    true,
-			},
-			"ldap_user_include_groups": schema.StringAttribute{
-				Description: "Comma or newline separated list of group names (with optional wildcards) - if provided, only users in these groups will be added or synced.",
-				Computed:    true,
-			},
-			"ldap_username": schema.StringAttribute{
-				Description: "Username for signing in to LDAP server.",
-				Computed:    true,
-			},
-			"ldap_username_field": schema.StringAttribute{
-				Description: "LDAP username field",
-				Computed:    true,
-			},
 			"login_help_text": schema.StringAttribute{
 				Description: "Login help text",
 				Computed:    true,
@@ -1285,23 +1200,6 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.IntegrationCentricRemoteServerAdminAccess = types.StringValue(site.IntegrationCentricRemoteServerAdminAccess)
 	state.IncludePasswordInWelcomeEmail = types.BoolPointerValue(site.IncludePasswordInWelcomeEmail)
 	state.Language = types.StringValue(site.Language)
-	state.LdapBaseDn = types.StringValue(site.LdapBaseDn)
-	state.LdapDomain = types.StringValue(site.LdapDomain)
-	state.LdapEnabled = types.BoolPointerValue(site.LdapEnabled)
-	state.LdapGroupAction = types.StringValue(site.LdapGroupAction)
-	state.LdapGroupExclusion = types.StringValue(site.LdapGroupExclusion)
-	state.LdapGroupInclusion = types.StringValue(site.LdapGroupInclusion)
-	state.LdapHost = types.StringValue(site.LdapHost)
-	state.LdapHost2 = types.StringValue(site.LdapHost2)
-	state.LdapHost3 = types.StringValue(site.LdapHost3)
-	state.LdapPort = types.Int64Value(site.LdapPort)
-	state.LdapSecure = types.BoolPointerValue(site.LdapSecure)
-	state.LdapServerCertificate = types.StringValue(site.LdapServerCertificate)
-	state.LdapType = types.StringValue(site.LdapType)
-	state.LdapUserAction = types.StringValue(site.LdapUserAction)
-	state.LdapUserIncludeGroups = types.StringValue(site.LdapUserIncludeGroups)
-	state.LdapUsername = types.StringValue(site.LdapUsername)
-	state.LdapUsernameField = types.StringValue(site.LdapUsernameField)
 	state.LoginHelpText = types.StringValue(site.LoginHelpText)
 	respLogo, err := json.Marshal(site.Logo)
 	if err != nil {

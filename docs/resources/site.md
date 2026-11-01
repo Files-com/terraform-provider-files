@@ -184,23 +184,6 @@ resource "files_site" "example_site" {
   smtp_username                                               = "mail"
   smtp_port                                                   = 1
   smtp_ssl                                                    = "require"
-  ldap_enabled                                                = false
-  ldap_type                                                   = "open_ldap"
-  ldap_host                                                   = "ldap.site.com"
-  ldap_host_2                                                 = "ldap2.site.com"
-  ldap_host_3                                                 = "ldap3.site.com"
-  ldap_port                                                   = 1
-  ldap_secure                                                 = false
-  ldap_server_certificate                                     = "require_match"
-  ldap_username                                               = "[ldap username]"
-  ldap_username_field                                         = "sAMAccountName"
-  ldap_domain                                                 = "mysite.com"
-  ldap_user_action                                            = "disabled"
-  ldap_group_action                                           = "disabled"
-  ldap_user_include_groups                                    = "example"
-  ldap_group_exclusion                                        = "example"
-  ldap_group_inclusion                                        = "example"
-  ldap_base_dn                                                = "example"
   uploads_via_email_authentication                            = false
   bundle_watermark_value                                      = {
     gravity             = "SouthWest"
@@ -296,23 +279,6 @@ resource "files_site" "example_site" {
 - `include_password_in_welcome_email` (Boolean) Include password in emails to new users?
 - `integration_centric_remote_server_admin_access` (String) Administrator access to user-owned Remote Servers in every Workspace: always_visible (default), never_visible, user_choice_default_visible, or user_choice_default_personal. Forced modes override owner preferences; choice modes use the preference or their default.
 - `language` (String) Site default language
-- `ldap_base_dn` (String) Base DN for looking up users in LDAP server
-- `ldap_domain` (String) Domain name that will be appended to usernames
-- `ldap_enabled` (Boolean) Main LDAP setting: is LDAP enabled?
-- `ldap_group_action` (String) Should we sync groups from LDAP server?
-- `ldap_group_exclusion` (String) Comma or newline separated list of group names (with optional wildcards) to exclude when syncing.
-- `ldap_group_inclusion` (String) Comma or newline separated list of group names (with optional wildcards) to include when syncing.
-- `ldap_host` (String) LDAP host
-- `ldap_host_2` (String) LDAP backup host
-- `ldap_host_3` (String) LDAP backup host
-- `ldap_port` (Number) LDAP port
-- `ldap_secure` (Boolean) Use secure LDAP?
-- `ldap_server_certificate` (String) How to validate the LDAP server certificate. `require_match` validates the certificate chain and hostname; `allow_any` disables certificate validation.
-- `ldap_type` (String) LDAP type
-- `ldap_user_action` (String) Should we sync users from LDAP server?
-- `ldap_user_include_groups` (String) Comma or newline separated list of group names (with optional wildcards) - if provided, only users in these groups will be added or synced.
-- `ldap_username` (String) Username for signing in to LDAP server.
-- `ldap_username_field` (String) LDAP username field
 - `legacy_checksums_mode` (Boolean) Use legacy checksums mode?
 - `legacy_pairing_enabled` (Boolean) Allow legacy app pairing in all workspaces? Disabled for new sites; existing sites remain enabled until changed. Disabling blocks new pairing exchanges without revoking existing app credentials or affecting OAuth sign-in. Site administrators can re-enable it.
 - `login_help_text` (String) Login help text

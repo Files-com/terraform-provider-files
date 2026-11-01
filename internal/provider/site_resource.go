@@ -133,23 +133,6 @@ type siteResourceModel struct {
 	IntegrationCentricRemoteServerAdminAccess            types.String  `tfsdk:"integration_centric_remote_server_admin_access"`
 	IncludePasswordInWelcomeEmail                        types.Bool    `tfsdk:"include_password_in_welcome_email"`
 	Language                                             types.String  `tfsdk:"language"`
-	LdapBaseDn                                           types.String  `tfsdk:"ldap_base_dn"`
-	LdapDomain                                           types.String  `tfsdk:"ldap_domain"`
-	LdapEnabled                                          types.Bool    `tfsdk:"ldap_enabled"`
-	LdapGroupAction                                      types.String  `tfsdk:"ldap_group_action"`
-	LdapGroupExclusion                                   types.String  `tfsdk:"ldap_group_exclusion"`
-	LdapGroupInclusion                                   types.String  `tfsdk:"ldap_group_inclusion"`
-	LdapHost                                             types.String  `tfsdk:"ldap_host"`
-	LdapHost2                                            types.String  `tfsdk:"ldap_host_2"`
-	LdapHost3                                            types.String  `tfsdk:"ldap_host_3"`
-	LdapPort                                             types.Int64   `tfsdk:"ldap_port"`
-	LdapSecure                                           types.Bool    `tfsdk:"ldap_secure"`
-	LdapServerCertificate                                types.String  `tfsdk:"ldap_server_certificate"`
-	LdapType                                             types.String  `tfsdk:"ldap_type"`
-	LdapUserAction                                       types.String  `tfsdk:"ldap_user_action"`
-	LdapUserIncludeGroups                                types.String  `tfsdk:"ldap_user_include_groups"`
-	LdapUsername                                         types.String  `tfsdk:"ldap_username"`
-	LdapUsernameField                                    types.String  `tfsdk:"ldap_username_field"`
 	LoginHelpText                                        types.String  `tfsdk:"login_help_text"`
 	MaxPriorPasswords                                    types.Int64   `tfsdk:"max_prior_passwords"`
 	MotdText                                             types.String  `tfsdk:"motd_text"`
@@ -1022,142 +1005,6 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"language": schema.StringAttribute{
 				Description: "Site default language",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_base_dn": schema.StringAttribute{
-				Description: "Base DN for looking up users in LDAP server",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_domain": schema.StringAttribute{
-				Description: "Domain name that will be appended to usernames",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_enabled": schema.BoolAttribute{
-				Description: "Main LDAP setting: is LDAP enabled?",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_group_action": schema.StringAttribute{
-				Description: "Should we sync groups from LDAP server?",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_group_exclusion": schema.StringAttribute{
-				Description: "Comma or newline separated list of group names (with optional wildcards) to exclude when syncing.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_group_inclusion": schema.StringAttribute{
-				Description: "Comma or newline separated list of group names (with optional wildcards) to include when syncing.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_host": schema.StringAttribute{
-				Description: "LDAP host",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_host_2": schema.StringAttribute{
-				Description: "LDAP backup host",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_host_3": schema.StringAttribute{
-				Description: "LDAP backup host",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_port": schema.Int64Attribute{
-				Description: "LDAP port",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_secure": schema.BoolAttribute{
-				Description: "Use secure LDAP?",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.Bool{
-					boolplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_server_certificate": schema.StringAttribute{
-				Description: "How to validate the LDAP server certificate. `require_match` validates the certificate chain and hostname; `allow_any` disables certificate validation.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_type": schema.StringAttribute{
-				Description: "LDAP type",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_user_action": schema.StringAttribute{
-				Description: "Should we sync users from LDAP server?",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_user_include_groups": schema.StringAttribute{
-				Description: "Comma or newline separated list of group names (with optional wildcards) - if provided, only users in these groups will be added or synced.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_username": schema.StringAttribute{
-				Description: "Username for signing in to LDAP server.",
-				Computed:    true,
-				Optional:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
-			},
-			"ldap_username_field": schema.StringAttribute{
-				Description: "LDAP username field",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
@@ -2410,57 +2257,6 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.SmtpSsl.IsNull() && !config.SmtpSsl.IsUnknown() {
 		paramsSiteUpdate["smtp_ssl"] = config.SmtpSsl.ValueString()
 	}
-	if !config.LdapEnabled.IsNull() && !config.LdapEnabled.IsUnknown() {
-		paramsSiteUpdate["ldap_enabled"] = config.LdapEnabled.ValueBool()
-	}
-	if !config.LdapType.IsNull() && !config.LdapType.IsUnknown() {
-		paramsSiteUpdate["ldap_type"] = config.LdapType.ValueString()
-	}
-	if !config.LdapHost.IsNull() && !config.LdapHost.IsUnknown() {
-		paramsSiteUpdate["ldap_host"] = config.LdapHost.ValueString()
-	}
-	if !config.LdapHost2.IsNull() && !config.LdapHost2.IsUnknown() {
-		paramsSiteUpdate["ldap_host_2"] = config.LdapHost2.ValueString()
-	}
-	if !config.LdapHost3.IsNull() && !config.LdapHost3.IsUnknown() {
-		paramsSiteUpdate["ldap_host_3"] = config.LdapHost3.ValueString()
-	}
-	if !config.LdapPort.IsNull() && !config.LdapPort.IsUnknown() {
-		paramsSiteUpdate["ldap_port"] = config.LdapPort.ValueInt64()
-	}
-	if !config.LdapSecure.IsNull() && !config.LdapSecure.IsUnknown() {
-		paramsSiteUpdate["ldap_secure"] = config.LdapSecure.ValueBool()
-	}
-	if !config.LdapServerCertificate.IsNull() && !config.LdapServerCertificate.IsUnknown() {
-		paramsSiteUpdate["ldap_server_certificate"] = config.LdapServerCertificate.ValueString()
-	}
-	if !config.LdapUsername.IsNull() && !config.LdapUsername.IsUnknown() {
-		paramsSiteUpdate["ldap_username"] = config.LdapUsername.ValueString()
-	}
-	if !config.LdapUsernameField.IsNull() && !config.LdapUsernameField.IsUnknown() {
-		paramsSiteUpdate["ldap_username_field"] = config.LdapUsernameField.ValueString()
-	}
-	if !config.LdapDomain.IsNull() && !config.LdapDomain.IsUnknown() {
-		paramsSiteUpdate["ldap_domain"] = config.LdapDomain.ValueString()
-	}
-	if !config.LdapUserAction.IsNull() && !config.LdapUserAction.IsUnknown() {
-		paramsSiteUpdate["ldap_user_action"] = config.LdapUserAction.ValueString()
-	}
-	if !config.LdapGroupAction.IsNull() && !config.LdapGroupAction.IsUnknown() {
-		paramsSiteUpdate["ldap_group_action"] = config.LdapGroupAction.ValueString()
-	}
-	if !config.LdapUserIncludeGroups.IsNull() && !config.LdapUserIncludeGroups.IsUnknown() {
-		paramsSiteUpdate["ldap_user_include_groups"] = config.LdapUserIncludeGroups.ValueString()
-	}
-	if !config.LdapGroupExclusion.IsNull() && !config.LdapGroupExclusion.IsUnknown() {
-		paramsSiteUpdate["ldap_group_exclusion"] = config.LdapGroupExclusion.ValueString()
-	}
-	if !config.LdapGroupInclusion.IsNull() && !config.LdapGroupInclusion.IsUnknown() {
-		paramsSiteUpdate["ldap_group_inclusion"] = config.LdapGroupInclusion.ValueString()
-	}
-	if !config.LdapBaseDn.IsNull() && !config.LdapBaseDn.IsUnknown() {
-		paramsSiteUpdate["ldap_base_dn"] = config.LdapBaseDn.ValueString()
-	}
 	if !config.UploadsViaEmailAuthentication.IsNull() && !config.UploadsViaEmailAuthentication.IsUnknown() {
 		paramsSiteUpdate["uploads_via_email_authentication"] = config.UploadsViaEmailAuthentication.ValueBool()
 	}
@@ -2666,23 +2462,6 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.IntegrationCentricRemoteServerAdminAccess = types.StringValue(site.IntegrationCentricRemoteServerAdminAccess)
 	state.IncludePasswordInWelcomeEmail = types.BoolPointerValue(site.IncludePasswordInWelcomeEmail)
 	state.Language = types.StringValue(site.Language)
-	state.LdapBaseDn = types.StringValue(site.LdapBaseDn)
-	state.LdapDomain = types.StringValue(site.LdapDomain)
-	state.LdapEnabled = types.BoolPointerValue(site.LdapEnabled)
-	state.LdapGroupAction = types.StringValue(site.LdapGroupAction)
-	state.LdapGroupExclusion = types.StringValue(site.LdapGroupExclusion)
-	state.LdapGroupInclusion = types.StringValue(site.LdapGroupInclusion)
-	state.LdapHost = types.StringValue(site.LdapHost)
-	state.LdapHost2 = types.StringValue(site.LdapHost2)
-	state.LdapHost3 = types.StringValue(site.LdapHost3)
-	state.LdapPort = types.Int64Value(site.LdapPort)
-	state.LdapSecure = types.BoolPointerValue(site.LdapSecure)
-	state.LdapServerCertificate = types.StringValue(site.LdapServerCertificate)
-	state.LdapType = types.StringValue(site.LdapType)
-	state.LdapUserAction = types.StringValue(site.LdapUserAction)
-	state.LdapUserIncludeGroups = types.StringValue(site.LdapUserIncludeGroups)
-	state.LdapUsername = types.StringValue(site.LdapUsername)
-	state.LdapUsernameField = types.StringValue(site.LdapUsernameField)
 	state.LoginHelpText = types.StringValue(site.LoginHelpText)
 	respLogo, err := json.Marshal(site.Logo)
 	if err != nil {
