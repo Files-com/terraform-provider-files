@@ -58,6 +58,7 @@ resource "files_site" "example_site" {
   username_display                                            = "username_only"
   integration_centric_remote_server_admin_access              = "always_visible"
   session_expiry_minutes                                      = 1
+  legacy_pairing_enabled                                      = false
   ssl_required                                                = false
   sftp_insecure_ciphers                                       = false
   sftp_insecure_diffie_hellman                                = false

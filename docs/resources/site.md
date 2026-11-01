@@ -76,6 +76,7 @@ resource "files_site" "example_site" {
   username_display                                            = "username_only"
   integration_centric_remote_server_admin_access              = "always_visible"
   session_expiry_minutes                                      = 1
+  legacy_pairing_enabled                                      = false
   ssl_required                                                = false
   sftp_insecure_ciphers                                       = false
   sftp_insecure_diffie_hellman                                = false
@@ -313,6 +314,7 @@ resource "files_site" "example_site" {
 - `ldap_username` (String) Username for signing in to LDAP server.
 - `ldap_username_field` (String) LDAP username field
 - `legacy_checksums_mode` (Boolean) Use legacy checksums mode?
+- `legacy_pairing_enabled` (Boolean) Allow legacy app pairing in all workspaces? Disabled for new sites; existing sites remain enabled until changed. Disabling blocks new pairing exchanges without revoking existing app credentials or affecting OAuth sign-in. Site administrators can re-enable it.
 - `login_help_text` (String) Login help text
 - `max_prior_passwords` (Number) Number of prior passwords to disallow
 - `mcp_dcr_enabled` (Boolean) Is OAuth DCR (dynamic client registration) for MCP enabled?
@@ -407,6 +409,7 @@ resource "files_site" "example_site" {
 - `icon48` (String) Branded icon 48x48
 - `id` (Number) Site Id
 - `immutable_files_set_at` (String) Can files be modified?
+- `last_pairing_at` (String) Time of the last completed legacy app pairing across all workspaces. Failed or incomplete attempts do not count. Read-only; empty until a pairing completes after tracking begins.
 - `login_page_background_image` (String) Branded login page background
 - `logo` (String) Branded logo
 - `managed_site_settings` (Dynamic) Site settings managed by the parent site. Each key identifies a managed setting, with a null value. Non-secret effective values are returned in their own Site settings fields.

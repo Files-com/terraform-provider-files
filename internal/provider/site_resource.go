@@ -100,6 +100,7 @@ type siteResourceModel struct {
 	DesktopAppSessionIpPinning                           types.Bool    `tfsdk:"desktop_app_session_ip_pinning"`
 	DesktopAppSessionLifetime                            types.Int64   `tfsdk:"desktop_app_session_lifetime"`
 	LegacyChecksumsMode                                  types.Bool    `tfsdk:"legacy_checksums_mode"`
+	LegacyPairingEnabled                                 types.Bool    `tfsdk:"legacy_pairing_enabled"`
 	MigrateRemoteServerSyncToSync                        types.Bool    `tfsdk:"migrate_remote_server_sync_to_sync"`
 	McpDcrEnabled                                        types.Bool    `tfsdk:"mcp_dcr_enabled"`
 	MobileApp                                            types.Bool    `tfsdk:"mobile_app"`
@@ -225,6 +226,7 @@ type siteResourceModel struct {
 	ContactName                                          types.String  `tfsdk:"contact_name"`
 	CreatedAt                                            types.String  `tfsdk:"created_at"`
 	Currency                                             types.String  `tfsdk:"currency"`
+	LastPairingAt                                        types.String  `tfsdk:"last_pairing_at"`
 	DisableNotifications                                 types.Bool    `tfsdk:"disable_notifications"`
 	Hipaa                                                types.Bool    `tfsdk:"hipaa"`
 	Icon128                                              types.String  `tfsdk:"icon128"`
@@ -750,6 +752,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"legacy_checksums_mode": schema.BoolAttribute{
 				Description: "Use legacy checksums mode?",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"legacy_pairing_enabled": schema.BoolAttribute{
+				Description: "Allow legacy app pairing in all workspaces? Disabled for new sites; existing sites remain enabled until changed. Disabling blocks new pairing exchanges without revoking existing app credentials or affecting OAuth sign-in. Site administrators can re-enable it.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -1760,6 +1770,10 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Description: "Preferred currency",
 				Computed:    true,
 			},
+			"last_pairing_at": schema.StringAttribute{
+				Description: "Time of the last completed legacy app pairing across all workspaces. Failed or incomplete attempts do not count. Read-only; empty until a pairing completes after tracking begins.",
+				Computed:    true,
+			},
 			"disable_notifications": schema.BoolAttribute{
 				Description: "Are notifications disabled?",
 				Computed:    true,
@@ -2065,6 +2079,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 	if !config.SessionExpiryMinutes.IsNull() && !config.SessionExpiryMinutes.IsUnknown() {
 		paramsSiteUpdate["session_expiry_minutes"] = config.SessionExpiryMinutes.ValueInt64()
+	}
+	if !config.LegacyPairingEnabled.IsNull() && !config.LegacyPairingEnabled.IsUnknown() {
+		paramsSiteUpdate["legacy_pairing_enabled"] = config.LegacyPairingEnabled.ValueBool()
 	}
 	if !config.SslRequired.IsNull() && !config.SslRequired.IsUnknown() {
 		paramsSiteUpdate["ssl_required"] = config.SslRequired.ValueBool()
@@ -2570,6 +2587,13 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.DesktopAppSessionIpPinning = types.BoolPointerValue(site.DesktopAppSessionIpPinning)
 	state.DesktopAppSessionLifetime = types.Int64Value(site.DesktopAppSessionLifetime)
 	state.LegacyChecksumsMode = types.BoolPointerValue(site.LegacyChecksumsMode)
+	state.LegacyPairingEnabled = types.BoolPointerValue(site.LegacyPairingEnabled)
+	if err := lib.TimeToStringType(ctx, path.Root("last_pairing_at"), site.LastPairingAt, &state.LastPairingAt); err != nil {
+		diags.AddError(
+			"Error Creating Files Site",
+			"Could not convert state last_pairing_at to string: "+err.Error(),
+		)
+	}
 	state.MigrateRemoteServerSyncToSync = types.BoolPointerValue(site.MigrateRemoteServerSyncToSync)
 	state.McpDcrEnabled = types.BoolPointerValue(site.McpDcrEnabled)
 	state.MobileApp = types.BoolPointerValue(site.MobileApp)

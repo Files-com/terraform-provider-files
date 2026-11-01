@@ -94,6 +94,8 @@ type siteDataSourceModel struct {
 	DesktopAppSessionIpPinning                           types.Bool    `tfsdk:"desktop_app_session_ip_pinning"`
 	DesktopAppSessionLifetime                            types.Int64   `tfsdk:"desktop_app_session_lifetime"`
 	LegacyChecksumsMode                                  types.Bool    `tfsdk:"legacy_checksums_mode"`
+	LegacyPairingEnabled                                 types.Bool    `tfsdk:"legacy_pairing_enabled"`
+	LastPairingAt                                        types.String  `tfsdk:"last_pairing_at"`
 	MigrateRemoteServerSyncToSync                        types.Bool    `tfsdk:"migrate_remote_server_sync_to_sync"`
 	McpDcrEnabled                                        types.Bool    `tfsdk:"mcp_dcr_enabled"`
 	MobileApp                                            types.Bool    `tfsdk:"mobile_app"`
@@ -519,6 +521,14 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"legacy_checksums_mode": schema.BoolAttribute{
 				Description: "Use legacy checksums mode?",
+				Computed:    true,
+			},
+			"legacy_pairing_enabled": schema.BoolAttribute{
+				Description: "Allow legacy app pairing in all workspaces? Disabled for new sites; existing sites remain enabled until changed. Disabling blocks new pairing exchanges without revoking existing app credentials or affecting OAuth sign-in. Site administrators can re-enable it.",
+				Computed:    true,
+			},
+			"last_pairing_at": schema.StringAttribute{
+				Description: "Time of the last completed legacy app pairing across all workspaces. Failed or incomplete attempts do not count. Read-only; empty until a pairing completes after tracking begins.",
 				Computed:    true,
 			},
 			"migrate_remote_server_sync_to_sync": schema.BoolAttribute{
@@ -1196,6 +1206,13 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.DesktopAppSessionIpPinning = types.BoolPointerValue(site.DesktopAppSessionIpPinning)
 	state.DesktopAppSessionLifetime = types.Int64Value(site.DesktopAppSessionLifetime)
 	state.LegacyChecksumsMode = types.BoolPointerValue(site.LegacyChecksumsMode)
+	state.LegacyPairingEnabled = types.BoolPointerValue(site.LegacyPairingEnabled)
+	if err := lib.TimeToStringType(ctx, path.Root("last_pairing_at"), site.LastPairingAt, &state.LastPairingAt); err != nil {
+		diags.AddError(
+			"Error Creating Files Site",
+			"Could not convert state last_pairing_at to string: "+err.Error(),
+		)
+	}
 	state.MigrateRemoteServerSyncToSync = types.BoolPointerValue(site.MigrateRemoteServerSyncToSync)
 	state.McpDcrEnabled = types.BoolPointerValue(site.McpDcrEnabled)
 	state.MobileApp = types.BoolPointerValue(site.MobileApp)

@@ -119,6 +119,7 @@ data "files_site" "example_site" {
 - `include_password_in_welcome_email` (Boolean) Include password in emails to new users?
 - `integration_centric_remote_server_admin_access` (String) Administrator access to user-owned Remote Servers in every Workspace: always_visible (default), never_visible, user_choice_default_visible, or user_choice_default_personal. Forced modes override owner preferences; choice modes use the preference or their default.
 - `language` (String) Site default language
+- `last_pairing_at` (String) Time of the last completed legacy app pairing across all workspaces. Failed or incomplete attempts do not count. Read-only; empty until a pairing completes after tracking begins.
 - `ldap_base_dn` (String) Base DN for looking up users in LDAP server
 - `ldap_domain` (String) Domain name that will be appended to usernames
 - `ldap_enabled` (Boolean) Main LDAP setting: is LDAP enabled?
@@ -137,6 +138,7 @@ data "files_site" "example_site" {
 - `ldap_username` (String) Username for signing in to LDAP server.
 - `ldap_username_field` (String) LDAP username field
 - `legacy_checksums_mode` (Boolean) Use legacy checksums mode?
+- `legacy_pairing_enabled` (Boolean) Allow legacy app pairing in all workspaces? Disabled for new sites; existing sites remain enabled until changed. Disabling blocks new pairing exchanges without revoking existing app credentials or affecting OAuth sign-in. Site administrators can re-enable it.
 - `login_help_text` (String) Login help text
 - `login_page_background_image` (String) Branded login page background
 - `logo` (String) Branded logo
