@@ -168,8 +168,6 @@ Site settings and root folder behaviors that a settings policy manages on applic
 - `users_can_create_ssh_keys` (boolean, optional) Allow users to create their own SSH keys?
 - `show_user_notifications_log_in_link` (boolean, optional) Show log in link in user notifications?
 - `sftp_host_key_type` (string, optional) Sftp Host Key Type
-- `active_sftp_host_key_id` (integer, optional) Id of the currently selected custom SFTP Host Key
-- `active_sftp_host_key_ids` (list of integers, optional) Ids of the selected custom SFTP Host Keys
 - `protocol_access_groups_only` (boolean, optional) If true, protocol access permissions on users will be ignored, and only protocol access permissions set on Groups will be honored.  Make sure that your current user is a member of a group with API permission when changing this value to avoid locking yourself out of your site.
 - `revoke_bundle_access_on_disable_or_delete` (boolean, optional) Auto-removes bundles for disabled/deleted users and enforces bundle expiry within user access period.
 - `bundle_watermark_value` (object, optional) Preview watermark settings applied to all bundle items. Uses the same keys as Behavior.value
