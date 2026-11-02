@@ -56,9 +56,11 @@ type automationResourceModelV0 struct {
 	Value                            types.Dynamic `tfsdk:"value"`
 	HolidayRegion                    types.String  `tfsdk:"holiday_region"`
 	Id                               types.Int64   `tfsdk:"id"`
+	ConvertedAutomationId            types.Int64   `tfsdk:"converted_automation_id"`
 	Deleted                          types.Bool    `tfsdk:"deleted"`
 	InboundEmailAddress              types.String  `tfsdk:"inbound_email_address"`
 	LastModifiedAt                   types.String  `tfsdk:"last_modified_at"`
+	OriginalAutomationId             types.Int64   `tfsdk:"original_automation_id"`
 	Version                          types.Int64   `tfsdk:"version"`
 	Schedule                         types.Dynamic `tfsdk:"schedule"`
 	HumanReadableSchedule            types.String  `tfsdk:"human_readable_schedule"`
@@ -380,6 +382,10 @@ func (r *automationResource) UpgradeState(ctx context.Context) map[int64]resourc
 							int64planmodifier.UseStateForUnknown(),
 						},
 					},
+					"converted_automation_id": schema.Int64Attribute{
+						Description: "ID of this v1 Automation's converted v2 copy, when present.",
+						Computed:    true,
+					},
 					"deleted": schema.BoolAttribute{
 						Description: "Indicates if the automation has been deleted.",
 						Computed:    true,
@@ -390,6 +396,10 @@ func (r *automationResource) UpgradeState(ctx context.Context) map[int64]resourc
 					},
 					"last_modified_at": schema.StringAttribute{
 						Description: "Time when automation was last modified. Does not change for name or description updates.",
+						Computed:    true,
+					},
+					"original_automation_id": schema.Int64Attribute{
+						Description: "ID of the retained v1 Automation for a converted Automation. Re-enable that v1 Automation to pause this copy and revert the conversion.",
 						Computed:    true,
 					},
 					"version": schema.Int64Attribute{
@@ -459,9 +469,11 @@ func (r *automationResource) UpgradeState(ctx context.Context) map[int64]resourc
 					Value:                            priorState.Value,
 					HolidayRegion:                    priorState.HolidayRegion,
 					Id:                               priorState.Id,
+					ConvertedAutomationId:            priorState.ConvertedAutomationId,
 					Deleted:                          priorState.Deleted,
 					InboundEmailAddress:              priorState.InboundEmailAddress,
 					LastModifiedAt:                   priorState.LastModifiedAt,
+					OriginalAutomationId:             priorState.OriginalAutomationId,
 					Version:                          priorState.Version,
 					Schedule:                         priorState.Schedule,
 					HumanReadableSchedule:            priorState.HumanReadableSchedule,

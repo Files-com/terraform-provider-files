@@ -448,11 +448,13 @@ resource "files_automation" "example_automation" {
 
 ### Read-Only
 
+- `converted_automation_id` (Number) ID of this v1 Automation's converted v2 copy, when present.
 - `deleted` (Boolean) Indicates if the automation has been deleted.
 - `human_readable_schedule` (String) If trigger is `custom_schedule` or `daily` with times, Human readable schedule description for when the automation should be run.
 - `id` (Number) Automation ID
 - `inbound_email_address` (String) If trigger is `email`, this is the address that triggers the Automation.
 - `last_modified_at` (String) Time when automation was last modified. Does not change for name or description updates.
+- `original_automation_id` (Number) ID of the retained v1 Automation for a converted Automation. Re-enable that v1 Automation to pause this copy and revert the conversion.
 - `schedule` (Dynamic) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run in json format.
 - `user_id` (Number) User ID of the Automation's creator.
 - `version` (Number) Current Automation v2 definition version.

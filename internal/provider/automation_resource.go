@@ -85,9 +85,11 @@ type automationResourceModel struct {
 	Value                            types.Dynamic `tfsdk:"value"`
 	HolidayRegion                    types.String  `tfsdk:"holiday_region"`
 	Id                               types.Int64   `tfsdk:"id"`
+	ConvertedAutomationId            types.Int64   `tfsdk:"converted_automation_id"`
 	Deleted                          types.Bool    `tfsdk:"deleted"`
 	InboundEmailAddress              types.String  `tfsdk:"inbound_email_address"`
 	LastModifiedAt                   types.String  `tfsdk:"last_modified_at"`
+	OriginalAutomationId             types.Int64   `tfsdk:"original_automation_id"`
 	Version                          types.Int64   `tfsdk:"version"`
 	Schedule                         types.Dynamic `tfsdk:"schedule"`
 	HumanReadableSchedule            types.String  `tfsdk:"human_readable_schedule"`
@@ -1865,6 +1867,10 @@ func (r *automationResource) resourceSchema() schema.Schema {
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"converted_automation_id": schema.Int64Attribute{
+				Description: "ID of this v1 Automation's converted v2 copy, when present.",
+				Computed:    true,
+			},
 			"deleted": schema.BoolAttribute{
 				Description: "Indicates if the automation has been deleted.",
 				Computed:    true,
@@ -1875,6 +1881,10 @@ func (r *automationResource) resourceSchema() schema.Schema {
 			},
 			"last_modified_at": schema.StringAttribute{
 				Description: "Time when automation was last modified. Does not change for name or description updates.",
+				Computed:    true,
+			},
+			"original_automation_id": schema.Int64Attribute{
+				Description: "ID of the retained v1 Automation for a converted Automation. Re-enable that v1 Automation to pause this copy and revert the conversion.",
 				Computed:    true,
 			},
 			"version": schema.Int64Attribute{
@@ -2292,6 +2302,7 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	state.AlwaysSerializeJobs = types.BoolPointerValue(automation.AlwaysSerializeJobs)
 	state.AlwaysOverwriteSizeMatchingFiles = types.BoolPointerValue(automation.AlwaysOverwriteSizeMatchingFiles)
 	state.Automation = types.StringValue(automation.Automation)
+	state.ConvertedAutomationId = types.Int64Value(automation.ConvertedAutomationId)
 	state.Deleted = types.BoolPointerValue(automation.Deleted)
 	state.Description = types.StringValue(automation.Description)
 	definitionValue := interface{}(automation.Definition)
@@ -2321,6 +2332,7 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	}
 	state.LegacyFolderMatching = types.BoolPointerValue(automation.LegacyFolderMatching)
 	state.Name = types.StringValue(automation.Name)
+	state.OriginalAutomationId = types.Int64Value(automation.OriginalAutomationId)
 	state.OverwriteFiles = types.BoolPointerValue(automation.OverwriteFiles)
 	state.Path = types.StringValue(automation.Path)
 	state.PathTimeZone = types.StringValue(automation.PathTimeZone)

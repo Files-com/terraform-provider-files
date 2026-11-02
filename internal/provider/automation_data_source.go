@@ -34,6 +34,7 @@ type automationDataSourceModel struct {
 	AlwaysSerializeJobs              types.Bool    `tfsdk:"always_serialize_jobs"`
 	AlwaysOverwriteSizeMatchingFiles types.Bool    `tfsdk:"always_overwrite_size_matching_files"`
 	Automation                       types.String  `tfsdk:"automation"`
+	ConvertedAutomationId            types.Int64   `tfsdk:"converted_automation_id"`
 	Deleted                          types.Bool    `tfsdk:"deleted"`
 	Description                      types.String  `tfsdk:"description"`
 	Definition                       types.Object  `tfsdk:"definition"`
@@ -51,6 +52,7 @@ type automationDataSourceModel struct {
 	LastModifiedAt                   types.String  `tfsdk:"last_modified_at"`
 	LegacyFolderMatching             types.Bool    `tfsdk:"legacy_folder_matching"`
 	Name                             types.String  `tfsdk:"name"`
+	OriginalAutomationId             types.Int64   `tfsdk:"original_automation_id"`
 	OverwriteFiles                   types.Bool    `tfsdk:"overwrite_files"`
 	Path                             types.String  `tfsdk:"path"`
 	PathTimeZone                     types.String  `tfsdk:"path_time_zone"`
@@ -121,6 +123,10 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 			},
 			"automation": schema.StringAttribute{
 				Description: "Automation type",
+				Computed:    true,
+			},
+			"converted_automation_id": schema.Int64Attribute{
+				Description: "ID of this v1 Automation's converted v2 copy, when present.",
 				Computed:    true,
 			},
 			"deleted": schema.BoolAttribute{
@@ -1535,6 +1541,10 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Description: "Name for this automation.",
 				Computed:    true,
 			},
+			"original_automation_id": schema.Int64Attribute{
+				Description: "ID of the retained v1 Automation for a converted Automation. Re-enable that v1 Automation to pause this copy and revert the conversion.",
+				Computed:    true,
+			},
 			"overwrite_files": schema.BoolAttribute{
 				Description: "If true, existing files will be overwritten with new files on Move/Copy automations.  Note: by default files will not be overwritten on Copy automations if they appear to be the same file size as the newly incoming file.  Use the `always_overwrite_size_matching_files` option in conjunction with `overwrite_files` to override this behavior and overwrite files no matter what.",
 				Computed:    true,
@@ -1675,6 +1685,7 @@ func (r *automationDataSource) populateDataSourceModel(ctx context.Context, auto
 	state.AlwaysSerializeJobs = types.BoolPointerValue(automation.AlwaysSerializeJobs)
 	state.AlwaysOverwriteSizeMatchingFiles = types.BoolPointerValue(automation.AlwaysOverwriteSizeMatchingFiles)
 	state.Automation = types.StringValue(automation.Automation)
+	state.ConvertedAutomationId = types.Int64Value(automation.ConvertedAutomationId)
 	state.Deleted = types.BoolPointerValue(automation.Deleted)
 	state.Description = types.StringValue(automation.Description)
 	definitionValue := interface{}(automation.Definition)
@@ -1704,6 +1715,7 @@ func (r *automationDataSource) populateDataSourceModel(ctx context.Context, auto
 	}
 	state.LegacyFolderMatching = types.BoolPointerValue(automation.LegacyFolderMatching)
 	state.Name = types.StringValue(automation.Name)
+	state.OriginalAutomationId = types.Int64Value(automation.OriginalAutomationId)
 	state.OverwriteFiles = types.BoolPointerValue(automation.OverwriteFiles)
 	state.Path = types.StringValue(automation.Path)
 	state.PathTimeZone = types.StringValue(automation.PathTimeZone)
