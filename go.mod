@@ -3,7 +3,7 @@ module github.com/Files-com/terraform-provider-files
 go 1.27.3
 
 require (
-	github.com/Files-com/files-sdk-go/v3 v3.3.344
+	github.com/Files-com/files-sdk-go/v3 v3.3.345
 	github.com/dnaeon/go-vcr v1.2.0
 	github.com/hashicorp/terraform-plugin-docs v0.24.0
 	github.com/hashicorp/terraform-plugin-framework v1.19.0
@@ -72,7 +72,7 @@ require (
 	github.com/panjf2000/ants/v2 v2.11.3 // indirect
 	github.com/posener/complete v1.2.3 // indirect
 	github.com/quic-go/qpack v0.6.0 // indirect
-	github.com/quic-go/quic-go v0.64.1 // indirect
+	github.com/quic-go/quic-go v0.65.0 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/sabhiram/go-gitignore v0.0.0-20210923224102-525f6e181f06 // indirect
 	github.com/samber/lo v1.53.0 // indirect
