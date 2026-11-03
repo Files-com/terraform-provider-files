@@ -990,6 +990,9 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 											"overwrite_files": schema.BoolAttribute{
 												Computed: true,
 											},
+											"archive_format": schema.StringAttribute{
+												Computed: true,
+											},
 											"on_error": schema.ListNestedAttribute{
 												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
 												Computed:    true,

@@ -1075,6 +1075,10 @@ func (r *automationResource) resourceSchema() schema.Schema {
 											"overwrite_files": schema.BoolAttribute{
 												Optional: true,
 											},
+											"archive_format": schema.StringAttribute{
+												Optional:   true,
+												Validators: []validator.String{stringvalidator.OneOf("zip", "tar", "tar.gz", "tgz")},
+											},
 											"on_error": schema.ListNestedAttribute{
 												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
 												Optional:    true,

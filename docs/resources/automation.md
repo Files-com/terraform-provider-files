@@ -1546,6 +1546,7 @@ Required:
 
 Optional:
 
+- `archive_format` (String)
 - `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--zip--config--on_error))
 - `overwrite_files` (Boolean)
 
