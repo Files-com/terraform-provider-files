@@ -34,6 +34,7 @@ data "files_site" "example_site" {
 - `allow_bundle_names` (Boolean) Are manual Bundle names allowed?
 - `allow_user_level_2fa_override` (Boolean) Allow the site-wide two-factor authentication requirement to be overriden on a per-user-basis?
 - `allow_user_level_allowed_ip_override` (Boolean) Allow the site-wide allowed IP restriction to be overriden on a per-user-basis?
+- `allow_user_level_ftp_tls_session_reuse_override` (Boolean) Allow per-user overrides of the FTP TLS session reuse requirement?
 - `allow_user_level_ssl_override` (Boolean) Allow the site-wide FTP SSL requirement to be overriden on a per-user-basis?
 - `allowed_2fa_method_bypass_for_ftp_sftp_dav` (Boolean) Are users allowed to configure their two factor authentication to be bypassed for FTP/SFTP/WebDAV?
 - `allowed_2fa_method_email` (Boolean) Is OTP via email two factor authentication allowed?
@@ -101,6 +102,7 @@ data "files_site" "example_site" {
 - `files_com_remote_server_enabled` (Boolean) Allow other Files.com sites to use this site's API keys for native Files.com Remote Server connections? Defaults to true and applies to all keys and workspaces on this site. When false, new pairings and access through existing connections are rejected without revoking keys or deleting connections. Re-enabling permits access again with usable keys. Does not disable this site's connections to other sites, ordinary API access, or Connected Sites.
 - `folder_permissions_groups_only` (Boolean) If true, permissions for this site must be bound to a group (not a user).
 - `ftp_enabled` (Boolean) Is FTP enabled?
+- `ftp_tls_session_reuse_required` (Boolean) Require TLS-protected FTP data connections to reuse the control connection TLS session? Applies to all workspaces.
 - `group_admins_can_add_users` (Boolean) Allow group admins to create users in their groups
 - `group_admins_can_bypass_user_lifecycle_rules` (Boolean) Allow group admins to exempt users in their groups from lifecycle rules
 - `group_admins_can_delete_users` (Boolean) Allow group admins to delete users in their groups

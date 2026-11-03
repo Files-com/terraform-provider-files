@@ -87,6 +87,7 @@ resource "files_user" "example_user" {
   site_admin                                   = true
   skip_welcome_screen                          = true
   ssl_required                                 = "always_require"
+  ftp_tls_session_reuse_required               = "use_system_setting"
   sso_strategy_id                              = 1
   require_2fa                                  = "always_require"
   tags                                         = "example"
@@ -130,6 +131,7 @@ resource "files_user" "example_user" {
 - `email` (String) User email address
 - `filesystem_layout` (String) File system layout
 - `ftp_permission` (Boolean) Can the user access with FTP/FTPS?
+- `ftp_tls_session_reuse_required` (String) FTP TLS session reuse requirement: use_system_setting, always_require, or never_require
 - `grant_permission` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Permission to grant on the User Root upon creation, or on the Workspace root when the User Root is blank. For the Default Workspace, a blank User Root uses the site root. `admin` on a Custom Workspace's root grants Workspace Administrator access; on a subfolder it grants Folder Admin access. Can be blank or `admin`, `full`, `read`, `write`, `list`, `read+write`, `list+write`, or `history`.
 - `group_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Group ID to associate this user with.
 - `group_ids` (String) Comma-separated list of group IDs of which this user is a member

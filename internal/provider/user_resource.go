@@ -96,6 +96,7 @@ type userResourceModel struct {
 	WorkspaceId                            types.Int64             `tfsdk:"workspace_id"`
 	DefaultWorkspaceId                     types.Int64             `tfsdk:"default_workspace_id"`
 	SkipWelcomeScreen                      types.Bool              `tfsdk:"skip_welcome_screen"`
+	FtpTlsSessionReuseRequired             types.String            `tfsdk:"ftp_tls_session_reuse_required"`
 	SslRequired                            types.String            `tfsdk:"ssl_required"`
 	SsoStrategyId                          types.Int64             `tfsdk:"sso_strategy_id"`
 	Tags                                   types.String            `tfsdk:"tags"`
@@ -596,6 +597,17 @@ func (r *userResource) resourceSchema() schema.Schema {
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"ftp_tls_session_reuse_required": schema.StringAttribute{
+				Description: "FTP TLS session reuse requirement: use_system_setting, always_require, or never_require",
+				Computed:    true,
+				Optional:    true,
+				Validators: []validator.String{
+					stringvalidator.OneOf("use_system_setting", "always_require", "never_require"),
+				},
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"ssl_required": schema.StringAttribute{
 				Description: "SSL required setting",
 				Computed:    true,
@@ -980,6 +992,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		paramsUserCreate.SkipWelcomeScreen = plan.SkipWelcomeScreen.ValueBoolPointer()
 	}
 	paramsUserCreate.SslRequired = paramsUserCreate.SslRequired.Enum()[plan.SslRequired.ValueString()]
+	paramsUserCreate.FtpTlsSessionReuseRequired = paramsUserCreate.FtpTlsSessionReuseRequired.Enum()[plan.FtpTlsSessionReuseRequired.ValueString()]
 	paramsUserCreate.SsoStrategyId = plan.SsoStrategyId.ValueInt64()
 	paramsUserCreate.Require2fa = paramsUserCreate.Require2fa.Enum()[plan.Require2fa.ValueString()]
 	paramsUserCreate.Tags = plan.Tags.ValueString()
@@ -1268,6 +1281,9 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.SslRequired.IsNull() && !config.SslRequired.IsUnknown() {
 		paramsUserUpdate["ssl_required"] = config.SslRequired.ValueString()
 	}
+	if !config.FtpTlsSessionReuseRequired.IsNull() && !config.FtpTlsSessionReuseRequired.IsUnknown() {
+		paramsUserUpdate["ftp_tls_session_reuse_required"] = config.FtpTlsSessionReuseRequired.ValueString()
+	}
 	if !config.SsoStrategyId.IsNull() && !config.SsoStrategyId.IsUnknown() {
 		paramsUserUpdate["sso_strategy_id"] = config.SsoStrategyId.ValueInt64()
 	}
@@ -1518,6 +1534,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.WorkspaceId = types.Int64Value(user.WorkspaceId)
 	state.DefaultWorkspaceId = types.Int64Value(user.DefaultWorkspaceId)
 	state.SkipWelcomeScreen = types.BoolPointerValue(user.SkipWelcomeScreen)
+	state.FtpTlsSessionReuseRequired = types.StringValue(user.FtpTlsSessionReuseRequired)
 	state.SslRequired = types.StringValue(user.SslRequired)
 	state.SsoStrategyId = types.Int64Value(user.SsoStrategyId)
 	state.ExternallyManaged = types.BoolPointerValue(user.ExternallyManaged)

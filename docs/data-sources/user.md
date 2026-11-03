@@ -75,6 +75,7 @@ data "files_user" "example_user" {
 - `filesystem_layout` (String) File system layout
 - `first_login_at` (String) User's first login time
 - `ftp_permission` (Boolean) Can the user access with FTP/FTPS?
+- `ftp_tls_session_reuse_required` (String) FTP TLS session reuse requirement: use_system_setting, always_require, or never_require
 - `group_ids` (String) Comma-separated list of group IDs of which this user is a member
 - `header_text` (String) Text to display to the user in the header of the UI
 - `integration_centric_profile_id` (Number) Integration Centric Profile ID assigned directly to this user, if any.

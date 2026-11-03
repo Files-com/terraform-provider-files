@@ -60,6 +60,7 @@ resource "files_site" "example_site" {
   session_expiry_minutes                                      = 1
   legacy_pairing_enabled                                      = false
   ssl_required                                                = false
+  ftp_tls_session_reuse_required                              = false
   sftp_insecure_ciphers                                       = false
   sftp_insecure_diffie_hellman                                = false
   disable_files_certificate_generation                        = false
@@ -74,6 +75,7 @@ resource "files_site" "example_site" {
   allow_user_level_2fa_override                               = false
   allow_user_level_allowed_ip_override                        = false
   allow_user_level_ssl_override                               = false
+  allow_user_level_ftp_tls_session_reuse_override             = false
   enforce_parent_site_user_ip_restrictions                    = false
   disallowed_countries                                        = "US,DE"
   days_to_retain_backups                                      = 1

@@ -123,6 +123,7 @@ Site settings and root folder behaviors that a settings policy manages on applic
 - `session_expiry_minutes` (integer, optional) Session expiry in minutes
 - `legacy_pairing_enabled` (boolean, optional) Allow legacy app pairing in all workspaces? Disabled for new sites; existing sites remain enabled until changed. Disabling blocks new pairing exchanges without revoking existing app credentials or affecting OAuth sign-in. Site administrators can re-enable it.
 - `ssl_required` (boolean, optional) Is SSL required?  Disabling this is insecure.
+- `ftp_tls_session_reuse_required` (boolean, optional) Require TLS-protected FTP data connections to reuse the control connection TLS session? Applies to all workspaces.
 - `sftp_insecure_ciphers` (boolean, optional) If true, we will allow weak and known insecure ciphers to be used for SFTP connections.  Enabling this setting severely weakens the security of your site and it is not recommend, except as a last resort for compatibility.
 - `sftp_insecure_diffie_hellman` (boolean, optional) If true, we will allow weak Diffie Hellman parameters to be used within ciphers for SFTP that are otherwise on our secure list.  This has the effect of making the cipher weaker than our normal threshold for security, but is required to support certain legacy or broken SSH and MFT clients.  Enabling this weakens security, but not nearly as much as enabling the full `sftp_insecure_ciphers` option.
 - `fedramp` (boolean, optional) Are FedRAMP security restrictions enabled for this site?
@@ -136,6 +137,7 @@ Site settings and root folder behaviors that a settings policy manages on applic
 - `allow_user_level_2fa_override` (boolean, optional) Allow the site-wide two-factor authentication requirement to be overriden on a per-user-basis?
 - `allow_user_level_allowed_ip_override` (boolean, optional) Allow the site-wide allowed IP restriction to be overriden on a per-user-basis?
 - `allow_user_level_ssl_override` (boolean, optional) Allow the site-wide FTP SSL requirement to be overriden on a per-user-basis?
+- `allow_user_level_ftp_tls_session_reuse_override` (boolean, optional) Allow per-user overrides of the FTP TLS session reuse requirement?
 - `enforce_parent_site_user_ip_restrictions` (boolean, optional) Require Parent Site users entering this Child Site to match its allowed IP addresses in addition to their existing IP restrictions. Applies to all Workspaces. Defaults to false.
 - `disallowed_countries` (string, optional) Comma separated list of disallowed Country codes
 - `days_to_retain_backups` (integer, optional) Number of days to keep deleted files

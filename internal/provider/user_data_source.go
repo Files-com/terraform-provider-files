@@ -109,6 +109,7 @@ type userDataSourceModel struct {
 	WorkspaceId                            types.Int64  `tfsdk:"workspace_id"`
 	DefaultWorkspaceId                     types.Int64  `tfsdk:"default_workspace_id"`
 	SkipWelcomeScreen                      types.Bool   `tfsdk:"skip_welcome_screen"`
+	FtpTlsSessionReuseRequired             types.String `tfsdk:"ftp_tls_session_reuse_required"`
 	SslRequired                            types.String `tfsdk:"ssl_required"`
 	SsoStrategyId                          types.Int64  `tfsdk:"sso_strategy_id"`
 	ExternallyManaged                      types.Bool   `tfsdk:"externally_managed"`
@@ -460,6 +461,10 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Skip Welcome page in the UI?",
 				Computed:    true,
 			},
+			"ftp_tls_session_reuse_required": schema.StringAttribute{
+				Description: "FTP TLS session reuse requirement: use_system_setting, always_require, or never_require",
+				Computed:    true,
+			},
 			"ssl_required": schema.StringAttribute{
 				Description: "SSL required setting",
 				Computed:    true,
@@ -733,6 +738,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.WorkspaceId = types.Int64Value(user.WorkspaceId)
 	state.DefaultWorkspaceId = types.Int64Value(user.DefaultWorkspaceId)
 	state.SkipWelcomeScreen = types.BoolPointerValue(user.SkipWelcomeScreen)
+	state.FtpTlsSessionReuseRequired = types.StringValue(user.FtpTlsSessionReuseRequired)
 	state.SslRequired = types.StringValue(user.SslRequired)
 	state.SsoStrategyId = types.Int64Value(user.SsoStrategyId)
 	state.ExternallyManaged = types.BoolPointerValue(user.ExternallyManaged)

@@ -46,6 +46,7 @@ type siteDataSourceModel struct {
 	AllowBundleNames                                     types.Bool    `tfsdk:"allow_bundle_names"`
 	AllowUserLevel2faOverride                            types.Bool    `tfsdk:"allow_user_level_2fa_override"`
 	AllowUserLevelAllowedIpOverride                      types.Bool    `tfsdk:"allow_user_level_allowed_ip_override"`
+	AllowUserLevelFtpTlsSessionReuseOverride             types.Bool    `tfsdk:"allow_user_level_ftp_tls_session_reuse_override"`
 	AllowUserLevelSslOverride                            types.Bool    `tfsdk:"allow_user_level_ssl_override"`
 	AllowedCountries                                     types.String  `tfsdk:"allowed_countries"`
 	AllowedIps                                           types.String  `tfsdk:"allowed_ips"`
@@ -195,6 +196,7 @@ type siteDataSourceModel struct {
 	SmtpUsername                                         types.String  `tfsdk:"smtp_username"`
 	SessionExpiryMinutes                                 types.Int64   `tfsdk:"session_expiry_minutes"`
 	SnapshotSharingEnabled                               types.Bool    `tfsdk:"snapshot_sharing_enabled"`
+	FtpTlsSessionReuseRequired                           types.Bool    `tfsdk:"ftp_tls_session_reuse_required"`
 	SslRequired                                          types.Bool    `tfsdk:"ssl_required"`
 	Subdomain                                            types.String  `tfsdk:"subdomain"`
 	SwitchToPlanDate                                     types.String  `tfsdk:"switch_to_plan_date"`
@@ -311,6 +313,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"allow_user_level_allowed_ip_override": schema.BoolAttribute{
 				Description: "Allow the site-wide allowed IP restriction to be overriden on a per-user-basis?",
+				Computed:    true,
+			},
+			"allow_user_level_ftp_tls_session_reuse_override": schema.BoolAttribute{
+				Description: "Allow per-user overrides of the FTP TLS session reuse requirement?",
 				Computed:    true,
 			},
 			"allow_user_level_ssl_override": schema.BoolAttribute{
@@ -911,6 +917,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "Allow snapshot share links creation",
 				Computed:    true,
 			},
+			"ftp_tls_session_reuse_required": schema.BoolAttribute{
+				Description: "Require TLS-protected FTP data connections to reuse the control connection TLS session? Applies to all workspaces.",
+				Computed:    true,
+			},
 			"ssl_required": schema.BoolAttribute{
 				Description: "Is SSL required?  Disabling this is insecure.",
 				Computed:    true,
@@ -1059,6 +1069,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.AllowBundleNames = types.BoolPointerValue(site.AllowBundleNames)
 	state.AllowUserLevel2faOverride = types.BoolPointerValue(site.AllowUserLevel2faOverride)
 	state.AllowUserLevelAllowedIpOverride = types.BoolPointerValue(site.AllowUserLevelAllowedIpOverride)
+	state.AllowUserLevelFtpTlsSessionReuseOverride = types.BoolPointerValue(site.AllowUserLevelFtpTlsSessionReuseOverride)
 	state.AllowUserLevelSslOverride = types.BoolPointerValue(site.AllowUserLevelSslOverride)
 	state.AllowedCountries = types.StringValue(site.AllowedCountries)
 	state.AllowedIps = types.StringValue(site.AllowedIps)
@@ -1288,6 +1299,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.SmtpUsername = types.StringValue(site.SmtpUsername)
 	state.SessionExpiryMinutes = types.Int64Value(site.SessionExpiryMinutes)
 	state.SnapshotSharingEnabled = types.BoolPointerValue(site.SnapshotSharingEnabled)
+	state.FtpTlsSessionReuseRequired = types.BoolPointerValue(site.FtpTlsSessionReuseRequired)
 	state.SslRequired = types.BoolPointerValue(site.SslRequired)
 	state.Subdomain = types.StringValue(site.Subdomain)
 	if err := lib.TimeToStringType(ctx, path.Root("switch_to_plan_date"), site.SwitchToPlanDate, &state.SwitchToPlanDate); err != nil {

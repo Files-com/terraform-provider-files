@@ -51,6 +51,7 @@ resource "files_user" "example_user" {
   site_admin                                   = true
   skip_welcome_screen                          = true
   ssl_required                                 = "always_require"
+  ftp_tls_session_reuse_required               = "use_system_setting"
   sso_strategy_id                              = 1
   require_2fa                                  = "always_require"
   tags                                         = "example"

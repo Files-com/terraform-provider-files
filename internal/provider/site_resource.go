@@ -56,6 +56,7 @@ type siteResourceModel struct {
 	AllowBundleNames                                     types.Bool    `tfsdk:"allow_bundle_names"`
 	AllowUserLevel2faOverride                            types.Bool    `tfsdk:"allow_user_level_2fa_override"`
 	AllowUserLevelAllowedIpOverride                      types.Bool    `tfsdk:"allow_user_level_allowed_ip_override"`
+	AllowUserLevelFtpTlsSessionReuseOverride             types.Bool    `tfsdk:"allow_user_level_ftp_tls_session_reuse_override"`
 	AllowUserLevelSslOverride                            types.Bool    `tfsdk:"allow_user_level_ssl_override"`
 	AllowedCountries                                     types.String  `tfsdk:"allowed_countries"`
 	AllowedIps                                           types.String  `tfsdk:"allowed_ips"`
@@ -183,6 +184,7 @@ type siteResourceModel struct {
 	SmtpUsername                                         types.String  `tfsdk:"smtp_username"`
 	SessionExpiryMinutes                                 types.Int64   `tfsdk:"session_expiry_minutes"`
 	SnapshotSharingEnabled                               types.Bool    `tfsdk:"snapshot_sharing_enabled"`
+	FtpTlsSessionReuseRequired                           types.Bool    `tfsdk:"ftp_tls_session_reuse_required"`
 	SslRequired                                          types.Bool    `tfsdk:"ssl_required"`
 	Subdomain                                            types.String  `tfsdk:"subdomain"`
 	UseDedicatedIpsForSmtp                               types.Bool    `tfsdk:"use_dedicated_ips_for_smtp"`
@@ -370,6 +372,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"allow_user_level_allowed_ip_override": schema.BoolAttribute{
 				Description: "Allow the site-wide allowed IP restriction to be overriden on a per-user-basis?",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"allow_user_level_ftp_tls_session_reuse_override": schema.BoolAttribute{
+				Description: "Allow per-user overrides of the FTP TLS session reuse requirement?",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{
@@ -1424,6 +1434,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"ftp_tls_session_reuse_required": schema.BoolAttribute{
+				Description: "Require TLS-protected FTP data connections to reuse the control connection TLS session? Applies to all workspaces.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"ssl_required": schema.BoolAttribute{
 				Description: "Is SSL required?  Disabling this is insecure.",
 				Computed:    true,
@@ -1933,6 +1951,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.SslRequired.IsNull() && !config.SslRequired.IsUnknown() {
 		paramsSiteUpdate["ssl_required"] = config.SslRequired.ValueBool()
 	}
+	if !config.FtpTlsSessionReuseRequired.IsNull() && !config.FtpTlsSessionReuseRequired.IsUnknown() {
+		paramsSiteUpdate["ftp_tls_session_reuse_required"] = config.FtpTlsSessionReuseRequired.ValueBool()
+	}
 	if !config.SftpInsecureCiphers.IsNull() && !config.SftpInsecureCiphers.IsUnknown() {
 		paramsSiteUpdate["sftp_insecure_ciphers"] = config.SftpInsecureCiphers.ValueBool()
 	}
@@ -1974,6 +1995,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	}
 	if !config.AllowUserLevelSslOverride.IsNull() && !config.AllowUserLevelSslOverride.IsUnknown() {
 		paramsSiteUpdate["allow_user_level_ssl_override"] = config.AllowUserLevelSslOverride.ValueBool()
+	}
+	if !config.AllowUserLevelFtpTlsSessionReuseOverride.IsNull() && !config.AllowUserLevelFtpTlsSessionReuseOverride.IsUnknown() {
+		paramsSiteUpdate["allow_user_level_ftp_tls_session_reuse_override"] = config.AllowUserLevelFtpTlsSessionReuseOverride.ValueBool()
 	}
 	if !config.EnforceParentSiteUserIpRestrictions.IsNull() && !config.EnforceParentSiteUserIpRestrictions.IsUnknown() {
 		paramsSiteUpdate["enforce_parent_site_user_ip_restrictions"] = config.EnforceParentSiteUserIpRestrictions.ValueBool()
@@ -2321,6 +2345,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.AllowBundleNames = types.BoolPointerValue(site.AllowBundleNames)
 	state.AllowUserLevel2faOverride = types.BoolPointerValue(site.AllowUserLevel2faOverride)
 	state.AllowUserLevelAllowedIpOverride = types.BoolPointerValue(site.AllowUserLevelAllowedIpOverride)
+	state.AllowUserLevelFtpTlsSessionReuseOverride = types.BoolPointerValue(site.AllowUserLevelFtpTlsSessionReuseOverride)
 	state.AllowUserLevelSslOverride = types.BoolPointerValue(site.AllowUserLevelSslOverride)
 	state.AllowedCountries = types.StringValue(site.AllowedCountries)
 	state.AllowedIps = types.StringValue(site.AllowedIps)
@@ -2550,6 +2575,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.SmtpUsername = types.StringValue(site.SmtpUsername)
 	state.SessionExpiryMinutes = types.Int64Value(site.SessionExpiryMinutes)
 	state.SnapshotSharingEnabled = types.BoolPointerValue(site.SnapshotSharingEnabled)
+	state.FtpTlsSessionReuseRequired = types.BoolPointerValue(site.FtpTlsSessionReuseRequired)
 	state.SslRequired = types.BoolPointerValue(site.SslRequired)
 	state.Subdomain = types.StringValue(site.Subdomain)
 	if err := lib.TimeToStringType(ctx, path.Root("switch_to_plan_date"), site.SwitchToPlanDate, &state.SwitchToPlanDate); err != nil {
