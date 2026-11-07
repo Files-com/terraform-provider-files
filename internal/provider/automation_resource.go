@@ -1509,6 +1509,9 @@ func (r *automationResource) resourceSchema() schema.Schema {
 												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Optional:    true,
 											},
+											"overwrite_files": schema.BoolAttribute{
+												Optional: true,
+											},
 											"on_error": schema.ListNestedAttribute{
 												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
 												Optional:    true,

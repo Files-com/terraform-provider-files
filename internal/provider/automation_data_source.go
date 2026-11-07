@@ -1397,6 +1397,9 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
 												Computed:    true,
 											},
+											"overwrite_files": schema.BoolAttribute{
+												Computed: true,
+											},
 											"on_error": schema.ListNestedAttribute{
 												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
 												Computed:    true,

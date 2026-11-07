@@ -1295,6 +1295,7 @@ Optional:
 
 - `destination` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
 - `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--transform--config--on_error))
+- `overwrite_files` (Boolean)
 
 <a id="nestedatt--definition--nodes--transform--config--on_error"></a>
 ### Nested Schema for `definition.nodes.transform.config.on_error`
