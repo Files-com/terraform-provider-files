@@ -48,6 +48,7 @@ type expectationDataSourceModel struct {
 	ScheduleTimeZone       types.String  `tfsdk:"schedule_time_zone"`
 	HolidayRegion          types.String  `tfsdk:"holiday_region"`
 	LookbackInterval       types.Int64   `tfsdk:"lookback_interval"`
+	ScheduleTimeExceptions types.List    `tfsdk:"schedule_time_exceptions"`
 	LateAcceptanceInterval types.Int64   `tfsdk:"late_acceptance_interval"`
 	InactivityInterval     types.Int64   `tfsdk:"inactivity_interval"`
 	MaxOpenInterval        types.Int64   `tfsdk:"max_open_interval"`
@@ -166,6 +167,22 @@ func (r *expectationDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Description: "How many seconds before the due boundary the window starts.",
 				Computed:    true,
 			},
+			"schedule_time_exceptions": schema.ListNestedAttribute{
+				Description: "Calendar-based replacement due times. Matching dates replace all normal times; holiday exclusions still apply. Calendars specifying different times on the same date conflict.",
+				Computed:    true,
+				NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+					"holiday_region": schema.StringAttribute{
+						Description: "Built-in holiday region or custom Holiday Calendar code identifying exception dates.",
+						Computed:    true,
+					},
+					"times_of_day": schema.ListAttribute{
+						Description: "Replacement schedule times in HH:MM or H-H:MM format, in the effective schedule time zone.",
+						Computed:    true,
+						ElementType: types.StringType,
+					},
+				},
+				},
+			},
 			"late_acceptance_interval": schema.Int64Attribute{
 				Description: "How many seconds a schedule-driven window may remain eligible to close as late.",
 				Computed:    true,
@@ -265,6 +282,10 @@ func (r *expectationDataSource) populateDataSourceModel(ctx context.Context, exp
 	state.ScheduleTimeZone = types.StringValue(expectation.ScheduleTimeZone)
 	state.HolidayRegion = types.StringValue(expectation.HolidayRegion)
 	state.LookbackInterval = types.Int64Value(expectation.LookbackInterval)
+	scheduleTimeExceptionsValue := interface{}(expectation.ScheduleTimeExceptions)
+
+	state.ScheduleTimeExceptions, propDiags = lib.ToList(ctx, path.Root("schedule_time_exceptions"), scheduleTimeExceptionsValue, state.ScheduleTimeExceptions)
+	diags.Append(propDiags...)
 	state.LateAcceptanceInterval = types.Int64Value(expectation.LateAcceptanceInterval)
 	state.InactivityInterval = types.Int64Value(expectation.InactivityInterval)
 	state.MaxOpenInterval = types.Int64Value(expectation.MaxOpenInterval)

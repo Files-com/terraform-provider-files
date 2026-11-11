@@ -133,6 +133,12 @@ resource "files_expectation" "example_expectation" {
   schedule_times_of_day    = ["06:00"]
   schedule_time_zone       = "UTC"
   holiday_region           = "us"
+  schedule_time_exceptions = [
+    {
+      holiday_region = "nyse_early_close"
+      times_of_day   = ["13:00"]
+    }
+  ]
   lookback_interval        = 3600
   late_acceptance_interval = 900
   inactivity_interval      = 300
@@ -168,6 +174,7 @@ resource "files_expectation" "example_expectation" {
 - `recurring_days` (List of Number) If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.
 - `schedule_id` (Number) If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields.
+- `schedule_time_exceptions` (Attributes List) Calendar-based replacement due times. Matching dates replace all normal times; holiday exclusions still apply. Calendars specifying different times on the same date conflict. (see [below for nested schema](#nestedatt--schedule_time_exceptions))
 - `schedule_time_zone` (String) Time zone used by the Expectation schedule.
 - `schedule_times_of_day` (List of String) Times of day in HH:MM format for the Expectation schedule.
 - `source` (String) Source glob used to select candidate files.
@@ -184,6 +191,14 @@ resource "files_expectation" "example_expectation" {
 - `last_result` (String) Most recent terminal result for this expectation.
 - `last_success_at` (String) Last time this expectation closed successfully.
 - `updated_at` (String) Last update time.
+
+<a id="nestedatt--schedule_time_exceptions"></a>
+### Nested Schema for `schedule_time_exceptions`
+
+Required:
+
+- `holiday_region` (String) Built-in holiday region or custom Holiday Calendar code identifying exception dates.
+- `times_of_day` (List of String) Replacement schedule times in HH:MM or H-H:MM format, in the effective schedule time zone.
 
 ### JSON property details
 

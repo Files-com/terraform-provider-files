@@ -255,6 +255,10 @@ func (r *holidayCalendarDataSource) Schema(_ context.Context, _ datasource.Schem
 										Description: "Day of the week, where 0 is Sunday and 6 is Saturday.",
 										Computed:    true,
 									},
+									"day_offset": schema.Int64Attribute{
+										Description: "Days to add to the selected weekday before applying observed. For example, week 4, wday 4, day_offset 1 selects the day after Thanksgiving.",
+										Computed:    true,
+									},
 								},
 								},
 							},
@@ -311,7 +315,7 @@ func (r *holidayCalendarDataSource) populateDataSourceModel(ctx context.Context,
 	state.Id = types.Int64Value(holidayCalendar.Id)
 	state.Name = types.StringValue(holidayCalendar.Name)
 	definitionValue := interface{}(holidayCalendar.Definition)
-	definitionValue, definitionValueTransformDiags0 := lib.GroupStructuralUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"months"}, []lib.JSONSchemaVariant{{Name: "calculated_rules", Required: []string{"function"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "function", "function_modifier"}}, {Name: "fixed_rules", Required: []string{"mday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "mday"}}, {Name: "weekday_rules", Required: []string{"week", "wday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "week", "wday"}}})
+	definitionValue, definitionValueTransformDiags0 := lib.GroupStructuralUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"months"}, []lib.JSONSchemaVariant{{Name: "calculated_rules", Required: []string{"function"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "function", "function_modifier"}}, {Name: "fixed_rules", Required: []string{"mday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "mday"}}, {Name: "weekday_rules", Required: []string{"week", "wday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "week", "wday", "day_offset"}}})
 	diags.Append(definitionValueTransformDiags0...)
 	state.Definition, propDiags = lib.ToObject(ctx, path.Root("definition"), definitionValue, state.Definition)
 	diags.Append(propDiags...)

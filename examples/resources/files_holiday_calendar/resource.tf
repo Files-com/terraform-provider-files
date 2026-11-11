@@ -29,9 +29,10 @@ resource "files_holiday_calendar" "example_holiday_calendar" {
       "11" = {
         weekday_rules = [
           {
-            name = "Thanksgiving"
-            week = 4
-            wday = 4
+            name       = "Day after Thanksgiving"
+            week       = 4
+            wday       = 4
+            day_offset = 1
           }
         ]
       }

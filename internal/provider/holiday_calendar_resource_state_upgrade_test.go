@@ -19,7 +19,7 @@ func TestHolidayCalendarJSONStateUpgrades(t *testing.T) {
 	ctx := context.Background()
 	r := &holidayCalendarResource{}
 	t.Run("v0/definition", func(t *testing.T) {
-		example := "{\"months\":{\"0\":[{\"name\":\"Good Friday\",\"function\":\"easter(year)\",\"function_modifier\":-2}],\"1\":[{\"name\":\"New Year's Day\",\"mday\":1,\"observed\":\"to_weekday_if_weekend(date)\"},{\"name\":\"Third Monday\",\"week\":3,\"wday\":1}],\"11\":[{\"name\":\"Thanksgiving\",\"week\":4,\"wday\":4}],\"12\":[{\"name\":\"Christmas Eve Early Close\",\"mday\":24,\"start_time\":\"13:00\",\"end_time\":\"17:00\",\"year_ranges\":{\"from\":2026}}]}}"
+		example := "{\"months\":{\"0\":[{\"name\":\"Good Friday\",\"function\":\"easter(year)\",\"function_modifier\":-2}],\"1\":[{\"name\":\"New Year's Day\",\"mday\":1,\"observed\":\"to_weekday_if_weekend(date)\"},{\"name\":\"Third Monday\",\"week\":3,\"wday\":1}],\"11\":[{\"name\":\"Day after Thanksgiving\",\"week\":4,\"wday\":4,\"day_offset\":1}],\"12\":[{\"name\":\"Christmas Eve Early Close\",\"mday\":24,\"start_time\":\"13:00\",\"end_time\":\"17:00\",\"year_ranges\":{\"from\":2026}}]}}"
 		var apiValue any
 		require.NoError(t, json.Unmarshal([]byte(example), &apiValue))
 		native, diags := lib.ToDynamic(ctx, path.Root("definition"), apiValue, nil)
@@ -44,7 +44,7 @@ func TestHolidayCalendarJSONStateUpgrades(t *testing.T) {
 			}
 			actual, diags := lib.SchemaAttributeToInterface(ctx, path.Root("definition"), upgraded)
 			require.False(t, diags.HasError(), diags)
-			actual, actualTransformDiags0 := lib.UngroupStructuralUnionAtPath(ctx, path.Root("definition"), actual, []string{"months"}, []lib.JSONSchemaVariant{{Name: "calculated_rules", Required: []string{"function"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "function", "function_modifier"}}, {Name: "fixed_rules", Required: []string{"mday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "mday"}}, {Name: "weekday_rules", Required: []string{"week", "wday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "week", "wday"}}})
+			actual, actualTransformDiags0 := lib.UngroupStructuralUnionAtPath(ctx, path.Root("definition"), actual, []string{"months"}, []lib.JSONSchemaVariant{{Name: "calculated_rules", Required: []string{"function"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "function", "function_modifier"}}, {Name: "fixed_rules", Required: []string{"mday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "mday"}}, {Name: "weekday_rules", Required: []string{"week", "wday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "week", "wday", "day_offset"}}})
 			diags.Append(actualTransformDiags0...)
 			require.False(t, diags.HasError(), diags)
 			encoded, err := json.Marshal(actual)

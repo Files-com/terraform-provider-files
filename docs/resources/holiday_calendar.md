@@ -44,9 +44,10 @@ resource "files_holiday_calendar" "example_holiday_calendar" {
       "11" = {
         weekday_rules = [
           {
-            name = "Thanksgiving"
-            week = 4
-            wday = 4
+            name       = "Day after Thanksgiving"
+            week       = 4
+            wday       = 4
+            day_offset = 1
           }
         ]
       }
@@ -182,6 +183,7 @@ Required:
 
 Optional:
 
+- `day_offset` (Number) Days to add to the selected weekday before applying observed. For example, week 4, wday 4, day_offset 1 selects the day after Thanksgiving.
 - `end_time` (String) Exclusive end of a partial-day window in 24-hour HH:MM or HH:MM:SS format. Must be later than start_time.
 - `name` (String) Optional rule name.
 - `observed` (String) Optional function used to move the selected date when it falls on a weekend.

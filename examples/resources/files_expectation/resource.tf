@@ -14,6 +14,12 @@ resource "files_expectation" "example_expectation" {
   schedule_times_of_day    = ["06:00"]
   schedule_time_zone       = "UTC"
   holiday_region           = "us"
+  schedule_time_exceptions = [
+    {
+      holiday_region = "nyse_early_close"
+      times_of_day   = ["13:00"]
+    }
+  ]
   lookback_interval        = 3600
   late_acceptance_interval = 900
   inactivity_interval      = 300

@@ -9,6 +9,7 @@ import (
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	expectation "github.com/Files-com/files-sdk-go/v3/expectation"
 	"github.com/Files-com/terraform-provider-files/lib"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -32,6 +33,8 @@ var (
 	_ resource.Resource                = &expectationResource{}
 	_ resource.ResourceWithConfigure   = &expectationResource{}
 	_ resource.ResourceWithImportState = &expectationResource{}
+
+	_ resource.ResourceWithModifyPlan = &expectationResource{}
 )
 
 func NewExpectationResource() resource.Resource {
@@ -60,6 +63,7 @@ type expectationResourceModel struct {
 	ScheduleTimeZone       types.String  `tfsdk:"schedule_time_zone"`
 	HolidayRegion          types.String  `tfsdk:"holiday_region"`
 	LookbackInterval       types.Int64   `tfsdk:"lookback_interval"`
+	ScheduleTimeExceptions types.List    `tfsdk:"schedule_time_exceptions"`
 	LateAcceptanceInterval types.Int64   `tfsdk:"late_acceptance_interval"`
 	InactivityInterval     types.Int64   `tfsdk:"inactivity_interval"`
 	MaxOpenInterval        types.Int64   `tfsdk:"max_open_interval"`
@@ -243,6 +247,26 @@ func (r *expectationResource) Schema(_ context.Context, _ resource.SchemaRequest
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
+			"schedule_time_exceptions": schema.ListNestedAttribute{
+				Description: "Calendar-based replacement due times. Matching dates replace all normal times; holiday exclusions still apply. Calendars specifying different times on the same date conflict.",
+				Computed:    true,
+				Optional:    true,
+				NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+					"holiday_region": schema.StringAttribute{
+						Description: "Built-in holiday region or custom Holiday Calendar code identifying exception dates.",
+						Required:    true,
+					},
+					"times_of_day": schema.ListAttribute{
+						Description: "Replacement schedule times in HH:MM or H-H:MM format, in the effective schedule time zone.",
+						Required:    true,
+						ElementType: types.StringType,
+						Validators:  []validator.List{listvalidator.SizeAtLeast(1), listvalidator.SizeAtMost(1440)},
+					},
+				},
+				},
+				Validators:    []validator.List{listvalidator.SizeAtMost(20)},
+				PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
+			},
 			"late_acceptance_interval": schema.Int64Attribute{
 				Description: "How many seconds a schedule-driven window may remain eligible to close as late.",
 				Computed:    true,
@@ -320,6 +344,12 @@ func (r *expectationResource) Schema(_ context.Context, _ resource.SchemaRequest
 	}
 }
 
+func (r *expectationResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	if err := lib.SettleUnchangedPlan(req.Config, req.State, &resp.Plan); err != nil {
+		resp.Diagnostics.AddError("Error Planning Files Expectation", "Could not compare the plan with prior state: "+err.Error())
+	}
+}
+
 func (r *expectationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var plan expectationResourceModel
 	diags := req.Plan.Get(ctx, &plan)
@@ -361,6 +391,11 @@ func (r *expectationResource) Create(ctx context.Context, req resource.CreateReq
 	}
 	paramsExpectationCreate.ScheduleTimeZone = plan.ScheduleTimeZone.ValueString()
 	paramsExpectationCreate.HolidayRegion = plan.HolidayRegion.ValueString()
+	createScheduleTimeExceptions, diags := lib.SchemaAttributeToInterface(ctx, path.Root("schedule_time_exceptions"), plan.ScheduleTimeExceptions)
+	resp.Diagnostics.Append(diags...)
+
+	paramsExpectationCreate.ScheduleTimeExceptions, diags = lib.JSONToStringMapSlice(path.Root("schedule_time_exceptions"), createScheduleTimeExceptions)
+	resp.Diagnostics.Append(diags...)
 	paramsExpectationCreate.LookbackInterval = plan.LookbackInterval.ValueInt64()
 	paramsExpectationCreate.LateAcceptanceInterval = plan.LateAcceptanceInterval.ValueInt64()
 	paramsExpectationCreate.InactivityInterval = plan.InactivityInterval.ValueInt64()
@@ -506,6 +541,12 @@ func (r *expectationResource) Update(ctx context.Context, req resource.UpdateReq
 	if !config.HolidayRegion.IsNull() && !config.HolidayRegion.IsUnknown() {
 		paramsExpectationUpdate["holiday_region"] = config.HolidayRegion.ValueString()
 	}
+	if !config.ScheduleTimeExceptions.IsNull() && !config.ScheduleTimeExceptions.IsUnknown() {
+		updateScheduleTimeExceptions, diags := lib.SchemaAttributeToInterface(ctx, path.Root("schedule_time_exceptions"), config.ScheduleTimeExceptions)
+		resp.Diagnostics.Append(diags...)
+
+		paramsExpectationUpdate["schedule_time_exceptions"] = updateScheduleTimeExceptions
+	}
 	if !config.LookbackInterval.IsNull() && !config.LookbackInterval.IsUnknown() {
 		paramsExpectationUpdate["lookback_interval"] = config.LookbackInterval.ValueInt64()
 	}
@@ -618,6 +659,10 @@ func (r *expectationResource) populateResourceModel(ctx context.Context, expecta
 	state.ScheduleTimeZone = types.StringValue(expectation.ScheduleTimeZone)
 	state.HolidayRegion = types.StringValue(expectation.HolidayRegion)
 	state.LookbackInterval = types.Int64Value(expectation.LookbackInterval)
+	scheduleTimeExceptionsValue := interface{}(expectation.ScheduleTimeExceptions)
+
+	state.ScheduleTimeExceptions, propDiags = lib.ToList(ctx, path.Root("schedule_time_exceptions"), scheduleTimeExceptionsValue, state.ScheduleTimeExceptions)
+	diags.Append(propDiags...)
 	state.LateAcceptanceInterval = types.Int64Value(expectation.LateAcceptanceInterval)
 	state.InactivityInterval = types.Int64Value(expectation.InactivityInterval)
 	state.MaxOpenInterval = types.Int64Value(expectation.MaxOpenInterval)

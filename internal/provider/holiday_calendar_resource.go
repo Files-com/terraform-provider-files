@@ -284,6 +284,11 @@ func (r *holidayCalendarResource) resourceSchema() schema.Schema {
 										Required:    true,
 										Validators:  []validator.Int64{int64validator.Between(0, 6)},
 									},
+									"day_offset": schema.Int64Attribute{
+										Description: "Days to add to the selected weekday before applying observed. For example, week 4, wday 4, day_offset 1 selects the day after Thanksgiving.",
+										Optional:    true,
+										Validators:  []validator.Int64{int64validator.Between(-366, 366)},
+									},
 								},
 								},
 								Validators: []validator.List{listvalidator.SizeAtMost(366)},
@@ -332,7 +337,7 @@ func (r *holidayCalendarResource) Create(ctx context.Context, req resource.Creat
 	paramsHolidayCalendarCreate := files_sdk.HolidayCalendarCreateParams{}
 	createDefinition, diags := lib.SchemaAttributeToInterface(ctx, path.Root("definition"), plan.Definition)
 	resp.Diagnostics.Append(diags...)
-	createDefinition, createDefinitionTransformDiags0 := lib.UngroupStructuralUnionAtPath(ctx, path.Root("definition"), createDefinition, []string{"months"}, []lib.JSONSchemaVariant{{Name: "calculated_rules", Required: []string{"function"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "function", "function_modifier"}}, {Name: "fixed_rules", Required: []string{"mday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "mday"}}, {Name: "weekday_rules", Required: []string{"week", "wday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "week", "wday"}}})
+	createDefinition, createDefinitionTransformDiags0 := lib.UngroupStructuralUnionAtPath(ctx, path.Root("definition"), createDefinition, []string{"months"}, []lib.JSONSchemaVariant{{Name: "calculated_rules", Required: []string{"function"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "function", "function_modifier"}}, {Name: "fixed_rules", Required: []string{"mday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "mday"}}, {Name: "weekday_rules", Required: []string{"week", "wday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "week", "wday", "day_offset"}}})
 	resp.Diagnostics.Append(createDefinitionTransformDiags0...)
 	paramsHolidayCalendarCreate.Definition = createDefinition
 	paramsHolidayCalendarCreate.Name = plan.Name.ValueString()
@@ -416,7 +421,7 @@ func (r *holidayCalendarResource) Update(ctx context.Context, req resource.Updat
 	if !config.Definition.IsNull() && !config.Definition.IsUnknown() {
 		updateDefinition, diags := lib.SchemaAttributeToInterface(ctx, path.Root("definition"), config.Definition)
 		resp.Diagnostics.Append(diags...)
-		updateDefinition, updateDefinitionTransformDiags0 := lib.UngroupStructuralUnionAtPath(ctx, path.Root("definition"), updateDefinition, []string{"months"}, []lib.JSONSchemaVariant{{Name: "calculated_rules", Required: []string{"function"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "function", "function_modifier"}}, {Name: "fixed_rules", Required: []string{"mday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "mday"}}, {Name: "weekday_rules", Required: []string{"week", "wday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "week", "wday"}}})
+		updateDefinition, updateDefinitionTransformDiags0 := lib.UngroupStructuralUnionAtPath(ctx, path.Root("definition"), updateDefinition, []string{"months"}, []lib.JSONSchemaVariant{{Name: "calculated_rules", Required: []string{"function"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "function", "function_modifier"}}, {Name: "fixed_rules", Required: []string{"mday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "mday"}}, {Name: "weekday_rules", Required: []string{"week", "wday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "week", "wday", "day_offset"}}})
 		resp.Diagnostics.Append(updateDefinitionTransformDiags0...)
 		paramsHolidayCalendarUpdate["definition"] = updateDefinition
 	}
@@ -496,7 +501,7 @@ func (r *holidayCalendarResource) populateResourceModel(ctx context.Context, hol
 	state.Id = types.Int64Value(holidayCalendar.Id)
 	state.Name = types.StringValue(holidayCalendar.Name)
 	definitionValue := interface{}(holidayCalendar.Definition)
-	definitionValue, definitionValueTransformDiags0 := lib.GroupStructuralUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"months"}, []lib.JSONSchemaVariant{{Name: "calculated_rules", Required: []string{"function"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "function", "function_modifier"}}, {Name: "fixed_rules", Required: []string{"mday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "mday"}}, {Name: "weekday_rules", Required: []string{"week", "wday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "week", "wday"}}})
+	definitionValue, definitionValueTransformDiags0 := lib.GroupStructuralUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"months"}, []lib.JSONSchemaVariant{{Name: "calculated_rules", Required: []string{"function"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "function", "function_modifier"}}, {Name: "fixed_rules", Required: []string{"mday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "mday"}}, {Name: "weekday_rules", Required: []string{"week", "wday"}, Allowed: []string{"name", "observed", "start_time", "end_time", "year_ranges", "week", "wday", "day_offset"}}})
 	diags.Append(definitionValueTransformDiags0...)
 	state.Definition, propDiags = lib.ToObject(ctx, path.Root("definition"), definitionValue, state.Definition)
 	diags.Append(propDiags...)
