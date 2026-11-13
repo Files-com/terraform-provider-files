@@ -187,7 +187,7 @@ resource "files_behavior" "example_auto_decrypt_behavior" {
     auto_decrypt = {
       gpg_key_ids      = [1]
       algorithm        = "PGP/GPG"
-      suffix           = ".gpg"
+      suffixes         = [".gpg", ".pgp", ".asc"]
       ignore_mdc_error = false
     }
   }
