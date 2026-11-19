@@ -7,6 +7,7 @@ description: |-
   Each Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.
   Once created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.
   Custom answers saved on a registration are saved as Custom Metadata on each file uploaded through that registration, with field labels as keys. This applies to existing registrations as well as new ones. Unanswered optional fields and values exceeding 1024 characters are omitted; the first 32 remaining answers in saved form-answer order are captured. Dates use YYYY-MM-DD. Existing answers with unavailable field definitions or unparseable dates are omitted. Built-in name, email, and company fields are excluded. Form answers take precedence over explicit upload metadata with matching keys, including keeping omitted answer labels absent.
+  Multi-select answers are single CSV records without headers. The complete CSV value, including separators and quoting, counts toward the 1024-character limit. An oversized answer is omitted in full rather than capturing only some selections.
   Enable require_complete_metadata_capture to reject answers exceeding these value or count limits instead of omitting them. Uploaded files use the labels and answers accepted at registration even if the form is edited later.
   Editing a field definition creates a replacement field with a new ID and preserves the original definition for existing registration answers. Unchanged fields and fields moved within the layout retain their IDs. Use the returned form_layout when submitting new answers or editing the form again.
   Authenticated form field set responses include historical definitions in form_fields so existing answers can still be interpreted. Only IDs in form_layout are current fields. Forms embedded in Share Link and Inbox responses contain current definitions only.
@@ -21,6 +22,8 @@ Each Form Field Set contains one or more Form Fields. A form and all of its form
 Once created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.
 
 Custom answers saved on a registration are saved as Custom Metadata on each file uploaded through that registration, with field labels as keys. This applies to existing registrations as well as new ones. Unanswered optional fields and values exceeding 1024 characters are omitted; the first 32 remaining answers in saved form-answer order are captured. Dates use YYYY-MM-DD. Existing answers with unavailable field definitions or unparseable dates are omitted. Built-in name, email, and company fields are excluded. Form answers take precedence over explicit upload metadata with matching keys, including keeping omitted answer labels absent.
+
+Multi-select answers are single CSV records without headers. The complete CSV value, including separators and quoting, counts toward the 1024-character limit. An oversized answer is omitted in full rather than capturing only some selections.
 
 Enable require_complete_metadata_capture to reject answers exceeding these value or count limits instead of omitting them. Uploaded files use the labels and answers accepted at registration even if the form is edited later.
 
@@ -87,7 +90,7 @@ List of objects.
 - `field_type` (string, optional) Type of field. Required for a new field.
 - `help_text` (string, optional) Help text to be displayed.
 - `required` (boolean, optional) Is this a required field? Defaults to true for a new field.
-- `options_for_select` (list of strings, optional) Options to display. Required for dropdown and radio fields. Removed from text and text_area fields.
+- `options_for_select` (list of strings, optional) Options to display. Required for dropdown, radio, and multi_select fields. Multi-select answers are strings containing one CSV record without a header. Removed from text and text_area fields.
 - `default_option` (string, optional) Option to preselect. Must be one of options_for_select. Removed from text and text_area fields.
 - `form_field_set_id` (integer, optional) Form field set ID.
 
