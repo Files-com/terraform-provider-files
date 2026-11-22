@@ -33,7 +33,7 @@ data "files_partner" "example_partner" {
 - `allow_providing_gpg_keys` (Boolean) Allow Partner Admins to provide GPG keys.
 - `allow_user_creation` (Boolean) Allow Partner Admins to create users.
 - `allowed_ips` (String) A list of allowed IPs for this Partner. Newline delimited. Partner User IP access is allowed when the IP matches the Partner, User, or Site allowed IP lists.
-- `cc_emails_to_responsible_party` (Boolean) When `true`, emails sent to Partner users are copied to the responsible User or Group.
+- `cc_emails_to_responsible_party` (Boolean) When `true`, the responsible User or Group receives eligible email copies for Partner Users without their own Responsible Party. Welcome emails trigger a separate onboarding notice. Password recovery links, email verification codes, and signed export links go only to the primary email address.
 - `connections` (Dynamic) Approved Connected Sites relationships for this Partner, in both directions. Empty when this Partner has no connections. Read-only.
 - `name` (String) The name of the Partner.
 - `notes` (String) Notes about this Partner.

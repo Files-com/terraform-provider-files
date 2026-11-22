@@ -1566,7 +1566,7 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				},
 			},
 			"welcome_email_cc": schema.StringAttribute{
-				Description: "Include this email in welcome emails if enabled",
+				Description: "Copy welcome emails to this address when the email contains neither a create-password link nor a password.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{

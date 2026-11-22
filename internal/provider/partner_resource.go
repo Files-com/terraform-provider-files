@@ -141,7 +141,7 @@ func (r *partnerResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 				},
 			},
 			"cc_emails_to_responsible_party": schema.BoolAttribute{
-				Description: "When `true`, emails sent to Partner users are copied to the responsible User or Group.",
+				Description: "When `true`, the responsible User or Group receives eligible email copies for Partner Users without their own Responsible Party. Welcome emails trigger a separate onboarding notice. Password recovery links, email verification codes, and signed export links go only to the primary email address.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Bool{

@@ -357,7 +357,7 @@ resource "files_site" "example_site" {
 - `users_can_create_api_keys` (Boolean) Allow users to create their own API keys?
 - `users_can_create_ssh_keys` (Boolean) Allow users to create their own SSH keys?
 - `welcome_custom_text` (String) Custom text send in user welcome email
-- `welcome_email_cc` (String) Include this email in welcome emails if enabled
+- `welcome_email_cc` (String) Copy welcome emails to this address when the email contains neither a create-password link nor a password.
 - `welcome_email_enabled` (Boolean) Will the welcome email be sent to new users?
 - `welcome_email_subject` (String) Include this email subject in welcome emails if enabled
 - `welcome_screen` (String) Does the welcome screen appear?

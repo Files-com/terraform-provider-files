@@ -84,7 +84,7 @@ Site settings and root folder behaviors that a settings policy manages on applic
 - `welcome_email_enabled` (boolean, optional) Will the welcome email be sent to new users?
 - `ask_about_overwrites` (boolean, optional) If false, rename conflicting files instead of asking for overwrite confirmation.  Only applies to web interface.
 - `always_mkdir_parents` (boolean, optional) Create parent directories if they do not exist during uploads?  This is primarily used to work around broken upload clients that assume servers will perform this step.
-- `welcome_email_cc` (string, optional) Include this email in welcome emails if enabled
+- `welcome_email_cc` (string, optional) Copy welcome emails to this address when the email contains neither a create-password link nor a password.
 - `welcome_email_subject` (string, optional) Include this email subject in welcome emails if enabled
 - `welcome_custom_text` (string, optional) Custom text send in user welcome email
 - `language` (string, optional) Site default language
