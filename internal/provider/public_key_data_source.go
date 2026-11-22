@@ -114,7 +114,7 @@ func (r *publicKeyDataSource) Schema(_ context.Context, _ datasource.SchemaReque
 				Computed:    true,
 			},
 			"generated_private_key": schema.StringAttribute{
-				Description: "Only returned when generating keys. Private key generated for the user.",
+				Description: "Available for 60 minutes after key creation, only to the API key or login session that requested generation.",
 				Computed:    true,
 				Sensitive:   true,
 			},
