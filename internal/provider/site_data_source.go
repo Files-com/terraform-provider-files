@@ -110,6 +110,7 @@ type siteDataSourceModel struct {
 	FileActivityEventsEnabled                            types.Bool    `tfsdk:"file_activity_events_enabled"`
 	DisablePasswordReset                                 types.Bool    `tfsdk:"disable_password_reset"`
 	Domain                                               types.String  `tfsdk:"domain"`
+	DangerouslyUseCustomDomainForTransferUrls            types.Bool    `tfsdk:"dangerously_use_custom_domain_for_transfer_urls"`
 	DomainHstsHeader                                     types.Bool    `tfsdk:"domain_hsts_header"`
 	DomainLetsencryptChain                               types.String  `tfsdk:"domain_letsencrypt_chain"`
 	Email                                                types.String  `tfsdk:"email"`
@@ -571,6 +572,10 @@ func (r *siteDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 			},
 			"domain": schema.StringAttribute{
 				Description: "Custom domain",
+				Computed:    true,
+			},
+			"dangerously_use_custom_domain_for_transfer_urls": schema.BoolAttribute{
+				Description: "Allow eligible Remote Server Mount and Files.com Agent transfer URLs to use the Site's custom domain. Enabling can serve file content from the same hostname as the signed-in web app. Disabled by default.",
 				Computed:    true,
 			},
 			"domain_hsts_header": schema.BoolAttribute{
@@ -1157,6 +1162,7 @@ func (r *siteDataSource) populateDataSourceModel(ctx context.Context, site files
 	state.FileActivityEventsEnabled = types.BoolPointerValue(site.FileActivityEventsEnabled)
 	state.DisablePasswordReset = types.BoolPointerValue(site.DisablePasswordReset)
 	state.Domain = types.StringValue(site.Domain)
+	state.DangerouslyUseCustomDomainForTransferUrls = types.BoolPointerValue(site.DangerouslyUseCustomDomainForTransferUrls)
 	state.DomainHstsHeader = types.BoolPointerValue(site.DomainHstsHeader)
 	state.DomainLetsencryptChain = types.StringValue(site.DomainLetsencryptChain)
 	state.Email = types.StringValue(site.Email)

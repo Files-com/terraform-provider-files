@@ -114,6 +114,7 @@ type siteResourceModel struct {
 	FileActivityEventsEnabled                            types.Bool    `tfsdk:"file_activity_events_enabled"`
 	DisablePasswordReset                                 types.Bool    `tfsdk:"disable_password_reset"`
 	Domain                                               types.String  `tfsdk:"domain"`
+	DangerouslyUseCustomDomainForTransferUrls            types.Bool    `tfsdk:"dangerously_use_custom_domain_for_transfer_urls"`
 	DomainHstsHeader                                     types.Bool    `tfsdk:"domain_hsts_header"`
 	DomainLetsencryptChain                               types.String  `tfsdk:"domain_letsencrypt_chain"`
 	Email                                                types.String  `tfsdk:"email"`
@@ -854,6 +855,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				Optional:    true,
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"dangerously_use_custom_domain_for_transfer_urls": schema.BoolAttribute{
+				Description: "Allow eligible Remote Server Mount and Files.com Agent transfer URLs to use the Site's custom domain. Enabling can serve file content from the same hostname as the signed-in web app. Disabled by default.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Bool{
+					boolplanmodifier.UseStateForUnknown(),
 				},
 			},
 			"domain_hsts_header": schema.BoolAttribute{
@@ -1826,6 +1835,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.BundleMaxUses.IsNull() && !config.BundleMaxUses.IsUnknown() {
 		paramsSiteUpdate["bundle_max_uses"] = config.BundleMaxUses.ValueInt64()
 	}
+	if !config.DangerouslyUseCustomDomainForTransferUrls.IsNull() && !config.DangerouslyUseCustomDomainForTransferUrls.IsUnknown() {
+		paramsSiteUpdate["dangerously_use_custom_domain_for_transfer_urls"] = config.DangerouslyUseCustomDomainForTransferUrls.ValueBool()
+	}
 	if !config.WelcomeEmailEnabled.IsNull() && !config.WelcomeEmailEnabled.IsUnknown() {
 		paramsSiteUpdate["welcome_email_enabled"] = config.WelcomeEmailEnabled.ValueBool()
 	}
@@ -2440,6 +2452,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.FileActivityEventsEnabled = types.BoolPointerValue(site.FileActivityEventsEnabled)
 	state.DisablePasswordReset = types.BoolPointerValue(site.DisablePasswordReset)
 	state.Domain = types.StringValue(site.Domain)
+	state.DangerouslyUseCustomDomainForTransferUrls = types.BoolPointerValue(site.DangerouslyUseCustomDomainForTransferUrls)
 	state.DomainHstsHeader = types.BoolPointerValue(site.DomainHstsHeader)
 	state.DomainLetsencryptChain = types.StringValue(site.DomainLetsencryptChain)
 	state.Email = types.StringValue(site.Email)

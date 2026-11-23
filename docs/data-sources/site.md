@@ -79,6 +79,7 @@ data "files_site" "example_site" {
 - `created_at` (String) Time this site was created
 - `currency` (String) Preferred currency
 - `custom_namespace` (Boolean) Is this site using a custom namespace for users?
+- `dangerously_use_custom_domain_for_transfer_urls` (Boolean) Allow eligible Remote Server Mount and Files.com Agent transfer URLs to use the Site's custom domain. Enabling can serve file content from the same hostname as the signed-in web app. Disabled by default.
 - `dav_enabled` (Boolean) Is WebDAV enabled?
 - `dav_user_root_enabled` (Boolean) Use user FTP roots also for WebDAV?
 - `days_to_retain_backups` (Number) Number of days to keep deleted files

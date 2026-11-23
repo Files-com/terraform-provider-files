@@ -27,6 +27,7 @@ resource "files_site" "example_site" {
   allow_bundle_names                                          = false
   bundle_expiration                                           = 1
   bundle_max_uses                                             = 1
+  dangerously_use_custom_domain_for_transfer_urls             = false
   welcome_email_enabled                                       = false
   ask_about_overwrites                                        = false
   show_request_access_link                                    = false
@@ -250,6 +251,7 @@ resource "files_site" "example_site" {
 - `color2_top` (String) Top bar background color
 - `color2_top_text` (String) Top bar text color
 - `custom_namespace` (Boolean) Is this site using a custom namespace for users?
+- `dangerously_use_custom_domain_for_transfer_urls` (Boolean) Allow eligible Remote Server Mount and Files.com Agent transfer URLs to use the Site's custom domain. Enabling can serve file content from the same hostname as the signed-in web app. Disabled by default.
 - `dav_enabled` (Boolean) Is WebDAV enabled?
 - `dav_user_root_enabled` (Boolean) Use user FTP roots also for WebDAV?
 - `days_to_retain_backups` (Number) Number of days to keep deleted files

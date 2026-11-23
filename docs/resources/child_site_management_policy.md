@@ -82,6 +82,7 @@ Site settings and root folder behaviors that a settings policy manages on applic
 - `allow_bundle_names` (boolean, optional) Are manual Bundle names allowed?
 - `bundle_expiration` (integer, optional) Site-wide Bundle expiration in days
 - `bundle_max_uses` (integer, optional) Maximum visitors per Share Link on this Site. Applies immediately to existing Share Links and across all Workspaces. Null disables the Site-wide cap.
+- `dangerously_use_custom_domain_for_transfer_urls` (boolean, optional) Allow eligible Remote Server Mount and Files.com Agent transfer URLs to use the Site's custom domain. Enabling can serve file content from the same hostname as the signed-in web app. Disabled by default.
 - `welcome_email_enabled` (boolean, optional) Will the welcome email be sent to new users?
 - `ask_about_overwrites` (boolean, optional) If false, rename conflicting files instead of asking for overwrite confirmation.  Only applies to web interface.
 - `always_mkdir_parents` (boolean, optional) Create parent directories if they do not exist during uploads?  This is primarily used to work around broken upload clients that assume servers will perform this step.

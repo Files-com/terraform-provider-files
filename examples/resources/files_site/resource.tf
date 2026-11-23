@@ -9,6 +9,7 @@ resource "files_site" "example_site" {
   allow_bundle_names                                          = false
   bundle_expiration                                           = 1
   bundle_max_uses                                             = 1
+  dangerously_use_custom_domain_for_transfer_urls             = false
   welcome_email_enabled                                       = false
   ask_about_overwrites                                        = false
   show_request_access_link                                    = false
