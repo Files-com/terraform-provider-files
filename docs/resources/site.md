@@ -26,6 +26,7 @@ resource "files_site" "example_site" {
   reply_to_email                                              = "jane.doe@files.com"
   allow_bundle_names                                          = false
   bundle_expiration                                           = 1
+  bundle_max_uses                                             = 1
   welcome_email_enabled                                       = false
   ask_about_overwrites                                        = false
   show_request_access_link                                    = false
@@ -224,6 +225,7 @@ resource "files_site" "example_site" {
 - `ask_about_overwrites` (Boolean) If false, rename conflicting files instead of asking for overwrite confirmation.  Only applies to web interface.
 - `bundle_activity_notifications` (String) Do Bundle owners receive activity notifications?
 - `bundle_expiration` (Number) Site-wide Bundle expiration in days
+- `bundle_max_uses` (Number) Maximum visitors per Share Link on this Site. Applies immediately to existing Share Links and across all Workspaces. Null disables the Site-wide cap.
 - `bundle_not_found_message` (String) Custom error message to show when bundle is not found.
 - `bundle_password_required` (Boolean) Do Bundles require password protection?
 - `bundle_recipient_blacklist_domains` (List of String) List of email domains to disallow when entering a Bundle/Inbox recipients

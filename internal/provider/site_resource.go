@@ -66,6 +66,7 @@ type siteResourceModel struct {
 	AskAboutOverwrites                                   types.Bool    `tfsdk:"ask_about_overwrites"`
 	BundleActivityNotifications                          types.String  `tfsdk:"bundle_activity_notifications"`
 	BundleExpiration                                     types.Int64   `tfsdk:"bundle_expiration"`
+	BundleMaxUses                                        types.Int64   `tfsdk:"bundle_max_uses"`
 	BundleNotFoundMessage                                types.String  `tfsdk:"bundle_not_found_message"`
 	BundlePasswordRequired                               types.Bool    `tfsdk:"bundle_password_required"`
 	BundlesDefaultOwnedByPrimaryGroup                    types.Bool    `tfsdk:"bundles_default_owned_by_primary_group"`
@@ -455,6 +456,14 @@ func (r *siteResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 			},
 			"bundle_expiration": schema.Int64Attribute{
 				Description: "Site-wide Bundle expiration in days",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
+			"bundle_max_uses": schema.Int64Attribute{
+				Description: "Maximum visitors per Share Link on this Site. Applies immediately to existing Share Links and across all Workspaces. Null disables the Site-wide cap.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
@@ -1814,6 +1823,9 @@ func (r *siteResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.BundleExpiration.IsNull() && !config.BundleExpiration.IsUnknown() {
 		paramsSiteUpdate["bundle_expiration"] = config.BundleExpiration.ValueInt64()
 	}
+	if !config.BundleMaxUses.IsNull() && !config.BundleMaxUses.IsUnknown() {
+		paramsSiteUpdate["bundle_max_uses"] = config.BundleMaxUses.ValueInt64()
+	}
 	if !config.WelcomeEmailEnabled.IsNull() && !config.WelcomeEmailEnabled.IsUnknown() {
 		paramsSiteUpdate["welcome_email_enabled"] = config.WelcomeEmailEnabled.ValueBool()
 	}
@@ -2355,6 +2367,7 @@ func (r *siteResource) populateResourceModel(ctx context.Context, site files_sdk
 	state.AskAboutOverwrites = types.BoolPointerValue(site.AskAboutOverwrites)
 	state.BundleActivityNotifications = types.StringValue(site.BundleActivityNotifications)
 	state.BundleExpiration = types.Int64Value(site.BundleExpiration)
+	state.BundleMaxUses = types.Int64Value(site.BundleMaxUses)
 	state.BundleNotFoundMessage = types.StringValue(site.BundleNotFoundMessage)
 	state.BundlePasswordRequired = types.BoolPointerValue(site.BundlePasswordRequired)
 	state.BundlesDefaultOwnedByPrimaryGroup = types.BoolPointerValue(site.BundlesDefaultOwnedByPrimaryGroup)

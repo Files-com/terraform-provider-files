@@ -80,7 +80,7 @@ resource "files_bundle" "example_bundle" {
 - `group_id` (Number) Owning group ID. If set, members of this group can view, edit, and share this Share Link.
 - `inbox_id` (Number) ID of the associated inbox, if available.
 - `internal_name` (String) Internal name for identifying this Share Link.
-- `max_uses` (Number) Maximum number of times bundle can be accessed
+- `max_uses` (Number) Visitor limit configured for this Share Link. Null uses the Site-wide cap, if set. The configured limit cannot exceed the Site-wide cap.
 - `note` (String) Bundle internal note
 - `password` (String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Password for this bundle.
 - `path_template` (String) Template for creating submission subfolders. Can use the uploader's name, email address, ip, company, `strftime` directives, and any custom form data.
@@ -113,6 +113,7 @@ resource "files_bundle" "example_bundle" {
 - `deleted_at` (String) Bundle deleted at date/time
 - `dont_allow_folders_in_uploads` (Boolean) Should folder uploads be prevented?
 - `effective_expires_at` (String) Read-only expiration date/time, using the explicit expiration or the site-wide setting when applicable. Null when the Share Link does not expire.
+- `effective_max_uses` (Number) Read-only visitor limit actually enforced for this Share Link. Uses the lower of the link limit and the Site-wide cap when both are set. Null means unlimited.
 - `form_field_set` (String) Custom Form to use
 - `has_inbox` (Boolean) Does this bundle have an associated inbox?
 - `id` (Number) Bundle ID

@@ -8,6 +8,7 @@ resource "files_site" "example_site" {
   reply_to_email                                              = "jane.doe@files.com"
   allow_bundle_names                                          = false
   bundle_expiration                                           = 1
+  bundle_max_uses                                             = 1
   welcome_email_enabled                                       = false
   ask_about_overwrites                                        = false
   show_request_access_link                                    = false

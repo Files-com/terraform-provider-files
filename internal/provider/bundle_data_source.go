@@ -59,6 +59,7 @@ type bundleDataSourceModel struct {
 	DontSeparateSubmissionsByFolder              types.Bool    `tfsdk:"dont_separate_submissions_by_folder"`
 	EffectiveExpiresAt                           types.String  `tfsdk:"effective_expires_at"`
 	MaxUses                                      types.Int64   `tfsdk:"max_uses"`
+	EffectiveMaxUses                             types.Int64   `tfsdk:"effective_max_uses"`
 	InternalName                                 types.String  `tfsdk:"internal_name"`
 	Note                                         types.String  `tfsdk:"note"`
 	PathTemplate                                 types.String  `tfsdk:"path_template"`
@@ -220,7 +221,11 @@ func (r *bundleDataSource) Schema(_ context.Context, _ datasource.SchemaRequest,
 				Computed:    true,
 			},
 			"max_uses": schema.Int64Attribute{
-				Description: "Maximum number of times bundle can be accessed",
+				Description: "Visitor limit configured for this Share Link. Null uses the Site-wide cap, if set. The configured limit cannot exceed the Site-wide cap.",
+				Computed:    true,
+			},
+			"effective_max_uses": schema.Int64Attribute{
+				Description: "Read-only visitor limit actually enforced for this Share Link. Uses the lower of the link limit and the Site-wide cap when both are set. Null means unlimited.",
 				Computed:    true,
 			},
 			"internal_name": schema.StringAttribute{
@@ -402,6 +407,7 @@ func (r *bundleDataSource) populateDataSourceModel(ctx context.Context, bundle f
 		)
 	}
 	state.MaxUses = types.Int64Value(bundle.MaxUses)
+	state.EffectiveMaxUses = types.Int64Value(bundle.EffectiveMaxUses)
 	state.InternalName = types.StringValue(bundle.InternalName)
 	state.Note = types.StringValue(bundle.Note)
 	state.PathTemplate = types.StringValue(bundle.PathTemplate)

@@ -92,6 +92,7 @@ type bundleResourceModel struct {
 	Deleted                                      types.Bool    `tfsdk:"deleted"`
 	DeletedAt                                    types.String  `tfsdk:"deleted_at"`
 	EffectiveExpiresAt                           types.String  `tfsdk:"effective_expires_at"`
+	EffectiveMaxUses                             types.Int64   `tfsdk:"effective_max_uses"`
 	Username                                     types.String  `tfsdk:"username"`
 	WatermarkAttachment                          types.String  `tfsdk:"watermark_attachment"`
 	HasInbox                                     types.Bool    `tfsdk:"has_inbox"`
@@ -236,7 +237,7 @@ func (r *bundleResource) resourceSchema() schema.Schema {
 				},
 			},
 			"max_uses": schema.Int64Attribute{
-				Description: "Maximum number of times bundle can be accessed",
+				Description: "Visitor limit configured for this Share Link. Null uses the Site-wide cap, if set. The configured limit cannot exceed the Site-wide cap.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
@@ -435,6 +436,10 @@ func (r *bundleResource) resourceSchema() schema.Schema {
 			},
 			"effective_expires_at": schema.StringAttribute{
 				Description: "Read-only expiration date/time, using the explicit expiration or the site-wide setting when applicable. Null when the Share Link does not expire.",
+				Computed:    true,
+			},
+			"effective_max_uses": schema.Int64Attribute{
+				Description: "Read-only visitor limit actually enforced for this Share Link. Uses the lower of the link limit and the Site-wide cap when both are set. Null means unlimited.",
 				Computed:    true,
 			},
 			"username": schema.StringAttribute{
@@ -904,6 +909,7 @@ func (r *bundleResource) populateResourceModel(ctx context.Context, bundle files
 		)
 	}
 	state.MaxUses = types.Int64Value(bundle.MaxUses)
+	state.EffectiveMaxUses = types.Int64Value(bundle.EffectiveMaxUses)
 	state.InternalName = types.StringValue(bundle.InternalName)
 	state.Note = types.StringValue(bundle.Note)
 	state.PathTemplate = types.StringValue(bundle.PathTemplate)
