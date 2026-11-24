@@ -53,11 +53,15 @@ Settings for the target's target_type. Each field names the target types that us
 - `username` (string, optional) Slack targets only. Display name for messages. Defaults to Files.com.
 - `channel` (string, optional) Slack targets only. Channel to post to instead of the webhook's default channel.
 - `icon_emoji` (string, optional) Slack targets only. Emoji to use as the message icon instead of the Files.com icon.
-- `arn` (string, optional) Required for Amazon SNS targets. ARN of the SNS topic.
-- `aws_credentials` (object, optional) Required for Amazon SNS targets. Responses omit secret_access_key. Region defaults to us-east-1.
+- `arn` (string, optional) Required for Amazon SNS and SQS targets. ARN of the SNS topic or SQS queue.
+- `aws_credentials` (object, optional) Required for Amazon SNS and SQS targets. Responses omit secret_access_key. SNS defaults to us-east-1. SQS uses the region from the queue ARN.
+- `message_group_id` (string, optional) SQS message group ID. Required for FIFO queues.
 - `project_id` (string, optional) Required for Google Pub/Sub targets. Google Cloud project ID.
 - `topic_id` (string, optional) Required for Google Pub/Sub targets. Pub/Sub topic ID. It must start with a letter, must not start with goog, and must be 3 to 255 characters.
 - `google_credentials` (object, optional) Required for Google Pub/Sub targets. Service account key as an object, or the key file contents as a JSON string. It is stored as an object. Responses omit private_key.
+- `namespace` (string, optional) Azure Service Bus namespace name in the public Azure cloud.
+- `entity_path` (string, optional) Azure Service Bus queue or topic name, including any slash-separated path.
+- `azure_credentials` (object, optional) Shared access policy name and key for Azure Service Bus. The policy needs Send permission. Responses omit shared_access_key.
 - `path` (string, optional) Required for folder targets. Folder that receives event files.
 - `format` (string, optional) Required for folder targets. Event file format. Cannot be changed after creation.
 
@@ -87,6 +91,11 @@ Terraform treats `config` as sensitive because it can hold secrets. A root modul
 - `client_x509_cert_url` (string, optional)
 - `universe_domain` (string, optional)
 - `quota_project_id` (string, optional)
+
+##### `config.azure_credentials`
+
+- `shared_access_key_name` (string, required)
+- `shared_access_key` (string, required)
 
 #### delivery_policy
 

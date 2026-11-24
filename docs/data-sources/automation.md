@@ -383,7 +383,7 @@ data "files_automation" "example_automation" {
 - `user_ids` (List of Number) IDs of Users for the Automation (i.e. who to Request File from)
 - `value` (Dynamic) A Hash of attributes specific to the automation type.
 - `version` (Number) Current Automation v2 definition version.
-- `webhook_url` (String) If trigger is `webhook`, this is the URL of the webhook to trigger the Automation.
+- `webhook_url` (String) If trigger is `webhook`, this is the URL to start the Automation. For a v2 webhook configured to upload a file, POST multipart form data with a single `file` part or send a raw body with the `X-Files-Filename` header. A JSON body is saved as `payload.json` when the header is omitted.
 - `workspace_id` (Number) Workspace ID
 
 <a id="nestedatt--definition"></a>
@@ -427,9 +427,15 @@ Read-Only:
 - `import_file` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--import_file))
 - `join` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--join))
 - `move_file` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--move_file))
+- `publish_amazon_sns` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--publish_amazon_sns))
+- `publish_amazon_sqs` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--publish_amazon_sqs))
+- `publish_azure_service_bus` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--publish_azure_service_bus))
+- `publish_google_pubsub` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--publish_google_pubsub))
 - `run_automation` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--run_automation))
 - `run_sync` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--run_sync))
+- `send_chat_message` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--send_chat_message))
 - `send_email` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--send_email))
+- `send_webhook` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--send_webhook))
 - `set_metadata` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--set_metadata))
 - `switch` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--switch))
 - `transform` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--transform))
@@ -928,6 +934,130 @@ Read-Only:
 
 
 
+<a id="nestedatt--definition--nodes--publish_amazon_sns"></a>
+### Nested Schema for `definition.nodes.publish_amazon_sns`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--publish_amazon_sns--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--publish_amazon_sns--config"></a>
+### Nested Schema for `definition.nodes.publish_amazon_sns.config`
+
+Read-Only:
+
+- `arn` (String)
+- `aws_credentials_secret_id` (Number)
+- `message_group_id` (String)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--publish_amazon_sns--config--on_error))
+- `payload` (String) A bare Files TransformScript expression, no braces.
+
+<a id="nestedatt--definition--nodes--publish_amazon_sns--config--on_error"></a>
+### Nested Schema for `definition.nodes.publish_amazon_sns.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--publish_amazon_sqs"></a>
+### Nested Schema for `definition.nodes.publish_amazon_sqs`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--publish_amazon_sqs--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--publish_amazon_sqs--config"></a>
+### Nested Schema for `definition.nodes.publish_amazon_sqs.config`
+
+Read-Only:
+
+- `arn` (String)
+- `aws_credentials_secret_id` (Number)
+- `message_group_id` (String)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--publish_amazon_sqs--config--on_error))
+- `payload` (String) A bare Files TransformScript expression, no braces.
+
+<a id="nestedatt--definition--nodes--publish_amazon_sqs--config--on_error"></a>
+### Nested Schema for `definition.nodes.publish_amazon_sqs.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--publish_azure_service_bus"></a>
+### Nested Schema for `definition.nodes.publish_azure_service_bus`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--publish_azure_service_bus--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--publish_azure_service_bus--config"></a>
+### Nested Schema for `definition.nodes.publish_azure_service_bus.config`
+
+Read-Only:
+
+- `azure_credentials_secret_id` (Number)
+- `entity_path` (String)
+- `namespace` (String)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--publish_azure_service_bus--config--on_error))
+- `payload` (String) A bare Files TransformScript expression, no braces.
+
+<a id="nestedatt--definition--nodes--publish_azure_service_bus--config--on_error"></a>
+### Nested Schema for `definition.nodes.publish_azure_service_bus.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--publish_google_pubsub"></a>
+### Nested Schema for `definition.nodes.publish_google_pubsub`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--publish_google_pubsub--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--publish_google_pubsub--config"></a>
+### Nested Schema for `definition.nodes.publish_google_pubsub.config`
+
+Read-Only:
+
+- `google_credentials_secret_id` (Number)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--publish_google_pubsub--config--on_error))
+- `payload` (String) A bare Files TransformScript expression, no braces.
+- `project_id` (String)
+- `topic_id` (String)
+
+<a id="nestedatt--definition--nodes--publish_google_pubsub--config--on_error"></a>
+### Nested Schema for `definition.nodes.publish_google_pubsub.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
 <a id="nestedatt--definition--nodes--run_automation"></a>
 ### Nested Schema for `definition.nodes.run_automation`
 
@@ -985,6 +1115,39 @@ Read-Only:
 
 
 
+<a id="nestedatt--definition--nodes--send_chat_message"></a>
+### Nested Schema for `definition.nodes.send_chat_message`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--send_chat_message--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--send_chat_message--config"></a>
+### Nested Schema for `definition.nodes.send_chat_message.config`
+
+Read-Only:
+
+- `channel` (String)
+- `icon_emoji` (String)
+- `message` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--send_chat_message--config--on_error))
+- `provider` (String)
+- `username` (String)
+- `webhook_url_secret_id` (Number)
+
+<a id="nestedatt--definition--nodes--send_chat_message--config--on_error"></a>
+### Nested Schema for `definition.nodes.send_chat_message.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
 <a id="nestedatt--definition--nodes--send_email"></a>
 ### Nested Schema for `definition.nodes.send_email`
 
@@ -1010,6 +1173,39 @@ Read-Only:
 
 <a id="nestedatt--definition--nodes--send_email--config--on_error"></a>
 ### Nested Schema for `definition.nodes.send_email.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--send_webhook"></a>
+### Nested Schema for `definition.nodes.send_webhook`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--send_webhook--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--send_webhook--config"></a>
+### Nested Schema for `definition.nodes.send_webhook.config`
+
+Read-Only:
+
+- `headers_secret_id` (Number)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--send_webhook--config--on_error))
+- `payload` (String) A bare Files TransformScript expression, no braces.
+- `signing_secret_id` (Number)
+- `url` (String)
+- `url_secret_id` (Number)
+- `use_dedicated_ips` (Boolean)
+
+<a id="nestedatt--definition--nodes--send_webhook--config--on_error"></a>
+### Nested Schema for `definition.nodes.send_webhook.config.on_error`
 
 Read-Only:
 
@@ -1244,11 +1440,15 @@ Read-Only:
 
 Read-Only:
 
+- `allowed_ips` (List of String)
+- `bearer_token_sha256` (String)
+- `destination` (String)
 - `exclude_pattern` (String)
 - `limit` (Number)
 - `path` (String)
 - `path_time_zone` (String)
 - `source` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `upload_file` (Boolean)
 
 
 

@@ -372,6 +372,19 @@ func (r *automationResource) resourceSchema() schema.Schema {
 											"path_time_zone": schema.StringAttribute{
 												Optional: true,
 											},
+											"upload_file": schema.BoolAttribute{
+												Optional: true,
+											},
+											"destination": schema.StringAttribute{
+												Optional: true,
+											},
+											"bearer_token_sha256": schema.StringAttribute{
+												Optional: true,
+											},
+											"allowed_ips": schema.ListAttribute{
+												Optional:    true,
+												ElementType: types.StringType,
+											},
 										},
 									},
 								},
@@ -799,6 +812,315 @@ func (r *automationResource) resourceSchema() schema.Schema {
 											"attachments": schema.ListAttribute{
 												Optional:    true,
 												ElementType: types.StringType,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Optional:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Required:    true,
+													},
+													"action": schema.StringAttribute{
+														Required:   true,
+														Validators: []validator.String{stringvalidator.OneOf("continue", "propagate")},
+													},
+												},
+												},
+												Validators: []validator.List{listvalidator.SizeAtLeast(1)},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Optional:    true,
+									},
+								},
+							},
+							"send_chat_message": schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Required:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Required:    true,
+										Attributes: map[string]schema.Attribute{
+											"provider": schema.StringAttribute{
+												Required:   true,
+												Validators: []validator.String{stringvalidator.OneOf("slack", "teams")},
+											},
+											"webhook_url_secret_id": schema.Int64Attribute{
+												Required:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"message": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Required:    true,
+											},
+											"channel": schema.StringAttribute{
+												Optional: true,
+											},
+											"username": schema.StringAttribute{
+												Optional: true,
+											},
+											"icon_emoji": schema.StringAttribute{
+												Optional: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Optional:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Required:    true,
+													},
+													"action": schema.StringAttribute{
+														Required:   true,
+														Validators: []validator.String{stringvalidator.OneOf("continue", "propagate")},
+													},
+												},
+												},
+												Validators: []validator.List{listvalidator.SizeAtLeast(1)},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Optional:    true,
+									},
+								},
+							},
+							"send_webhook": schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Required:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Required:    true,
+										Attributes: map[string]schema.Attribute{
+											"url": schema.StringAttribute{
+												Optional: true,
+											},
+											"url_secret_id": schema.Int64Attribute{
+												Optional:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"headers_secret_id": schema.Int64Attribute{
+												Optional:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"signing_secret_id": schema.Int64Attribute{
+												Optional:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"payload": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Required:    true,
+											},
+											"use_dedicated_ips": schema.BoolAttribute{
+												Optional: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Optional:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Required:    true,
+													},
+													"action": schema.StringAttribute{
+														Required:   true,
+														Validators: []validator.String{stringvalidator.OneOf("continue", "propagate")},
+													},
+												},
+												},
+												Validators: []validator.List{listvalidator.SizeAtLeast(1)},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Optional:    true,
+									},
+								},
+							},
+							"publish_amazon_sns": schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Required:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Required:    true,
+										Attributes: map[string]schema.Attribute{
+											"arn": schema.StringAttribute{
+												Required: true,
+											},
+											"message_group_id": schema.StringAttribute{
+												Optional: true,
+											},
+											"aws_credentials_secret_id": schema.Int64Attribute{
+												Required:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"payload": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Required:    true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Optional:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Required:    true,
+													},
+													"action": schema.StringAttribute{
+														Required:   true,
+														Validators: []validator.String{stringvalidator.OneOf("continue", "propagate")},
+													},
+												},
+												},
+												Validators: []validator.List{listvalidator.SizeAtLeast(1)},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Optional:    true,
+									},
+								},
+							},
+							"publish_amazon_sqs": schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Required:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Required:    true,
+										Attributes: map[string]schema.Attribute{
+											"arn": schema.StringAttribute{
+												Required: true,
+											},
+											"message_group_id": schema.StringAttribute{
+												Optional: true,
+											},
+											"aws_credentials_secret_id": schema.Int64Attribute{
+												Required:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"payload": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Required:    true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Optional:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Required:    true,
+													},
+													"action": schema.StringAttribute{
+														Required:   true,
+														Validators: []validator.String{stringvalidator.OneOf("continue", "propagate")},
+													},
+												},
+												},
+												Validators: []validator.List{listvalidator.SizeAtLeast(1)},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Optional:    true,
+									},
+								},
+							},
+							"publish_google_pubsub": schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Required:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Required:    true,
+										Attributes: map[string]schema.Attribute{
+											"project_id": schema.StringAttribute{
+												Required: true,
+											},
+											"topic_id": schema.StringAttribute{
+												Required: true,
+											},
+											"google_credentials_secret_id": schema.Int64Attribute{
+												Required:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"payload": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Required:    true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Optional:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Required:    true,
+													},
+													"action": schema.StringAttribute{
+														Required:   true,
+														Validators: []validator.String{stringvalidator.OneOf("continue", "propagate")},
+													},
+												},
+												},
+												Validators: []validator.List{listvalidator.SizeAtLeast(1)},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Optional:    true,
+									},
+								},
+							},
+							"publish_azure_service_bus": schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Required:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Required:    true,
+										Attributes: map[string]schema.Attribute{
+											"namespace": schema.StringAttribute{
+												Required: true,
+											},
+											"entity_path": schema.StringAttribute{
+												Required: true,
+											},
+											"azure_credentials_secret_id": schema.Int64Attribute{
+												Required:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"payload": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Required:    true,
 											},
 											"on_error": schema.ListNestedAttribute{
 												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
@@ -1585,7 +1907,7 @@ func (r *automationResource) resourceSchema() schema.Schema {
 								},
 							},
 						},
-							Validators: []validator.Object{lib.ExactlyOneOfAttributes("trigger_scheduled", "trigger_manual", "trigger_action", "trigger_folder_creation", "trigger_webhook", "trigger_email", "create_folder", "copy_file", "move_file", "delete_file", "import_file", "run_sync", "as2_send", "send_email", "agent_compute", "set_metadata", "extract", "document_convert", "image_convert", "zip", "unzip", "gpg_encrypt", "gpg_decrypt", "if", "switch", "filter", "join", "aggregate", "wait", "transform", "run_automation")},
+							Validators: []validator.Object{lib.ExactlyOneOfAttributes("trigger_scheduled", "trigger_manual", "trigger_action", "trigger_folder_creation", "trigger_webhook", "trigger_email", "create_folder", "copy_file", "move_file", "delete_file", "import_file", "run_sync", "as2_send", "send_email", "send_chat_message", "send_webhook", "publish_amazon_sns", "publish_amazon_sqs", "publish_google_pubsub", "publish_azure_service_bus", "agent_compute", "set_metadata", "extract", "document_convert", "image_convert", "zip", "unzip", "gpg_encrypt", "gpg_decrypt", "if", "switch", "filter", "join", "aggregate", "wait", "transform", "run_automation")},
 						},
 						Validators: []validator.List{listvalidator.SizeAtLeast(1), listvalidator.SizeAtMost(50)},
 					},
@@ -1924,7 +2246,7 @@ func (r *automationResource) resourceSchema() schema.Schema {
 				Computed:    true,
 			},
 			"webhook_url": schema.StringAttribute{
-				Description: "If trigger is `webhook`, this is the URL of the webhook to trigger the Automation.",
+				Description: "If trigger is `webhook`, this is the URL to start the Automation. For a v2 webhook configured to upload a file, POST multipart form data with a single `file` part or send a raw body with the `X-Files-Filename` header. A JSON body is saved as `payload.json` when the header is omitted.",
 				Computed:    true,
 			},
 		},
@@ -1989,7 +2311,7 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsAutomationCreate.Description = plan.Description.ValueString()
 	createDefinition, diags := lib.SchemaAttributeToInterface(ctx, path.Root("definition"), plan.Definition)
 	resp.Diagnostics.Append(diags...)
-	createDefinition, createDefinitionTransformDiags0 := lib.UnwrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), createDefinition, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
+	createDefinition, createDefinitionTransformDiags0 := lib.UnwrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), createDefinition, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "send_chat_message", Value: "send_chat_message"}, {Name: "send_webhook", Value: "send_webhook"}, {Name: "publish_amazon_sns", Value: "publish_amazon_sns"}, {Name: "publish_amazon_sqs", Value: "publish_amazon_sqs"}, {Name: "publish_google_pubsub", Value: "publish_google_pubsub"}, {Name: "publish_azure_service_bus", Value: "publish_azure_service_bus"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
 	resp.Diagnostics.Append(createDefinitionTransformDiags0...)
 	paramsAutomationCreate.Definition = createDefinition
 	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
@@ -2186,7 +2508,7 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 	if !config.Definition.IsNull() && !config.Definition.IsUnknown() {
 		updateDefinition, diags := lib.SchemaAttributeToInterface(ctx, path.Root("definition"), config.Definition)
 		resp.Diagnostics.Append(diags...)
-		updateDefinition, updateDefinitionTransformDiags0 := lib.UnwrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), updateDefinition, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
+		updateDefinition, updateDefinitionTransformDiags0 := lib.UnwrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), updateDefinition, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "send_chat_message", Value: "send_chat_message"}, {Name: "send_webhook", Value: "send_webhook"}, {Name: "publish_amazon_sns", Value: "publish_amazon_sns"}, {Name: "publish_amazon_sqs", Value: "publish_amazon_sqs"}, {Name: "publish_google_pubsub", Value: "publish_google_pubsub"}, {Name: "publish_azure_service_bus", Value: "publish_azure_service_bus"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
 		resp.Diagnostics.Append(updateDefinitionTransformDiags0...)
 		paramsAutomationUpdate["definition"] = updateDefinition
 	}
@@ -2330,7 +2652,7 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	state.Deleted = types.BoolPointerValue(automation.Deleted)
 	state.Description = types.StringValue(automation.Description)
 	definitionValue := interface{}(automation.Definition)
-	definitionValue, definitionValueTransformDiags0 := lib.WrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
+	definitionValue, definitionValueTransformDiags0 := lib.WrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "send_chat_message", Value: "send_chat_message"}, {Name: "send_webhook", Value: "send_webhook"}, {Name: "publish_amazon_sns", Value: "publish_amazon_sns"}, {Name: "publish_amazon_sqs", Value: "publish_amazon_sqs"}, {Name: "publish_google_pubsub", Value: "publish_google_pubsub"}, {Name: "publish_azure_service_bus", Value: "publish_azure_service_bus"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
 	diags.Append(definitionValueTransformDiags0...)
 	state.Definition, propDiags = lib.ToObject(ctx, path.Root("definition"), definitionValue, state.Definition)
 	diags.Append(propDiags...)

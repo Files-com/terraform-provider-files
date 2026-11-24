@@ -184,6 +184,7 @@ func (p *filesProvider) DataSources(_ context.Context) []func() datasource.DataS
 		NewAs2StationDataSource,
 		NewAutomationDataSource,
 		NewAutomationRunDataSource,
+		NewAutomationVersionDataSource,
 		NewBehaviorDataSource,
 		NewBundleDataSource,
 		NewBundleNotificationDataSource,

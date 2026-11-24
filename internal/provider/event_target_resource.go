@@ -89,7 +89,7 @@ func (r *eventTargetResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Description: "Event Target type.",
 				Required:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("email", "webhook", "slack_webhook", "teams_webhook", "amazon_sns", "google_pubsub", "folder"),
+					stringvalidator.OneOf("email", "webhook", "slack_webhook", "teams_webhook", "amazon_sns", "google_pubsub", "folder", "amazon_sqs", "azure_service_bus"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.RequiresReplace(),
@@ -100,7 +100,7 @@ func (r *eventTargetResource) Schema(_ context.Context, _ resource.SchemaRequest
 				Required:    true,
 				Sensitive:   true,
 				Validators: []validator.Dynamic{
-					lib.DeprecatedJSONEncoding("files_event_target.config", "config = {\n  url               = \"https://example.com/files-events\"\n  headers           = {\n    X-Example = \"value\"\n  }\n  use_dedicated_ips = false\n}", "March 1, 2027", map[string]string{"user_ids": "list", "user_ids[]": "integer", "use_dedicated_ips": "boolean", "aws_credentials": "object", "google_credentials": "object"}, nil),
+					lib.DeprecatedJSONEncoding("files_event_target.config", "config = {\n  url               = \"https://example.com/files-events\"\n  headers           = {\n    X-Example = \"value\"\n  }\n  use_dedicated_ips = false\n}", "March 1, 2027", map[string]string{"user_ids": "list", "user_ids[]": "integer", "use_dedicated_ips": "boolean", "aws_credentials": "object", "google_credentials": "object", "azure_credentials": "object"}, nil),
 				},
 			},
 			"workspace_id": schema.Int64Attribute{
@@ -368,7 +368,7 @@ func (r *eventTargetResource) populateResourceModel(ctx context.Context, eventTa
 	state.WorkspaceId = types.Int64Value(eventTarget.WorkspaceId)
 	state.ApplyToAllWorkspaces = types.BoolPointerValue(eventTarget.ApplyToAllWorkspaces)
 	state.Enabled = types.BoolPointerValue(eventTarget.Enabled)
-	state.Config, propDiags = lib.APIToDynamicJSON(ctx, path.Root("config"), eventTarget.Config, state.Config, []string{"headers"}, []string{"aws_credentials.secret_access_key", "google_credentials.private_key"}, "event_target_config")
+	state.Config, propDiags = lib.APIToDynamicJSON(ctx, path.Root("config"), eventTarget.Config, state.Config, []string{"headers"}, []string{"aws_credentials.secret_access_key", "google_credentials.private_key", "azure_credentials.shared_access_key"}, "event_target_config")
 	diags.Append(propDiags...)
 	state.DeliveryPolicy, propDiags = lib.APIToDynamicJSON(ctx, path.Root("delivery_policy"), eventTarget.DeliveryPolicy, state.DeliveryPolicy, []string{}, []string{}, "event_target_delivery_policy")
 	diags.Append(propDiags...)

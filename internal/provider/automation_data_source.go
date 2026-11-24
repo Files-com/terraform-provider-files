@@ -330,6 +330,19 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 											"path_time_zone": schema.StringAttribute{
 												Computed: true,
 											},
+											"upload_file": schema.BoolAttribute{
+												Computed: true,
+											},
+											"destination": schema.StringAttribute{
+												Computed: true,
+											},
+											"bearer_token_sha256": schema.StringAttribute{
+												Computed: true,
+											},
+											"allowed_ips": schema.ListAttribute{
+												Computed:    true,
+												ElementType: types.StringType,
+											},
 										},
 									},
 								},
@@ -733,6 +746,294 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 											"attachments": schema.ListAttribute{
 												Computed:    true,
 												ElementType: types.StringType,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"send_chat_message": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"provider": schema.StringAttribute{
+												Computed: true,
+											},
+											"webhook_url_secret_id": schema.Int64Attribute{
+												Computed: true,
+											},
+											"message": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Computed:    true,
+											},
+											"channel": schema.StringAttribute{
+												Computed: true,
+											},
+											"username": schema.StringAttribute{
+												Computed: true,
+											},
+											"icon_emoji": schema.StringAttribute{
+												Computed: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"send_webhook": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"url": schema.StringAttribute{
+												Computed: true,
+											},
+											"url_secret_id": schema.Int64Attribute{
+												Computed: true,
+											},
+											"headers_secret_id": schema.Int64Attribute{
+												Computed: true,
+											},
+											"signing_secret_id": schema.Int64Attribute{
+												Computed: true,
+											},
+											"payload": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Computed:    true,
+											},
+											"use_dedicated_ips": schema.BoolAttribute{
+												Computed: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"publish_amazon_sns": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"arn": schema.StringAttribute{
+												Computed: true,
+											},
+											"message_group_id": schema.StringAttribute{
+												Computed: true,
+											},
+											"aws_credentials_secret_id": schema.Int64Attribute{
+												Computed: true,
+											},
+											"payload": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Computed:    true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"publish_amazon_sqs": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"arn": schema.StringAttribute{
+												Computed: true,
+											},
+											"message_group_id": schema.StringAttribute{
+												Computed: true,
+											},
+											"aws_credentials_secret_id": schema.Int64Attribute{
+												Computed: true,
+											},
+											"payload": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Computed:    true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"publish_google_pubsub": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"project_id": schema.StringAttribute{
+												Computed: true,
+											},
+											"topic_id": schema.StringAttribute{
+												Computed: true,
+											},
+											"google_credentials_secret_id": schema.Int64Attribute{
+												Computed: true,
+											},
+											"payload": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Computed:    true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Computed:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Computed:    true,
+													},
+													"action": schema.StringAttribute{
+														Computed: true,
+													},
+												},
+												},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Computed:    true,
+									},
+								},
+							},
+							"publish_azure_service_bus": schema.SingleNestedAttribute{
+								Computed: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Computed:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Computed:    true,
+										Attributes: map[string]schema.Attribute{
+											"namespace": schema.StringAttribute{
+												Computed: true,
+											},
+											"entity_path": schema.StringAttribute{
+												Computed: true,
+											},
+											"azure_credentials_secret_id": schema.Int64Attribute{
+												Computed: true,
+											},
+											"payload": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Computed:    true,
 											},
 											"on_error": schema.ListNestedAttribute{
 												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
@@ -1650,7 +1951,7 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Computed:    true,
 			},
 			"webhook_url": schema.StringAttribute{
-				Description: "If trigger is `webhook`, this is the URL of the webhook to trigger the Automation.",
+				Description: "If trigger is `webhook`, this is the URL to start the Automation. For a v2 webhook configured to upload a file, POST multipart form data with a single `file` part or send a raw body with the `X-Files-Filename` header. A JSON body is saved as `payload.json` when the header is omitted.",
 				Computed:    true,
 			},
 			"holiday_region": schema.StringAttribute{
@@ -1703,7 +2004,7 @@ func (r *automationDataSource) populateDataSourceModel(ctx context.Context, auto
 	state.Deleted = types.BoolPointerValue(automation.Deleted)
 	state.Description = types.StringValue(automation.Description)
 	definitionValue := interface{}(automation.Definition)
-	definitionValue, definitionValueTransformDiags0 := lib.WrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
+	definitionValue, definitionValueTransformDiags0 := lib.WrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "send_chat_message", Value: "send_chat_message"}, {Name: "send_webhook", Value: "send_webhook"}, {Name: "publish_amazon_sns", Value: "publish_amazon_sns"}, {Name: "publish_amazon_sqs", Value: "publish_amazon_sqs"}, {Name: "publish_google_pubsub", Value: "publish_google_pubsub"}, {Name: "publish_azure_service_bus", Value: "publish_azure_service_bus"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
 	diags.Append(definitionValueTransformDiags0...)
 	state.Definition, propDiags = lib.ToObject(ctx, path.Root("definition"), definitionValue, state.Definition)
 	diags.Append(propDiags...)
