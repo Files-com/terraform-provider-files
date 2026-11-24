@@ -19,7 +19,7 @@ import (
 )
 
 var behaviorValueVariants = []JSONSchemaVariant{
-	{Name: "webhook", Value: "webhook", RootType: "object", LegacyProperty: "urls", LegacyList: true},
+	{Name: "webhook", Value: "webhook", RootType: "object", WriteOnly: []string{"headers"}, LegacyProperty: "urls", LegacyList: true},
 	{Name: "file_expiration", Value: "file_expiration", RootType: "object", LegacyProperty: "days_to_retain"},
 	{Name: "storage_region", Value: "storage_region", RootType: "string"},
 	{Name: "serve_publicly", Value: "serve_publicly", RootType: "object", Writable: []string{"key", "show_index", "password", "credentials"}, WriteOnly: []string{"password", "credentials.secret"}},
@@ -86,6 +86,47 @@ func TestDynamicSiblingDiscriminatorUpdateToAPI(t *testing.T) {
 	}
 }
 
+// Rails never returns webhook headers. It keeps the saved headers only when an update leaves them out.
+func TestWriteOnlyHeadersFollowConfiguration(t *testing.T) {
+	ctx, attributePath := context.Background(), path.Root("value")
+	urls := []interface{}{"https://example.com"}
+	saved := map[string]interface{}{"urls": urls, "headers": map[string]interface{}{"Authorization": "Bearer example"}}
+	apiValue := map[string]interface{}{"urls": urls}
+	representations := map[string]func(map[string]interface{}) types.Dynamic{
+		"new wrapper": func(value map[string]interface{}) types.Dynamic {
+			return types.DynamicValue(nativeJSONValue(t, map[string]any{"webhook": value}))
+		},
+		"legacy native": func(value map[string]interface{}) types.Dynamic { return types.DynamicValue(nativeJSONValue(t, value)) },
+		"legacy JSON": func(value map[string]interface{}) types.Dynamic {
+			encoded, err := json.Marshal(value)
+			require.NoError(t, err)
+			return types.DynamicValue(types.StringValue(string(encoded)))
+		},
+	}
+	for name, headers := range map[string]map[string]interface{}{
+		"unchanged headers": {"Authorization": "Bearer example"},
+		"replaced headers":  {"X-Trace.Id*": "abc"},
+		"cleared headers":   {},
+	} {
+		configured := map[string]interface{}{"urls": urls, "headers": headers}
+		for representation, value := range representations {
+			t.Run(name+" "+representation, func(t *testing.T) {
+				plan := value(configured)
+				request, diags := DynamicSiblingDiscriminatorUpdateToAPI(ctx, attributePath, plan, value(saved), "webhook", behaviorValueVariants)
+				require.False(t, diags.HasError(), diags)
+				assert.Equal(t, configured, request, "the update sends exactly the configured headers")
+
+				state, diags := APIToDynamicSiblingDiscriminator(ctx, attributePath, apiValue, "webhook", behaviorValueVariants, plan)
+				require.False(t, diags.HasError(), diags)
+				assert.Equal(t, dynamicValueInterface(t, plan), dynamicValueInterface(t, state))
+				refreshed, diags := APIToDynamicSiblingDiscriminator(ctx, attributePath, apiValue, "webhook", behaviorValueVariants, state)
+				require.False(t, diags.HasError(), diags)
+				assert.True(t, state.Equal(refreshed), "refresh should keep the configured headers")
+			})
+		}
+	}
+}
+
 func TestAPIToDynamicSiblingDiscriminatorPreservesRepresentation(t *testing.T) {
 	servePubliclyAPI := map[string]interface{}{"key": "Bar", "show_index": true, "cors_enabled": false}
 	// The API returns Google credentials as an object without private_key.
@@ -109,6 +150,9 @@ func TestAPIToDynamicSiblingDiscriminatorPreservesRepresentation(t *testing.T) {
 		{name: "legacy object", selector: "serve_publicly", apiValue: servePubliclyAPI, prior: mustDynamicValue(t, map[string]interface{}{"key": "Bar", "show_index": true}), expected: map[string]interface{}{"key": "Bar", "show_index": true}},
 		{name: "write only value", selector: "serve_publicly", apiValue: servePubliclyAPI, prior: mustDynamicValue(t, map[string]interface{}{"serve_publicly": map[string]interface{}{"key": "Bar", "password": "secret"}}), expected: map[string]interface{}{"serve_publicly": map[string]interface{}{"key": "Bar", "password": "secret"}}},
 		{name: "nested write only value", selector: "serve_publicly", apiValue: map[string]interface{}{"credentials": map[string]interface{}{"name": "updated"}}, prior: mustDynamicValue(t, map[string]interface{}{"serve_publicly": map[string]interface{}{"credentials": map[string]interface{}{"name": "configured", "secret": "secret"}}}), expected: map[string]interface{}{"serve_publicly": map[string]interface{}{"credentials": map[string]interface{}{"name": "updated", "secret": "secret"}}}},
+		{name: "write only headers with changed urls", selector: "webhook", apiValue: map[string]interface{}{"urls": []interface{}{"https://example.com/new"}}, prior: mustDynamicValue(t, map[string]interface{}{"webhook": map[string]interface{}{"urls": []interface{}{"https://example.com"}, "headers": map[string]interface{}{"X-Trace.Id*": "abc"}}}), expected: map[string]interface{}{"webhook": map[string]interface{}{"urls": []interface{}{"https://example.com/new"}, "headers": map[string]interface{}{"X-Trace.Id*": "abc"}}}},
+		{name: "returned empty headers", selector: "webhook", apiValue: map[string]interface{}{"urls": []interface{}{"https://example.com"}, "headers": map[string]interface{}{}}, prior: mustDynamicValue(t, map[string]interface{}{"webhook": map[string]interface{}{"urls": []interface{}{"https://example.com"}, "headers": map[string]interface{}{"Authorization": "Bearer example"}}}), expected: map[string]interface{}{"webhook": map[string]interface{}{"urls": []interface{}{"https://example.com"}, "headers": map[string]interface{}{}}}},
+		{name: "returned null headers", selector: "webhook", apiValue: map[string]interface{}{"urls": []interface{}{"https://example.com"}, "headers": nil}, prior: mustDynamicValue(t, map[string]interface{}{"webhook": map[string]interface{}{"urls": []interface{}{"https://example.com"}, "headers": map[string]interface{}{"Authorization": "Bearer example"}}}), expected: map[string]interface{}{"webhook": map[string]interface{}{"urls": []interface{}{"https://example.com"}, "headers": nil}}},
 		{name: "removed configured value", selector: "serve_publicly", apiValue: map[string]interface{}{"key": "Bar"}, prior: mustDynamicValue(t, map[string]interface{}{"serve_publicly": map[string]interface{}{"key": "Bar", "show_index": true}}), expected: map[string]interface{}{"serve_publicly": map[string]interface{}{"key": "Bar"}}},
 		{name: "removed legacy value", selector: "serve_publicly", apiValue: map[string]interface{}{"key": "Bar"}, prior: mustDynamicValue(t, map[string]interface{}{"key": "Bar", "show_index": true}), expected: map[string]interface{}{"key": "Bar"}},
 		{name: "removed legacy JSON value", selector: "serve_publicly", apiValue: map[string]interface{}{"key": "Bar"}, prior: mustDynamicValue(t, `{"key":"Bar","show_index":true}`), expected: map[string]interface{}{"key": "Bar"}, jsonString: true},
@@ -139,6 +183,9 @@ func TestAPIToDynamicSiblingDiscriminatorPreservesRepresentation(t *testing.T) {
 				actual = decoded
 			}
 			assert.Equal(t, test.expected, actual)
+			refreshed, diags := APIToDynamicSiblingDiscriminator(context.Background(), path.Root("value"), test.apiValue, test.selector, behaviorValueVariants, result)
+			require.False(t, diags.HasError(), diags)
+			assert.True(t, result.Equal(refreshed), "refresh should not change state")
 		})
 	}
 	formattedResult, diags := APIToDynamicSiblingDiscriminator(context.Background(), path.Root("value"), servePubliclyAPI, "serve_publicly", behaviorValueVariants, mustDynamicValue(t, formattedLegacyJSON))

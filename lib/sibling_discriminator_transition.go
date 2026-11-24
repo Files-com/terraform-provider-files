@@ -253,6 +253,10 @@ func siblingDiscriminatorStateValue(ctx context.Context, attributePath path.Path
 }
 
 func configuredDynamicStateValue(source any, sourceExists bool, configured any, writeOnly []string, currentPath string, mapPaths ...string) (any, bool) {
+	// The API leaves write-only values out. Keep the whole configured value, such as a map of headers or {}.
+	if !sourceExists && slices.Contains(writeOnly, currentPath) {
+		return configured, true
+	}
 	switch configuredValue := configured.(type) {
 	case map[string]interface{}:
 		sourceValue := map[string]interface{}{}
@@ -310,9 +314,6 @@ func configuredDynamicStateValue(source any, sourceExists bool, configured any, 
 		}
 		if sourceExists {
 			return source, true
-		}
-		if slices.Contains(writeOnly, currentPath) {
-			return configured, true
 		}
 		return nil, false
 	}
