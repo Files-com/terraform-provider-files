@@ -71,6 +71,8 @@ type ssoStrategyDataSourceModel struct {
 	LdapBaseDn                       types.String `tfsdk:"ldap_base_dn"`
 	LdapDomain                       types.String `tfsdk:"ldap_domain"`
 	DisplayOnLoginPage               types.Bool   `tfsdk:"display_on_login_page"`
+	PublicSsoDomain                  types.String `tfsdk:"public_sso_domain"`
+	PublicSsoDomainDnsValue          types.String `tfsdk:"public_sso_domain_dns_value"`
 	LdapHost                         types.String `tfsdk:"ldap_host"`
 	LdapHost2                        types.String `tfsdk:"ldap_host_2"`
 	LdapHost3                        types.String `tfsdk:"ldap_host_3"`
@@ -281,6 +283,14 @@ func (r *ssoStrategyDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Description: "Should this strategy be displayed on the login page?",
 				Computed:    true,
 			},
+			"public_sso_domain": schema.StringAttribute{
+				Description: "Username domain that can publicly discover this SSO provider on this site. Set after saving the provider. Set to null to turn off discovery.",
+				Computed:    true,
+			},
+			"public_sso_domain_dns_value": schema.StringAttribute{
+				Description: "This provider's DNS TXT value to publish at _files-sso.<domain> before enabling public SSO discovery for that domain.",
+				Computed:    true,
+			},
 			"ldap_host": schema.StringAttribute{
 				Description: "LDAP host",
 				Computed:    true,
@@ -399,6 +409,8 @@ func (r *ssoStrategyDataSource) populateDataSourceModel(ctx context.Context, sso
 	state.LdapBaseDn = types.StringValue(ssoStrategy.LdapBaseDn)
 	state.LdapDomain = types.StringValue(ssoStrategy.LdapDomain)
 	state.DisplayOnLoginPage = types.BoolPointerValue(ssoStrategy.DisplayOnLoginPage)
+	state.PublicSsoDomain = types.StringValue(ssoStrategy.PublicSsoDomain)
+	state.PublicSsoDomainDnsValue = types.StringValue(ssoStrategy.PublicSsoDomainDnsValue)
 	state.LdapHost = types.StringValue(ssoStrategy.LdapHost)
 	state.LdapHost2 = types.StringValue(ssoStrategy.LdapHost2)
 	state.LdapHost3 = types.StringValue(ssoStrategy.LdapHost3)
