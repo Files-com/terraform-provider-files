@@ -9,6 +9,9 @@ resource "files_automation" "example_automation" {
   user_ids                             = [1, 2]
   group_ids                            = [1, 2]
   schedule_id                          = 1
+  shared_trigger_user_ids              = [1]
+  shared_trigger_group_ids             = [1]
+  shared_trigger_partner_ids           = [1]
   schedule_days_of_week                = [0, 1, 3]
   schedule_interval_minutes            = 15
   schedule_times_of_day                = ["7:30", "11:30"]

@@ -29,6 +29,12 @@ resource "files_partner_channel_template" "example_partner_channel_template" {
   use_channel_root                  = false
   from_partner_folder_name          = "incoming"
   from_partner_managed_folder_paths = ["claims/received"]
+  from_partner_upload_forms         = [
+    {
+      path              = "reports/monthly"
+      form_field_set_id = 1
+    }
+  ]
   from_partner_route_path_pattern   = "processing/{{partner_name}}/from-partner"
   to_partner_folder_name            = "outgoing"
   to_partner_managed_folder_paths   = ["reports/monthly"]
@@ -53,6 +59,7 @@ resource "files_partner_channel_template" "example_partner_channel_template" {
 - `from_partner_folder_name` (String) Optional Channel-level from-Partner folder name override.
 - `from_partner_managed_folder_paths` (List of String) Managed folder paths inside the from-Partner folder.
 - `from_partner_route_path_pattern` (String) Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}.
+- `from_partner_upload_forms` (Dynamic) Form Field Sets attached to From Partner upload destinations. Managed Partner Channels receive copies of these assignments.
 - `to_partner_folder_name` (String) Optional Channel-level to-Partner folder name override.
 - `to_partner_managed_folder_paths` (List of String) Managed folder paths inside the to-Partner folder.
 - `to_partner_route_path_pattern` (String) Optional route path pattern for files delivered to the Partner. Supports {{partner_name}}.

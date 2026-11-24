@@ -50,6 +50,9 @@ type automationResourceModelV0 struct {
 	ScheduleTimesOfDay               types.List    `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone                 types.String  `tfsdk:"schedule_time_zone"`
 	Source                           types.String  `tfsdk:"source"`
+	SharedTriggerUserIds             types.List    `tfsdk:"shared_trigger_user_ids"`
+	SharedTriggerGroupIds            types.List    `tfsdk:"shared_trigger_group_ids"`
+	SharedTriggerPartnerIds          types.List    `tfsdk:"shared_trigger_partner_ids"`
 	SyncIds                          types.List    `tfsdk:"sync_ids"`
 	TriggerActions                   types.List    `tfsdk:"trigger_actions"`
 	Trigger                          types.String  `tfsdk:"trigger"`
@@ -327,6 +330,33 @@ func (r *automationResource) UpgradeState(ctx context.Context) map[int64]resourc
 							stringplanmodifier.UseStateForUnknown(),
 						},
 					},
+					"shared_trigger_user_ids": schema.ListAttribute{
+						Description: "Users who can start this Shared Workflow.",
+						Computed:    true,
+						Optional:    true,
+						ElementType: types.Int64Type,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifier.UseStateForUnknown(),
+						},
+					},
+					"shared_trigger_group_ids": schema.ListAttribute{
+						Description: "Groups whose members can start this Shared Workflow.",
+						Computed:    true,
+						Optional:    true,
+						ElementType: types.Int64Type,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifier.UseStateForUnknown(),
+						},
+					},
+					"shared_trigger_partner_ids": schema.ListAttribute{
+						Description: "Partners whose users can start this Shared Workflow.",
+						Computed:    true,
+						Optional:    true,
+						ElementType: types.Int64Type,
+						PlanModifiers: []planmodifier.List{
+							listplanmodifier.UseStateForUnknown(),
+						},
+					},
 					"sync_ids": schema.ListAttribute{
 						Description: "IDs of Syncs to run by this Automation.",
 						Computed:    true,
@@ -350,7 +380,7 @@ func (r *automationResource) UpgradeState(ctx context.Context) map[int64]resourc
 						Computed:    true,
 						Optional:    true,
 						Validators: []validator.String{
-							stringvalidator.OneOf("manual", "daily", "custom_schedule", "webhook", "email", "action"),
+							stringvalidator.OneOf("manual", "daily", "custom_schedule", "webhook", "email", "action", "shared"),
 						},
 						PlanModifiers: []planmodifier.String{
 							stringplanmodifier.UseStateForUnknown(),
@@ -472,6 +502,9 @@ func (r *automationResource) UpgradeState(ctx context.Context) map[int64]resourc
 					ScheduleTimesOfDay:               priorState.ScheduleTimesOfDay,
 					ScheduleTimeZone:                 priorState.ScheduleTimeZone,
 					Source:                           priorState.Source,
+					SharedTriggerUserIds:             priorState.SharedTriggerUserIds,
+					SharedTriggerGroupIds:            priorState.SharedTriggerGroupIds,
+					SharedTriggerPartnerIds:          priorState.SharedTriggerPartnerIds,
 					SyncIds:                          priorState.SyncIds,
 					TriggerActions:                   priorState.TriggerActions,
 					Trigger:                          priorState.Trigger,
@@ -496,7 +529,7 @@ func (r *automationResource) UpgradeState(ctx context.Context) map[int64]resourc
 				if resp.Diagnostics.HasError() {
 					return
 				}
-				definitionValue, definitionValueTransformDiags0 := lib.WrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "send_chat_message", Value: "send_chat_message"}, {Name: "send_webhook", Value: "send_webhook"}, {Name: "publish_amazon_sns", Value: "publish_amazon_sns"}, {Name: "publish_amazon_sqs", Value: "publish_amazon_sqs"}, {Name: "publish_google_pubsub", Value: "publish_google_pubsub"}, {Name: "publish_azure_service_bus", Value: "publish_azure_service_bus"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
+				definitionValue, definitionValueTransformDiags0 := lib.WrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_shared", Value: "trigger_shared"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "create_user", Value: "create_user"}, {Name: "create_group", Value: "create_group"}, {Name: "add_user_to_group", Value: "add_user_to_group"}, {Name: "create_permission", Value: "create_permission"}, {Name: "create_share_link", Value: "create_share_link"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "import_into_database", Value: "import_into_database"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "send_chat_message", Value: "send_chat_message"}, {Name: "send_webhook", Value: "send_webhook"}, {Name: "http_request", Value: "http_request"}, {Name: "publish_amazon_sns", Value: "publish_amazon_sns"}, {Name: "publish_amazon_sqs", Value: "publish_amazon_sqs"}, {Name: "publish_google_pubsub", Value: "publish_google_pubsub"}, {Name: "publish_azure_service_bus", Value: "publish_azure_service_bus"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
 				resp.Diagnostics.Append(definitionValueTransformDiags0...)
 				definitionType := currentSchema.Attributes["definition"].GetType().(types.ObjectType)
 				upgradedState.Definition, conversionDiags = lib.ToObject(ctx, path.Root("definition"), definitionValue, types.ObjectNull(definitionType.AttrTypes))

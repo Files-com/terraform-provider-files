@@ -107,7 +107,7 @@ type userDataSourceModel struct {
 	WorkspaceAdmin                         types.Bool   `tfsdk:"workspace_admin"`
 	SiteId                                 types.Int64  `tfsdk:"site_id"`
 	WorkspaceId                            types.Int64  `tfsdk:"workspace_id"`
-	DefaultWorkspaceId                     types.Int64  `tfsdk:"default_workspace_id"`
+	PreferredWorkspaceId                   types.Int64  `tfsdk:"preferred_workspace_id"`
 	SkipWelcomeScreen                      types.Bool   `tfsdk:"skip_welcome_screen"`
 	FtpTlsSessionReuseRequired             types.String `tfsdk:"ftp_tls_session_reuse_required"`
 	SslRequired                            types.String `tfsdk:"ssl_required"`
@@ -453,7 +453,7 @@ func (r *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Description: "ID of the Workspace the user belongs to. 0 is the Default Workspace.",
 				Computed:    true,
 			},
-			"default_workspace_id": schema.Int64Attribute{
+			"preferred_workspace_id": schema.Int64Attribute{
 				Description: "Workspace ID the user should land in by default when more than one Workspace is available.",
 				Computed:    true,
 			},
@@ -736,7 +736,7 @@ func (r *userDataSource) populateDataSourceModel(ctx context.Context, user files
 	state.WorkspaceAdmin = types.BoolPointerValue(user.WorkspaceAdmin)
 	state.SiteId = types.Int64Value(user.SiteId)
 	state.WorkspaceId = types.Int64Value(user.WorkspaceId)
-	state.DefaultWorkspaceId = types.Int64Value(user.DefaultWorkspaceId)
+	state.PreferredWorkspaceId = types.Int64Value(user.PreferredWorkspaceId)
 	state.SkipWelcomeScreen = types.BoolPointerValue(user.SkipWelcomeScreen)
 	state.FtpTlsSessionReuseRequired = types.StringValue(user.FtpTlsSessionReuseRequired)
 	state.SslRequired = types.StringValue(user.SslRequired)

@@ -3,7 +3,7 @@
 page_title: "files_form_field_set Data Source - files"
 subcategory: ""
 description: |-
-  A Form Field Set is a custom form to be used for bundle and inbox registrations.
+  A Form Field Set is a custom form that can be used for Share Link and Inbox registrations, Partner Channel uploads, and Shared Workflows.
   Each Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.
   Once created, a form field set can then be associated with one or more bundle(s) and/or inbox(s). Once associated, you will be required to submit well-formatted form-data when creating a bundle-registration or inbox registration.
   Custom answers saved on a registration are saved as Custom Metadata on each file uploaded through that registration, with field labels as keys. This applies to existing registrations as well as new ones. Unanswered optional fields and values exceeding 1024 characters are omitted; the first 32 remaining answers in saved form-answer order are captured. Dates use YYYY-MM-DD. Existing answers with unavailable field definitions or unparseable dates are omitted. Built-in name, email, and company fields are excluded. Form answers take precedence over explicit upload metadata with matching keys, including keeping omitted answer labels absent.
@@ -15,7 +15,7 @@ description: |-
 
 # files_form_field_set (Data Source)
 
-A Form Field Set is a custom form to be used for bundle and inbox registrations.
+A Form Field Set is a custom form that can be used for Share Link and Inbox registrations, Partner Channel uploads, and Shared Workflows.
 
 Each Form Field Set contains one or more Form Fields. A form and all of its form fields are submitted in a single create request. The order of form fields in the array is the order they will be displayed.
 
@@ -50,7 +50,7 @@ data "files_form_field_set" "example_form_field_set" {
 
 - `form_fields` (Dynamic) Form fields in display order. Managed state contains the current fields listed in form_layout. The data source also returns historical definitions.
 - `form_layout` (List of Number) Layout of the form
-- `in_use` (Boolean) Form Field Set is in use by an active Inbox / Bundle / Inbox Registration / Bundle Registration
+- `in_use` (Boolean) Form Field Set is in use by an active Inbox, Share Link, Partner Channel upload destination, or Shared Trigger.
 - `require_complete_metadata_capture` (Boolean) Reject answers over 1024 characters or more than 32 answered custom fields to ensure complete file metadata capture
 - `skip_company` (Boolean) Any associated InboxRegistrations or BundleRegistrations can be saved without providing company
 - `skip_email` (Boolean) Any associated InboxRegistrations or BundleRegistrations can be saved without providing email

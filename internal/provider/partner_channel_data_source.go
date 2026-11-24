@@ -6,10 +6,12 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	partner_channel "github.com/Files-com/files-sdk-go/v3/partnerchannel"
+	"github.com/Files-com/terraform-provider-files/lib"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -28,24 +30,25 @@ type partnerChannelDataSource struct {
 }
 
 type partnerChannelDataSourceModel struct {
-	Id                             types.Int64  `tfsdk:"id"`
-	WorkspaceId                    types.Int64  `tfsdk:"workspace_id"`
-	Direction                      types.String `tfsdk:"direction"`
-	UseChannelRoot                 types.Bool   `tfsdk:"use_channel_root"`
-	PartnerId                      types.Int64  `tfsdk:"partner_id"`
-	PartnerChannelTemplateId       types.Int64  `tfsdk:"partner_channel_template_id"`
-	Path                           types.String `tfsdk:"path"`
-	ToPartnerFolderName            types.String `tfsdk:"to_partner_folder_name"`
-	FromPartnerFolderName          types.String `tfsdk:"from_partner_folder_name"`
-	FromPartnerRoutePath           types.String `tfsdk:"from_partner_route_path"`
-	ToPartnerRoutePath             types.String `tfsdk:"to_partner_route_path"`
-	ToPartnerManagedFolderPaths    types.List   `tfsdk:"to_partner_managed_folder_paths"`
-	FromPartnerManagedFolderPaths  types.List   `tfsdk:"from_partner_managed_folder_paths"`
-	EffectiveToPartnerFolderName   types.String `tfsdk:"effective_to_partner_folder_name"`
-	EffectiveFromPartnerFolderName types.String `tfsdk:"effective_from_partner_folder_name"`
-	ChannelPath                    types.String `tfsdk:"channel_path"`
-	ToPartnerFolderPath            types.String `tfsdk:"to_partner_folder_path"`
-	FromPartnerFolderPath          types.String `tfsdk:"from_partner_folder_path"`
+	Id                             types.Int64   `tfsdk:"id"`
+	WorkspaceId                    types.Int64   `tfsdk:"workspace_id"`
+	Direction                      types.String  `tfsdk:"direction"`
+	UseChannelRoot                 types.Bool    `tfsdk:"use_channel_root"`
+	PartnerId                      types.Int64   `tfsdk:"partner_id"`
+	PartnerChannelTemplateId       types.Int64   `tfsdk:"partner_channel_template_id"`
+	Path                           types.String  `tfsdk:"path"`
+	ToPartnerFolderName            types.String  `tfsdk:"to_partner_folder_name"`
+	FromPartnerFolderName          types.String  `tfsdk:"from_partner_folder_name"`
+	FromPartnerRoutePath           types.String  `tfsdk:"from_partner_route_path"`
+	ToPartnerRoutePath             types.String  `tfsdk:"to_partner_route_path"`
+	ToPartnerManagedFolderPaths    types.List    `tfsdk:"to_partner_managed_folder_paths"`
+	FromPartnerManagedFolderPaths  types.List    `tfsdk:"from_partner_managed_folder_paths"`
+	FromPartnerUploadForms         types.Dynamic `tfsdk:"from_partner_upload_forms"`
+	EffectiveToPartnerFolderName   types.String  `tfsdk:"effective_to_partner_folder_name"`
+	EffectiveFromPartnerFolderName types.String  `tfsdk:"effective_from_partner_folder_name"`
+	ChannelPath                    types.String  `tfsdk:"channel_path"`
+	ToPartnerFolderPath            types.String  `tfsdk:"to_partner_folder_path"`
+	FromPartnerFolderPath          types.String  `tfsdk:"from_partner_folder_path"`
 }
 
 func (r *partnerChannelDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -129,6 +132,10 @@ func (r *partnerChannelDataSource) Schema(_ context.Context, _ datasource.Schema
 				Computed:    true,
 				ElementType: types.StringType,
 			},
+			"from_partner_upload_forms": schema.DynamicAttribute{
+				Description: "Form Field Sets attached to From Partner upload destinations.",
+				Computed:    true,
+			},
 			"effective_to_partner_folder_name": schema.StringAttribute{
 				Description: "Resolved to-Partner subfolder name. Null when the direction is disabled or uses the Channel folder directly.",
 				Computed:    true,
@@ -200,6 +207,8 @@ func (r *partnerChannelDataSource) populateDataSourceModel(ctx context.Context, 
 	state.ToPartnerManagedFolderPaths, propDiags = types.ListValueFrom(ctx, types.StringType, partnerChannel.ToPartnerManagedFolderPaths)
 	diags.Append(propDiags...)
 	state.FromPartnerManagedFolderPaths, propDiags = types.ListValueFrom(ctx, types.StringType, partnerChannel.FromPartnerManagedFolderPaths)
+	diags.Append(propDiags...)
+	state.FromPartnerUploadForms, propDiags = lib.ToDynamic(ctx, path.Root("from_partner_upload_forms"), partnerChannel.FromPartnerUploadForms, state.FromPartnerUploadForms.UnderlyingValue())
 	diags.Append(propDiags...)
 	state.EffectiveToPartnerFolderName = types.StringValue(partnerChannel.EffectiveToPartnerFolderName)
 	state.EffectiveFromPartnerFolderName = types.StringValue(partnerChannel.EffectiveFromPartnerFolderName)

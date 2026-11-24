@@ -136,8 +136,8 @@ resource "files_expectation" "example_expectation" {
   holiday_region            = "us"
   schedule_time_exceptions  = [
     {
-      holiday_region = "nyse_early_close"
-      times_of_day   = ["13:00"]
+      holiday_region = "value"
+      times_of_day   = ["value"]
     }
   ]
   lookback_interval         = 3600

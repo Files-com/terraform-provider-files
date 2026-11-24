@@ -94,7 +94,7 @@ type userResourceModel struct {
 	SiteAdmin                              types.Bool              `tfsdk:"site_admin"`
 	WorkspaceAdmin                         types.Bool              `tfsdk:"workspace_admin"`
 	WorkspaceId                            types.Int64             `tfsdk:"workspace_id"`
-	DefaultWorkspaceId                     types.Int64             `tfsdk:"default_workspace_id"`
+	PreferredWorkspaceId                   types.Int64             `tfsdk:"preferred_workspace_id"`
 	SkipWelcomeScreen                      types.Bool              `tfsdk:"skip_welcome_screen"`
 	FtpTlsSessionReuseRequired             types.String            `tfsdk:"ftp_tls_session_reuse_required"`
 	SslRequired                            types.String            `tfsdk:"ssl_required"`
@@ -581,7 +581,7 @@ func (r *userResource) resourceSchema() schema.Schema {
 					int64planmodifier.UseStateForUnknown(),
 				},
 			},
-			"default_workspace_id": schema.Int64Attribute{
+			"preferred_workspace_id": schema.Int64Attribute{
 				Description: "Workspace ID the user should land in by default when more than one Workspace is available.",
 				Computed:    true,
 				Optional:    true,
@@ -898,7 +898,7 @@ func (r *userResource) Create(ctx context.Context, req resource.CreateRequest, r
 		paramsUserCreate.DavPermission = plan.DavPermission.ValueBoolPointer()
 	}
 	paramsUserCreate.DesktopConfigurationProfileId = plan.DesktopConfigurationProfileId.ValueInt64()
-	paramsUserCreate.DefaultWorkspaceId = plan.DefaultWorkspaceId.ValueInt64()
+	paramsUserCreate.PreferredWorkspaceId = plan.PreferredWorkspaceId.ValueInt64()
 	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
 		paramsUserCreate.Disabled = plan.Disabled.ValueBoolPointer()
 	}
@@ -1157,8 +1157,8 @@ func (r *userResource) Update(ctx context.Context, req resource.UpdateRequest, r
 	if !config.DesktopConfigurationProfileId.IsNull() && !config.DesktopConfigurationProfileId.IsUnknown() {
 		paramsUserUpdate["desktop_configuration_profile_id"] = config.DesktopConfigurationProfileId.ValueInt64()
 	}
-	if !config.DefaultWorkspaceId.IsNull() && !config.DefaultWorkspaceId.IsUnknown() {
-		paramsUserUpdate["default_workspace_id"] = config.DefaultWorkspaceId.ValueInt64()
+	if !config.PreferredWorkspaceId.IsNull() && !config.PreferredWorkspaceId.IsUnknown() {
+		paramsUserUpdate["preferred_workspace_id"] = config.PreferredWorkspaceId.ValueInt64()
 	}
 	if !config.Disabled.IsNull() && !config.Disabled.IsUnknown() {
 		paramsUserUpdate["disabled"] = config.Disabled.ValueBool()
@@ -1532,7 +1532,7 @@ func (r *userResource) populateResourceModel(ctx context.Context, user files_sdk
 	state.WorkspaceAdmin = types.BoolPointerValue(user.WorkspaceAdmin)
 	state.SiteId = types.Int64Value(user.SiteId)
 	state.WorkspaceId = types.Int64Value(user.WorkspaceId)
-	state.DefaultWorkspaceId = types.Int64Value(user.DefaultWorkspaceId)
+	state.PreferredWorkspaceId = types.Int64Value(user.PreferredWorkspaceId)
 	state.SkipWelcomeScreen = types.BoolPointerValue(user.SkipWelcomeScreen)
 	state.FtpTlsSessionReuseRequired = types.StringValue(user.FtpTlsSessionReuseRequired)
 	state.SslRequired = types.StringValue(user.SslRequired)

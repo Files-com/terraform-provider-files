@@ -34,5 +34,6 @@ data "files_snapshot" "example_snapshot" {
 - `expires_at` (String) When the snapshot expires.
 - `finalized_at` (String) When the snapshot was finalized.
 - `name` (String) A name for the snapshot.
+- `shared_workflow_id` (Number) Shared Workflow for which the Snapshot was created.
 - `user_id` (Number) The user that created this snapshot, if applicable.
 - `workspace_id` (Number) Workspace ID. `0` means the default workspace.

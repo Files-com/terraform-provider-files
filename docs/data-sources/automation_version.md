@@ -61,20 +61,27 @@ Read-Only:
 
 Read-Only:
 
+- `add_user_to_group` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--add_user_to_group))
 - `agent_compute` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--agent_compute))
 - `aggregate` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--aggregate))
 - `as2_send` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--as2_send))
 - `copy_file` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--copy_file))
 - `create_folder` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--create_folder))
+- `create_group` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--create_group))
+- `create_permission` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--create_permission))
+- `create_share_link` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--create_share_link))
+- `create_user` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--create_user))
 - `delete_file` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--delete_file))
 - `document_convert` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--document_convert))
 - `extract` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--extract))
 - `filter` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--filter))
 - `gpg_decrypt` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--gpg_decrypt))
 - `gpg_encrypt` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--gpg_encrypt))
+- `http_request` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--http_request))
 - `if` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--if))
 - `image_convert` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--image_convert))
 - `import_file` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--import_file))
+- `import_into_database` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--import_into_database))
 - `join` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--join))
 - `move_file` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--move_file))
 - `publish_amazon_sns` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--publish_amazon_sns))
@@ -94,10 +101,42 @@ Read-Only:
 - `trigger_folder_creation` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_folder_creation))
 - `trigger_manual` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_manual))
 - `trigger_scheduled` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_scheduled))
+- `trigger_shared` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_shared))
 - `trigger_webhook` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--trigger_webhook))
 - `unzip` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--unzip))
 - `wait` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--wait))
 - `zip` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--zip))
+
+<a id="nestedatt--definition--nodes--add_user_to_group"></a>
+### Nested Schema for `definition.nodes.add_user_to_group`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--add_user_to_group--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--add_user_to_group--config"></a>
+### Nested Schema for `definition.nodes.add_user_to_group.config`
+
+Read-Only:
+
+- `group_id` (Number)
+- `group_id_expression` (String) A bare Files TransformScript expression, no braces.
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--add_user_to_group--config--on_error))
+- `user_id` (Number)
+- `user_id_expression` (String) A bare Files TransformScript expression, no braces.
+
+<a id="nestedatt--definition--nodes--add_user_to_group--config--on_error"></a>
+### Nested Schema for `definition.nodes.add_user_to_group.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
 
 <a id="nestedatt--definition--nodes--agent_compute"></a>
 ### Nested Schema for `definition.nodes.agent_compute`
@@ -240,6 +279,144 @@ Read-Only:
 
 <a id="nestedatt--definition--nodes--create_folder--config--on_error"></a>
 ### Nested Schema for `definition.nodes.create_folder.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--create_group"></a>
+### Nested Schema for `definition.nodes.create_group`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--create_group--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--create_group--config"></a>
+### Nested Schema for `definition.nodes.create_group.config`
+
+Read-Only:
+
+- `name` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `notes` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--create_group--config--on_error))
+
+<a id="nestedatt--definition--nodes--create_group--config--on_error"></a>
+### Nested Schema for `definition.nodes.create_group.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--create_permission"></a>
+### Nested Schema for `definition.nodes.create_permission`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--create_permission--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--create_permission--config"></a>
+### Nested Schema for `definition.nodes.create_permission.config`
+
+Read-Only:
+
+- `folder_path` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `group_id` (Number)
+- `group_id_expression` (String) A bare Files TransformScript expression, no braces.
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--create_permission--config--on_error))
+- `permission` (String)
+- `recursive` (Boolean)
+- `user_id` (Number)
+- `user_id_expression` (String) A bare Files TransformScript expression, no braces.
+
+<a id="nestedatt--definition--nodes--create_permission--config--on_error"></a>
+### Nested Schema for `definition.nodes.create_permission.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--create_share_link"></a>
+### Nested Schema for `definition.nodes.create_share_link`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--create_share_link--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--create_share_link--config"></a>
+### Nested Schema for `definition.nodes.create_share_link.config`
+
+Read-Only:
+
+- `clickwrap_id` (Number)
+- `description` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `expires_at` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `expires_in_minutes` (Number)
+- `internal_name` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `max_uses` (Number)
+- `note` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--create_share_link--config--on_error))
+- `password_secret_id` (Number)
+- `permissions` (String)
+- `recipient_note` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `recipients` (List of String)
+- `recipients_expression` (String) A bare Files TransformScript expression, no braces.
+- `require_registration` (Boolean)
+- `require_share_recipient` (Boolean)
+- `send_one_time_password_to_recipient_at_registration` (Boolean)
+- `start_access_on_date` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+
+<a id="nestedatt--definition--nodes--create_share_link--config--on_error"></a>
+### Nested Schema for `definition.nodes.create_share_link.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--create_user"></a>
+### Nested Schema for `definition.nodes.create_user`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--create_user--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--create_user--config"></a>
+### Nested Schema for `definition.nodes.create_user.config`
+
+Read-Only:
+
+- `company` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `email` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `name` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `notes` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--create_user--config--on_error))
+- `username` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+
+<a id="nestedatt--definition--nodes--create_user--config--on_error"></a>
+### Nested Schema for `definition.nodes.create_user.config.on_error`
 
 Read-Only:
 
@@ -428,6 +605,39 @@ Read-Only:
 
 
 
+<a id="nestedatt--definition--nodes--http_request"></a>
+### Nested Schema for `definition.nodes.http_request`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--http_request--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--http_request--config"></a>
+### Nested Schema for `definition.nodes.http_request.config`
+
+Read-Only:
+
+- `auth_secret_id` (Number)
+- `body` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+- `headers` (Map of String)
+- `method` (String)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--http_request--config--on_error))
+- `query` (Map of String)
+- `url` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+
+<a id="nestedatt--definition--nodes--http_request--config--on_error"></a>
+### Nested Schema for `definition.nodes.http_request.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
 <a id="nestedatt--definition--nodes--if"></a>
 ### Nested Schema for `definition.nodes.if`
 
@@ -511,6 +721,35 @@ Read-Only:
 
 <a id="nestedatt--definition--nodes--import_file--config--on_error"></a>
 ### Nested Schema for `definition.nodes.import_file.config.on_error`
+
+Read-Only:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--import_into_database"></a>
+### Nested Schema for `definition.nodes.import_into_database`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--import_into_database--config))
+- `id` (String) Unique node ID within the graph.
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--import_into_database--config"></a>
+### Nested Schema for `definition.nodes.import_into_database.config`
+
+Read-Only:
+
+- `database_destination_id` (Number)
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--import_into_database--config--on_error))
+- `rows` (String) A bare Files TransformScript expression, no braces.
+
+<a id="nestedatt--definition--nodes--import_into_database--config--on_error"></a>
+### Nested Schema for `definition.nodes.import_into_database.config.on_error`
 
 Read-Only:
 
@@ -1074,6 +1313,23 @@ Read-Only:
 - `schedule_time_zone` (String)
 - `schedule_times_of_day` (List of String)
 - `source` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.
+
+
+
+<a id="nestedatt--definition--nodes--trigger_shared"></a>
+### Nested Schema for `definition.nodes.trigger_shared`
+
+Read-Only:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--trigger_shared--config))
+- `id` (String) Unique node ID within the graph.
+
+<a id="nestedatt--definition--nodes--trigger_shared--config"></a>
+### Nested Schema for `definition.nodes.trigger_shared.config`
+
+Read-Only:
+
+- `form_field_set_id` (Number)
 
 
 

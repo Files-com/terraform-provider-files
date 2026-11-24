@@ -8,6 +8,7 @@ import (
 
 	files_sdk "github.com/Files-com/files-sdk-go/v3"
 	partner_channel_template "github.com/Files-com/files-sdk-go/v3/partnerchanneltemplate"
+	"github.com/Files-com/terraform-provider-files/lib"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -16,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/dynamicplanmodifier"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
@@ -42,20 +44,21 @@ type partnerChannelTemplateResource struct {
 }
 
 type partnerChannelTemplateResourceModel struct {
-	Name                           types.String `tfsdk:"name"`
-	Path                           types.String `tfsdk:"path"`
-	WorkspaceId                    types.Int64  `tfsdk:"workspace_id"`
-	Direction                      types.String `tfsdk:"direction"`
-	UseChannelRoot                 types.Bool   `tfsdk:"use_channel_root"`
-	ToPartnerFolderName            types.String `tfsdk:"to_partner_folder_name"`
-	FromPartnerFolderName          types.String `tfsdk:"from_partner_folder_name"`
-	FromPartnerRoutePathPattern    types.String `tfsdk:"from_partner_route_path_pattern"`
-	ToPartnerRoutePathPattern      types.String `tfsdk:"to_partner_route_path_pattern"`
-	ToPartnerManagedFolderPaths    types.List   `tfsdk:"to_partner_managed_folder_paths"`
-	FromPartnerManagedFolderPaths  types.List   `tfsdk:"from_partner_managed_folder_paths"`
-	Id                             types.Int64  `tfsdk:"id"`
-	EffectiveToPartnerFolderName   types.String `tfsdk:"effective_to_partner_folder_name"`
-	EffectiveFromPartnerFolderName types.String `tfsdk:"effective_from_partner_folder_name"`
+	Name                           types.String  `tfsdk:"name"`
+	Path                           types.String  `tfsdk:"path"`
+	WorkspaceId                    types.Int64   `tfsdk:"workspace_id"`
+	Direction                      types.String  `tfsdk:"direction"`
+	UseChannelRoot                 types.Bool    `tfsdk:"use_channel_root"`
+	ToPartnerFolderName            types.String  `tfsdk:"to_partner_folder_name"`
+	FromPartnerFolderName          types.String  `tfsdk:"from_partner_folder_name"`
+	FromPartnerRoutePathPattern    types.String  `tfsdk:"from_partner_route_path_pattern"`
+	ToPartnerRoutePathPattern      types.String  `tfsdk:"to_partner_route_path_pattern"`
+	ToPartnerManagedFolderPaths    types.List    `tfsdk:"to_partner_managed_folder_paths"`
+	FromPartnerManagedFolderPaths  types.List    `tfsdk:"from_partner_managed_folder_paths"`
+	FromPartnerUploadForms         types.Dynamic `tfsdk:"from_partner_upload_forms"`
+	Id                             types.Int64   `tfsdk:"id"`
+	EffectiveToPartnerFolderName   types.String  `tfsdk:"effective_to_partner_folder_name"`
+	EffectiveFromPartnerFolderName types.String  `tfsdk:"effective_from_partner_folder_name"`
 }
 
 func (r *partnerChannelTemplateResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -171,6 +174,14 @@ func (r *partnerChannelTemplateResource) Schema(_ context.Context, _ resource.Sc
 					listplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"from_partner_upload_forms": schema.DynamicAttribute{
+				Description: "Form Field Sets attached to From Partner upload destinations. Managed Partner Channels receive copies of these assignments.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Dynamic{
+					dynamicplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"id": schema.Int64Attribute{
 				Description: "The unique ID of the Partner Channel Template.",
 				Computed:    true,
@@ -214,6 +225,8 @@ func (r *partnerChannelTemplateResource) Create(ctx context.Context, req resourc
 		diags = plan.FromPartnerManagedFolderPaths.ElementsAs(ctx, &paramsPartnerChannelTemplateCreate.FromPartnerManagedFolderPaths, false)
 		resp.Diagnostics.Append(diags...)
 	}
+	paramsPartnerChannelTemplateCreate.FromPartnerUploadForms, diags = lib.DynamicToStringMapSlice(ctx, path.Root("from_partner_upload_forms"), plan.FromPartnerUploadForms)
+	resp.Diagnostics.Append(diags...)
 	paramsPartnerChannelTemplateCreate.FromPartnerRoutePathPattern = plan.FromPartnerRoutePathPattern.ValueString()
 	paramsPartnerChannelTemplateCreate.ToPartnerFolderName = plan.ToPartnerFolderName.ValueString()
 	if !plan.ToPartnerManagedFolderPaths.IsNull() && !plan.ToPartnerManagedFolderPaths.IsUnknown() {
@@ -315,6 +328,11 @@ func (r *partnerChannelTemplateResource) Update(ctx context.Context, req resourc
 		diags = config.FromPartnerManagedFolderPaths.ElementsAs(ctx, &updateFromPartnerManagedFolderPaths, false)
 		resp.Diagnostics.Append(diags...)
 		paramsPartnerChannelTemplateUpdate["from_partner_managed_folder_paths"] = updateFromPartnerManagedFolderPaths
+	}
+	if !config.FromPartnerUploadForms.IsNull() && !config.FromPartnerUploadForms.IsUnknown() {
+		updateFromPartnerUploadForms, diags := lib.DynamicToStringMapSlice(ctx, path.Root("from_partner_upload_forms"), config.FromPartnerUploadForms)
+		resp.Diagnostics.Append(diags...)
+		paramsPartnerChannelTemplateUpdate["from_partner_upload_forms"] = updateFromPartnerUploadForms
 	}
 	if !config.FromPartnerRoutePathPattern.IsNull() && !config.FromPartnerRoutePathPattern.IsUnknown() {
 		paramsPartnerChannelTemplateUpdate["from_partner_route_path_pattern"] = config.FromPartnerRoutePathPattern.ValueString()
@@ -420,6 +438,8 @@ func (r *partnerChannelTemplateResource) populateResourceModel(ctx context.Conte
 	state.ToPartnerManagedFolderPaths, propDiags = types.ListValueFrom(ctx, types.StringType, partnerChannelTemplate.ToPartnerManagedFolderPaths)
 	diags.Append(propDiags...)
 	state.FromPartnerManagedFolderPaths, propDiags = types.ListValueFrom(ctx, types.StringType, partnerChannelTemplate.FromPartnerManagedFolderPaths)
+	diags.Append(propDiags...)
+	state.FromPartnerUploadForms, propDiags = lib.ToDynamic(ctx, path.Root("from_partner_upload_forms"), partnerChannelTemplate.FromPartnerUploadForms, state.FromPartnerUploadForms.UnderlyingValue())
 	diags.Append(propDiags...)
 	state.EffectiveToPartnerFolderName = types.StringValue(partnerChannelTemplate.EffectiveToPartnerFolderName)
 	state.EffectiveFromPartnerFolderName = types.StringValue(partnerChannelTemplate.EffectiveFromPartnerFolderName)

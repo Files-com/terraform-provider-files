@@ -40,14 +40,15 @@ type snapshotResource struct {
 }
 
 type snapshotResourceModel struct {
-	ExpiresAt   types.String `tfsdk:"expires_at"`
-	Name        types.String `tfsdk:"name"`
-	WorkspaceId types.Int64  `tfsdk:"workspace_id"`
-	Paths       types.List   `tfsdk:"paths"`
-	Id          types.Int64  `tfsdk:"id"`
-	FinalizedAt types.String `tfsdk:"finalized_at"`
-	UserId      types.Int64  `tfsdk:"user_id"`
-	BundleId    types.Int64  `tfsdk:"bundle_id"`
+	ExpiresAt        types.String `tfsdk:"expires_at"`
+	Name             types.String `tfsdk:"name"`
+	WorkspaceId      types.Int64  `tfsdk:"workspace_id"`
+	SharedWorkflowId types.Int64  `tfsdk:"shared_workflow_id"`
+	Paths            types.List   `tfsdk:"paths"`
+	Id               types.Int64  `tfsdk:"id"`
+	FinalizedAt      types.String `tfsdk:"finalized_at"`
+	UserId           types.Int64  `tfsdk:"user_id"`
+	BundleId         types.Int64  `tfsdk:"bundle_id"`
 }
 
 func (r *snapshotResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -99,6 +100,15 @@ func (r *snapshotResource) resourceSchema() schema.Schema {
 			},
 			"workspace_id": schema.Int64Attribute{
 				Description: "Workspace ID. `0` means the default workspace.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+					int64planmodifier.RequiresReplace(),
+				},
+			},
+			"shared_workflow_id": schema.Int64Attribute{
+				Description: "Shared Workflow for which the Snapshot was created.",
 				Computed:    true,
 				Optional:    true,
 				PlanModifiers: []planmodifier.Int64{
@@ -173,6 +183,7 @@ func (r *snapshotResource) Create(ctx context.Context, req resource.CreateReques
 		resp.Diagnostics.Append(diags...)
 	}
 	paramsSnapshotCreate.WorkspaceId = plan.WorkspaceId.ValueInt64()
+	paramsSnapshotCreate.SharedWorkflowId = plan.SharedWorkflowId.ValueInt64()
 
 	if resp.Diagnostics.HasError() {
 		return
@@ -360,6 +371,7 @@ func (r *snapshotResource) populateResourceModel(ctx context.Context, snapshot f
 	state.UserId = types.Int64Value(snapshot.UserId)
 	state.BundleId = types.Int64Value(snapshot.BundleId)
 	state.WorkspaceId = types.Int64Value(snapshot.WorkspaceId)
+	state.SharedWorkflowId = types.Int64Value(snapshot.SharedWorkflowId)
 
 	return
 }

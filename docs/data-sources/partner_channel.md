@@ -35,6 +35,7 @@ data "files_partner_channel" "example_partner_channel" {
 - `from_partner_folder_path` (String) Resolved from-Partner folder path.
 - `from_partner_managed_folder_paths` (List of String) Managed folder paths inside the from-Partner folder.
 - `from_partner_route_path` (String) Optional route path for files uploaded by the Partner.
+- `from_partner_upload_forms` (Dynamic) Form Field Sets attached to From Partner upload destinations.
 - `partner_channel_template_id` (Number) ID of the Partner Channel Template that manages this Channel, if any.
 - `partner_id` (Number) ID of the Partner this Channel belongs to.
 - `path` (String) Channel path relative to the Partner root folder. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.

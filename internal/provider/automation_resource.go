@@ -79,6 +79,9 @@ type automationResourceModel struct {
 	ScheduleTimesOfDay               types.List    `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone                 types.String  `tfsdk:"schedule_time_zone"`
 	Source                           types.String  `tfsdk:"source"`
+	SharedTriggerUserIds             types.List    `tfsdk:"shared_trigger_user_ids"`
+	SharedTriggerGroupIds            types.List    `tfsdk:"shared_trigger_group_ids"`
+	SharedTriggerPartnerIds          types.List    `tfsdk:"shared_trigger_partner_ids"`
 	SyncIds                          types.List    `tfsdk:"sync_ids"`
 	TriggerActions                   types.List    `tfsdk:"trigger_actions"`
 	Trigger                          types.String  `tfsdk:"trigger"`
@@ -281,6 +284,25 @@ func (r *automationResource) resourceSchema() schema.Schema {
 									},
 								},
 							},
+							"trigger_shared": schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Required:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Optional:    true,
+										Attributes: map[string]schema.Attribute{
+											"form_field_set_id": schema.Int64Attribute{
+												Optional:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+										},
+									},
+								},
+							},
 							"trigger_action": schema.SingleNestedAttribute{
 								Optional: true,
 								Attributes: map[string]schema.Attribute{
@@ -446,6 +468,313 @@ func (r *automationResource) resourceSchema() schema.Schema {
 												Required:    true,
 												ElementType: types.StringType,
 												Validators:  []validator.List{listvalidator.SizeAtLeast(1)},
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Optional:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Required:    true,
+													},
+													"action": schema.StringAttribute{
+														Required:   true,
+														Validators: []validator.String{stringvalidator.OneOf("continue", "propagate")},
+													},
+												},
+												},
+												Validators: []validator.List{listvalidator.SizeAtLeast(1)},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Optional:    true,
+									},
+								},
+							},
+							"create_user": schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Required:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Required:    true,
+										Attributes: map[string]schema.Attribute{
+											"username": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Required:    true,
+											},
+											"email": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Required:    true,
+											},
+											"name": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Optional:    true,
+											},
+											"company": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Optional:    true,
+											},
+											"notes": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Optional:    true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Optional:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Required:    true,
+													},
+													"action": schema.StringAttribute{
+														Required:   true,
+														Validators: []validator.String{stringvalidator.OneOf("continue", "propagate")},
+													},
+												},
+												},
+												Validators: []validator.List{listvalidator.SizeAtLeast(1)},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Optional:    true,
+									},
+								},
+							},
+							"create_group": schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Required:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Required:    true,
+										Attributes: map[string]schema.Attribute{
+											"name": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Required:    true,
+											},
+											"notes": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Optional:    true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Optional:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Required:    true,
+													},
+													"action": schema.StringAttribute{
+														Required:   true,
+														Validators: []validator.String{stringvalidator.OneOf("continue", "propagate")},
+													},
+												},
+												},
+												Validators: []validator.List{listvalidator.SizeAtLeast(1)},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Optional:    true,
+									},
+								},
+							},
+							"add_user_to_group": schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Required:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Optional:    true,
+										Attributes: map[string]schema.Attribute{
+											"user_id": schema.Int64Attribute{
+												Optional:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"user_id_expression": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Optional:    true,
+											},
+											"group_id": schema.Int64Attribute{
+												Optional:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"group_id_expression": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Optional:    true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Optional:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Required:    true,
+													},
+													"action": schema.StringAttribute{
+														Required:   true,
+														Validators: []validator.String{stringvalidator.OneOf("continue", "propagate")},
+													},
+												},
+												},
+												Validators: []validator.List{listvalidator.SizeAtLeast(1)},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Optional:    true,
+									},
+								},
+							},
+							"create_permission": schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Required:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Required:    true,
+										Attributes: map[string]schema.Attribute{
+											"folder_path": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Optional:    true,
+											},
+											"user_id": schema.Int64Attribute{
+												Optional:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"user_id_expression": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Optional:    true,
+											},
+											"group_id": schema.Int64Attribute{
+												Optional:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"group_id_expression": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Optional:    true,
+											},
+											"permission": schema.StringAttribute{
+												Required:   true,
+												Validators: []validator.String{stringvalidator.OneOf("readonly", "writeonly", "list", "history", "previewonly", "bundle", "full", "admin")},
+											},
+											"recursive": schema.BoolAttribute{
+												Optional: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Optional:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Required:    true,
+													},
+													"action": schema.StringAttribute{
+														Required:   true,
+														Validators: []validator.String{stringvalidator.OneOf("continue", "propagate")},
+													},
+												},
+												},
+												Validators: []validator.List{listvalidator.SizeAtLeast(1)},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Optional:    true,
+									},
+								},
+							},
+							"create_share_link": schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Required:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Optional:    true,
+										Attributes: map[string]schema.Attribute{
+											"description": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Optional:    true,
+											},
+											"internal_name": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Optional:    true,
+											},
+											"note": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Optional:    true,
+											},
+											"permissions": schema.StringAttribute{
+												Optional:   true,
+												Validators: []validator.String{stringvalidator.OneOf("read", "preview_only")},
+											},
+											"expires_at": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Optional:    true,
+											},
+											"expires_in_minutes": schema.Int64Attribute{
+												Optional:   true,
+												Validators: []validator.Int64{int64validator.Between(1, 143998560)},
+											},
+											"start_access_on_date": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Optional:    true,
+											},
+											"max_uses": schema.Int64Attribute{
+												Optional:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"password_secret_id": schema.Int64Attribute{
+												Optional:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"clickwrap_id": schema.Int64Attribute{
+												Optional:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"require_registration": schema.BoolAttribute{
+												Optional: true,
+											},
+											"require_share_recipient": schema.BoolAttribute{
+												Optional: true,
+											},
+											"send_one_time_password_to_recipient_at_registration": schema.BoolAttribute{
+												Optional: true,
+											},
+											"recipients": schema.ListAttribute{
+												Optional:    true,
+												ElementType: types.StringType,
+											},
+											"recipients_expression": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
+												Optional:    true,
+											},
+											"recipient_note": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Optional:    true,
 											},
 											"on_error": schema.ListNestedAttribute{
 												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
@@ -661,6 +990,49 @@ func (r *automationResource) resourceSchema() schema.Schema {
 											},
 											"content": schema.StringAttribute{
 												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Optional:    true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Optional:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Required:    true,
+													},
+													"action": schema.StringAttribute{
+														Required:   true,
+														Validators: []validator.String{stringvalidator.OneOf("continue", "propagate")},
+													},
+												},
+												},
+												Validators: []validator.List{listvalidator.SizeAtLeast(1)},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Optional:    true,
+									},
+								},
+							},
+							"import_into_database": schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Required:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Required:    true,
+										Attributes: map[string]schema.Attribute{
+											"database_destination_id": schema.Int64Attribute{
+												Required:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
+											},
+											"rows": schema.StringAttribute{
+												Description: "A bare Files TransformScript expression, no braces.",
 												Optional:    true,
 											},
 											"on_error": schema.ListNestedAttribute{
@@ -925,6 +1297,65 @@ func (r *automationResource) resourceSchema() schema.Schema {
 											},
 											"use_dedicated_ips": schema.BoolAttribute{
 												Optional: true,
+											},
+											"on_error": schema.ListNestedAttribute{
+												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
+												Optional:    true,
+												NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
+													"error": schema.StringAttribute{
+														Description: "A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.",
+														Required:    true,
+													},
+													"action": schema.StringAttribute{
+														Required:   true,
+														Validators: []validator.String{stringvalidator.OneOf("continue", "propagate")},
+													},
+												},
+												},
+												Validators: []validator.List{listvalidator.SizeAtLeast(1)},
+											},
+										},
+									},
+									"return": schema.BoolAttribute{
+										Description: "Whether this node's output is included in the Automation result.",
+										Optional:    true,
+									},
+								},
+							},
+							"http_request": schema.SingleNestedAttribute{
+								Optional: true,
+								Attributes: map[string]schema.Attribute{
+									"id": schema.StringAttribute{
+										Description: "Unique node ID within the graph.",
+										Required:    true,
+									},
+									"config": schema.SingleNestedAttribute{
+										Description: "Configuration fields for this node type.",
+										Required:    true,
+										Attributes: map[string]schema.Attribute{
+											"method": schema.StringAttribute{
+												Optional:   true,
+												Validators: []validator.String{stringvalidator.OneOf("get", "post", "put", "patch", "delete", "head", "options")},
+											},
+											"url": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Required:    true,
+											},
+											"query": schema.MapAttribute{
+												Optional:    true,
+												ElementType: types.StringType,
+											},
+											"headers": schema.MapAttribute{
+												Optional:    true,
+												ElementType: types.StringType,
+											},
+											"body": schema.StringAttribute{
+												Description: "A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.",
+												Optional:    true,
+											},
+											"auth_secret_id": schema.Int64Attribute{
+												Optional:   true,
+												Validators: []validator.Int64{int64validator.AtLeast(1)},
 											},
 											"on_error": schema.ListNestedAttribute{
 												Description: "Error handlers. Each item selects an error pattern and whether to continue or propagate it.",
@@ -1907,7 +2338,7 @@ func (r *automationResource) resourceSchema() schema.Schema {
 								},
 							},
 						},
-							Validators: []validator.Object{lib.ExactlyOneOfAttributes("trigger_scheduled", "trigger_manual", "trigger_action", "trigger_folder_creation", "trigger_webhook", "trigger_email", "create_folder", "copy_file", "move_file", "delete_file", "import_file", "run_sync", "as2_send", "send_email", "send_chat_message", "send_webhook", "publish_amazon_sns", "publish_amazon_sqs", "publish_google_pubsub", "publish_azure_service_bus", "agent_compute", "set_metadata", "extract", "document_convert", "image_convert", "zip", "unzip", "gpg_encrypt", "gpg_decrypt", "if", "switch", "filter", "join", "aggregate", "wait", "transform", "run_automation")},
+							Validators: []validator.Object{lib.ExactlyOneOfAttributes("trigger_scheduled", "trigger_manual", "trigger_shared", "trigger_action", "trigger_folder_creation", "trigger_webhook", "trigger_email", "create_folder", "create_user", "create_group", "add_user_to_group", "create_permission", "create_share_link", "copy_file", "move_file", "delete_file", "import_file", "import_into_database", "run_sync", "as2_send", "send_email", "send_chat_message", "send_webhook", "http_request", "publish_amazon_sns", "publish_amazon_sqs", "publish_google_pubsub", "publish_azure_service_bus", "agent_compute", "set_metadata", "extract", "document_convert", "image_convert", "zip", "unzip", "gpg_encrypt", "gpg_decrypt", "if", "switch", "filter", "join", "aggregate", "wait", "transform", "run_automation")},
 						},
 						Validators: []validator.List{listvalidator.SizeAtLeast(1), listvalidator.SizeAtMost(50)},
 					},
@@ -2145,6 +2576,33 @@ func (r *automationResource) resourceSchema() schema.Schema {
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"shared_trigger_user_ids": schema.ListAttribute{
+				Description: "Users who can start this Shared Workflow.",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.Int64Type,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"shared_trigger_group_ids": schema.ListAttribute{
+				Description: "Groups whose members can start this Shared Workflow.",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.Int64Type,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"shared_trigger_partner_ids": schema.ListAttribute{
+				Description: "Partners whose users can start this Shared Workflow.",
+				Computed:    true,
+				Optional:    true,
+				ElementType: types.Int64Type,
+				PlanModifiers: []planmodifier.List{
+					listplanmodifier.UseStateForUnknown(),
+				},
+			},
 			"sync_ids": schema.ListAttribute{
 				Description: "IDs of Syncs to run by this Automation.",
 				Computed:    true,
@@ -2168,7 +2626,7 @@ func (r *automationResource) resourceSchema() schema.Schema {
 				Computed:    true,
 				Optional:    true,
 				Validators: []validator.String{
-					stringvalidator.OneOf("manual", "daily", "custom_schedule", "webhook", "email", "action"),
+					stringvalidator.OneOf("manual", "daily", "custom_schedule", "webhook", "email", "action", "shared"),
 				},
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
@@ -2291,6 +2749,18 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsAutomationCreate.GroupIds, diags = lib.ListValueToString(ctx, path.Root("group_ids"), plan.GroupIds, ",")
 	resp.Diagnostics.Append(diags...)
 	paramsAutomationCreate.ScheduleId = plan.ScheduleId.ValueInt64()
+	if !plan.SharedTriggerUserIds.IsNull() && !plan.SharedTriggerUserIds.IsUnknown() {
+		diags = plan.SharedTriggerUserIds.ElementsAs(ctx, &paramsAutomationCreate.SharedTriggerUserIds, false)
+		resp.Diagnostics.Append(diags...)
+	}
+	if !plan.SharedTriggerGroupIds.IsNull() && !plan.SharedTriggerGroupIds.IsUnknown() {
+		diags = plan.SharedTriggerGroupIds.ElementsAs(ctx, &paramsAutomationCreate.SharedTriggerGroupIds, false)
+		resp.Diagnostics.Append(diags...)
+	}
+	if !plan.SharedTriggerPartnerIds.IsNull() && !plan.SharedTriggerPartnerIds.IsUnknown() {
+		diags = plan.SharedTriggerPartnerIds.ElementsAs(ctx, &paramsAutomationCreate.SharedTriggerPartnerIds, false)
+		resp.Diagnostics.Append(diags...)
+	}
 	if !plan.ScheduleDaysOfWeek.IsNull() && !plan.ScheduleDaysOfWeek.IsUnknown() {
 		diags = plan.ScheduleDaysOfWeek.ElementsAs(ctx, &paramsAutomationCreate.ScheduleDaysOfWeek, false)
 		resp.Diagnostics.Append(diags...)
@@ -2311,7 +2781,7 @@ func (r *automationResource) Create(ctx context.Context, req resource.CreateRequ
 	paramsAutomationCreate.Description = plan.Description.ValueString()
 	createDefinition, diags := lib.SchemaAttributeToInterface(ctx, path.Root("definition"), plan.Definition)
 	resp.Diagnostics.Append(diags...)
-	createDefinition, createDefinitionTransformDiags0 := lib.UnwrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), createDefinition, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "send_chat_message", Value: "send_chat_message"}, {Name: "send_webhook", Value: "send_webhook"}, {Name: "publish_amazon_sns", Value: "publish_amazon_sns"}, {Name: "publish_amazon_sqs", Value: "publish_amazon_sqs"}, {Name: "publish_google_pubsub", Value: "publish_google_pubsub"}, {Name: "publish_azure_service_bus", Value: "publish_azure_service_bus"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
+	createDefinition, createDefinitionTransformDiags0 := lib.UnwrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), createDefinition, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_shared", Value: "trigger_shared"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "create_user", Value: "create_user"}, {Name: "create_group", Value: "create_group"}, {Name: "add_user_to_group", Value: "add_user_to_group"}, {Name: "create_permission", Value: "create_permission"}, {Name: "create_share_link", Value: "create_share_link"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "import_into_database", Value: "import_into_database"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "send_chat_message", Value: "send_chat_message"}, {Name: "send_webhook", Value: "send_webhook"}, {Name: "http_request", Value: "http_request"}, {Name: "publish_amazon_sns", Value: "publish_amazon_sns"}, {Name: "publish_amazon_sqs", Value: "publish_amazon_sqs"}, {Name: "publish_google_pubsub", Value: "publish_google_pubsub"}, {Name: "publish_azure_service_bus", Value: "publish_azure_service_bus"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
 	resp.Diagnostics.Append(createDefinitionTransformDiags0...)
 	paramsAutomationCreate.Definition = createDefinition
 	if !plan.Disabled.IsNull() && !plan.Disabled.IsUnknown() {
@@ -2475,6 +2945,24 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 	if !config.ScheduleId.IsNull() && !config.ScheduleId.IsUnknown() {
 		paramsAutomationUpdate["schedule_id"] = config.ScheduleId.ValueInt64()
 	}
+	if !config.SharedTriggerUserIds.IsNull() && !config.SharedTriggerUserIds.IsUnknown() {
+		var updateSharedTriggerUserIds []int64
+		diags = config.SharedTriggerUserIds.ElementsAs(ctx, &updateSharedTriggerUserIds, false)
+		resp.Diagnostics.Append(diags...)
+		paramsAutomationUpdate["shared_trigger_user_ids"] = updateSharedTriggerUserIds
+	}
+	if !config.SharedTriggerGroupIds.IsNull() && !config.SharedTriggerGroupIds.IsUnknown() {
+		var updateSharedTriggerGroupIds []int64
+		diags = config.SharedTriggerGroupIds.ElementsAs(ctx, &updateSharedTriggerGroupIds, false)
+		resp.Diagnostics.Append(diags...)
+		paramsAutomationUpdate["shared_trigger_group_ids"] = updateSharedTriggerGroupIds
+	}
+	if !config.SharedTriggerPartnerIds.IsNull() && !config.SharedTriggerPartnerIds.IsUnknown() {
+		var updateSharedTriggerPartnerIds []int64
+		diags = config.SharedTriggerPartnerIds.ElementsAs(ctx, &updateSharedTriggerPartnerIds, false)
+		resp.Diagnostics.Append(diags...)
+		paramsAutomationUpdate["shared_trigger_partner_ids"] = updateSharedTriggerPartnerIds
+	}
 	if !config.ScheduleDaysOfWeek.IsNull() && !config.ScheduleDaysOfWeek.IsUnknown() {
 		var updateScheduleDaysOfWeek []int64
 		diags = config.ScheduleDaysOfWeek.ElementsAs(ctx, &updateScheduleDaysOfWeek, false)
@@ -2508,7 +2996,7 @@ func (r *automationResource) Update(ctx context.Context, req resource.UpdateRequ
 	if !config.Definition.IsNull() && !config.Definition.IsUnknown() {
 		updateDefinition, diags := lib.SchemaAttributeToInterface(ctx, path.Root("definition"), config.Definition)
 		resp.Diagnostics.Append(diags...)
-		updateDefinition, updateDefinitionTransformDiags0 := lib.UnwrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), updateDefinition, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "send_chat_message", Value: "send_chat_message"}, {Name: "send_webhook", Value: "send_webhook"}, {Name: "publish_amazon_sns", Value: "publish_amazon_sns"}, {Name: "publish_amazon_sqs", Value: "publish_amazon_sqs"}, {Name: "publish_google_pubsub", Value: "publish_google_pubsub"}, {Name: "publish_azure_service_bus", Value: "publish_azure_service_bus"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
+		updateDefinition, updateDefinitionTransformDiags0 := lib.UnwrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), updateDefinition, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_shared", Value: "trigger_shared"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "create_user", Value: "create_user"}, {Name: "create_group", Value: "create_group"}, {Name: "add_user_to_group", Value: "add_user_to_group"}, {Name: "create_permission", Value: "create_permission"}, {Name: "create_share_link", Value: "create_share_link"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "import_into_database", Value: "import_into_database"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "send_chat_message", Value: "send_chat_message"}, {Name: "send_webhook", Value: "send_webhook"}, {Name: "http_request", Value: "http_request"}, {Name: "publish_amazon_sns", Value: "publish_amazon_sns"}, {Name: "publish_amazon_sqs", Value: "publish_amazon_sqs"}, {Name: "publish_google_pubsub", Value: "publish_google_pubsub"}, {Name: "publish_azure_service_bus", Value: "publish_azure_service_bus"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
 		resp.Diagnostics.Append(updateDefinitionTransformDiags0...)
 		paramsAutomationUpdate["definition"] = updateDefinition
 	}
@@ -2652,7 +3140,7 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	state.Deleted = types.BoolPointerValue(automation.Deleted)
 	state.Description = types.StringValue(automation.Description)
 	definitionValue := interface{}(automation.Definition)
-	definitionValue, definitionValueTransformDiags0 := lib.WrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "send_chat_message", Value: "send_chat_message"}, {Name: "send_webhook", Value: "send_webhook"}, {Name: "publish_amazon_sns", Value: "publish_amazon_sns"}, {Name: "publish_amazon_sqs", Value: "publish_amazon_sqs"}, {Name: "publish_google_pubsub", Value: "publish_google_pubsub"}, {Name: "publish_azure_service_bus", Value: "publish_azure_service_bus"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
+	definitionValue, definitionValueTransformDiags0 := lib.WrapDiscriminatedUnionAtPath(ctx, path.Root("definition"), definitionValue, []string{"nodes"}, "type", []lib.JSONSchemaVariant{{Name: "trigger_scheduled", Value: "trigger_scheduled"}, {Name: "trigger_manual", Value: "trigger_manual"}, {Name: "trigger_shared", Value: "trigger_shared"}, {Name: "trigger_action", Value: "trigger_action"}, {Name: "trigger_folder_creation", Value: "trigger_folder_creation"}, {Name: "trigger_webhook", Value: "trigger_webhook"}, {Name: "trigger_email", Value: "trigger_email"}, {Name: "create_folder", Value: "create_folder"}, {Name: "create_user", Value: "create_user"}, {Name: "create_group", Value: "create_group"}, {Name: "add_user_to_group", Value: "add_user_to_group"}, {Name: "create_permission", Value: "create_permission"}, {Name: "create_share_link", Value: "create_share_link"}, {Name: "copy_file", Value: "copy_file"}, {Name: "move_file", Value: "move_file"}, {Name: "delete_file", Value: "delete_file"}, {Name: "import_file", Value: "import_file"}, {Name: "import_into_database", Value: "import_into_database"}, {Name: "run_sync", Value: "run_sync"}, {Name: "as2_send", Value: "as2_send"}, {Name: "send_email", Value: "send_email"}, {Name: "send_chat_message", Value: "send_chat_message"}, {Name: "send_webhook", Value: "send_webhook"}, {Name: "http_request", Value: "http_request"}, {Name: "publish_amazon_sns", Value: "publish_amazon_sns"}, {Name: "publish_amazon_sqs", Value: "publish_amazon_sqs"}, {Name: "publish_google_pubsub", Value: "publish_google_pubsub"}, {Name: "publish_azure_service_bus", Value: "publish_azure_service_bus"}, {Name: "agent_compute", Value: "agent_compute"}, {Name: "set_metadata", Value: "set_metadata"}, {Name: "extract", Value: "extract"}, {Name: "document_convert", Value: "document_convert"}, {Name: "image_convert", Value: "image_convert"}, {Name: "zip", Value: "zip"}, {Name: "unzip", Value: "unzip"}, {Name: "gpg_encrypt", Value: "gpg_encrypt"}, {Name: "gpg_decrypt", Value: "gpg_decrypt"}, {Name: "if", Value: "if"}, {Name: "switch", Value: "switch"}, {Name: "filter", Value: "filter"}, {Name: "join", Value: "join"}, {Name: "aggregate", Value: "aggregate"}, {Name: "wait", Value: "wait"}, {Name: "transform", Value: "transform"}, {Name: "run_automation", Value: "run_automation"}})
 	diags.Append(definitionValueTransformDiags0...)
 	state.Definition, propDiags = lib.ToObject(ctx, path.Root("definition"), definitionValue, state.Definition)
 	diags.Append(propDiags...)
@@ -2699,6 +3187,12 @@ func (r *automationResource) populateResourceModel(ctx context.Context, automati
 	diags.Append(propDiags...)
 	state.ScheduleTimeZone = types.StringValue(automation.ScheduleTimeZone)
 	state.Source = types.StringValue(automation.Source)
+	state.SharedTriggerUserIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, automation.SharedTriggerUserIds)
+	diags.Append(propDiags...)
+	state.SharedTriggerGroupIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, automation.SharedTriggerGroupIds)
+	diags.Append(propDiags...)
+	state.SharedTriggerPartnerIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, automation.SharedTriggerPartnerIds)
+	diags.Append(propDiags...)
 	state.SyncIds, propDiags = types.ListValueFrom(ctx, types.Int64Type, automation.SyncIds)
 	diags.Append(propDiags...)
 	state.TriggerActions, propDiags = types.ListValueFrom(ctx, types.StringType, automation.TriggerActions)

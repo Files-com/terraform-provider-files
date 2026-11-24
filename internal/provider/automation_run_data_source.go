@@ -31,13 +31,16 @@ type automationRunDataSource struct {
 
 type automationRunDataSourceModel struct {
 	Id                   types.Int64   `tfsdk:"id"`
+	CompletedAt          types.String  `tfsdk:"completed_at"`
+	CreatedAt            types.String  `tfsdk:"created_at"`
+	Status               types.String  `tfsdk:"status"`
 	AutomationId         types.Int64   `tfsdk:"automation_id"`
 	AutomationVersionId  types.Int64   `tfsdk:"automation_version_id"`
 	Version              types.Int64   `tfsdk:"version"`
 	WorkspaceId          types.Int64   `tfsdk:"workspace_id"`
+	InitiatingUserId     types.Int64   `tfsdk:"initiating_user_id"`
+	InitiatingInterface  types.String  `tfsdk:"initiating_interface"`
 	CancelRequestedAt    types.String  `tfsdk:"cancel_requested_at"`
-	CompletedAt          types.String  `tfsdk:"completed_at"`
-	CreatedAt            types.String  `tfsdk:"created_at"`
 	RetryAt              types.String  `tfsdk:"retry_at"`
 	RetriedAt            types.String  `tfsdk:"retried_at"`
 	RetriedInRunId       types.Int64   `tfsdk:"retried_in_run_id"`
@@ -45,7 +48,6 @@ type automationRunDataSourceModel struct {
 	RerunOfRunId         types.Int64   `tfsdk:"rerun_of_run_id"`
 	RerunFromNodeId      types.String  `tfsdk:"rerun_from_node_id"`
 	Runtime              types.Float64 `tfsdk:"runtime"`
-	Status               types.String  `tfsdk:"status"`
 	SuccessfulOperations types.Int64   `tfsdk:"successful_operations"`
 	FailedOperations     types.Int64   `tfsdk:"failed_operations"`
 	Definition           types.Dynamic `tfsdk:"definition"`
@@ -86,6 +88,18 @@ func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaR
 				Description: "ID.",
 				Required:    true,
 			},
+			"completed_at": schema.StringAttribute{
+				Description: "Automation run completion/failure date/time.",
+				Computed:    true,
+			},
+			"created_at": schema.StringAttribute{
+				Description: "Automation run start date/time.",
+				Computed:    true,
+			},
+			"status": schema.StringAttribute{
+				Description: "The status of the AutomationRun. One of `queued`, `running`, `success`, `partial_failure`, `failure`, `skipped`, or `canceled`.",
+				Computed:    true,
+			},
 			"automation_id": schema.Int64Attribute{
 				Description: "ID of the associated Automation.",
 				Computed:    true,
@@ -102,16 +116,16 @@ func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaR
 				Description: "Workspace ID.",
 				Computed:    true,
 			},
+			"initiating_user_id": schema.Int64Attribute{
+				Description: "User who initiated a Shared Workflow run.",
+				Computed:    true,
+			},
+			"initiating_interface": schema.StringAttribute{
+				Description: "Interface from which the Shared Workflow was started.",
+				Computed:    true,
+			},
 			"cancel_requested_at": schema.StringAttribute{
 				Description: "Date/time at which cancellation was requested.",
-				Computed:    true,
-			},
-			"completed_at": schema.StringAttribute{
-				Description: "Automation run completion/failure date/time.",
-				Computed:    true,
-			},
-			"created_at": schema.StringAttribute{
-				Description: "Automation run start date/time.",
 				Computed:    true,
 			},
 			"retry_at": schema.StringAttribute{
@@ -140,10 +154,6 @@ func (r *automationRunDataSource) Schema(_ context.Context, _ datasource.SchemaR
 			},
 			"runtime": schema.Float64Attribute{
 				Description: "Automation run runtime.",
-				Computed:    true,
-			},
-			"status": schema.StringAttribute{
-				Description: "The status of the AutomationRun. One of `queued`, `running`, `success`, `partial_failure`, `failure`, `skipped`, or `canceled`.",
 				Computed:    true,
 			},
 			"successful_operations": schema.Int64Attribute{
@@ -212,16 +222,6 @@ func (r *automationRunDataSource) populateDataSourceModel(ctx context.Context, a
 	var propDiags diag.Diagnostics
 
 	state.Id = types.Int64Value(automationRun.Id)
-	state.AutomationId = types.Int64Value(automationRun.AutomationId)
-	state.AutomationVersionId = types.Int64Value(automationRun.AutomationVersionId)
-	state.Version = types.Int64Value(automationRun.Version)
-	state.WorkspaceId = types.Int64Value(automationRun.WorkspaceId)
-	if err := lib.TimeToStringType(ctx, path.Root("cancel_requested_at"), automationRun.CancelRequestedAt, &state.CancelRequestedAt); err != nil {
-		diags.AddError(
-			"Error Creating Files AutomationRun",
-			"Could not convert state cancel_requested_at to string: "+err.Error(),
-		)
-	}
 	if err := lib.TimeToStringType(ctx, path.Root("completed_at"), automationRun.CompletedAt, &state.CompletedAt); err != nil {
 		diags.AddError(
 			"Error Creating Files AutomationRun",
@@ -232,6 +232,19 @@ func (r *automationRunDataSource) populateDataSourceModel(ctx context.Context, a
 		diags.AddError(
 			"Error Creating Files AutomationRun",
 			"Could not convert state created_at to string: "+err.Error(),
+		)
+	}
+	state.Status = types.StringValue(automationRun.Status)
+	state.AutomationId = types.Int64Value(automationRun.AutomationId)
+	state.AutomationVersionId = types.Int64Value(automationRun.AutomationVersionId)
+	state.Version = types.Int64Value(automationRun.Version)
+	state.WorkspaceId = types.Int64Value(automationRun.WorkspaceId)
+	state.InitiatingUserId = types.Int64Value(automationRun.InitiatingUserId)
+	state.InitiatingInterface = types.StringValue(automationRun.InitiatingInterface)
+	if err := lib.TimeToStringType(ctx, path.Root("cancel_requested_at"), automationRun.CancelRequestedAt, &state.CancelRequestedAt); err != nil {
+		diags.AddError(
+			"Error Creating Files AutomationRun",
+			"Could not convert state cancel_requested_at to string: "+err.Error(),
 		)
 	}
 	if err := lib.TimeToStringType(ctx, path.Root("retry_at"), automationRun.RetryAt, &state.RetryAt); err != nil {
@@ -251,7 +264,6 @@ func (r *automationRunDataSource) populateDataSourceModel(ctx context.Context, a
 	state.RerunOfRunId = types.Int64Value(automationRun.RerunOfRunId)
 	state.RerunFromNodeId = types.StringValue(automationRun.RerunFromNodeId)
 	state.Runtime = types.Float64Value(automationRun.Runtime)
-	state.Status = types.StringValue(automationRun.Status)
 	state.SuccessfulOperations = types.Int64Value(automationRun.SuccessfulOperations)
 	state.FailedOperations = types.Int64Value(automationRun.FailedOperations)
 	state.Definition, propDiags = lib.ToDynamic(ctx, path.Root("definition"), automationRun.Definition, state.Definition.UnderlyingValue())

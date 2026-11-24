@@ -42,6 +42,7 @@ data "files_group" "example_group" {
 - `ftp_permission` (Boolean) If true, users in this group can use FTP to login.  This will override a false value of `ftp_permission` on the user level.
 - `integration_centric_profile_id` (Number) Integration Centric Profile ID assigned to this Group, if any. Users in the Group inherit it unless a direct per-user assignment overrides it.
 - `notes` (String) Notes about this group
+- `preferred_workspace_id` (Number) Custom Workspace a new Group member will use as their Preferred Workspace if they have no saved preference. The Group must have a Permission in that Workspace.
 - `restapi_permission` (Boolean) If true, users in this group can use the REST API to login.  This will override a false value of `restapi_permission` on the user level.
 - `s3_compatible_endpoint_permission` (Boolean) If true, users in this group can access the S3-compatible endpoint. This will override a false value of `s3_compatible_endpoint_permission` on the user level. Defaults to false.
 - `sftp_permission` (Boolean) If true, users in this group can use SFTP to login.  This will override a false value of `sftp_permission` on the user level.

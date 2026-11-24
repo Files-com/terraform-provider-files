@@ -41,6 +41,8 @@ data "files_automation_run" "example_automation_run" {
 - `definition` (Dynamic) Automation definition snapshot pinned by this run. For performance reasons, this is not provided when listing Automation runs.
 - `execution_nodes` (Dynamic) Execution status, timing, and bounded output summaries for each node. For performance reasons, this is not provided when listing Automation runs.
 - `failed_operations` (Number) Count of failed operations.
+- `initiating_interface` (String) Interface from which the Shared Workflow was started.
+- `initiating_user_id` (Number) User who initiated a Shared Workflow run.
 - `journal_url` (String) Link to the run journal artifact.
 - `node_states` (Dynamic) Status and execution stage for each node in this run. For performance reasons, this is not provided when listing Automation runs.
 - `rerun_from_node_id` (String) Node at which this run resumed execution.

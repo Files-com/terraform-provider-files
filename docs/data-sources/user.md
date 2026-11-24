@@ -66,7 +66,6 @@ data "files_user" "example_user" {
 - `created_at` (String) When this user was created
 - `dav_permission` (Boolean) Can the user connect with WebDAV?
 - `days_remaining_until_password_expire` (Number) Number of days remaining until password expires
-- `default_workspace_id` (Number) Workspace ID the user should land in by default when more than one Workspace is available.
 - `desktop_configuration_profile_id` (Number) Desktop Configuration Profile ID assigned directly to this user, if any.
 - `disabled` (Boolean) Is user disabled? Disabled users cannot log in, and do not count for billing purposes. Users can be automatically disabled after an inactivity period via a Site setting or schedule to be deactivated after specific date.
 - `disabled_expired_or_inactive` (Boolean) Computed property that returns true if user disabled or expired or inactive.
@@ -110,6 +109,7 @@ data "files_user" "example_user" {
 - `password_expired` (Boolean) Is user's password expired?
 - `password_set_at` (String) Last time the user's password was set
 - `password_validity_days` (Number) Number of days to allow user to use the same password
+- `preferred_workspace_id` (Number) Workspace ID the user should land in by default when more than one Workspace is available.
 - `primary_group_id` (Number) Primary group ID for Group Admin scoping
 - `public_keys_count` (Number) Number of public keys associated with this user
 - `readonly_site_admin` (Boolean) Is the user an allowed to view all (non-billing) site configuration for this site?

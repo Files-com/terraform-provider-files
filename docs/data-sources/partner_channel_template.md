@@ -44,6 +44,7 @@ data "files_partner_channel_template" "example_partner_channel_template" {
 - `from_partner_folder_name` (String) Optional Channel-level from-Partner folder name override.
 - `from_partner_managed_folder_paths` (List of String) Managed folder paths inside the from-Partner folder.
 - `from_partner_route_path_pattern` (String) Optional route path pattern for files uploaded by the Partner. Supports {{partner_name}}.
+- `from_partner_upload_forms` (Dynamic) Form Field Sets attached to From Partner upload destinations. Managed Partner Channels receive copies of these assignments.
 - `name` (String) The name of the Partner Channel Template.
 - `path` (String) Channel path relative to the Partner root folder. This must be slash-delimited, but it must neither start nor end with a slash. Maximum of 5000 characters.
 - `to_partner_folder_name` (String) Optional Channel-level to-Partner folder name override.

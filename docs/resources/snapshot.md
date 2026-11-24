@@ -17,9 +17,10 @@ Each snapshot may have an expiration date. When the expiration date is reached, 
 
 ```terraform
 resource "files_snapshot" "example_snapshot" {
-  expires_at   = "2000-01-01T01:00:00Z"
-  name         = "My Snapshot"
-  workspace_id = 0
+  expires_at         = "2000-01-01T01:00:00Z"
+  name               = "My Snapshot"
+  workspace_id       = 0
+  shared_workflow_id = 1
 }
 ```
 
@@ -33,6 +34,7 @@ resource "files_snapshot" "example_snapshot" {
 - `expires_at` (String) When the snapshot expires.
 - `name` (String) A name for the snapshot.
 - `paths` (List of String, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) An array of paths to add to the snapshot.
+- `shared_workflow_id` (Number) Shared Workflow for which the Snapshot was created.
 - `workspace_id` (Number) Workspace ID. `0` means the default workspace.
 
 ### Read-Only

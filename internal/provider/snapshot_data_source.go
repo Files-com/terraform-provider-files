@@ -30,13 +30,14 @@ type snapshotDataSource struct {
 }
 
 type snapshotDataSourceModel struct {
-	Id          types.Int64  `tfsdk:"id"`
-	ExpiresAt   types.String `tfsdk:"expires_at"`
-	FinalizedAt types.String `tfsdk:"finalized_at"`
-	Name        types.String `tfsdk:"name"`
-	UserId      types.Int64  `tfsdk:"user_id"`
-	BundleId    types.Int64  `tfsdk:"bundle_id"`
-	WorkspaceId types.Int64  `tfsdk:"workspace_id"`
+	Id               types.Int64  `tfsdk:"id"`
+	ExpiresAt        types.String `tfsdk:"expires_at"`
+	FinalizedAt      types.String `tfsdk:"finalized_at"`
+	Name             types.String `tfsdk:"name"`
+	UserId           types.Int64  `tfsdk:"user_id"`
+	BundleId         types.Int64  `tfsdk:"bundle_id"`
+	WorkspaceId      types.Int64  `tfsdk:"workspace_id"`
+	SharedWorkflowId types.Int64  `tfsdk:"shared_workflow_id"`
 }
 
 func (r *snapshotDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -94,6 +95,10 @@ func (r *snapshotDataSource) Schema(_ context.Context, _ datasource.SchemaReques
 				Description: "Workspace ID. `0` means the default workspace.",
 				Computed:    true,
 			},
+			"shared_workflow_id": schema.Int64Attribute{
+				Description: "Shared Workflow for which the Snapshot was created.",
+				Computed:    true,
+			},
 		},
 	}
 }
@@ -146,6 +151,7 @@ func (r *snapshotDataSource) populateDataSourceModel(ctx context.Context, snapsh
 	state.UserId = types.Int64Value(snapshot.UserId)
 	state.BundleId = types.Int64Value(snapshot.BundleId)
 	state.WorkspaceId = types.Int64Value(snapshot.WorkspaceId)
+	state.SharedWorkflowId = types.Int64Value(snapshot.SharedWorkflowId)
 
 	return
 }
