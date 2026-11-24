@@ -153,6 +153,7 @@ data "files_expectation" "example_expectation" {
 - `recurring_days` (List of Number) If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.
 - `schedule_id` (Number) If trigger is `custom_schedule`, the reusable Schedule used instead of the Expectation's schedule fields.
+- `schedule_interval_minutes` (Number) Set a delivery deadline every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`.
 - `schedule_time_exceptions` (Attributes List) Calendar-based replacement due times. Matching dates replace all normal times; holiday exclusions still apply. Calendars specifying different times on the same date conflict. (see [below for nested schema](#nestedatt--schedule_time_exceptions))
 - `schedule_time_zone` (String) Time zone used by the Expectation schedule.
 - `schedule_times_of_day` (List of String) Times of day in HH:MM format for the Expectation schedule.

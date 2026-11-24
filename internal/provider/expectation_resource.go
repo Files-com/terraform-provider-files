@@ -46,36 +46,37 @@ type expectationResource struct {
 }
 
 type expectationResourceModel struct {
-	WorkspaceId            types.Int64   `tfsdk:"workspace_id"`
-	Name                   types.String  `tfsdk:"name"`
-	Description            types.String  `tfsdk:"description"`
-	Path                   types.String  `tfsdk:"path"`
-	Source                 types.String  `tfsdk:"source"`
-	ExcludePattern         types.String  `tfsdk:"exclude_pattern"`
-	Disabled               types.Bool    `tfsdk:"disabled"`
-	Trigger                types.String  `tfsdk:"trigger"`
-	Interval               types.String  `tfsdk:"interval"`
-	RecurringDay           types.Int64   `tfsdk:"recurring_day"`
-	RecurringDays          types.List    `tfsdk:"recurring_days"`
-	ScheduleId             types.Int64   `tfsdk:"schedule_id"`
-	ScheduleDaysOfWeek     types.List    `tfsdk:"schedule_days_of_week"`
-	ScheduleTimesOfDay     types.List    `tfsdk:"schedule_times_of_day"`
-	ScheduleTimeZone       types.String  `tfsdk:"schedule_time_zone"`
-	HolidayRegion          types.String  `tfsdk:"holiday_region"`
-	LookbackInterval       types.Int64   `tfsdk:"lookback_interval"`
-	ScheduleTimeExceptions types.List    `tfsdk:"schedule_time_exceptions"`
-	LateAcceptanceInterval types.Int64   `tfsdk:"late_acceptance_interval"`
-	InactivityInterval     types.Int64   `tfsdk:"inactivity_interval"`
-	MaxOpenInterval        types.Int64   `tfsdk:"max_open_interval"`
-	Criteria               types.Dynamic `tfsdk:"criteria"`
-	Id                     types.Int64   `tfsdk:"id"`
-	ExpectationsVersion    types.Int64   `tfsdk:"expectations_version"`
-	LastEvaluatedAt        types.String  `tfsdk:"last_evaluated_at"`
-	LastSuccessAt          types.String  `tfsdk:"last_success_at"`
-	LastFailureAt          types.String  `tfsdk:"last_failure_at"`
-	LastResult             types.String  `tfsdk:"last_result"`
-	CreatedAt              types.String  `tfsdk:"created_at"`
-	UpdatedAt              types.String  `tfsdk:"updated_at"`
+	WorkspaceId             types.Int64   `tfsdk:"workspace_id"`
+	Name                    types.String  `tfsdk:"name"`
+	Description             types.String  `tfsdk:"description"`
+	Path                    types.String  `tfsdk:"path"`
+	Source                  types.String  `tfsdk:"source"`
+	ExcludePattern          types.String  `tfsdk:"exclude_pattern"`
+	Disabled                types.Bool    `tfsdk:"disabled"`
+	Trigger                 types.String  `tfsdk:"trigger"`
+	Interval                types.String  `tfsdk:"interval"`
+	RecurringDay            types.Int64   `tfsdk:"recurring_day"`
+	RecurringDays           types.List    `tfsdk:"recurring_days"`
+	ScheduleId              types.Int64   `tfsdk:"schedule_id"`
+	ScheduleDaysOfWeek      types.List    `tfsdk:"schedule_days_of_week"`
+	ScheduleIntervalMinutes types.Int64   `tfsdk:"schedule_interval_minutes"`
+	ScheduleTimesOfDay      types.List    `tfsdk:"schedule_times_of_day"`
+	ScheduleTimeZone        types.String  `tfsdk:"schedule_time_zone"`
+	HolidayRegion           types.String  `tfsdk:"holiday_region"`
+	LookbackInterval        types.Int64   `tfsdk:"lookback_interval"`
+	ScheduleTimeExceptions  types.List    `tfsdk:"schedule_time_exceptions"`
+	LateAcceptanceInterval  types.Int64   `tfsdk:"late_acceptance_interval"`
+	InactivityInterval      types.Int64   `tfsdk:"inactivity_interval"`
+	MaxOpenInterval         types.Int64   `tfsdk:"max_open_interval"`
+	Criteria                types.Dynamic `tfsdk:"criteria"`
+	Id                      types.Int64   `tfsdk:"id"`
+	ExpectationsVersion     types.Int64   `tfsdk:"expectations_version"`
+	LastEvaluatedAt         types.String  `tfsdk:"last_evaluated_at"`
+	LastSuccessAt           types.String  `tfsdk:"last_success_at"`
+	LastFailureAt           types.String  `tfsdk:"last_failure_at"`
+	LastResult              types.String  `tfsdk:"last_result"`
+	CreatedAt               types.String  `tfsdk:"created_at"`
+	UpdatedAt               types.String  `tfsdk:"updated_at"`
 }
 
 func (r *expectationResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -212,6 +213,14 @@ func (r *expectationResource) Schema(_ context.Context, _ resource.SchemaRequest
 				ElementType: types.Int64Type,
 				PlanModifiers: []planmodifier.List{
 					listplanmodifier.UseStateForUnknown(),
+				},
+			},
+			"schedule_interval_minutes": schema.Int64Attribute{
+				Description: "Set a delivery deadline every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
 				},
 			},
 			"schedule_times_of_day": schema.ListAttribute{
@@ -385,6 +394,7 @@ func (r *expectationResource) Create(ctx context.Context, req resource.CreateReq
 		diags = plan.ScheduleDaysOfWeek.ElementsAs(ctx, &paramsExpectationCreate.ScheduleDaysOfWeek, false)
 		resp.Diagnostics.Append(diags...)
 	}
+	paramsExpectationCreate.ScheduleIntervalMinutes = plan.ScheduleIntervalMinutes.ValueInt64()
 	if !plan.ScheduleTimesOfDay.IsNull() && !plan.ScheduleTimesOfDay.IsUnknown() {
 		diags = plan.ScheduleTimesOfDay.ElementsAs(ctx, &paramsExpectationCreate.ScheduleTimesOfDay, false)
 		resp.Diagnostics.Append(diags...)
@@ -529,6 +539,9 @@ func (r *expectationResource) Update(ctx context.Context, req resource.UpdateReq
 		resp.Diagnostics.Append(diags...)
 		paramsExpectationUpdate["schedule_days_of_week"] = updateScheduleDaysOfWeek
 	}
+	if !config.ScheduleIntervalMinutes.IsNull() && !config.ScheduleIntervalMinutes.IsUnknown() {
+		paramsExpectationUpdate["schedule_interval_minutes"] = config.ScheduleIntervalMinutes.ValueInt64()
+	}
 	if !config.ScheduleTimesOfDay.IsNull() && !config.ScheduleTimesOfDay.IsUnknown() {
 		var updateScheduleTimesOfDay []string
 		diags = config.ScheduleTimesOfDay.ElementsAs(ctx, &updateScheduleTimesOfDay, false)
@@ -654,6 +667,7 @@ func (r *expectationResource) populateResourceModel(ctx context.Context, expecta
 	state.ScheduleId = types.Int64Value(expectation.ScheduleId)
 	state.ScheduleDaysOfWeek, propDiags = types.ListValueFrom(ctx, types.Int64Type, expectation.ScheduleDaysOfWeek)
 	diags.Append(propDiags...)
+	state.ScheduleIntervalMinutes = types.Int64Value(expectation.ScheduleIntervalMinutes)
 	state.ScheduleTimesOfDay, propDiags = types.ListValueFrom(ctx, types.StringType, expectation.ScheduleTimesOfDay)
 	diags.Append(propDiags...)
 	state.ScheduleTimeZone = types.StringValue(expectation.ScheduleTimeZone)

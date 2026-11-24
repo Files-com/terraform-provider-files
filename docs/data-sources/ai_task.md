@@ -43,6 +43,7 @@ data "files_ai_task" "example_ai_task" {
 - `recurring_days` (List of Number) If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.
 - `schedule_id` (Number) If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields.
+- `schedule_interval_minutes` (Number) Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`.
 - `schedule_time_zone` (String) Time zone used by the AI Task schedule.
 - `schedule_times_of_day` (List of String) Times of day in HH:MM format for the AI Task schedule.
 - `source` (String) Source glob used with `path` for action-triggered AI Tasks.

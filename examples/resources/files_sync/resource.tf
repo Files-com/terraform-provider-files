@@ -14,6 +14,7 @@ resource "files_sync" "example_sync" {
   recurring_days            = [1, 15]
   schedule_id               = 1
   schedule_days_of_week     = [0, 2, 4]
+  schedule_interval_minutes = 15
   schedule_time_zone        = "Eastern Time (US & Canada)"
   schedule_times_of_day     = ["06:30", "14:30"]
   src_path                  = "example"

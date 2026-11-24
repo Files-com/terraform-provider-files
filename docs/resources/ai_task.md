@@ -14,24 +14,25 @@ An AI Task defines a Files.com AI prompt that can run on a schedule or in respon
 
 ```terraform
 resource "files_ai_task" "example_ai_task" {
-  description           = "Summarizes files uploaded by the accounting team."
-  disabled              = true
-  holiday_region        = "us"
-  interval              = "day"
-  name                  = "Summarize daily reports"
-  path                  = "incoming/reports"
-  permission_set        = "files_only"
-  prompt                = "Summarize the uploaded file and identify follow-up actions."
-  recurring_day         = 1
-  recurring_days        = [1, 15]
-  schedule_id           = 1
-  schedule_days_of_week = [1, 3, 5]
-  schedule_time_zone    = "Eastern Time (US & Canada)"
-  schedule_times_of_day = ["06:30"]
-  source                = "*.pdf"
-  trigger               = "daily"
-  trigger_actions       = ["create"]
-  workspace_id          = 0
+  description               = "Summarizes files uploaded by the accounting team."
+  disabled                  = true
+  holiday_region            = "us"
+  interval                  = "day"
+  name                      = "Summarize daily reports"
+  path                      = "incoming/reports"
+  permission_set            = "files_only"
+  prompt                    = "Summarize the uploaded file and identify follow-up actions."
+  recurring_day             = 1
+  recurring_days            = [1, 15]
+  schedule_id               = 1
+  schedule_days_of_week     = [1, 3, 5]
+  schedule_interval_minutes = 15
+  schedule_time_zone        = "Eastern Time (US & Canada)"
+  schedule_times_of_day     = ["06:30"]
+  source                    = "*.pdf"
+  trigger                   = "daily"
+  trigger_actions           = ["create"]
+  workspace_id              = 0
 }
 ```
 
@@ -55,6 +56,7 @@ resource "files_ai_task" "example_ai_task" {
 - `recurring_days` (List of Number) If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.
 - `schedule_id` (Number) If trigger is `custom_schedule`, the reusable Schedule used instead of the AI Task's schedule fields.
+- `schedule_interval_minutes` (Number) Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`.
 - `schedule_time_zone` (String) Time zone used by the AI Task schedule.
 - `schedule_times_of_day` (List of String) Times of day in HH:MM format for the AI Task schedule.
 - `source` (String) Source glob used with `path` for action-triggered AI Tasks.

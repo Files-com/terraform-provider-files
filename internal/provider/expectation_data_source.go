@@ -29,36 +29,37 @@ type expectationDataSource struct {
 }
 
 type expectationDataSourceModel struct {
-	Id                     types.Int64   `tfsdk:"id"`
-	WorkspaceId            types.Int64   `tfsdk:"workspace_id"`
-	Name                   types.String  `tfsdk:"name"`
-	Description            types.String  `tfsdk:"description"`
-	Path                   types.String  `tfsdk:"path"`
-	Source                 types.String  `tfsdk:"source"`
-	ExcludePattern         types.String  `tfsdk:"exclude_pattern"`
-	Disabled               types.Bool    `tfsdk:"disabled"`
-	ExpectationsVersion    types.Int64   `tfsdk:"expectations_version"`
-	Trigger                types.String  `tfsdk:"trigger"`
-	Interval               types.String  `tfsdk:"interval"`
-	RecurringDay           types.Int64   `tfsdk:"recurring_day"`
-	RecurringDays          types.List    `tfsdk:"recurring_days"`
-	ScheduleId             types.Int64   `tfsdk:"schedule_id"`
-	ScheduleDaysOfWeek     types.List    `tfsdk:"schedule_days_of_week"`
-	ScheduleTimesOfDay     types.List    `tfsdk:"schedule_times_of_day"`
-	ScheduleTimeZone       types.String  `tfsdk:"schedule_time_zone"`
-	HolidayRegion          types.String  `tfsdk:"holiday_region"`
-	LookbackInterval       types.Int64   `tfsdk:"lookback_interval"`
-	ScheduleTimeExceptions types.List    `tfsdk:"schedule_time_exceptions"`
-	LateAcceptanceInterval types.Int64   `tfsdk:"late_acceptance_interval"`
-	InactivityInterval     types.Int64   `tfsdk:"inactivity_interval"`
-	MaxOpenInterval        types.Int64   `tfsdk:"max_open_interval"`
-	Criteria               types.Dynamic `tfsdk:"criteria"`
-	LastEvaluatedAt        types.String  `tfsdk:"last_evaluated_at"`
-	LastSuccessAt          types.String  `tfsdk:"last_success_at"`
-	LastFailureAt          types.String  `tfsdk:"last_failure_at"`
-	LastResult             types.String  `tfsdk:"last_result"`
-	CreatedAt              types.String  `tfsdk:"created_at"`
-	UpdatedAt              types.String  `tfsdk:"updated_at"`
+	Id                      types.Int64   `tfsdk:"id"`
+	WorkspaceId             types.Int64   `tfsdk:"workspace_id"`
+	Name                    types.String  `tfsdk:"name"`
+	Description             types.String  `tfsdk:"description"`
+	Path                    types.String  `tfsdk:"path"`
+	Source                  types.String  `tfsdk:"source"`
+	ExcludePattern          types.String  `tfsdk:"exclude_pattern"`
+	Disabled                types.Bool    `tfsdk:"disabled"`
+	ExpectationsVersion     types.Int64   `tfsdk:"expectations_version"`
+	Trigger                 types.String  `tfsdk:"trigger"`
+	Interval                types.String  `tfsdk:"interval"`
+	RecurringDay            types.Int64   `tfsdk:"recurring_day"`
+	RecurringDays           types.List    `tfsdk:"recurring_days"`
+	ScheduleId              types.Int64   `tfsdk:"schedule_id"`
+	ScheduleDaysOfWeek      types.List    `tfsdk:"schedule_days_of_week"`
+	ScheduleIntervalMinutes types.Int64   `tfsdk:"schedule_interval_minutes"`
+	ScheduleTimesOfDay      types.List    `tfsdk:"schedule_times_of_day"`
+	ScheduleTimeZone        types.String  `tfsdk:"schedule_time_zone"`
+	HolidayRegion           types.String  `tfsdk:"holiday_region"`
+	LookbackInterval        types.Int64   `tfsdk:"lookback_interval"`
+	ScheduleTimeExceptions  types.List    `tfsdk:"schedule_time_exceptions"`
+	LateAcceptanceInterval  types.Int64   `tfsdk:"late_acceptance_interval"`
+	InactivityInterval      types.Int64   `tfsdk:"inactivity_interval"`
+	MaxOpenInterval         types.Int64   `tfsdk:"max_open_interval"`
+	Criteria                types.Dynamic `tfsdk:"criteria"`
+	LastEvaluatedAt         types.String  `tfsdk:"last_evaluated_at"`
+	LastSuccessAt           types.String  `tfsdk:"last_success_at"`
+	LastFailureAt           types.String  `tfsdk:"last_failure_at"`
+	LastResult              types.String  `tfsdk:"last_result"`
+	CreatedAt               types.String  `tfsdk:"created_at"`
+	UpdatedAt               types.String  `tfsdk:"updated_at"`
 }
 
 func (r *expectationDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -149,6 +150,10 @@ func (r *expectationDataSource) Schema(_ context.Context, _ datasource.SchemaReq
 				Description: "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.",
 				Computed:    true,
 				ElementType: types.Int64Type,
+			},
+			"schedule_interval_minutes": schema.Int64Attribute{
+				Description: "Set a delivery deadline every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`.",
+				Computed:    true,
 			},
 			"schedule_times_of_day": schema.ListAttribute{
 				Description: "Times of day in HH:MM format for the Expectation schedule.",
@@ -277,6 +282,7 @@ func (r *expectationDataSource) populateDataSourceModel(ctx context.Context, exp
 	state.ScheduleId = types.Int64Value(expectation.ScheduleId)
 	state.ScheduleDaysOfWeek, propDiags = types.ListValueFrom(ctx, types.Int64Type, expectation.ScheduleDaysOfWeek)
 	diags.Append(propDiags...)
+	state.ScheduleIntervalMinutes = types.Int64Value(expectation.ScheduleIntervalMinutes)
 	state.ScheduleTimesOfDay, propDiags = types.ListValueFrom(ctx, types.StringType, expectation.ScheduleTimesOfDay)
 	diags.Append(propDiags...)
 	state.ScheduleTimeZone = types.StringValue(expectation.ScheduleTimeZone)

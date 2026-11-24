@@ -65,6 +65,7 @@ type automationDataSourceModel struct {
 	Schedule                         types.Dynamic `tfsdk:"schedule"`
 	HumanReadableSchedule            types.String  `tfsdk:"human_readable_schedule"`
 	ScheduleDaysOfWeek               types.List    `tfsdk:"schedule_days_of_week"`
+	ScheduleIntervalMinutes          types.Int64   `tfsdk:"schedule_interval_minutes"`
 	ScheduleTimesOfDay               types.List    `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone                 types.String  `tfsdk:"schedule_time_zone"`
 	Source                           types.String  `tfsdk:"source"`
@@ -176,6 +177,9 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 											"schedule_days_of_week": schema.ListAttribute{
 												Computed:    true,
 												ElementType: types.Int64Type,
+											},
+											"schedule_interval_minutes": schema.Int64Attribute{
+												Computed: true,
 											},
 											"schedule_times_of_day": schema.ListAttribute{
 												Computed:    true,
@@ -1601,6 +1605,10 @@ func (r *automationDataSource) Schema(_ context.Context, _ datasource.SchemaRequ
 				Computed:    true,
 				ElementType: types.Int64Type,
 			},
+			"schedule_interval_minutes": schema.Int64Attribute{
+				Description: "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. For v2 Automations, set this field in the Scheduled trigger's definition.",
+				Computed:    true,
+			},
 			"schedule_times_of_day": schema.ListAttribute{
 				Description: "Times of day to run in HH:MM format (24-hour). For `custom_schedule`, run at these times on specified days of week. For `daily`, run at these times on the scheduled interval date.",
 				Computed:    true,
@@ -1737,6 +1745,7 @@ func (r *automationDataSource) populateDataSourceModel(ctx context.Context, auto
 	state.HumanReadableSchedule = types.StringValue(automation.HumanReadableSchedule)
 	state.ScheduleDaysOfWeek, propDiags = types.ListValueFrom(ctx, types.Int64Type, automation.ScheduleDaysOfWeek)
 	diags.Append(propDiags...)
+	state.ScheduleIntervalMinutes = types.Int64Value(automation.ScheduleIntervalMinutes)
 	state.ScheduleTimesOfDay, propDiags = types.ListValueFrom(ctx, types.StringType, automation.ScheduleTimesOfDay)
 	diags.Append(propDiags...)
 	state.ScheduleTimeZone = types.StringValue(automation.ScheduleTimeZone)

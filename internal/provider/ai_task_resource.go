@@ -43,30 +43,31 @@ type aiTaskResource struct {
 }
 
 type aiTaskResourceModel struct {
-	Name                  types.String `tfsdk:"name"`
-	Prompt                types.String `tfsdk:"prompt"`
-	WorkspaceId           types.Int64  `tfsdk:"workspace_id"`
-	Description           types.String `tfsdk:"description"`
-	PermissionSet         types.String `tfsdk:"permission_set"`
-	Path                  types.String `tfsdk:"path"`
-	Source                types.String `tfsdk:"source"`
-	Disabled              types.Bool   `tfsdk:"disabled"`
-	Trigger               types.String `tfsdk:"trigger"`
-	TriggerActions        types.List   `tfsdk:"trigger_actions"`
-	Interval              types.String `tfsdk:"interval"`
-	RecurringDay          types.Int64  `tfsdk:"recurring_day"`
-	RecurringDays         types.List   `tfsdk:"recurring_days"`
-	ScheduleId            types.Int64  `tfsdk:"schedule_id"`
-	ScheduleDaysOfWeek    types.List   `tfsdk:"schedule_days_of_week"`
-	ScheduleTimesOfDay    types.List   `tfsdk:"schedule_times_of_day"`
-	ScheduleTimeZone      types.String `tfsdk:"schedule_time_zone"`
-	HolidayRegion         types.String `tfsdk:"holiday_region"`
-	Id                    types.Int64  `tfsdk:"id"`
-	HumanReadableSchedule types.String `tfsdk:"human_readable_schedule"`
-	LastRunAt             types.String `tfsdk:"last_run_at"`
-	MasterAdminUserId     types.Int64  `tfsdk:"master_admin_user_id"`
-	CreatedAt             types.String `tfsdk:"created_at"`
-	UpdatedAt             types.String `tfsdk:"updated_at"`
+	Name                    types.String `tfsdk:"name"`
+	Prompt                  types.String `tfsdk:"prompt"`
+	WorkspaceId             types.Int64  `tfsdk:"workspace_id"`
+	Description             types.String `tfsdk:"description"`
+	PermissionSet           types.String `tfsdk:"permission_set"`
+	Path                    types.String `tfsdk:"path"`
+	Source                  types.String `tfsdk:"source"`
+	Disabled                types.Bool   `tfsdk:"disabled"`
+	Trigger                 types.String `tfsdk:"trigger"`
+	TriggerActions          types.List   `tfsdk:"trigger_actions"`
+	Interval                types.String `tfsdk:"interval"`
+	RecurringDay            types.Int64  `tfsdk:"recurring_day"`
+	RecurringDays           types.List   `tfsdk:"recurring_days"`
+	ScheduleId              types.Int64  `tfsdk:"schedule_id"`
+	ScheduleDaysOfWeek      types.List   `tfsdk:"schedule_days_of_week"`
+	ScheduleIntervalMinutes types.Int64  `tfsdk:"schedule_interval_minutes"`
+	ScheduleTimesOfDay      types.List   `tfsdk:"schedule_times_of_day"`
+	ScheduleTimeZone        types.String `tfsdk:"schedule_time_zone"`
+	HolidayRegion           types.String `tfsdk:"holiday_region"`
+	Id                      types.Int64  `tfsdk:"id"`
+	HumanReadableSchedule   types.String `tfsdk:"human_readable_schedule"`
+	LastRunAt               types.String `tfsdk:"last_run_at"`
+	MasterAdminUserId       types.Int64  `tfsdk:"master_admin_user_id"`
+	CreatedAt               types.String `tfsdk:"created_at"`
+	UpdatedAt               types.String `tfsdk:"updated_at"`
 }
 
 func (r *aiTaskResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
@@ -217,6 +218,14 @@ func (r *aiTaskResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 					listplanmodifier.UseStateForUnknown(),
 				},
 			},
+			"schedule_interval_minutes": schema.Int64Attribute{
+				Description: "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`.",
+				Computed:    true,
+				Optional:    true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"schedule_times_of_day": schema.ListAttribute{
 				Description: "Times of day in HH:MM format for the AI Task schedule.",
 				Computed:    true,
@@ -308,6 +317,7 @@ func (r *aiTaskResource) Create(ctx context.Context, req resource.CreateRequest,
 		diags = plan.ScheduleDaysOfWeek.ElementsAs(ctx, &paramsAiTaskCreate.ScheduleDaysOfWeek, false)
 		resp.Diagnostics.Append(diags...)
 	}
+	paramsAiTaskCreate.ScheduleIntervalMinutes = plan.ScheduleIntervalMinutes.ValueInt64()
 	paramsAiTaskCreate.ScheduleTimeZone = plan.ScheduleTimeZone.ValueString()
 	if !plan.ScheduleTimesOfDay.IsNull() && !plan.ScheduleTimesOfDay.IsUnknown() {
 		diags = plan.ScheduleTimesOfDay.ElementsAs(ctx, &paramsAiTaskCreate.ScheduleTimesOfDay, false)
@@ -439,6 +449,9 @@ func (r *aiTaskResource) Update(ctx context.Context, req resource.UpdateRequest,
 		resp.Diagnostics.Append(diags...)
 		paramsAiTaskUpdate["schedule_days_of_week"] = updateScheduleDaysOfWeek
 	}
+	if !config.ScheduleIntervalMinutes.IsNull() && !config.ScheduleIntervalMinutes.IsUnknown() {
+		paramsAiTaskUpdate["schedule_interval_minutes"] = config.ScheduleIntervalMinutes.ValueInt64()
+	}
 	if !config.ScheduleTimeZone.IsNull() && !config.ScheduleTimeZone.IsUnknown() {
 		paramsAiTaskUpdate["schedule_time_zone"] = config.ScheduleTimeZone.ValueString()
 	}
@@ -552,6 +565,7 @@ func (r *aiTaskResource) populateResourceModel(ctx context.Context, aiTask files
 	state.ScheduleId = types.Int64Value(aiTask.ScheduleId)
 	state.ScheduleDaysOfWeek, propDiags = types.ListValueFrom(ctx, types.Int64Type, aiTask.ScheduleDaysOfWeek)
 	diags.Append(propDiags...)
+	state.ScheduleIntervalMinutes = types.Int64Value(aiTask.ScheduleIntervalMinutes)
 	state.ScheduleTimesOfDay, propDiags = types.ListValueFrom(ctx, types.StringType, aiTask.ScheduleTimesOfDay)
 	diags.Append(propDiags...)
 	state.ScheduleTimeZone = types.StringValue(aiTask.ScheduleTimeZone)

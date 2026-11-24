@@ -43,6 +43,7 @@ data "files_scheduled_export" "example_scheduled_export" {
 - `report_name` (String) Human-readable report name.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.
 - `schedule_id` (Number) If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields.
+- `schedule_interval_minutes` (Number) Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`.
 - `schedule_time_zone` (String) Time zone used by the scheduled export schedule.
 - `schedule_times_of_day` (List of String) Times of day in HH:MM format for the scheduled export schedule.
 - `trigger` (String) Schedule trigger type: `daily` or `custom_schedule`.

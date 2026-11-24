@@ -46,6 +46,7 @@ type automationResourceModelV0 struct {
 	RetryOnFailureIntervalInMinutes  types.Int64   `tfsdk:"retry_on_failure_interval_in_minutes"`
 	RetryOnFailureNumberOfAttempts   types.Int64   `tfsdk:"retry_on_failure_number_of_attempts"`
 	ScheduleDaysOfWeek               types.List    `tfsdk:"schedule_days_of_week"`
+	ScheduleIntervalMinutes          types.Int64   `tfsdk:"schedule_interval_minutes"`
 	ScheduleTimesOfDay               types.List    `tfsdk:"schedule_times_of_day"`
 	ScheduleTimeZone                 types.String  `tfsdk:"schedule_time_zone"`
 	Source                           types.String  `tfsdk:"source"`
@@ -293,6 +294,14 @@ func (r *automationResource) UpgradeState(ctx context.Context) map[int64]resourc
 							listplanmodifier.UseStateForUnknown(),
 						},
 					},
+					"schedule_interval_minutes": schema.Int64Attribute{
+						Description: "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. For v2 Automations, set this field in the Scheduled trigger's definition.",
+						Computed:    true,
+						Optional:    true,
+						PlanModifiers: []planmodifier.Int64{
+							int64planmodifier.UseStateForUnknown(),
+						},
+					},
 					"schedule_times_of_day": schema.ListAttribute{
 						Description: "Times of day to run in HH:MM format (24-hour). For `custom_schedule`, run at these times on specified days of week. For `daily`, run at these times on the scheduled interval date.",
 						Computed:    true,
@@ -459,6 +468,7 @@ func (r *automationResource) UpgradeState(ctx context.Context) map[int64]resourc
 					RetryOnFailureIntervalInMinutes:  priorState.RetryOnFailureIntervalInMinutes,
 					RetryOnFailureNumberOfAttempts:   priorState.RetryOnFailureNumberOfAttempts,
 					ScheduleDaysOfWeek:               priorState.ScheduleDaysOfWeek,
+					ScheduleIntervalMinutes:          priorState.ScheduleIntervalMinutes,
 					ScheduleTimesOfDay:               priorState.ScheduleTimesOfDay,
 					ScheduleTimeZone:                 priorState.ScheduleTimeZone,
 					Source:                           priorState.Source,

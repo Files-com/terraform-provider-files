@@ -14,22 +14,23 @@ A Scheduled Export defines a recurring schedule for generating one of the built-
 
 ```terraform
 resource "files_scheduled_export" "example_scheduled_export" {
-  name                  = "Monthly access review"
-  export_type           = "permission_audit"
-  export_options        = {
+  name                      = "Monthly access review"
+  export_type               = "permission_audit"
+  export_options            = {
     group_by = "user"
   }
-  user_id               = 1
-  disabled              = true
-  trigger               = "daily"
-  interval              = "month"
-  recurring_day         = 1
-  recurring_days        = [1, 15]
-  schedule_id           = 1
-  schedule_days_of_week = [1, 3, 5]
-  schedule_times_of_day = ["06:30"]
-  schedule_time_zone    = "Eastern Time (US & Canada)"
-  holiday_region        = "us"
+  user_id                   = 1
+  disabled                  = true
+  trigger                   = "daily"
+  interval                  = "month"
+  recurring_day             = 1
+  recurring_days            = [1, 15]
+  schedule_id               = 1
+  schedule_days_of_week     = [1, 3, 5]
+  schedule_interval_minutes = 15
+  schedule_times_of_day     = ["06:30"]
+  schedule_time_zone        = "Eastern Time (US & Canada)"
+  holiday_region            = "us"
 }
 ```
 
@@ -51,6 +52,7 @@ resource "files_scheduled_export" "example_scheduled_export" {
 - `recurring_days` (List of Number) If trigger is `daily`, this selects one or more day numbers inside a `week`, `month`, `quarter`, or `year` interval.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.
 - `schedule_id` (Number) If trigger is `custom_schedule`, the reusable Schedule used instead of the scheduled export's schedule fields.
+- `schedule_interval_minutes` (Number) Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`.
 - `schedule_time_zone` (String) Time zone used by the scheduled export schedule.
 - `schedule_times_of_day` (List of String) Times of day in HH:MM format for the scheduled export schedule.
 - `trigger` (String) Schedule trigger type: `daily` or `custom_schedule`.

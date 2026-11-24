@@ -29,28 +29,29 @@ type scheduledExportDataSource struct {
 }
 
 type scheduledExportDataSourceModel struct {
-	Id                    types.Int64   `tfsdk:"id"`
-	Name                  types.String  `tfsdk:"name"`
-	ExportType            types.String  `tfsdk:"export_type"`
-	ReportName            types.String  `tfsdk:"report_name"`
-	ExportOptions         types.Dynamic `tfsdk:"export_options"`
-	UserId                types.Int64   `tfsdk:"user_id"`
-	Disabled              types.Bool    `tfsdk:"disabled"`
-	Trigger               types.String  `tfsdk:"trigger"`
-	Interval              types.String  `tfsdk:"interval"`
-	RecurringDay          types.Int64   `tfsdk:"recurring_day"`
-	RecurringDays         types.List    `tfsdk:"recurring_days"`
-	ScheduleId            types.Int64   `tfsdk:"schedule_id"`
-	ScheduleDaysOfWeek    types.List    `tfsdk:"schedule_days_of_week"`
-	ScheduleTimesOfDay    types.List    `tfsdk:"schedule_times_of_day"`
-	ScheduleTimeZone      types.String  `tfsdk:"schedule_time_zone"`
-	HolidayRegion         types.String  `tfsdk:"holiday_region"`
-	HumanReadableSchedule types.String  `tfsdk:"human_readable_schedule"`
-	LastRunAt             types.String  `tfsdk:"last_run_at"`
-	LastExportId          types.Int64   `tfsdk:"last_export_id"`
-	LastError             types.String  `tfsdk:"last_error"`
-	CreatedAt             types.String  `tfsdk:"created_at"`
-	UpdatedAt             types.String  `tfsdk:"updated_at"`
+	Id                      types.Int64   `tfsdk:"id"`
+	Name                    types.String  `tfsdk:"name"`
+	ExportType              types.String  `tfsdk:"export_type"`
+	ReportName              types.String  `tfsdk:"report_name"`
+	ExportOptions           types.Dynamic `tfsdk:"export_options"`
+	UserId                  types.Int64   `tfsdk:"user_id"`
+	Disabled                types.Bool    `tfsdk:"disabled"`
+	Trigger                 types.String  `tfsdk:"trigger"`
+	Interval                types.String  `tfsdk:"interval"`
+	RecurringDay            types.Int64   `tfsdk:"recurring_day"`
+	RecurringDays           types.List    `tfsdk:"recurring_days"`
+	ScheduleId              types.Int64   `tfsdk:"schedule_id"`
+	ScheduleDaysOfWeek      types.List    `tfsdk:"schedule_days_of_week"`
+	ScheduleIntervalMinutes types.Int64   `tfsdk:"schedule_interval_minutes"`
+	ScheduleTimesOfDay      types.List    `tfsdk:"schedule_times_of_day"`
+	ScheduleTimeZone        types.String  `tfsdk:"schedule_time_zone"`
+	HolidayRegion           types.String  `tfsdk:"holiday_region"`
+	HumanReadableSchedule   types.String  `tfsdk:"human_readable_schedule"`
+	LastRunAt               types.String  `tfsdk:"last_run_at"`
+	LastExportId            types.Int64   `tfsdk:"last_export_id"`
+	LastError               types.String  `tfsdk:"last_error"`
+	CreatedAt               types.String  `tfsdk:"created_at"`
+	UpdatedAt               types.String  `tfsdk:"updated_at"`
 }
 
 func (r *scheduledExportDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -133,6 +134,10 @@ func (r *scheduledExportDataSource) Schema(_ context.Context, _ datasource.Schem
 				Description: "If trigger is `custom_schedule`, the 0-based weekdays used by the schedule.",
 				Computed:    true,
 				ElementType: types.Int64Type,
+			},
+			"schedule_interval_minutes": schema.Int64Attribute{
+				Description: "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`.",
+				Computed:    true,
 			},
 			"schedule_times_of_day": schema.ListAttribute{
 				Description: "Times of day in HH:MM format for the scheduled export schedule.",
@@ -224,6 +229,7 @@ func (r *scheduledExportDataSource) populateDataSourceModel(ctx context.Context,
 	state.ScheduleId = types.Int64Value(scheduledExport.ScheduleId)
 	state.ScheduleDaysOfWeek, propDiags = types.ListValueFrom(ctx, types.Int64Type, scheduledExport.ScheduleDaysOfWeek)
 	diags.Append(propDiags...)
+	state.ScheduleIntervalMinutes = types.Int64Value(scheduledExport.ScheduleIntervalMinutes)
 	state.ScheduleTimesOfDay, propDiags = types.ListValueFrom(ctx, types.StringType, scheduledExport.ScheduleTimesOfDay)
 	diags.Append(propDiags...)
 	state.ScheduleTimeZone = types.StringValue(scheduledExport.ScheduleTimeZone)

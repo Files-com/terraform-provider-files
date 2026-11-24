@@ -31,39 +31,40 @@ type syncDataSource struct {
 }
 
 type syncDataSourceModel struct {
-	Id                     types.Int64  `tfsdk:"id"`
-	Name                   types.String `tfsdk:"name"`
-	Description            types.String `tfsdk:"description"`
-	SiteId                 types.Int64  `tfsdk:"site_id"`
-	WorkspaceId            types.Int64  `tfsdk:"workspace_id"`
-	UserId                 types.Int64  `tfsdk:"user_id"`
-	SrcPath                types.String `tfsdk:"src_path"`
-	DestPath               types.String `tfsdk:"dest_path"`
-	SrcRemoteServerId      types.Int64  `tfsdk:"src_remote_server_id"`
-	DestRemoteServerId     types.Int64  `tfsdk:"dest_remote_server_id"`
-	SrcSiteId              types.Int64  `tfsdk:"src_site_id"`
-	DestSiteId             types.Int64  `tfsdk:"dest_site_id"`
-	TwoWay                 types.Bool   `tfsdk:"two_way"`
-	KeepAfterCopy          types.Bool   `tfsdk:"keep_after_copy"`
-	DeleteEmptyFolders     types.Bool   `tfsdk:"delete_empty_folders"`
-	Disabled               types.Bool   `tfsdk:"disabled"`
-	Trigger                types.String `tfsdk:"trigger"`
-	TriggerFile            types.String `tfsdk:"trigger_file"`
-	AlwaysWriteTriggerFile types.Bool   `tfsdk:"always_write_trigger_file"`
-	IncludePatterns        types.List   `tfsdk:"include_patterns"`
-	ExcludePatterns        types.List   `tfsdk:"exclude_patterns"`
-	CreatedAt              types.String `tfsdk:"created_at"`
-	UpdatedAt              types.String `tfsdk:"updated_at"`
-	SyncIntervalMinutes    types.Int64  `tfsdk:"sync_interval_minutes"`
-	Interval               types.String `tfsdk:"interval"`
-	RecurringDay           types.Int64  `tfsdk:"recurring_day"`
-	RecurringDays          types.List   `tfsdk:"recurring_days"`
-	ScheduleId             types.Int64  `tfsdk:"schedule_id"`
-	ScheduleDaysOfWeek     types.List   `tfsdk:"schedule_days_of_week"`
-	ScheduleTimesOfDay     types.List   `tfsdk:"schedule_times_of_day"`
-	ScheduleTimeZone       types.String `tfsdk:"schedule_time_zone"`
-	HolidayRegion          types.String `tfsdk:"holiday_region"`
-	LatestSyncRun          types.String `tfsdk:"latest_sync_run"`
+	Id                      types.Int64  `tfsdk:"id"`
+	Name                    types.String `tfsdk:"name"`
+	Description             types.String `tfsdk:"description"`
+	SiteId                  types.Int64  `tfsdk:"site_id"`
+	WorkspaceId             types.Int64  `tfsdk:"workspace_id"`
+	UserId                  types.Int64  `tfsdk:"user_id"`
+	SrcPath                 types.String `tfsdk:"src_path"`
+	DestPath                types.String `tfsdk:"dest_path"`
+	SrcRemoteServerId       types.Int64  `tfsdk:"src_remote_server_id"`
+	DestRemoteServerId      types.Int64  `tfsdk:"dest_remote_server_id"`
+	SrcSiteId               types.Int64  `tfsdk:"src_site_id"`
+	DestSiteId              types.Int64  `tfsdk:"dest_site_id"`
+	TwoWay                  types.Bool   `tfsdk:"two_way"`
+	KeepAfterCopy           types.Bool   `tfsdk:"keep_after_copy"`
+	DeleteEmptyFolders      types.Bool   `tfsdk:"delete_empty_folders"`
+	Disabled                types.Bool   `tfsdk:"disabled"`
+	Trigger                 types.String `tfsdk:"trigger"`
+	TriggerFile             types.String `tfsdk:"trigger_file"`
+	AlwaysWriteTriggerFile  types.Bool   `tfsdk:"always_write_trigger_file"`
+	IncludePatterns         types.List   `tfsdk:"include_patterns"`
+	ExcludePatterns         types.List   `tfsdk:"exclude_patterns"`
+	CreatedAt               types.String `tfsdk:"created_at"`
+	UpdatedAt               types.String `tfsdk:"updated_at"`
+	SyncIntervalMinutes     types.Int64  `tfsdk:"sync_interval_minutes"`
+	Interval                types.String `tfsdk:"interval"`
+	RecurringDay            types.Int64  `tfsdk:"recurring_day"`
+	RecurringDays           types.List   `tfsdk:"recurring_days"`
+	ScheduleId              types.Int64  `tfsdk:"schedule_id"`
+	ScheduleDaysOfWeek      types.List   `tfsdk:"schedule_days_of_week"`
+	ScheduleIntervalMinutes types.Int64  `tfsdk:"schedule_interval_minutes"`
+	ScheduleTimesOfDay      types.List   `tfsdk:"schedule_times_of_day"`
+	ScheduleTimeZone        types.String `tfsdk:"schedule_time_zone"`
+	HolidayRegion           types.String `tfsdk:"holiday_region"`
+	LatestSyncRun           types.String `tfsdk:"latest_sync_run"`
 }
 
 func (r *syncDataSource) Configure(_ context.Context, req datasource.ConfigureRequest, resp *datasource.ConfigureResponse) {
@@ -213,6 +214,10 @@ func (r *syncDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 				Computed:    true,
 				ElementType: types.Int64Type,
 			},
+			"schedule_interval_minutes": schema.Int64Attribute{
+				Description: "Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`.",
+				Computed:    true,
+			},
 			"schedule_times_of_day": schema.ListAttribute{
 				Description: "Times of day to run in HH:MM format. For `custom_schedule`, run at these times on specified days of week. For `daily`, run at these times on the scheduled interval date.",
 				Computed:    true,
@@ -310,6 +315,7 @@ func (r *syncDataSource) populateDataSourceModel(ctx context.Context, sync files
 	state.ScheduleId = types.Int64Value(sync.ScheduleId)
 	state.ScheduleDaysOfWeek, propDiags = types.ListValueFrom(ctx, types.Int64Type, sync.ScheduleDaysOfWeek)
 	diags.Append(propDiags...)
+	state.ScheduleIntervalMinutes = types.Int64Value(sync.ScheduleIntervalMinutes)
 	state.ScheduleTimesOfDay, propDiags = types.ListValueFrom(ctx, types.StringType, sync.ScheduleTimesOfDay)
 	diags.Append(propDiags...)
 	state.ScheduleTimeZone = types.StringValue(sync.ScheduleTimeZone)

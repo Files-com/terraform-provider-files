@@ -336,6 +336,7 @@ resource "files_automation" "example_automation" {
   group_ids                            = [1, 2]
   schedule_id                          = 1
   schedule_days_of_week                = [0, 1, 3]
+  schedule_interval_minutes            = 15
   schedule_times_of_day                = ["7:30", "11:30"]
   schedule_time_zone                   = "Eastern Time (US & Canada)"
   holiday_region                       = "us_dc"
@@ -436,6 +437,7 @@ resource "files_automation" "example_automation" {
 - `retry_on_failure_number_of_attempts` (Number) If the Automation fails, retry at most this many times.  Maximum allowed value: 10.  Set to null to disable.
 - `schedule_days_of_week` (List of Number) If trigger is `custom_schedule`, Custom schedule description for when the automation should be run. 0 is Sunday, 1 is Monday, etc.
 - `schedule_id` (Number) If trigger is `custom_schedule`, the reusable Schedule used instead of the automation's schedule fields.
+- `schedule_interval_minutes` (Number) Run every N minutes (1–59, subject to the Site plan minimum). Use by itself with `custom_schedule`. For v2 Automations, set this field in the Scheduled trigger's definition.
 - `schedule_time_zone` (String) Time zone for the schedule. If not set, times are interpreted as UTC.
 - `schedule_times_of_day` (List of String) Times of day to run in HH:MM format (24-hour). For `custom_schedule`, run at these times on specified days of week. For `daily`, run at these times on the scheduled interval date.
 - `source` (String) Source path/glob.  See Automation docs for exact description, but this is used to filter for files in the `path` to find files to operate on. Supports globs, except on remote mounts.
@@ -1433,6 +1435,7 @@ Optional:
 - `recurring_days` (List of Number)
 - `schedule_days_of_week` (List of Number)
 - `schedule_id` (Number)
+- `schedule_interval_minutes` (Number)
 - `schedule_time_zone` (String)
 - `schedule_times_of_day` (List of String)
 - `source` (String) A string value. Supports {{ fts }} interpolation, evaluated per item at execution time. In path fields, {{ fts }} supplies one file or folder name; {{{ fts }}} supplies a path fragment.

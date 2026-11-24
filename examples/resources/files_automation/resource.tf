@@ -10,6 +10,7 @@ resource "files_automation" "example_automation" {
   group_ids                            = [1, 2]
   schedule_id                          = 1
   schedule_days_of_week                = [0, 1, 3]
+  schedule_interval_minutes            = 15
   schedule_times_of_day                = ["7:30", "11:30"]
   schedule_time_zone                   = "Eastern Time (US & Canada)"
   holiday_region                       = "us_dc"
