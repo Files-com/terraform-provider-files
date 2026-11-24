@@ -72,8 +72,7 @@ data "files_sso_strategy" "example_sso_strategy" {
 - `provision_site_admin_groups` (String) Comma-separated list of group names used to grant or remove Site Admin access for users on this SSO provider. When this list is nonempty and a directory sync changes a user's group membership, membership in at least one listed group grants this access; membership in none removes it, including access granted manually. Directory syncs include SCIM requests from any provider on the site, LDAP syncs, and sign-ins that set the user's groups from the identity provider. Membership changes made any other way, including through the web app, API, SDKs, or CLI, do not affect administrator access.
 - `provision_time_zone` (String) Default time zone for auto provisioned users.
 - `provision_users` (Boolean) Auto-provision users?
-- `public_sso_domain` (String) Username domain that can publicly discover this SSO provider on this site. Set after saving the provider. Set to null to turn off discovery.
-- `public_sso_domain_dns_value` (String) This provider's DNS TXT value to publish at _files-sso.<domain> before enabling public SSO discovery for that domain.
+- `public_sso_domain` (String) Username domain that can publicly discover this SSO provider on this site. Set to null to turn off discovery.
 - `saml_provider_cert_fingerprint` (String) Identity provider sha256 cert fingerprint if saml_provider_metadata_url is not available.
 - `saml_provider_issuer_url` (String) Identity provider issuer url
 - `saml_provider_metadata_content` (String) Custom identity provider metadata
