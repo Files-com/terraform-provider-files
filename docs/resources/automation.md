@@ -510,6 +510,7 @@ Optional:
 - `document_convert` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--document_convert))
 - `extract` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--extract))
 - `filter` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--filter))
+- `for_each` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--for_each))
 - `gpg_decrypt` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--gpg_decrypt))
 - `gpg_encrypt` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--gpg_encrypt))
 - `http_request` (Attributes) (see [below for nested schema](#nestedatt--definition--nodes--http_request))
@@ -1037,6 +1038,40 @@ Optional:
 
 <a id="nestedatt--definition--nodes--filter--config--on_error"></a>
 ### Nested Schema for `definition.nodes.filter.config.on_error`
+
+Required:
+
+- `action` (String)
+- `error` (String) A typed error family (not-found, processing-failure, service-unavailable), family/specific-error, or * for all.
+
+
+
+
+<a id="nestedatt--definition--nodes--for_each"></a>
+### Nested Schema for `definition.nodes.for_each`
+
+Required:
+
+- `config` (Attributes) Configuration fields for this node type. (see [below for nested schema](#nestedatt--definition--nodes--for_each--config))
+- `id` (String) Unique node ID within the graph.
+
+Optional:
+
+- `return` (Boolean) Whether this node's output is included in the Automation result.
+
+<a id="nestedatt--definition--nodes--for_each--config"></a>
+### Nested Schema for `definition.nodes.for_each.config`
+
+Required:
+
+- `list` (String) A bare Files TransformScript expression, no braces.
+
+Optional:
+
+- `on_error` (Attributes List) Error handlers. Each item selects an error pattern and whether to continue or propagate it. (see [below for nested schema](#nestedatt--definition--nodes--for_each--config--on_error))
+
+<a id="nestedatt--definition--nodes--for_each--config--on_error"></a>
+### Nested Schema for `definition.nodes.for_each.config.on_error`
 
 Required:
 
