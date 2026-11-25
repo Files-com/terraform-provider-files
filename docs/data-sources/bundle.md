@@ -47,7 +47,7 @@ data "files_bundle" "example_bundle" {
 - `deleted_at` (String) Bundle deleted at date/time
 - `description` (String) Public description
 - `dont_allow_folders_in_uploads` (Boolean) Should folder uploads be prevented?
-- `dont_separate_submissions_by_folder` (Boolean) Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.
+- `dont_separate_submissions_by_folder` (Boolean) Do not create subfolders for files uploaded to this share. Upload-only Share Links with non-recursive folder access require this to be true. If omitted on create, the API sets it to true for those links. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.
 - `effective_expires_at` (String) Read-only expiration date/time, using the explicit expiration or the site-wide setting when applicable. Null when the Share Link does not expire.
 - `effective_max_uses` (Number) Read-only visitor limit actually enforced for this Share Link. Uses the lower of the link limit and the Site-wide cap when both are set. Null means unlimited.
 - `expires_at` (String) Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply.

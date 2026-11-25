@@ -73,7 +73,7 @@ resource "files_bundle" "example_bundle" {
 - `code` (String) Bundle code.  This code forms the end part of the Public URL.
 - `create_snapshot` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) If true, create a snapshot of this bundle's contents.
 - `description` (String) Public description
-- `dont_separate_submissions_by_folder` (Boolean) Do not create subfolders for files uploaded to this share. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.
+- `dont_separate_submissions_by_folder` (Boolean) Do not create subfolders for files uploaded to this share. Upload-only Share Links with non-recursive folder access require this to be true. If omitted on create, the API sets it to true for those links. Note: there are subtle security pitfalls with allowing anonymous uploads from multiple users to live in the same folder. We strongly discourage use of this option unless absolutely required.
 - `expires_at` (String) Explicit Bundle expiration date/time. If not set, the site-wide expiration setting may apply.
 - `finalize_snapshot` (Boolean, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) If true, finalize the snapshot of this bundle's contents. Note that `create_snapshot` must also be true.
 - `form_field_set_id` (Number, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Id of Form Field Set to use with this bundle
